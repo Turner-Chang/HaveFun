@@ -1,7 +1,12 @@
+using HaveFun.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+var connHaveFunStr = builder.Configuration.GetConnectionString("HaveFunDbContext");
+builder.Services.AddSqlServer<HaveFunDbContext>(connHaveFunStr);
 
 var app = builder.Build();
 
