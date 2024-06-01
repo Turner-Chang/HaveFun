@@ -1,0 +1,338 @@
+.about {
+    &__item {}
+    &__inner {
+        padding: 60px 30px;
+        @extend %bg-white;
+        @include add-prefix(transition, (all .3s ease));
+        @include add-prefix(border-radius, (4px));
+        &:hover {
+            @include add-prefix(transform, (translateY(-5px)));
+            box-shadow: 0 10px 20px rgba($shadow-color, $alpha: .3);
+            .about {
+                &__content {
+                    h4 {
+                        @extend %theme-color;
+                    }
+                }
+            }
+        }
+    }
+    &__thumb {
+        @extend %mb-40;
+        img {
+            @include add-prefix(border-radius, (100%));
+            @extend %of-hidden;
+        }
+    }
+    &__content {
+        h4 {
+            @extend %mb-15;
+            @extend %text-1;
+        }
+        h3 {
+            @extend %text-1;
+            .counter {
+                @extend %theme-color;
+            }
+        }
+        p {
+            @extend %mb-0;
+            @extend %text-2;
+        }
+    }
+    .col {
+        &:nth-child(2) {
+            .about {
+                &__content {
+                    h3 {
+                        .counter {
+                            @extend %theme-color2;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .col {
+        &:nth-child(3) {
+            .about {
+                &__content {
+                    h3 {
+                        .counter {
+                            color: $theme-color5;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .col {
+        &:nth-child(4) {
+            .about {
+                &__content {
+                    h3 {
+                        .counter {
+                            color: $theme-color4;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    &--style2 {
+        @include breakpoint(lg) {
+            margin-top: -60px;
+            position: relative;
+            z-index: 999;
+        }
+        .about {
+            &__title {
+                h3 {
+                    @include font-size(36px);
+                }
+            }
+            &__form {
+
+            }
+            &__content {
+                p {
+                    -webkit-line-clamp: 3;
+                }
+            }
+            &__left {
+                @extend %p-30;
+                @extend %bg-white;
+                
+                @include breakpoint(sm) {
+                    padding-top: 46px;
+                }
+                .about {
+                    &__content {
+                        h3 {
+                            @extend %mb-15;
+                        }
+                        p {
+                            @extend %mb-40;
+                            @include font-size(18px);
+                            line-height: 30px;
+                        }
+                    }
+                }
+            }
+            &__top {
+                
+            }
+            &__bottom {
+                &--head {
+                    @extend %flex;
+                    @extend %justify-between;
+                    padding-block: 10px;
+                    border-top: 1px solid rgba($shadow-color, $alpha: .1);
+                    border-bottom: 1px solid rgba($shadow-color, $alpha: .1);
+                    margin-block: 30px;
+                    margin-bottom: 37px;
+                    @extend %of-hidden;
+                    h5 {
+                        @extend %mb-0;
+                    }
+                }
+                &--navi {
+                    @extend %flex;
+                    @include breakpoint(max-lg) {
+                        display: none;
+                    }
+                    div {
+                        width: 18px;
+                        height: 18px;
+                        line-height: 18px;
+                        @extend %m-5;
+                        @extend %bg-title;
+                        @extend %white-color;
+                        @extend %text-center;
+                        @include font-size(9px);
+                        @include add-prefix(border-radius, (100%));
+                        @include add-prefix(transition, (all .3s ease));
+                        &:hover, &.active {
+                            @extend %bg-theme;
+                        }
+                    }
+                }
+                &--body {
+                    // @extend %pb-15;
+                    .ragi__thumb {
+                        width: 100px;
+                        height: 100px;
+                        margin-inline: auto;
+                        @extend %of-hidden;
+                        @include add-prefix(border-radius, (100%));
+                        &:hover {
+                            img {
+                                @include add-prefix(transform, (scale(1.2)));
+                            }
+                        }
+                        img {
+                            @include add-prefix(border-radius, (100%));
+                        }
+                    }
+                }
+            }
+            &__right {
+                padding: 40px 20px;
+                @extend %bg-theme;
+                @include breakpoint(sm) {
+                    padding: 46px 30px 52px;
+                }
+                * {
+                    @extend %white-color;
+                }
+                .about__title {
+                    @extend %mb-25;
+                }
+                .banner__inputlist {
+                    background: #c2375a;
+                    select {
+                        @extend %border-none;
+                        background: #c2375a;
+                    }
+                }
+                label {
+                    @extend %mb-10;
+                }
+                .default-btn {
+                    background: $white-color;
+                    @extend %mt-20;
+                    span {
+                        color: $theme-color;
+                    }
+                }
+            }
+        }
+    }
+    &--style3 {
+        @include breakpoint(lg) {
+            margin-top: -60px;
+            position: relative;
+            z-index: 999;
+        }
+        .section__wrapper {
+            background: $white-color !important;
+            form {
+                padding: 40px 20px;
+                @include add-prefix(border-radius, (4px));
+                box-shadow: 0 0 20px rgba(136, 136, 136, .20);
+                @include breakpoint(sm) {
+                    padding: 57px 40px;
+                }
+                label {
+                    @extend %mb-10;
+                }
+                .banner__inputlist {
+                    @extend %mb-10;
+                    background: $body-color4;
+                    @include breakpoint(sm) {
+                        margin-bottom: 0;
+                    }
+                }
+                .default-btn {
+                    @extend %mr-0;
+                    background: $theme-color;
+                    @extend %w-100;
+                    padding-block: 18px;
+                    padding-inline: 20px;
+                    @extend %mt-10;
+                    @include breakpoint(sm) {
+                        margin-top: 33px;
+                    }
+                    span {
+                        @extend %white-color;
+                    }
+                }
+                select {
+                    background: $body-color4;
+                }
+            }
+        }
+    }
+    &--style4 {
+        .about {
+            &__inner {
+                padding-block: 70px;
+            }
+            &__thumb {
+                img {
+                    @include add-prefix(border-radius, (0));
+                }
+            }
+            &__content {
+                .counter {
+                    color: $theme-color6 !important;
+                }
+            }
+        }
+        .default-btn {
+            background: $theme-color7;
+            span {
+                @extend %white-color;
+            }
+            &:hover {
+                span {
+                    @extend %white-color;
+                }
+            }
+        }
+        .col {
+            &:nth-child(even) {
+                .about {
+                    &__content {
+                        h3 {
+                            .counter {
+                                color: $theme-color7 !important;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    &--style5 {
+        .about {
+            &__thumb {
+                @extend %mb-0;
+                img {
+                    @include add-prefix(border-radius, (0));
+                }
+            }
+            &__content {
+                @include breakpoint(lg) {
+                    max-width: 80%;
+                }
+                h2 {
+                    @extend %mb-15;
+                }
+                h5 {
+                    @extend %mb-15;
+                    @include font-size(20px);
+                    line-height: 1.5;
+                    color: #696969;
+                }
+                p {
+                    @extend %mb-30;
+                    @include font-size(18px);
+                    line-height: 30px;
+                    -webkit-line-clamp: inherit;
+                }
+                .default-btn {
+                    background: $theme-color;
+                    span {
+                        @extend %white-color;
+                    }
+                    &:hover {
+                        span {
+                            @extend %white-color;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

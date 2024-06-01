@@ -1,0 +1,9 @@
+.pageheader {
+    padding-block: 80px;
+    @include breakpoint(sm) {
+        padding-block: 100px;
+    }
+    @include breakpoint(lg) {
+        padding-block: 205px;
+    }
+}

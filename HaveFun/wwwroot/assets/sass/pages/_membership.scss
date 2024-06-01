@@ -1,0 +1,193 @@
+.membership {
+    &__item {}
+    &__inner {
+        @extend %text-center;
+        @extend %bg-white;
+        @include add-prefix(border-radius, (4px));
+        @include transition($transition);
+        &:hover {
+            box-shadow: 0 14px 20px rgba($title-color, $alpha: .14);
+        }
+    }
+    &__head {
+        h4 {
+            padding-block: 26px;
+            @extend %mb-0;
+        }
+        p {
+            padding-block: 26px;
+            padding-inline: 30px;
+            @extend %mb-0;
+            background: #fbf6ff;
+        }
+    }
+    &__body {
+        h4 {
+            color: #ae3eff;
+            @extend %mb-0;
+            padding-block: 20px;
+            border-bottom: 1px solid rgba($title-color, $alpha: .1);
+        }
+        ul {
+            li {
+                padding-block: 23px;
+                margin-inline: 45px;
+                border-bottom: 1px solid rgba($title-color, $alpha: .1);
+                @include font-size(18px);
+                @extend %flex;
+                flex-wrap: nowrap;
+                @extend %text-left;
+                @include breakpoint(sm) {
+                    margin-inline: 30px;
+                }
+                &:last-child {
+                    border-bottom: none;
+                }
+                i {
+                    width: 70px;
+                    margin: 10px auto 0;
+                    display: inline-block;
+                    text-align: center;
+                    &.fa-solid.fa-circle-check {
+                        color: #ae3eff;
+                    }
+                    &.fa-solid.fa-circle-xmark {
+                        color: $shadow-color;
+                    }
+                }
+                span {
+
+                }
+            }
+        }
+    }
+    &__footer {
+        padding-bottom: 40px;
+        padding-top: 15px;
+        .default-btn {
+            background: #fbf6ff;
+            span {
+                color: $theme-color4;
+            }
+            &:hover {
+                background: $theme-color4;
+                span {
+                    color: $white-color;
+                }
+            }
+        }
+    }
+    .col {
+        &:nth-child(2) {
+            .membership {
+                &__head {
+                    p {
+                        background: #ffeef1;
+                    }
+                }
+                &__body {
+                    h4 {
+                        color: $theme-color;
+                    }
+                    ul {
+                        li {
+                            i {
+                                &.fa-solid.fa-circle-check {
+                                    color: $theme-color;
+                                }
+                            }
+                        }
+                    }
+                }
+                &__footer {
+                    .default-btn {
+                        background: #ffeef1;
+                        span {
+                            color: $theme-color;
+                        }
+                        &:hover {
+                            background: $theme-color;
+                            span {
+                                color: $white-color;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        &:nth-child(3) {
+            .membership {
+                &__head {
+                    p {
+                        background: #daefff;
+                    }
+                }
+                &__body {
+                    h4 {
+                        color: #2e87ff;
+                    }
+                    ul {
+                        li {
+                            i {
+                                &.fa-solid.fa-circle-check {
+                                    color: #2e87ff;
+                                }
+                            }
+                        }
+                    }
+                }
+                &__footer {
+                    .default-btn {
+                        background: #daefff;
+                        span {
+                            color: #2e87ff;
+                        }
+                        &:hover {
+                            background: #2e87ff;
+                            span {
+                                color: $white-color;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        &:nth-child(4) {
+            .membership {
+                &__head {
+                    p {
+                        background: #e8fff5;
+                    }
+                }
+                &__body {
+                    h4 {
+                        color: #12bd9e;
+                    }
+                    ul {
+                        li {
+                            i {
+                                &.fa-solid.fa-circle-check {
+                                    color: #12bd9e;
+                                }
+                            }
+                        }
+                    }
+                }
+                &__footer {
+                    .default-btn {
+                        background: #e8fff5;
+                        span {
+                            color: #12bd9e;
+                        }
+                        &:hover {
+                            background: #12bd9e;
+                            span {
+                                color: $white-color;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,88 @@
+/*!
+Template Name: Ollya
+Template URI: codexcoder.com
+Author: codexcoder.com
+Author URI: codexcoder.com
+Description: Description
+Version: 1.0.0
+Text Domain: Warzone
+Tags: 	chat, community, creative, date, dating, matching, membership, modern, network, profile, relationship, romance, social, social media, social network
+
+*/
+/*--------------------------------------------------------------
+>>> TABLE OF CONTENTS:
+----------------------------------------------------------------
+# Normalize
+# Typography
+# Global CSS
+# Header CSS
+	*Style-1
+	*Style-2
+	*Mobile Header
+# Page Header
+# Banner
+	*Style-1
+	*Style-2
+# Main
+    *home + all common section
+# Blog
+	*Style-1
+	*Blog Single
+# Blog Widget
+# Contact Us
+#Footer
+--------------------------------------------------------------*/
+
+
+
+
+
+@charset "UTF-8";
+
+// 1. Configuration and helpers
+@import 'abstracts/variables',
+'abstracts/mixins';
+
+// 2. Vendors
+@import 'vendors/normalize',
+'vendors/rfs';
+
+// 3. Base stuff
+@import 'base/fonts',
+'base/typography',
+'base/animation',
+'base/extend',
+'base/utilities';
+
+// 4. Layout-related sections
+@import 'layout/global',
+'layout/header',
+'layout/banner',
+'layout/pageheader',
+'layout/footer';
+
+// 5. Components
+@import 'components/button';
+@import 'components/about';
+@import 'components/work';
+@import 'components/member';
+@import 'components/story';
+@import 'components/meet';
+@import 'components/app';
+@import 'components/transportation';
+@import 'components/group';
+@import 'components/login';
+@import 'components/blog';
+
+// 6. Page-specific styles
+@import 'pages/home';
+@import 'pages/shop';
+@import 'pages/shop-single';
+@import 'pages/shop-cart';
+@import 'pages/contact';
+@import 'pages/membership';
+@import 'pages/activity';
+@import 'pages/policy';
+
+// 7. Themes
+@import 'themes/default';

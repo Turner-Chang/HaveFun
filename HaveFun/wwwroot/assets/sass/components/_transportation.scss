@@ -1,0 +1,232 @@
+.transportation {
+    background: #fffbf8;
+    @extend %hidden;
+    .section__wrapper {
+        .left {
+            margin-bottom: 30px;
+            @include breakpoint(lg) {
+                margin-bottom: 0;
+            }
+            .section__header {
+                &::after {
+                    display: none;
+                }
+                h2 {
+                    &:first-child {
+                        margin-bottom: 10px;
+                    }
+                }
+                p {
+                    margin-left: 0;
+                    @extend %mb-30;
+                }
+                ul {
+                    @extend %flex;
+                    margin: 0;
+                    align-items: center;
+                    li {
+                        @extend %flex;
+                        align-items: center;
+                        width: 100%;
+                        padding-block: 10px;
+                        @include breakpoint(sm) {
+                            width: calc(100% / 2);
+                        }
+                        .thumb {
+                            width: 23px;
+                            margin-right: 10px;
+                        }
+                        .content {
+                            width: calc(100% - 35px);
+                            p {
+                                margin-bottom: 0;;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .right {
+            height: 430px;
+            background: url(../../assets/images/transport/bg.png) no-repeat;
+            background-position: center;
+            background-size: 100% 100%;
+            @extend %rel;
+            .lab-line {
+                @extend %abs;
+                cursor: pointer;
+                display: none;
+                span {
+                    width: 10px;
+                    height: 10px;
+                    border-radius: 100%;
+                    display: inline-block;
+                    @extend %rel;
+                    &::after {
+                        @extend %abs;
+                        width: 10px;
+                        height: 10px;
+                        border-radius: 100%;
+                    }
+                }
+                .lab-tooltip {
+                    @extend %abs;
+                    bottom: 0;
+                    left: 40%;
+                    width: 150px;
+                    height: auto;
+                    border-radius: 10px;
+                    background: $white-color;
+                    opacity: 0;
+                    visibility: hidden;
+                    text-align: center;
+                    padding: 10px;
+                    z-index: 4;
+                    margin-bottom: 20px;
+                    box-shadow: 0 0 5px rgba(136, 136, 136, 0.1);
+                    transform: translate(-50%, -20px);
+                    @include transition(all 0.3s ease-in-out);
+                    &::after, &::before {
+                        @extend %abs;
+                    }
+                    &::after {
+                        width: 19px;
+                        height: 19px;
+                        background: $white-color;
+                        bottom: -12px;
+                        left: 50%;
+                        box-shadow: 0 0 5px rgba(136, 136, 136, 0.1);
+                        z-index: -1;
+                        transform: rotate(45deg) translateX(-50%);
+                    }
+                    &::before {
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: $white-color;
+                        border-radius: 10px;
+                    }
+                    a {
+                        margin-bottom: 0;
+                        color: $title-color;
+                        z-index: 1;
+                        @extend %rel;
+                    }
+                }
+                &:hover {
+                    .lab-tooltip {
+                        visibility: visible;
+                        opacity: 1;
+                    }
+                }
+                &:nth-child(1) {
+                    top: 20%;
+                    left: 2%;
+                    span {
+                        background: #bb6df7;
+                        &::after {
+                            animation: lab_transport 1.5s infinite;
+                        }
+                    }
+                }
+                &:nth-child(2) {
+                    top: 7%;
+                    left: 20%;
+                    span {
+                        background: #009bfe;
+                        &::after {
+                            animation: lab_transport1 1s infinite;
+                        }
+                    }
+                }
+                &:nth-child(3) {
+                    top: 7%;
+                    left: 40%;
+                    span {
+                        background: #00bf8d;
+                        &::after {
+                            animation: lab_transport2 2.5s infinite;
+                        }
+                    }
+                }
+                &:nth-child(4) {
+                    top: 37%;
+                    left: 20%;
+                    span {
+                        background: #f37399;
+                        &::after {
+                            animation: lab_transport3 1s infinite;
+                        }
+                    }
+                }
+                &:nth-child(5) {
+                    top: 70%;
+                    left: 30%;
+                    span {
+                        background: #f37399;
+                        &::after {
+                            animation: lab_transport4 3s infinite;
+                        }
+                    }
+                }
+                &:nth-child(6) {
+                    top: 20%;
+                    left: 90%;
+                    span {
+                        background: #009bfe;
+                        &::after {
+                            animation: lab_transport1 2s infinite;
+                        }
+                    }
+                }
+                &:nth-child(7) {
+                    top: 25%;
+                    left: 65%;
+                    span {
+                        background: #f37399;
+                        &::after {
+                            animation: lab_transport4 2.5s infinite;
+                        }
+                    }
+                }
+                &:nth-child(8) {
+                    top: 75%;
+                    left: 82%;
+                    span {
+                        background: #00bf8d;
+                        &::after {
+                            animation: lab_transport2 2s infinite;
+                        }
+                    }
+                }
+                &:nth-child(9) {
+                    top: 50%;
+                    left: 50%;
+                    span {
+                        background: #bb6df7;
+                        &::after {
+                            animation: lab_transport 4s infinite;
+                        }
+                    }
+                }
+                &:nth-child(10) {
+                    top: 80%;
+                    left: 53%;
+                    span {
+                        background: #009bfe;
+                        &::after {
+                            animation: lab_transport1 3s infinite;
+                        }
+                    }
+                }
+                &:nth-child(1), &:nth-child(2), &:nth-child(3), &:nth-child(4), &:nth-child(5), &:nth-child(6), &:nth-child(7), &:nth-child(8), &:nth-child(9), &:nth-child(10) {
+                    display: block;
+                }
+            }
+        }
+    }
+    &.style-2 {
+        background: $white-color;
+    }
+}

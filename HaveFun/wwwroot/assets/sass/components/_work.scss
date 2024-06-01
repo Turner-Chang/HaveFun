@@ -1,0 +1,114 @@
+.work {
+    &__tablist {
+        justify-content: center;
+        @include breakpoint(xl) {
+            width: 30%;
+        }
+        .nav-link {
+            @extend %flex;
+            @extend %align-items-center;
+            padding: 15px 30px;
+            &:nth-child(even) {
+                @include breakpoint(xl) {
+                    background: $ash-color;
+                }
+                &.active {
+                    @include breakpoint(xl) {
+                        background: $ash-color;
+                    }
+                }
+            }
+            &.active {
+                background: transparent;
+                span {
+                    @extend %theme-color;
+                }
+            }
+            span {
+                @extend %mb-0;
+                @include font-size(18px);
+                @extend %text-bold;
+                @include add-prefix(transition, (all .3s ease));
+                @include breakpoint(max-xl) {
+                    // display: none;
+                }
+            }
+            img {
+                @include breakpoint(lg) {
+                    @include breakpoint(max-xl) {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+    &__tabcontent {
+        @include breakpoint(xl) {
+            width: 70%;
+        }
+    }
+    &__area {
+        @extend %bg-white;
+        @include add-prefix(border-radius, (4px));
+    }
+    &__item {}
+    &__inner {
+        @extend %flex;
+        @extend %align-items-center;
+        padding: 40px;
+        background: $ash-color;
+        @include add-prefix(border-radius, (4px));
+        @include breakpoint(lg) {
+            padding: 73px 50px;
+        }
+    }
+    &__thumb {
+        @extend %mb-30;
+        @include breakpoint(sm) {
+            width: 40%;
+            margin-bottom: 0;
+        }
+    }
+    &__content {
+        @include breakpoint(sm) {
+            width: 60%;
+            // padding-left: 30px;
+        }
+        h3 {
+            @extend %theme-color;
+            @extend %mb-20;
+        }
+        p {
+            @extend %mb-0;
+            @include font-size(18px);
+            line-height: 30px;
+        }
+    }
+    &--style2 {
+        .section__wrapper {
+            margin-top: 10px;
+        }
+        .work {
+            &__inner {
+                @include breakpoint(lg) {
+                    padding: 30px;
+                }
+            }
+            &__content {
+                @include breakpoint(sm) {
+                    padding-left: 15px;
+                }
+                h3 {
+                    color: $title-color;
+                    @extend %text-1;
+                    margin-bottom: 10px;
+                }
+                p {
+                    @include font-size(1rem);
+                    @extend %mb-25;
+                    line-height: 1.5;
+                }
+            }
+        }
+    }
+}
