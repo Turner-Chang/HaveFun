@@ -1,0 +1,73 @@
+// -----------------------------------------------------------------------------
+// This file contains all styles related to the button component.
+// -----------------------------------------------------------------------------
+
+.default-btn {
+    --background: #c7edff;
+    --text: #00afff;
+    --font-size: 16px;
+    --duration: .44s;
+    --move-hover: -4px;
+    --shadow: 0 2px 8px -1px #{rgba(#00afff, .15)};
+    --font-shadow: var(--font-size);
+    padding: 17px 32px;
+    font-weight: 500;
+    line-height: var(--font-size);
+    border-radius: 4px;
+    display: inline-block;
+    outline: none;
+    text-decoration: none;
+    font-size: var(--font-size);
+    letter-spacing: .5px;
+    background: var(--background);
+    color: var(--text);
+    @extend %text-capitalize;
+    transform: translateY(var(--y)) translateZ(0);
+    transition: all .3s ease;
+    &:hover {
+        border-radius: 25px;
+        letter-spacing: .850px;
+        box-shadow: var(--shadow);
+        color: #00afff;
+        span {
+            color: #00afff;
+        }
+    }
+    &.reverse {
+        --shadow: 0 2px 8px -1px #{rgba(#a650ff, .32)};
+        --font-shadow: calc(var(--font-size) * -1);
+        background-color: #ffe4eb;
+        span {
+            color: #f24570;
+        }
+        &:hover {
+            background-color: #f24570;
+            
+            --shadow: 0 2px 8px -1px #{rgba(#a650ff, .32)};
+            span {
+                --m: calc(var(--font-size));
+                @extend %white-color;
+            }
+        }
+    }
+    &.style-2 {
+        background: $theme-color;
+        span {
+            @extend %white-color;
+        }
+        &:hover {
+            span {
+                @extend %white-color;
+            }
+        }
+    }
+}
+
+button {
+    @extend %border-none;
+    @extend %outline-none;
+}
+
+
+
+

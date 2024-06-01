@@ -1,0 +1,52 @@
+.activity {
+    margin-top: 10px;
+    &__item {
+        
+    }
+    &__inner {
+        @extend %flex;
+        @extend %p-30;
+        background: $body-color4;
+        @include add-prefix(border-radius, (4px));
+        border: 1px solid $border-color;
+        .activity__item {
+            @extend %w-100;
+            .activity__inner {
+                padding-top: 30px;
+                border: none;
+                @include breakpoint(sm) {
+                    padding-left: 30px;
+                }
+            }
+        }
+    }
+    &__thumb {
+        width: 60px;
+        img {
+            @include add-prefix(border-radius, (100%));
+        }
+    }
+    &__content {
+        @extend %pt-15;
+        @include breakpoint(sm) {
+            padding-top: 0;
+            padding-left: 25px;
+        }
+        :last-child {
+            margin-bottom: 0;
+        }
+        h5 {
+            a {
+                @extend %mr-10;
+            }
+            span {
+                @extend %d-inline-block;
+                @include font-size(16px);
+                @extend %text-regular;
+            }
+        }
+        p {
+            @extend %mb-10;
+        }
+    }
+}

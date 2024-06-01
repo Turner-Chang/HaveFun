@@ -1,0 +1,476 @@
+// -----------------------------------------------------------------------------
+// This file contains all styles related to the header of the site/application.
+// -----------------------------------------------------------------------------
+
+.header {
+    transition: all .3s ease;
+    @include breakpoint(max-lg) {
+        position: relative;
+        z-index: 99999;
+    }
+    &--positioned {
+        @include breakpoint(lg) {
+            position: absolute;
+            background-color: transparent;
+            width: 100%;
+            top: 0;
+            transition: all .3s ease;
+            z-index: 9999;
+        }
+    }
+    .header__top {
+        @include breakpoint(max-md) {
+            display: none;
+        }
+    }
+    &__bottom {
+        padding-block: 16.5px;
+    }
+    &.header-fixed {
+        .header__top {
+            display: none !important;
+        }
+        @include breakpoint(lg) {
+            position: fixed;
+            width: 100%;
+            z-index: 99999;
+            background: $white-color;
+            box-shadow: 0px 0px 2px rgba($title-color, $alpha: .3);
+            .nav-link--active, .nav-link:hover {
+                color: $white-color;
+            }
+            .navbar--bottom-line {
+                border: none;
+            }
+            .header__bottom {}
+        }
+    }
+    &__top {
+        @extend %bg-theme;
+        &--area {
+            @extend %flex;
+            @extend %justify-between;
+        }
+        &--left, &--right {
+            ul {
+                @extend %flex;
+                li {
+                    @extend %p-10;
+                    @extend %white-color;
+                    border-right: 1px solid rgba($white-color, $alpha: .1);
+                    a {
+                        @extend %white-color;
+                    }
+                }
+            }
+        }
+        &--left {
+            ul {
+                li {
+                    &:last-child {
+                        border-right: none;
+                    }
+                }
+            }
+        }
+        &--right {
+            ul {
+                li {
+                    &:first-child {
+                        border-left: 1px solid rgba($white-color, $alpha: .1);
+                    }
+                    a {
+                        i {
+                            @extend %mr-5;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    &--style2 {
+        .header {
+            &__top {
+                background: $theme-color6;
+                &--left, &--right {
+                    ul {
+                        @extend %flex;
+                        li {
+                            @extend %border-none;
+                            @extend %p-rel;
+                            &:first-child {
+                                @extend %border-none;
+                            }
+                            &:last-child {
+                                &::before {
+                                    @extend %p-abs;
+                                    right: 0px;
+                                    top: 0;
+                                    width: 1px;
+                                    height: 100%;
+                                    background: rgba($white-color, $alpha: .1);
+                                    @include add-prefix(transform, rotate(15deg));
+                                }
+                            }
+                            &::after {
+                                @extend %p-abs;
+                                left: -5px;
+                                top: 0;
+                                width: 1px;
+                                height: 100%;
+                                background: rgba($white-color, $alpha: .1);
+                                @include add-prefix(transform, rotate(15deg));
+                            }
+                            a {}
+                        }
+                    }
+                }
+            }
+            &__bottom {
+                .mainmenu {
+                    ul {
+                        li {
+                            &:hover, &.open {
+                                >a {
+                                    color: $theme-color7;
+                                }
+                            }
+                            &.active {
+                                >a {
+                                    color: $theme-color7;
+                                    &::after, &::before {
+                                        @extend %bg-theme-color7;
+                                    }
+                                }
+                            }
+                            a {}
+                            ul {
+                                li {
+                                    a {
+                                        &.active, &:hover {
+                                            background: $theme-color7;
+                                            color: $white-color;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                }
+                .button-group {
+                    @extend %flex;
+                    @include breakpoint(max-xl) {
+                        display: none;
+                    }
+                    li {
+                        a {
+                            padding: 17px 20px;
+                            letter-spacing: .850px;
+                            @include add-prefix(border-radius, (0));
+                            i {
+                                @extend %mr-5;
+                                @extend %white-color;
+                                @include breakpoint(lg) {
+                                    @include breakpoint(max-xl) {
+                                        display: none;
+                                    }
+                                }
+                            }
+                            span {
+                                color: $white-color;
+                            }
+                            &:hover {
+                                span {
+                                    color: $white-color;
+                                }
+                            }
+                            &.login {
+                                background: $theme-color7;
+                            }
+                            &.signup {
+                                background: $theme-color6;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    &__more {
+        @extend %p-rel;
+        .default-btn {
+            background: $theme-color;
+            color: $white-color;
+            padding: 15px 20px;
+            letter-spacing: .850px;
+            &:hover {
+                @include add-prefix(border-radius, (4px));
+                color: $white-color;
+            }
+        }
+        ul {
+            li {
+                a {
+                    &:hover {
+                        background: $theme-color;
+                        color: $white-color;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+.mainmenu {
+    @include breakpoint(max-lg) {
+        margin-top: 15px;
+    }
+    ul {
+        li {
+            @extend %d-block;
+            @extend %p-rel;
+            @include breakpoint(lg) {
+                display: inline-block;
+            }
+            &:last-child {
+                a {
+                    @include breakpoint(max-lg) {
+                        border-bottom: none;
+                    }
+                }
+            }
+            &:hover {
+                >ul {
+                    opacity: 1;
+                    visibility: visible;
+                    top: calc(100% + 0px);
+                    z-index: 99999;
+                }
+                >a {
+                    // text-decoration: line-through;
+                    color: $theme-color;
+                }
+            }
+            &.open {
+                @include breakpoint(max-lg) {
+                    >ul {
+                        opacity: 1;
+                        visibility: visible;
+                        top: calc(100% + 0px);
+                        z-index: 99999;
+                    }
+                    >a {
+                        // text-decoration: line-through;
+                        color: $theme-color;
+                    }
+                }
+            }
+            &.active {
+                >a {
+                    text-decoration: line-through;
+                    color: $theme-color;
+                    &::after, &::before {
+                        @extend %bg-theme-color;
+                    }
+                }
+            }
+            a {
+                color: $title-color;
+                padding: 10px 25px !important;
+                @extend %text-capitalize;
+                @extend %text-samibold;
+                @include breakpoint(max-lg) {
+                    display: block;
+                    width: 100%;
+                    border-bottom: 1px solid rgba($body-color, $alpha: .1);
+                }
+            }
+            ul {
+                background: $white-color;
+                box-shadow: 0 0 5px rgba($title-color, $alpha: .1);
+                @extend %d-none;
+                @include add-prefix(border-radius, (4px));
+                // @include add-prefix(transition, (all .3s ease));
+                @include breakpoint(lg) {
+                    position: absolute;
+                    top: calc(100% + 50px);
+                    opacity: 0;
+                    width: 200px;
+                    visibility: hidden;
+                    display: block !important;
+                    transition: all .3s ease;
+                }
+                li {
+                    @extend %d-block;
+                    &:last-child {
+                        a {
+                            border-bottom: none;
+                        }
+                    }
+                    a {
+                        color: $title-color;
+                        @extend %d-block;
+                        border-bottom: 1px solid rgba($body-color, $alpha: .1);
+                        &.active, &:hover {
+                            background: $theme-color;
+                            color: $white-color;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+}
+
+.search-cart-area {
+    @include breakpoint(lg) {
+        @include breakpoint(max-xl) {
+            display: none !important;
+        }
+    }
+}
+
+.menu-item-has-children {
+    >a {
+        @extend %rel;
+        &.active {
+            &::after, &::before {
+                background-color: $title-color !important;
+            }
+        }
+        &::after {
+            @extend %abs;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 25px;
+            width: 10px;
+            height: 2px;
+            background-color: $title-color;
+        }
+
+        &::before {
+            @extend %abs;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 29px;
+            width: 2px;
+            height: 10px;
+            background-color: $title-color;
+            @include transition($transition);
+        }
+
+        @include breakpoint(lg) {
+            &::after {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                right: 0;
+                width: 10px;
+                height: 2px;
+                background-color: $title-color;
+            }
+
+            &::before {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                right: 4px;
+                width: 2px;
+                height: 10px;
+                background-color: $title-color;
+                @include transition($transition);
+            }
+        }
+
+
+    }
+
+    &:hover {
+        >a {
+            &::after {
+                background: $theme-color;
+            }
+            &:before {
+                transform: translateY(-50%) rotate(90deg);
+                opacity: 0;
+            }
+        }
+    }
+    &.open {
+        @include breakpoint(max-lg) {
+            >a {
+                &::after {
+                    background: $theme-color;
+                }
+                &:before {
+                    transform: translateY(-50%) rotate(90deg);
+                    opacity: 0;
+                }
+            }
+        }
+    }
+}
+
+.navbar-toggler {
+    @extend %p-0;
+    @extend %mb-10;
+
+    &:focus {
+        border: none;
+        box-shadow: none;
+        outline: none;
+    }
+
+
+
+    &--icon {
+        @extend %p-rel;
+        @extend %d-inline-block;
+        background-color: $theme-color;
+        height: 2px;
+        width: 27px;
+        @include add-prefix(transform, rotate(45deg) translateY(-5px));
+
+        &:after,
+        &:before {
+            @extend %p-abs;
+            @extend %w-100;
+            background-color: $theme-color;
+            height: 2px;
+            @include add-prefix(transition, .3s all linear);
+        }
+
+        &:after {
+            bottom: 7px;
+            left: 0;
+            @include add-prefix(transform, rotate(-90deg) translateX(-6px));
+        }
+
+        &:before {
+            top: 7px;
+            left: 0;
+            opacity: 0;
+            @include add-prefix(transform, translateX(20px))
+        }
+
+
+    }
+
+    &.collapsed {
+        .navbar-toggler--icon {
+            transform: none;
+
+            &:after {
+                transform: none;
+            }
+
+            &:before {
+                opacity: 1;
+                transform: none;
+            }
+        }
+    }
+}

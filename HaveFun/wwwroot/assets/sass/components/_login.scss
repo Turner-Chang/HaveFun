@@ -1,0 +1,303 @@
+/*  Login & Registration  Section */
+.log-reg {
+    @extend %p-rel;
+    @extend %w-100;
+    height: 100vh;
+    &.forezero, &.comingsoon {
+        .log-reg-inner {
+            @extend %flex;
+            align-content: center;
+            justify-content: center;
+        }
+        .image-404 {
+            background: url(../../assets/images/login/404.jpg);
+            left: 0;
+            right: auto;
+        }
+        .backto-home {
+            color: $title-color !important;
+        }
+        .log-reg-inner {
+            padding-right: 0;
+            @include breakpoint(lg) {
+                padding-left: 40px;
+            }
+        }
+    }
+    &.forezero {
+        .log-reg-inner {
+            @include breakpoint(lg) {
+                height: 100vh;
+            }
+        }
+    }
+    &.comingsoon {
+        .image-comingsoon {
+            background: url(../../assets/images/login/comingsoon.jpg);
+            left: 0;
+            right: auto;
+        } 
+        .backto-home {
+            @include breakpoint(lg) {
+                color: $white-color !important;
+            }
+        }
+        form {
+            @extend %p-rel;
+            input {
+                border: 1px solid $border-color;
+                background: $white-color;
+                @include add-prefix(border-radius, (4px));
+                padding-right: 70px;
+                padding-left: 20px;
+                padding-block: 20px;
+            }
+            button {
+                @extend %p-abs;
+                top: 0;
+                right: 0;
+                width: 60px;
+                height: 100%;
+                color: $white-color;
+                background: $theme-color;
+                @include add-prefix(border-radius, (0 3px 3px 0));
+            }
+        }
+    }
+    .top-menu-area {
+        .backto-home {
+            padding: 15px 0px 15px;
+            @include breakpoint(lg) {
+                color: $white-color;
+            }
+            i {
+                @extend %mr-5;
+            }
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+        .logo {
+            @extend %d-block;
+            @extend %text-left;
+            padding: 15px 0px 15px;
+            img {
+                @extend %d-inline-block;
+            }
+        }
+    }
+    .image {
+        background: url(../../assets/images/login/reg.jpg);
+        background-repeat: no-repeat !important;
+        background-position: center !important;
+        background-size: cover !important;
+        height: 100vh;
+        width: 43%;
+        right: 0px;
+        top: 0px;
+        z-index: -1;
+        @extend %p-abs;
+        &.image-log {
+            background: url(../../assets/images/login/log.jpg);
+        }
+        @include breakpoint(max-lg) {
+            display: none;
+        }
+    }
+    .log-reg-inner {
+        padding-top: 30px;
+        padding-bottom: 40px;
+        height: calc(100vh - 72px);
+        padding-right: 40px;
+        overflow-y: auto;
+        &::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+            @include add-prefix(border-radius, (10px));
+            background: $ash-color;
+        }
+        &::-webkit-scrollbar {
+            width: 8px;
+            background: $ash-color;
+        }
+        &::-webkit-scrollbar-thumb {
+            @include add-prefix(border-radius, (10px));
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+            background: $theme-color;
+        }
+        .section-header {
+            @extend %text-left;
+            .title {
+                color: $title-color;
+            }
+            P {
+                color: $title-color;
+                @extend %mb-40;
+            }
+            &.inloginp {
+                padding-top: 80px;
+                @extend %text-center;
+                @extend %mb-30;
+                .title {
+                    line-height: 38px;
+                    @extend %text-capitalize;
+                }
+            }
+        }
+        .main-content {
+            .content-title {
+                line-height: 34px;
+                color: $title-color;
+                @extend %text-bold;
+                @extend %mb-25;
+                @include font-size(24px);
+            }
+            .form-group {
+                @extend %mb-15;
+                label {
+                    line-height: 28px;
+                    font-weight: 600;
+                    @extend %mb-10;
+                    @include font-size(18px);
+                }
+                .my-form-control {
+                    border: 1px solid rgba(59, 54, 140, 0.1);
+                    background-color: #eaf2fc;
+                    padding: 0px 30px;
+                    height: 50px;
+                    &::-webkit-input-placeholder {
+                        color: $title-color !important;
+                    }
+                    &::-moz-placeholder {
+                        color: $title-color !important;
+                    }
+                    &:-ms-input-placeholder {
+                        color: $title-color !important;
+                    }
+                    &::-ms-input-placeholder {
+                        color: $title-color !important;
+                    }
+                    &::placeholder {
+                        color: $title-color !important;
+                    }
+                    &::-webkit-placeholder {
+                        color: $title-color !important;
+                    }
+                }
+                >.banner__inputlist {
+                    @extend %justify-center;
+                    background-color: #eaf2fc;
+                    padding-block: 10px;
+                    .s-input {
+                        @extend %flex;
+                        @extend %align-items-center;
+                    }
+                    input {
+                        display: inline-block;
+                        width: 14px;
+                        height: 14px;
+                        border-radius: 50%;
+                        accent-color: $theme-color;
+                        text-align: center;
+                        border: 1px solid $theme-color;
+                    }
+                    label {
+                        line-height: 28px;
+                        @extend %d-inline-block;
+                        @extend %m-0;
+                        @extend %pl-5;
+                        @include font-size(18px);
+
+                    }
+                    .s-input {
+                        
+                    }
+                    select {
+                        padding: 3px;
+                        background-color: #eaf2fc;
+                    }
+                }
+            }
+            .default-btn {
+                padding: 16px 40px;
+                @extend %mt-20;
+                &:focus {
+                    @extend %outline-none;
+                }
+            }
+            .f-pass {
+                a {
+                    color: $title-color;
+                    @extend %text-samibold;
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+            }
+            .or {
+                margin-top: 40px;
+                color: $title-color;
+                @extend %p-rel;
+                @extend %text-center;
+                @extend %w-100;
+                @extend %d-block;
+                @extend %text-center;
+                @extend %text-bold;
+                @extend %mb-15;
+                &::before {
+                    @extend %p-abs;
+                    height: 1px;
+                    width: 100%;
+                    background: #dddce7;
+                    left: 0px;
+                    top: 50%;
+                    z-index: -1;
+                    @include add-prefix(transform, (translateY(-50%)));
+                }
+                p {
+                    background: $body-color4;
+                    padding: 0px 15px;
+                    @extend %d-inline-block;
+                    @extend %mb-0;
+                }
+            }
+            .or-content {
+                @extend %d-block;
+                @extend %text-center;
+                p {
+                    color: $title-color;
+                }
+                .default-btn {
+                    border: 1px solid rgba(59, 54, 140, 0.1);
+                    -webkit-box-shadow: 1.948px 13.864px 6px 0px rgba(220, 234, 251, 0.3);
+                    box-shadow: 1.948px 13.864px 6px 0px rgba(220, 234, 251, 0.3);
+                    padding: 10px 30px;
+                    @extend %mb-20;
+                    @extend %mt-10;
+                    &:hover {
+                        -webkit-box-shadow: 2px 13px 16px 0px rgba(59, 54, 140, 0.1);
+                        box-shadow: 2px 13px 16px 0px rgba(59, 54, 140, 0.1);
+                    }
+                    img {
+                        @extend %mr-10;
+                    }
+                }
+                .or-signup {
+                    a {
+                        color: $title-color;
+                        @extend %text-samibold;
+                        &:hover {
+                            text-decoration: underline;
+                            color: $theme-color;
+                        }
+                    }
+                }
+            }
+            &.inloginp {
+                // .button-wrapper {
+                //     display: block;
+                //     text-align: center;
+                // }
+            }
+        }
+    }
+}

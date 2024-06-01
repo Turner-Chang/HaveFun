@@ -1,48 +1,266 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8">
     <title>@ViewData["Title"] - HaveFun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- site favicon -->
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <!-- Place favicon.ico in the root directory -->
+    <!-- All stylesheet and icons css  -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/HaveFun.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="assets/css/animate.css">
+    <link rel="stylesheet" href="assets/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/swiper.min.css">
+    <link rel="stylesheet" href="assets/css/lightcase.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+
 </head>
+
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">HaveFun</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
+	<!-- preloader start here -->
+	<div class="preloader">
+		<div class="preloader-inner">
+			<div class="preloader-icon">
+				<span></span>
+				<span></span>
+			</div>
+		</div>
+	</div>
+	<!-- preloader ending here -->
+	<!-- scrollToTop start here -->
+	<a href="#" class="scrollToTop"><i class="fa-solid fa-angle-up"></i></a>
+	<!-- scrollToTop ending here -->
+	<!-- ================> header section start here <================== -->
+	<header class="header" id="navbar">
+		<div class="header__bottom">
+			<div class="container">
+				<nav class="navbar navbar-expand-lg">
+					<a class="navbar-brand" href="index.html"><img src="assets/images/logo/logo.png" alt="logo"></a>
+					<button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse"
+							data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
+							aria-label="Toggle navigation">
+						<span class="navbar-toggler--icon"></span>
+					</button>
+					<div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+						<div class="navbar-nav mainmenu">
+							<ul>
+								<li class="active">
+									<a href="#0">Home</a>
+									<ul>
+										<li><a href="index.html" class="active">Home Page One</a></li>
+										<li><a href="index-2.html">Home Page Two</a></li>
+										<li><a href="index-3.html">Home Page Three</a></li>
+									</ul>
+								</li>
+								<li>
+									<a href="#0">Pages</a>
+									<ul>
+										<li><a href="about.html">About Us</a></li>
+										<li><a href="membership.html">Membership</a></li>
+										<li><a href="comingsoon.html">comingsoon</a></li>
+										<li><a href="404.html">404</a></li>
+									</ul>
+								</li>
+								<li>
+									<a href="#0">Community</a>
+									<ul>
+										<li><a href="community.html">Community</a></li>
+										<li><a href="group.html">All Group</a></li>
+										<li><a href="members.html">All Members</a></li>
+										<li><a href="activity.html">Activity</a></li>
+
+									</ul>
+								</li>
+								<li>
+									<a href="#0">Shops</a>
+									<ul>
+										<li><a href="shop.html">Product</a></li>
+										<li><a href="shop-single.html">Product Details</a></li>
+										<li><a href="shop-cart.html">Product Cart</a></li>
+									</ul>
+								</li>
+								<li>
+									<a href="#0">Blogs</a>
+									<ul>
+										<li><a href="blog.html">Blog</a></li>
+										<li><a href="blog-2.html">Blog Style Two</a></li>
+										<li><a href="blog-single.html">Blog Details</a></li>
+									</ul>
+								</li>
+								<li><a href="contact.html">contact</a></li>
+							</ul>
+						</div>
+						<div class="header__more">
+							<button class="default-btn dropdown-toggle" type="button" id="moreoption" data-bs-toggle="dropdown" aria-expanded="false">My Account</button>
+							<ul class="dropdown-menu" aria-labelledby="moreoption">
+								<li><a class="dropdown-item" href="login.html">Log In</a></li>
+								<li><a class="dropdown-item" href="register.html">Sign Up</a></li>
+							</ul>
+						</div>
+					</div>
+				</nav>
+			</div>
+		</div>
+	</header>
+	<!-- ================> header section end here <================== -->
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - HaveFun - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+   <!-- ================> Footer section start here <================== -->
+	<footer class="footer overflow-hidden">
+		<div class="footer__top bg_img" style="background-image: url(assets/images/footer/bg-3.jpg)">
+			<div class="footer__newsletter wow fadeInUp" data-wow-duration="1.5s">
+				<div class="container">
+					<div class="row g-4 justify-content-center">
+						<div class="col-lg-6 col-12">
+							<div class="footer__newsletter--area">
+								<div class="footer__newsletter--title">
+									<h4>Newsletter Sign up</h4>
+								</div>
+								<div class="footer__newsletter--form">
+									<form action="#">
+										<input type="email" placeholder="Your email address">
+										<button type="submit" class="default-btn"><span>Subscribe</span></button>
+									</form>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-6 col-12">
+							<div class="footer__newsletter--area justify-content-xxl-end">
+								<div class="footer__newsletter--title me-xl-4">
+									<h4>Join Community</h4>
+								</div>
+								<div class="footer__newsletter--social">
+									<ul>
+										<li><a href="#"><i class="fa-brands fa-twitter"></i></a></li>
+										<li><a href="#"><i class="fa-brands fa-twitch"></i></a></li>
+										<li><a href="#"><i class="fa-brands fa-instagram"></i></a></li>
+										<li><a href="#"><i class="fa-brands fa-dribbble"></i></a></li>
+										<li><a href="#"><i class="fa-brands fa-facebook-messenger"></i></a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="footer__toparea padding-top padding-bottom wow fadeInUp" data-wow-duration="1.5s">
+				<div class="container">
+					<div class="row g-5 g-lg-0">
+						<div class="col-lg-3 col-sm-6 col-12">
+							<div class="footer__item">
+								<div class="footer__inner">
+									<div class="footer__content">
+										<div class="footer__content--title">
+											<h4>Our Information</h4>
+										</div>
+										<div class="footer__content--desc">
+											<ul>
+												<li><a href="#"><i class="fa-solid fa-angle-right"></i> About Us</a></li>
+												<li><a href="#"><i class="fa-solid fa-angle-right"></i> Contact Us</a></li>
+												<li><a href="#"><i class="fa-solid fa-angle-right"></i> Customer Reviews</a></li>
+												<li><a href="#"><i class="fa-solid fa-angle-right"></i> Success Stories</a></li>
+												<li><a href="#"><i class="fa-solid fa-angle-right"></i> Business License</a></li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-3 col-sm-6 col-12">
+							<div class="footer__item">
+								<div class="footer__inner">
+									<div class="footer__content">
+										<div class="footer__content--title">
+											<h4>My Account</h4>
+										</div>
+										<div class="footer__content--desc">
+											<ul>
+												<li><a href="#"><i class="fa-solid fa-angle-right"></i> Manage Account</a></li>
+												<li><a href="#"><i class="fa-solid fa-angle-right"></i> Safety Tips</a></li>
+												<li><a href="#"><i class="fa-solid fa-angle-right"></i> Account Varification</a></li>
+												<li><a href="#"><i class="fa-solid fa-angle-right"></i> Safety and Security</a></li>
+												<li><a href="#"><i class="fa-solid fa-angle-right"></i> Membership Level</a></li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-3 col-sm-6 col-12">
+							<div class="footer__item">
+								<div class="footer__inner">
+									<div class="footer__content">
+										<div class="footer__content--title">
+											<h4>Help Center</h4>
+										</div>
+										<div class="footer__content--desc">
+											<ul>
+												<li><a href="#"><i class="fa-solid fa-angle-right"></i> Help center</a></li>
+												<li><a href="#"><i class="fa-solid fa-angle-right"></i> FAQ</a></li>
+												<li><a href="#"><i class="fa-solid fa-angle-right"></i> Quick Start Guide</a></li>
+												<li><a href="#"><i class="fa-solid fa-angle-right"></i> Tutorials</a></li>
+												<li><a href="#"><i class="fa-solid fa-angle-right"></i> Associate Blog</a></li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-3 col-sm-6 col-12">
+							<div class="footer__item">
+								<div class="footer__inner">
+									<div class="footer__content">
+										<div class="footer__content--title">
+											<h4>Community</h4>
+										</div>
+										<div class="footer__content--desc">
+											<ul>
+												<li><a href="#"><i class="fa-solid fa-angle-right"></i> Privacy policy</a></li>
+												<li><a href="#"><i class="fa-solid fa-angle-right"></i> End User Agreements</a></li>
+												<li><a href="#"><i class="fa-solid fa-angle-right"></i> Refund Policy</a></li>
+												<li><a href="#"><i class="fa-solid fa-angle-right"></i> Cookie policy</a></li>
+												<li><a href="#"><i class="fa-solid fa-angle-right"></i> Report abuse</a></li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="footer__bottom wow fadeInUp" data-wow-duration="1.5s">
+			<div class="container">
+				<div class="footer__content text-center">
+					<p class="mb-0">All Rights Reserved &copy; <a href="index.html">Ollya</a> || Design By: CodexCoder</p>
+				</div>
+			</div>
+		</div>
+	</footer>
+    <!-- ================> Footer section end here <================== -->
+
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<!-- All Needed JS -->
+	<script src="assets/js/vendor/modernizr-3.11.2.min.js"></script>
+	<script src="assets/js/isotope.pkgd.min.js"></script>
+	<script src="assets/js/swiper.min.js"></script>
+	<!-- <script src="assets/js/all.min.js"></script> -->
+	<script src="assets/js/wow.js"></script>
+	<script src="assets/js/lightcase.js"></script>
+	<script src="assets/js/jquery.countdown.min.js"></script>
+	<script src="assets/js/waypoints.min.js"></script>
+	<script src="assets/js/plugins.js"></script>
+	<script src="assets/js/main.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

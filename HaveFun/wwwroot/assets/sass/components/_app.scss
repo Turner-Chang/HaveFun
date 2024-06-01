@@ -1,0 +1,63 @@
+.app {
+    &__item {
+        
+    }
+    &__thumb {
+        @extend %text-center;
+    }
+    &__content {
+        margin-top: 25px;
+        h4 {
+            @extend %text-regular;
+            @extend %theme-color;
+        }
+        h2 {
+            @extend %mb-15;
+        }
+        p {
+            @extend %mb-30;
+            line-height: 30px;
+            @include font-size(18px);
+        }
+        ul {
+            @extend %flex;
+            li {
+                @extend %m-10;
+                &:nth-child(1) {
+                    margin-left: 0;
+                }
+                &:nth-child(2) {
+                    @include breakpoint(max-sm) {
+                        margin-left: 0;
+                    }
+                }
+                a {
+                    box-shadow: 0px 0px 20px rgba($shadow-color, $alpha: .20);
+                    @extend %of-hidden;
+                    @include add-prefix(border-radius, (4px));
+                    &:hover {
+                        box-shadow: none;
+                    }
+                }
+            }
+        }
+    }
+    &--style2 {
+        @extend %p-rel;
+        &::after {
+            @extend %abs;
+            background: url(../../assets/images/app/bg.png) no-repeat;
+            background-position: center;
+            background-size: 100% 100%;
+            width: 50%;
+            height: 100%;
+            left: 50%;
+            top: 0;
+            @include add-prefix(transform, (translateX(-50%)));
+        }
+        * {
+            @extend %p-rel;
+            @extend %z-index-1;
+        }
+    }
+}
