@@ -521,92 +521,47 @@
                                     </div>
                                 </div>
 
-                                <div class="tab-pane fade" id="gt3" role="tabpanel" aria-labelledby="gt3-tab">
+                                <div class="tab-pane fade" style="padding-bottom:10px;" id="gt3" role="tabpanel" aria-labelledby="gt3-tab">
                                     <div class="site">
-                                        <div class="info-card mb-4">
-                                            <div class="info-card-title">
-                                                <h6>Site Link</h6>
-                                            </div>
-                                            <div class="info-card-content">
-                                                <ul class="info-list">
-                                                    <li>
-                                                        <div class="info-details">
-                                                            <div class="id-left">
-                                                                <img src="assets/images/site/01.png" alt="dating thumb">
-                                                            </div>
-                                                            <div class="id-right">
-                                                                <a href="#" target="_blank"><h5>Ollya Dating</h5></a>
-                                                                <p>Active 5 months ago</p>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="default-btn" target="_blank"><span>Visit Site</span></a>
-                                                    </li>
-                                                    <li>
-                                                        <div class="info-details">
-                                                            <div class="id-left">
-                                                                <img src="assets/images/site/02.png" alt="dating thumb">
-                                                            </div>
-                                                            <div class="id-right">
-                                                                <a href="#" target="_blank"><h5>Ollya</h5></a>
-                                                                <p>Active 2 months ago</p>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="default-btn" target="_blank"><span>Visit Site</span></a>
-                                                    </li>
-                                                    <li>
-                                                        <div class="info-details">
-                                                            <div class="id-left">
-                                                                <img src="assets/images/site/03.png" alt="dating thumb">
-                                                            </div>
-                                                            <div class="id-right">
-                                                                <a href="#" target="_blank"><h5>Ollya Dating</h5></a>
-                                                                <p>Active 5 months ago</p>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="default-btn" target="_blank"><span>Visit Site</span></a>
-                                                    </li>
-                                                    <li>
-                                                        <div class="info-details">
-                                                            <div class="id-left">
-                                                                <img src="assets/images/site/04.png" alt="dating thumb">
-                                                            </div>
-                                                            <div class="id-right">
-                                                                <a href="#" target="_blank"><h5>Ollya</h5></a>
-                                                                <p>Active 2 months ago</p>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="default-btn" target="_blank"><span>Visit Site</span></a>
-                                                    </li>
-                                                    <li>
-                                                        <div class="info-details">
-                                                            <div class="id-left">
-                                                                <img src="assets/images/site/05.png" alt="dating thumb">
-                                                            </div>
-                                                            <div class="id-right">
-                                                                <a href="#" target="_blank"><h5>Ollya Dating</h5></a>
-                                                                <p>Active 5 months ago</p>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="default-btn" target="_blank"><span>Visit Site</span></a>
-                                                    </li>
-                                                    <li>
-                                                        <div class="info-details">
-                                                            <div class="id-left">
-                                                                <img src="assets/images/site/06.png" alt="dating thumb">
-                                                            </div>
-                                                            <div class="id-right">
-                                                                <a href="#" target="_blank"><h5>Ollya</h5></a>
-                                                                <p>Active 2 months ago</p>
-                                                            </div>
-                                                        </div>
-                                                        <a href="#" class="default-btn" target="_blank"><span>Visit Site</span></a>
-                                                    </li>
-                                                </ul>
+                                        <div class="info-card mb-3">
+                                            <div class="text-center">
+                                                <figure class="figure">
+                                                    <img src="..." class="figure-img img-fluid rounded border border-dark" alt="..." style="width: 350px; height: 350px;">
+                                                    <button class="btn default-btn">上傳</button>
+                                                </figure>
                                             </div>
 
-                                            <div class="info-card-title info-card-pagination">
-                                                <p>Viewing 1 - 2 of 2 sites</p>
+                                            <div>
+                                                <h6>你的標籤:</h6>
+                                                <!-- 標籤可以隨意替換 -->
+                                                <div id="introduction" class="border border-dark" style="width:auto;height:60px">
+                                                    <span class="tag">標籤1</span>
+                                                    <span class="tag">標籤2</span>
+                                                    <span class="tag">標籤3</span>
+                                                    <!-- 更多標籤 -->
+                                                </div>                                                
                                             </div>
+                                            <div id="MemberProfile">
+                                                <div>
+                                                    <h6>自我介紹:</h6>
+                                                    <div id="introduction" class="border border-dark" style="width:auto;height:250px">
+                                                         <p contenteditable="false">這裡是自我介紹...</p>
+                                                    </div>
+                                                </div>
+                                                <ul class="list-group list-group-flush">
+                                                    <li class="list-group-item">用戶暱稱: <span style="font-weight:bold" contenteditable="false">暱稱</span></li>
+                                                    <li class="list-group-item">所在地: <span contenteditable="false">所在地</span></li>
+                                                    <li class="list-group-item">生日: <span contenteditable="false">生日</span></li>
+                                                    <li class="list-group-item">職業: <span contenteditable="false">職業</span></li>
+                                                    <li class="list-group-item">興趣: <span contenteditable="false">興趣</span></li>
+                                                </ul>
+                                                <button id="edit-button" type="button" class="btn btn-secondary">編輯</button>
+                                            </div>
+
+                                            <script>
+                                                // JavaScript 用於切換編輯模式和儲存資料
+                                            </script>
+
                                         </div>
                                     </div>
                                 </div>
