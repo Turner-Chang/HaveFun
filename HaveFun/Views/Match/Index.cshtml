@@ -1,0 +1,238 @@
+﻿@section Styles
+{
+	<style>
+		.cardsOut {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh; /* Adjust height as needed */
+			position: relative;
+		}
+
+		.card {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			position: absolute;
+			
+		}
+
+		.card-body{
+			display: flex;
+			flex-direction: column;
+		}
+
+		.card a{
+			margin-left: auto;
+		}
+
+		.card img{
+			width: 100%;
+			height: auto;
+		}
+
+		.card0{
+			z-index: 0;
+		}
+
+		.card1{
+			z-index: 1;
+		}
+
+		.card2{
+			z-index: 2;
+		}
+
+		.carousel-indicators{
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: auto;
+			
+		}
+	</style>
+}
+
+
+<div class="banner padding-top padding-bottom bg_img" style="background-image: url(assets/images/banner/bg.jpg);">
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-lg-4 col-12">
+				<div class="banner__content wow fadeInUp" data-wow-duration="1.5s" data-wow-delay=".5s">
+					<div class="banner__title">
+						<h2>Find your ture love</h2>
+						<p>Serious dating with your perfect match is just a click away.</p>
+					</div>
+					<div class="banner__form">
+						<form action="#">							
+							<div class="banner__list">
+								<label>Looking for</label>
+								<div class="row">
+									<div class="col-6">
+										<label class="banner__inputlist" for="male2">
+											<input type="radio" id="male2" name="me2" class="male">
+											<span>Male</span>
+											<span class="banner__inputlist--icon"><i class="fa-solid fa-mars"></i></span>
+										</label>
+									</div>
+									<div class="col-6">
+										<label class="banner__inputlist" for="female2">
+											<input type="radio" id="female2" name="me2" class="female" checked>
+											<span>Female</span>
+											<span class="banner__inputlist--icon"><i class="fa-solid fa-venus"></i></span>
+										</label>
+									</div>
+								</div>
+							</div>
+							<div class="banner__list">
+								<label>Age</label>
+								<div class="row">
+									<div class="col-6">
+										<label>Min</label>
+										<div class="banner__inputlist">
+											<select>
+												<option value="18" selected>18</option>
+												<option value="19">19</option>
+												<option value="20">20</option>
+											</select>
+										</div>
+									</div>
+									<div class="col-6">
+										<label>Max</label>
+										<div class="banner__inputlist">
+											<select>
+												<option value="18">18</option>
+												<option value="19">19</option>
+												<option value="20">20</option>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="banner__list">
+								<label>Country</label>
+								<div class="row">
+									<div class="col-12">
+										<div class="banner__inputlist">
+											<select id="country" name="country">
+												<option value="Afganistan">Afghanistan</option>
+												<option value="Albania">Albania</option>
+												<option value="Algeria">Algeria</option>
+												<option value="American Samoa">American Samoa</option>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+							<button type="submit" class="default-btn reverse d-block"><span>Find Your Partner</span></button>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-8 col-12">
+				<div class="wow fadeInUp cardsOut" data-wow-duration="1.5s" data-wow-delay="1s">
+					<div class="card card0" style="width: 20rem;">
+						<div id="carouselExampleIndicators1" class="carousel slide">
+							<div class="carousel-indicators">
+								<button type="button" data-bs-target="#carouselExampleIndicators1" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+								<button type="button" data-bs-target="#carouselExampleIndicators1" data-bs-slide-to="1" aria-label="Slide 2"></button>
+								<button type="button" data-bs-target="#carouselExampleIndicators1" data-bs-slide-to="2" aria-label="Slide 3"></button>
+							</div>
+							<div class="carousel-inner">
+								<div class="carousel-item active">
+									<img src="@Url.Content(ViewBag.ImageUrlArr[0])" class="d-block w-100" alt="...">
+								</div>
+								<div class="carousel-item">
+									<img src="@Url.Content(ViewBag.ImageUrlArr[1])" class="d-block w-100" alt="...">
+								</div>
+								<div class="carousel-item">
+									<img src="@Url.Content(ViewBag.ImageUrlArr[2])" class="d-block w-100" alt="...">
+								</div>
+							</div>
+							<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators1" data-bs-slide="prev">
+								<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+								<span class="visually-hidden">Previous</span>
+							</button>
+							<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators1" data-bs-slide="next">
+								<span class="carousel-control-next-icon" aria-hidden="true"></span>
+								<span class="visually-hidden">Next</span>
+							</button>
+						</div>
+						<div class="card-body">
+							<h5 class="card-title">Card title1</h5>
+							<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+							<a href="#" class="btn btn-primary">Detail <i class="fa-solid fa-angle-down"></i></a>
+						</div>
+					</div>
+					<div class="card card1" style="width: 20rem;">
+						<div id="carouselExampleIndicators2" class="carousel slide">
+							<div class="carousel-indicators">
+								<button type="button" data-bs-target="#carouselExampleIndicators2" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+								<button type="button" data-bs-target="#carouselExampleIndicators2" data-bs-slide-to="1" aria-label="Slide 2"></button>
+								<button type="button" data-bs-target="#carouselExampleIndicators2" data-bs-slide-to="2" aria-label="Slide 3"></button>
+							</div>
+							<div class="carousel-inner">
+								<div class="carousel-item active">
+									<img src="@Url.Content(ViewBag.ImageUrlArr[0])" class="d-block w-100" alt="...">
+								</div>
+								<div class="carousel-item">
+									<img src="@Url.Content(ViewBag.ImageUrlArr[1])" class="d-block w-100" alt="...">
+								</div>
+								<div class="carousel-item">
+									<img src="@Url.Content(ViewBag.ImageUrlArr[2])" class="d-block w-100" alt="...">
+								</div>
+							</div>
+							<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators2" data-bs-slide="prev">
+								<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+								<span class="visually-hidden">Previous</span>
+							</button>
+							<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators2" data-bs-slide="next">
+								<span class="carousel-control-next-icon" aria-hidden="true"></span>
+								<span class="visually-hidden">Next</span>
+							</button>
+						</div>
+						<div class="card-body">
+							<h5 class="card-title">Card title2</h5>
+							<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+							<a href="#" class="btn btn-primary">Detail <i class="fa-solid fa-angle-down"></i></a>
+						</div>
+					</div>
+					<div class="card card2" style="width: 20rem;">
+						<div id="carouselExampleIndicators3" class="carousel slide">
+							<div class="carousel-indicators">
+								<button type="button" data-bs-target="#carouselExampleIndicators3" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+								<button type="button" data-bs-target="#carouselExampleIndicators3" data-bs-slide-to="1" aria-label="Slide 2"></button>
+								<button type="button" data-bs-target="#carouselExampleIndicators3" data-bs-slide-to="2" aria-label="Slide 3"></button>
+							</div>
+							<div class="carousel-inner">
+								<div class="carousel-item active">
+									<img src="@Url.Content(ViewBag.ImageUrlArr[0])" class="d-block w-100" alt="...">
+								</div>
+								<div class="carousel-item">
+									<img src="@Url.Content(ViewBag.ImageUrlArr[1])" class="d-block w-100" alt="...">
+								</div>
+								<div class="carousel-item">
+									<img src="@Url.Content(ViewBag.ImageUrlArr[2])" class="d-block w-100" alt="...">
+								</div>
+							</div>
+							<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators3" data-bs-slide="prev">
+								<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+								<span class="visually-hidden">Previous</span>
+							</button>
+							<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators3" data-bs-slide="next">
+								<span class="carousel-control-next-icon" aria-hidden="true"></span>
+								<span class="visually-hidden">Next</span>
+							</button>
+						</div>
+						<div class="card-body">
+							<h5 class="card-title">Card title3</h5>
+							<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+							<a href="#" class="btn btn-primary">Detail <i class="fa-solid fa-angle-down"></i></a>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
