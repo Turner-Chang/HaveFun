@@ -165,12 +165,16 @@
                     max.setFullYear(max.getFullYear() - 18);
                     return max.toISOString().split('T')[0];
                 },
-                isFormValid(){
-                    return (this.accountError == '' || this.passwordError == '' ||
-                        this.checkpasswordError == '' || this.nameError == '' ||
-                        this.birthDayError == '' || this.genderError == '' ||
-                        this.phoneNumberError == '' || this.addressError == '' ||
-                        this.profilePictureError == '');
+                isFormValid() {
+                    return (
+                        this.accountError == '' && this.passwordError == '' &&
+                        this.checkpasswordError == '' && this.nameError == '' &&
+                        this.birthDayError == '' && this.genderError == '' &&
+                        this.phoneNumberError == '' && this.addressError == '' &&
+                        this.profilePictureError == '' &&
+                        this.account != '' && this.password != '' &&
+                        this.name != '' && this.birthDay != ''
+                    );
                 }
             },
             watch: {
