@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- site favicon -->
-    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+	<link rel="icon" type="image/png" href="~/havefun_ai_icon.png">
     <!-- Place favicon.ico in the root directory -->
     <!-- All stylesheet and icons css  -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -52,23 +52,25 @@
 						<div class="navbar-nav mainmenu">
 							<ul>
 								<li >
-									<a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">首頁</a>
+									<a class="btn nav-link" asp-area="" asp-controller="Home" asp-action="Index">首頁</a>
 									
 								</li>
 								<li>
-									<a href="#">配對</a>
-									
-								</li>
-								
-									<a href="#">糾團</a>
+									<a class="btn" href="#">配對</a>
 									
 								</li>
 								<li>
-									<a href="#">好友清單</a>
+
+									<a class="btn" href="#">糾團</a>
+								</li>
 									
 								</li>
 								<li>
-									<a href="#">個人主頁</a>
+									<a class="btn" href="#">好友清單</a>
+									
+								</li>
+								<li>
+									<a class="btn" href="#">個人主頁</a>
 									
 								</li>
 						<teplate v-if="isLogin">
@@ -81,10 +83,10 @@
 						<template v-else>
 							<li>
 
-								<a  href="#">註冊</a>
+										<a class="btn" href="#">註冊</a>
 							</li>
 							<li>
-								<a  href="#">登入</a>
+										<a class="btn" href="#">登入</a>
 							</li>
 								
 						</template>
