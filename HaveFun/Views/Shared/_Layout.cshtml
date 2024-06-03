@@ -57,6 +57,7 @@
 								</li>
 								<li>
 									<a href="#">配對</a>
+									
 								</li>
 								<li>
 									<a href="#">糾團</a>
@@ -79,8 +80,7 @@
 						</teplate>
 						<template v-else>
 							<li>
-
-								<a  href="#">註冊</a>
+							<a asp-area="" asp-controller="Register" asp-action="Index">註冊</a>
 							</li>
 							<li>
 								<a  href="#">登入</a>
@@ -174,7 +174,7 @@
 		</div>
 	</footer>
     <!-- ================> Footer section end here <================== -->
-	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	<script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
 	<script>
 		const app = Vue.createApp({
 			data() {
