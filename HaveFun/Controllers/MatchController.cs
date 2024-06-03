@@ -13,11 +13,15 @@ namespace HaveFun.Controllers
 			_context = context;
 		}
 
-		public IActionResult Index()
+        [HttpGet]
+        public IActionResult Index()
+
 		{
+			UserInfo user = _context.UserInfos.FirstOrDefault(u => u.Id == 1);
+
 			string[] imageUrlArr = new string[] { "~/images/pic1.jpg", "~/images/pic2.jpg", "~/images/pic3.jpg" };
 			ViewBag.ImageUrlArr = imageUrlArr;
-			return View();
+			return View(user);
 		}
 	}
 }
