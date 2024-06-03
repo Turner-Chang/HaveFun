@@ -12,9 +12,14 @@ namespace HaveFun.Controllers
 		{
 			_context = context;
 		}
+<<<<<<< HEAD
 
 		[HttpGet]
 		public IActionResult Index()
+=======
+        [HttpGet]
+        public IActionResult Index()
+>>>>>>> TIM02Chatroomnew
 		{
 			UserInfo user = _context.UserInfos.FirstOrDefault(u => u.Id == 1);
 
