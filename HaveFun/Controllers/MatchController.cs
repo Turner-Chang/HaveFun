@@ -13,8 +13,9 @@ namespace HaveFun.Controllers
 			_context = context;
 		}
 
-		[HttpGet]
-		public IActionResult Index()
+        [HttpGet]
+        public IActionResult Index()
+
 		{
 			UserInfo user = _context.UserInfos.FirstOrDefault(u => u.Id == 1);
 
