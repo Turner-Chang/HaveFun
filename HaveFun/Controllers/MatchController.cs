@@ -12,8 +12,8 @@ namespace HaveFun.Controllers
 		{
 			_context = context;
 		}
-
-		public IActionResult Index()
+        [HttpGet]
+        public IActionResult Index()
 		{
 			string[] imageUrlArr = new string[] { "~/images/pic1.jpg", "~/images/pic2.jpg", "~/images/pic3.jpg" };
 			ViewBag.ImageUrlArr = imageUrlArr;
