@@ -35,9 +35,9 @@
 	<!-- ================> header section start here <================== -->
 	<header class="header" id="navbar">
 		<div class="header__bottom">
-			<div class="container">
+			<div class="container" id="app">
 				<nav class="navbar navbar-expand-lg">
-					<a class="navbar-brand" href="index.html"><img src="assets/images/logo/logo.png" alt="logo"></a>
+					<a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index"><img src="assets/images/logo/logo.png" alt="logo"></a>
 					<button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse"
 							data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
 							aria-label="Toggle navigation">
@@ -46,59 +46,42 @@
 					<div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
 						<div class="navbar-nav mainmenu">
 							<ul>
-								<li class="active">
-									<a href="#0">Home</a>
-									<ul>
-										<li><a href="index.html" class="active">Home Page One</a></li>
-										<li><a href="index-2.html">Home Page Two</a></li>
-										<li><a href="index-3.html">Home Page Three</a></li>
-									</ul>
+								<li >
+									<a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">首頁</a>
+									
 								</li>
 								<li>
-									<a href="#0">Pages</a>
-									<ul>
-										<li><a href="about.html">About Us</a></li>
-										<li><a href="membership.html">Membership</a></li>
-										<li><a href="comingsoon.html">comingsoon</a></li>
-										<li><a href="404.html">404</a></li>
-									</ul>
+									<a href="#">配對</a>
 								</li>
 								<li>
-									<a href="#0">Community</a>
-									<ul>
-										<li><a href="community.html">Community</a></li>
-										<li><a href="group.html">All Group</a></li>
-										<li><a href="members.html">All Members</a></li>
-										<li><a href="activity.html">Activity</a></li>
-
-									</ul>
+									<a href="#">糾團</a>
+									
 								</li>
 								<li>
-									<a href="#0">Shops</a>
-									<ul>
-										<li><a href="shop.html">Product</a></li>
-										<li><a href="shop-single.html">Product Details</a></li>
-										<li><a href="shop-cart.html">Product Cart</a></li>
-									</ul>
+									<a href="#">好友清單</a>
+									
 								</li>
 								<li>
-									<a href="#0">Blogs</a>
-									<ul>
-										<li><a href="blog.html">Blog</a></li>
-										<li><a href="blog-2.html">Blog Style Two</a></li>
-										<li><a href="blog-single.html">Blog Details</a></li>
-									</ul>
+									<a href="#">個人主頁</a>
+									
 								</li>
-								<li><a href="contact.html">contact</a></li>
+								
 							</ul>
 						</div>
-						<div class="header__more">
+						<teplate v-if="isLogin">
+							<img src="~/assets/images/member/profile/01.jpg" />
+							<p style="text-align:center;">{{user}}</p>
+						</teplate>
+						<template v-else>
+							<a href="#" >login</a>
+						</template>
+						@* <div class="header__more">
 							<button class="default-btn dropdown-toggle" type="button" id="moreoption" data-bs-toggle="dropdown" aria-expanded="false">My Account</button>
 							<ul class="dropdown-menu" aria-labelledby="moreoption">
 								<li><a class="dropdown-item" href="login.html">Log In</a></li>
 								<li><a class="dropdown-item" href="register.html">Sign Up</a></li>
 							</ul>
-						</div>
+						</div> *@
 					</div>
 				</nav>
 			</div>
@@ -246,8 +229,23 @@
 		</div>
 	</footer>
     <!-- ================> Footer section end here <================== -->
-
-
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	<script>
+		const app = Vue.createApp({
+			data() {
+				return {
+					isLogin:false,
+					user:"user1",
+				}
+			},
+			computed: {
+			},
+			methods: {
+			},
+			watch: {
+			},
+		}).mount("#app");
+	</script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 	<!-- All Needed JS -->
@@ -258,7 +256,7 @@
 	<script src="assets/js/wow.js"></script>
 	<script src="assets/js/lightcase.js"></script>
 	<script src="assets/js/jquery.countdown.min.js"></script>
-	<script src="assets/js/waypoints.min.js"></script>
+	<script src="assets/js/waypoints.min.js"></script>	
 	<script src="assets/js/plugins.js"></script>
 	<script src="assets/js/main.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
