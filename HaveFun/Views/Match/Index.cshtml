@@ -1,54 +1,76 @@
-﻿@section Styles
+﻿@model UserInfo;
+
+@section Styles
 {
 	<style>
 		.cardsOut {
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			height: 100vh; /* Adjust height as needed */
+			height: 100vh;
 			position: relative;
 		}
 
 		.card {
-			display: flex;
-			justify-content: center;
-			align-items: center;
+			display: flex;			
 			position: absolute;
-			
+			width: 20rem;
 		}
 
-		.card-body{
+		.card-text {
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+			-webkit-line-clamp: 3;
+		}
+
+		.card-body {
 			display: flex;
 			flex-direction: column;
 		}
 
-		.card a{
+		.carousel-inner {
+			height: 300px;
+		}
+
+		.buttons {
+			position: absolute;
+			bottom: 0;
+			z-index: 999;
+		}
+
+		.card a {
 			margin-left: auto;
 		}
 
-		.card img{
+		.card img {
 			width: 100%;
 			height: auto;
 		}
 
-		.card0{
+		.card0 {
 			z-index: 0;
 		}
 
-		.card1{
+		.card1 {
 			z-index: 1;
 		}
 
-		.card2{
+		.card2 {
 			z-index: 2;
 		}
 
-		.carousel-indicators{
+		.carousel-indicators {
 			position: absolute;
 			top: 0;
 			right: 0;
 			bottom: auto;
-			
+		}
+
+		.buttons .btn{
+			height: 60px;
+			width: 60px;
+			border-radius: 50%;
 		}
 	</style>
 }
@@ -64,7 +86,7 @@
 						<p>Serious dating with your perfect match is just a click away.</p>
 					</div>
 					<div class="banner__form">
-						<form action="#">							
+						<form action="#">
 							<div class="banner__list">
 								<label>Looking for</label>
 								<div class="row">
@@ -225,12 +247,22 @@
 							</button>
 						</div>
 						<div class="card-body">
-							<h5 class="card-title">Card title3</h5>
-							<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+							<h5 class="card-title">@Model.Name</h5>
+							<p class="card-text">
+								Some quick example text to build on the card title and make up the bulk of the card's content.
+								Some quick example text to build on the card title and make up the bulk of the card's content.
+								Some quick example text to build on the card title and make up the bulk of the card's content.
+								Some quick example text to build on the card title and make up the bulk of the card's content.
+							</p>
 							<a href="#" class="btn btn-primary">Detail <i class="fa-solid fa-angle-down"></i></a>
 						</div>
 					</div>
 
+					<div class="d-flex justify-content-around buttons" style="width: 500px;">
+						<button class="btn btn-secondary"><i class="fa-solid fa-xmark fa-shake"></i></button>
+						<button class="btn btn-light"><i class="fa-regular fa-star fa-bounce"></i></button>
+						<button class="btn btn-danger"><i class="fa-regular fa-heart fa-beat"></i></button>
+					</div>
 				</div>
 			</div>
 		</div>
