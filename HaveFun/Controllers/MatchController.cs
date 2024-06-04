@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HaveFun.Controllers
 {
-	[Route("/Match/{action=Index}")]
 	public class MatchController : Controller
 	{
 		private readonly HaveFunDbContext _context;
@@ -13,7 +12,6 @@ namespace HaveFun.Controllers
 			_context = context;
 		}
 
-		[HttpGet]
 		public IActionResult Index()
 		{
 			UserInfo user = _context.UserInfos.FirstOrDefault(u => u.Id == 1);
