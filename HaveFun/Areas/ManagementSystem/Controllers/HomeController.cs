@@ -9,5 +9,9 @@ namespace HaveFun.Areas.ManagementSystem.Controllers
         {
             return View();
         }
+        public IActionResult login() 
+        {
+            return View();
+        }
     }
 }
