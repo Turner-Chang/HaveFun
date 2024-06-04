@@ -185,8 +185,19 @@
                     } else if (!emailRex.test(nval)) {
                         this.accountError = '請輸入有效的電子郵件地址';
                     }else{
-                        this.accountError = '';
-                    }
+                        let hasAccount = true;
+                        fetch(`/api/Register/HasAccount/${nval}`)
+                            .then(resp => resp.json())
+                            .then(bool => {
+                                hasAccount = bool;
+                                if (hasAccount == false) {
+                                    this.accountError = '帳號已重複';
+                                } else {
+                                    this.accountError = '';
+                                }
+                            })
+                            .catch(err => { this.accountError = '無法檢查帳號'; });
+                            }
                 },
                 password(nval, oval) {
                     const passwordRex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{10,20}$/

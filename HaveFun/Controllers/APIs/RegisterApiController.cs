@@ -1,6 +1,7 @@
 ﻿using HaveFun.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data.Common;
 
 namespace HaveFun.Controllers.APIs
 {
@@ -17,10 +18,23 @@ namespace HaveFun.Controllers.APIs
 
         // 驗證帳號是否重複
         [HttpGet("{account}")]
-        public bool GetHasAccount(string account)
+        public bool HasAccount(string account)
         {
-            _dbContext
-            return true;
+            try
+            {
+                UserInfo user = _dbContext.UserInfos
+                        .Where(user => user.Account == account)
+                        .FirstOrDefault();
+                if (user == null)
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch (DbException)
+            {
+                return false;
+            }
         }
     }
 }
