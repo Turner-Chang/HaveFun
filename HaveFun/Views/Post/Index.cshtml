@@ -9,7 +9,6 @@
     <!-- site favicon -->
     <link rel="icon" type="image/png" href="assets/images/favicon.png">
     <!-- Place favicon.ico in the root directory -->
-
     <!-- All stylesheet and icons css  -->
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/animate.css">
@@ -38,48 +37,6 @@
 </head>
 
 <body>
-    <!-- 個人主頁nav bar -->
-    <div class="group__top">
-        <div class="container">
-            <div class="row">
-                <div class="col-xl-3 d-none d-xl-block"></div>
-                <div class="col-xl-9">
-                    <ul class="nav nav-tabs" id="myTab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="gt1-tab" data-bs-toggle="tab" data-bs-target="#gt1"
-                                type="button" role="tab" aria-controls="gt1" aria-selected="true"><i
-                                    class="fa-solid fa-house"></i> 個人資料</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="gt2-tab" data-bs-toggle="tab" data-bs-target="#gt2"
-                                type="button" role="tab" aria-controls="gt2" aria-selected="false"><i
-                                    class="fa-solid fa-users"></i>貼文</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="gt3-tab" data-bs-toggle="tab" data-bs-target="#gt3"
-                                type="button" role="tab" aria-controls="gt3" aria-selected="false"><i
-                                    class="fa-solid fa-video"></i>誰喜歡我</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="gt4-tab" data-bs-toggle="tab" data-bs-target="#gt4"
-                                type="button" role="tab" aria-controls="gt4" aria-selected="false"><i
-                                    class="fa-solid fa-users"></i>好友清單</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="gt5-tab" data-bs-toggle="tab" data-bs-target="#gt5"
-                                type="button" role="tab" aria-controls="gt5" aria-selected="false"><i
-                                    class="fa-solid fa-layer-group"></i>活動管理</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="gt6-tab" data-bs-toggle="tab" data-bs-target="#gt6"
-                                type="button" role="tab" aria-controls="gt6" aria-selected="false"><i
-                                    class="fa-solid fa-photo-film"></i>付款紀錄</button>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
     <!-- 發文form -->
     <div id="posts" class="col-xl-6 order-xl-1">
         <div class="group__bottom--left">
@@ -91,14 +48,14 @@
                                 <div class="media-wrapper">
                                     <div class="tab-content" id="myTabContent2">
                                         <div class="tab-pane fade show active" id="Personal" role="tabpanel"
-                                            aria-labelledby="Personal-tab">
+                                             aria-labelledby="Personal-tab">
                                             <div class="create-post mb-4">
                                                 <div class="lab-inner">
                                                     <div class="lab-thumb">
                                                         <div class="thumb-inner">
                                                             <div class="thumb-img">
                                                                 <img src="assets/images/member/profile/profile.jpg"
-                                                                    alt="datting thumb">
+                                                                     alt="datting thumb">
                                                             </div>
                                                             <div class="thumb-content">
                                                                 <h6><a href="#">userName</a></h6>
@@ -109,20 +66,20 @@
                                                         <form action="#" class="post-form">
                                                             <!-- 發文內容 -->
                                                             <input type="text" id="postContent"
-                                                                placeholder="說點什麼......">
+                                                                   placeholder="說點什麼......">
                                                             <div class="content-type">
                                                                 <ul class="content-list">
 
                                                                     <li class="image-video">
-                                                                        <div class="file-btn"><i
-                                                                                class="fa-regular fa-image"></i>Photo
+                                                                        <div class="file-btn">
+                                                                            <i class="fa-regular fa-image"></i>Photo
                                                                         </div>
                                                                         <input type="file">
                                                                     </li>
 
                                                                     <li class="post-submit">
                                                                         <input type="submit" value="發佈"
-                                                                            class="default-btn">
+                                                                               class="default-btn">
                                                                     </li>
                                                                 </ul>
                                                             </div>
@@ -138,16 +95,18 @@
                                                         <div class="post-author-inner">
                                                             <div class="author-thumb">
                                                                 <img src="assets/images/member/profile/profile.jpg"
-                                                                    alt="datting thumb">
+                                                                     alt="datting thumb">
                                                             </div>
                                                             <div class="author-details">
                                                                 <h6><a href="#">UserName</a></h6>
                                                                 <div class="userAction">
                                                                     18
-                                                                    <a href="#" id="like"><i
-                                                                            class="fa-regular fa-heart"></i></a>
-                                                                    <a href="#" id="more"><i
-                                                                            class="fa-solid fa-ellipsis"></i></a>
+                                                                    <a href="#" id="like">
+                                                                        <i class="fa-regular fa-heart"></i>
+                                                                    </a>
+                                                                    <a href="#" id="more">
+                                                                        <i class="fa-solid fa-ellipsis"></i>
+                                                                    </a>
                                                                 </div>
                                                             </div>
 
@@ -203,15 +162,18 @@
                                                                         </div>
                                                                     </div>
                                                                 </li>
-                                                                
+
                                                             </ul>
-                                                        </details></div>
+                                                        </details>
+                                                    </div>
                                                 </div>
                                             </div>
 
                                             <div class="text-center mt-5">
-                                                <a href="#" class="default-btn"><i class="fa-solid fa-spinner"></i> Load
-                                                    More</a>
+                                                <a href="#" class="default-btn">
+                                                    <i class="fa-solid fa-spinner"></i> Load
+                                                    More
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -221,7 +183,8 @@
                                             <ul class="media-upload">
                                                 <li class="upload-now">
                                                     <div class="custom-upload">
-                                                        <div class="file-btn"><i class="fa-solid fa-upload"></i> Upload
+                                                        <div class="file-btn">
+                                                            <i class="fa-solid fa-upload"></i> Upload
                                                         </div>
                                                         <input type="file">
                                                     </div>
@@ -229,9 +192,11 @@
                                             </ul>
                                             <div class="row">
                                                 <div class="col">
-                                                    <p><i class="icofont-worried"></i> Sorry !!
+                                                    <p>
+                                                        <i class="icofont-worried"></i> Sorry !!
                                                         There's no media found for the
-                                                        request !! </p>
+                                                        request !!
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
