@@ -1919,6 +1919,25 @@
                 reader.onload = function () {
                     imageData = this.result;  //變成二進位
                     var blob = new Blob([imageData], { type: "image/jpeg" });
+
+                    var formData = new FormData();
+                    formData.append('image', blob);
+
+                    // 發送 AJAX 請求到伺服器
+                    $.ajax({
+                        url: '您的伺服器端點', // 替換成您的後端處理圖片上傳的 URL
+                        type: 'POST',
+                        data: formData,
+                        processData: false, // 告訴 jQuery 不要處理發送的數據
+                        contentType: false, // 告訴 jQuery 不要設置內容類型
+                        success: function (response) {
+                            console.log('圖片上傳成功', response);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('上傳失敗', status, error);
+                        }
+                    });
+
                     var uriCreator = window.URL || window.webkitURL;
                     var imgUrl = uriCreator.createObjectURL(blob);
                     $("#imgPreview").attr("src", imgUrl);
@@ -1926,7 +1945,7 @@
                 reader.readAsArrayBuffer(file);
             }
             else {
-                alert("不支援的視覺辨識格式!");
+                alert("不支援的上傳格式!");
                 $("#btnAnalyze").prop("disabled", true);
             }
         });
