@@ -23,7 +23,7 @@
 </head>
 
 <body>
-	
+
 	<!-- ================> header section start here <================== -->
 
 
@@ -34,7 +34,6 @@
 		<!-- Sidebar Toggle-->
 		<button class="btn btn-link btn-sm order-0  me-0 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
 		<!-- Navbar Search-->
-		
 		<!-- Navbar-->
 		<span class=" navbar-brand"></span>
 		<span class=" navbar-brand"></span>
@@ -60,10 +59,13 @@
 			</nav>
 		</div>
 		<!-- ================> header section end here <================== -->
-		<div class="container">
-			<main role="main" class="pb-3">
-				@RenderBody()
-			</main>
+		<div id="layoutSidenav_content">
+
+			<div class="container-fluid px-4">
+				<main role="main" class="pb-3">
+					@RenderBody()
+				</main>
+			</div>
 		</div>
 	</div>
 
@@ -87,7 +89,7 @@
 		const app = Vue.createApp({
 			data() {
 				return {
-					islogin:false,
+					islogin: false,
 				}
 			},
 			computed: {
