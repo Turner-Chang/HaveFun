@@ -44,14 +44,27 @@ namespace HaveFun.Controllers.APIs
         {
             if (!ModelState.IsValid)
             {
-
+                return new JsonResult(
+                new
+                {
+                    success = false
+                }
+            );
             }
+            Console.WriteLine(userRegisterDTO.Account);
+            Console.WriteLine(userRegisterDTO.Password);
+            Console.WriteLine(userRegisterDTO.Name);
+            Console.WriteLine(userRegisterDTO.Address);
+            Console.WriteLine(userRegisterDTO.Gender);
+            Console.WriteLine(userRegisterDTO.BirthDay);
+            Console.WriteLine(userRegisterDTO.PhoneNumber);
+            Console.WriteLine(userRegisterDTO.ProfilePicture == null);
             return new JsonResult(
                 new
                 {
                     success = true
                 }
-                );
+            );
         }
     }
 }

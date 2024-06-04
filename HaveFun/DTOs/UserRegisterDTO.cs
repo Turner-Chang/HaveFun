@@ -37,6 +37,10 @@ namespace HaveFun.DTOs
         [Required(ErrorMessage = "請輸入性別")]
         public int Gender { get; set; }
 
+        // 生日
+        [Required(ErrorMessage = "請輸入出生年月日")]
+        public DateTime BirthDay { get; set; }
+
         // 圖片
         public IFormFile? ProfilePicture { get; set; }
     }
