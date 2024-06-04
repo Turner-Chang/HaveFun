@@ -25,141 +25,141 @@ namespace HaveFun.Controllers
             return View(await haveFunDbContext.ToListAsync());
         }
 
-        // GET: ChatRooms/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //// GET: ChatRooms/Details/5
+        //public async Task<IActionResult> Details(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var chatRoom = await _context.ChatRooms
-                .Include(c => c.Receiver)
-                .Include(c => c.Sender)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (chatRoom == null)
-            {
-                return NotFound();
-            }
+        //    var chatRoom = await _context.ChatRooms
+        //        .Include(c => c.Receiver)
+        //        .Include(c => c.Sender)
+        //        .FirstOrDefaultAsync(m => m.Id == id);
+        //    if (chatRoom == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(chatRoom);
-        }
+        //    return View(chatRoom);
+        //}
 
-        // GET: ChatRooms/Create
-        public IActionResult Create()
-        {
-            ViewData["User2Id"] = new SelectList(_context.UserInfos, "Id", "Account");
-            ViewData["User1Id"] = new SelectList(_context.UserInfos, "Id", "Account");
-            return View();
-        }
+        //// GET: ChatRooms/Create
+        //public IActionResult Create()
+        //{
+        //    ViewData["User2Id"] = new SelectList(_context.UserInfos, "Id", "Account");
+        //    ViewData["User1Id"] = new SelectList(_context.UserInfos, "Id", "Account");
+        //    return View();
+        //}
 
-        // POST: ChatRooms/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,MessageText,CreateTime,User1Id,User2Id,IsRead")] ChatRoom chatRoom)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(chatRoom);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["User2Id"] = new SelectList(_context.UserInfos, "Id", "Account", chatRoom.User2Id);
-            ViewData["User1Id"] = new SelectList(_context.UserInfos, "Id", "Account", chatRoom.User1Id);
-            return View(chatRoom);
-        }
+        //// POST: ChatRooms/Create
+        //// To protect from overposting attacks, enable the specific properties you want to bind to.
+        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("Id,MessageText,CreateTime,User1Id,User2Id,IsRead")] ChatRoom chatRoom)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Add(chatRoom);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    ViewData["User2Id"] = new SelectList(_context.UserInfos, "Id", "Account", chatRoom.User2Id);
+        //    ViewData["User1Id"] = new SelectList(_context.UserInfos, "Id", "Account", chatRoom.User1Id);
+        //    return View(chatRoom);
+        //}
 
-        // GET: ChatRooms/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //// GET: ChatRooms/Edit/5
+        //public async Task<IActionResult> Edit(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var chatRoom = await _context.ChatRooms.FindAsync(id);
-            if (chatRoom == null)
-            {
-                return NotFound();
-            }
-            ViewData["User2Id"] = new SelectList(_context.UserInfos, "Id", "Account", chatRoom.User2Id);
-            ViewData["User1Id"] = new SelectList(_context.UserInfos, "Id", "Account", chatRoom.User1Id);
-            return View(chatRoom);
-        }
+        //    var chatRoom = await _context.ChatRooms.FindAsync(id);
+        //    if (chatRoom == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    ViewData["User2Id"] = new SelectList(_context.UserInfos, "Id", "Account", chatRoom.User2Id);
+        //    ViewData["User1Id"] = new SelectList(_context.UserInfos, "Id", "Account", chatRoom.User1Id);
+        //    return View(chatRoom);
+        //}
 
-        // POST: ChatRooms/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,MessageText,CreateTime,User1Id,User2Id,IsRead")] ChatRoom chatRoom)
-        {
-            if (id != chatRoom.Id)
-            {
-                return NotFound();
-            }
+        //// POST: ChatRooms/Edit/5
+        //// To protect from overposting attacks, enable the specific properties you want to bind to.
+        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Edit(int id, [Bind("Id,MessageText,CreateTime,User1Id,User2Id,IsRead")] ChatRoom chatRoom)
+        //{
+        //    if (id != chatRoom.Id)
+        //    {
+        //        return NotFound();
+        //    }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(chatRoom);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ChatRoomExists(chatRoom.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["User2Id"] = new SelectList(_context.UserInfos, "Id", "Account", chatRoom.User2Id);
-            ViewData["User1Id"] = new SelectList(_context.UserInfos, "Id", "Account", chatRoom.User1Id);
-            return View(chatRoom);
-        }
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            _context.Update(chatRoom);
+        //            await _context.SaveChangesAsync();
+        //        }
+        //        catch (DbUpdateConcurrencyException)
+        //        {
+        //            if (!ChatRoomExists(chatRoom.Id))
+        //            {
+        //                return NotFound();
+        //            }
+        //            else
+        //            {
+        //                throw;
+        //            }
+        //        }
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    ViewData["User2Id"] = new SelectList(_context.UserInfos, "Id", "Account", chatRoom.User2Id);
+        //    ViewData["User1Id"] = new SelectList(_context.UserInfos, "Id", "Account", chatRoom.User1Id);
+        //    return View(chatRoom);
+        //}
 
-        // GET: ChatRooms/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //// GET: ChatRooms/Delete/5
+        //public async Task<IActionResult> Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var chatRoom = await _context.ChatRooms
-                .Include(c => c.Receiver)
-                .Include(c => c.Sender)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (chatRoom == null)
-            {
-                return NotFound();
-            }
+        //    var chatRoom = await _context.ChatRooms
+        //        .Include(c => c.Receiver)
+        //        .Include(c => c.Sender)
+        //        .FirstOrDefaultAsync(m => m.Id == id);
+        //    if (chatRoom == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(chatRoom);
-        }
+        //    return View(chatRoom);
+        //}
 
-        // POST: ChatRooms/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var chatRoom = await _context.ChatRooms.FindAsync(id);
-            if (chatRoom != null)
-            {
-                _context.ChatRooms.Remove(chatRoom);
-            }
+        //// POST: ChatRooms/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    var chatRoom = await _context.ChatRooms.FindAsync(id);
+        //    if (chatRoom != null)
+        //    {
+        //        _context.ChatRooms.Remove(chatRoom);
+        //    }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
 
         private bool ChatRoomExists(int id)
         {

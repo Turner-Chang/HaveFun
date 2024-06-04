@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- site favicon -->
-    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+	<link rel="icon" type="image/png" href="~/havefun_ai_icon.png">
     <!-- Place favicon.ico in the root directory -->
     <!-- All stylesheet and icons css  -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -53,35 +53,28 @@
 							<ul>
 								<li >
 									<a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">首頁</a>
-									
 								</li>
 								<li>
-									<a href="#">配對</a>
-									
+									<a class="nav-link" asp-area="" asp-controller="Match" asp-action="Index">配對</a>
 								</li>
-								
+								<li>
 									<a href="#">糾團</a>
-									
 								</li>
 								<li>
-									<a href="#">好友清單</a>
-									
+									<a class="nav-link" asp-area="" asp-controller="ChatRooms" asp-action="Index">好友聊天室</a>
 								</li>
 								<li>
 									<a href="#">個人主頁</a>
-									
 								</li>
 						<teplate v-if="isLogin">
 							<li>
-
 							<img src="~/assets/images/member/profile/01.jpg" />
 							<p style="text-align:center;">{{user}}</p>
 							</li>
 						</teplate>
 						<template v-else>
 							<li>
-
-								<a  href="#">註冊</a>
+							<a asp-area="" asp-controller="Register" asp-action="Index">註冊</a>
 							</li>
 							<li>
 								<a  href="#">登入</a>
