@@ -1,4 +1,5 @@
-﻿using HaveFun.Models;
+﻿using HaveFun.DTOs;
+using HaveFun.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.Common;
@@ -22,7 +23,7 @@ namespace HaveFun.Controllers.APIs
         {
             try
             {
-                UserInfo user = _dbContext.UserInfos
+                UserInfo? user = _dbContext.UserInfos
                         .Where(user => user.Account == account)
                         .FirstOrDefault();
                 if (user == null)
@@ -35,6 +36,22 @@ namespace HaveFun.Controllers.APIs
             {
                 return false;
             }
+        }
+
+        // 把前端資料處理並傳到資料庫
+        [HttpPost]
+        public JsonResult AddUser(UserRegisterDTO userRegisterDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+
+            }
+            return new JsonResult(
+                new
+                {
+                    success = true
+                }
+                );
         }
     }
 }
