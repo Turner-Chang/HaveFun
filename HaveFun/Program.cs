@@ -10,7 +10,7 @@ builder.Services.AddSwaggerGen();
 
 var connHaveFunStr = builder.Configuration.GetConnectionString("HaveFunDbContext");
 builder.Services.AddSqlServer<HaveFunDbContext>(connHaveFunStr);
-
+builder.Services.AddSignalR();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -31,7 +31,14 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllerRoute(
+    name: "Areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+
+app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+//²K¥[chathub
+app.MapHub<ChatHub>("/chathub");
 
 app.Run();
