@@ -28,7 +28,8 @@ namespace HaveFun.Models
 
 			[MaxLength(50)]
 			public string Introduction { get; set; }
-		
 
-	}
+			public byte[] Image { get; set; }
+
+    }
 }

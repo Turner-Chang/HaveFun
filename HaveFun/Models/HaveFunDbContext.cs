@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using HaveFun.Models;
 
 namespace HaveFun.Models
 {
@@ -15,7 +16,7 @@ namespace HaveFun.Models
 		public DbSet<Label> Labels { get; set; }
 
 		public DbSet<MemberLabel> MemberLabels { get; set; }
-		
+
 		public DbSet<UserInfo> UserInfos { get; set; }
 		public DbSet<Activity> Activities { get; set; }
 
@@ -44,6 +45,8 @@ namespace HaveFun.Models
 		public DbSet<PostReview> PostReviews { get; set; }
 
 		public DbSet<Transaction> Transactions { get; set; }
+
+		public DbSet<MemberProfile> MemberProfiles { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -115,5 +118,7 @@ namespace HaveFun.Models
 				.HasForeignKey(m => m.UserId)
 				.OnDelete(DeleteBehavior.Restrict);
 		}
+		public DbSet<HaveFun.Models.MemberProfile> MemberProfile { get; set; } = default!;
+
 	}
 }

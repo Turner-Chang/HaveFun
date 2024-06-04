@@ -1,4 +1,13 @@
-﻿<body>
+﻿@model IEnumerable<HaveFun.Models.MemberProfile>
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+
+<body>
     <!-- preloader start here -->
     <div class="preloader">
         <div class="preloader-inner">
@@ -56,7 +65,7 @@
                 </div>
             </div>
         </div>
-                <div class="group__bottom">
+        <div class="group__bottom">
             <div class="container">
                 <div class="row g-4">
                     <div class="col order-xl-1">
@@ -82,14 +91,14 @@
                                             </li>
                                         </ul>
                                     </div>
-                                    
+
                                     <div class="group__bottom--area group__bottom--memberactivity">
                                         <div class="group__bottom--body">
                                             <div class="group__bottom--allmedia">
                                                 <div class="media-wrapper">
                                                     <div class="tab-content" id="myTabContent2">
                                                         <div class="tab-pane fade show active" id="Personal"
-                                                            role="tabpanel" aria-labelledby="Personal-tab">
+                                                             role="tabpanel" aria-labelledby="Personal-tab">
                                                             <div class="create-post mb-4">
                                                                 <div class="lab-inner">
                                                                     <div class="lab-thumb">
@@ -149,12 +158,12 @@
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                    
+
                                                                     <div class="post-description">
                                                                         <p>Quickly deliver going forward methods info create empowerment before with client centered bandwdth Credibly pontficate interoperable leadership skills ands B2B data awesome Continually whiteboard ands B2B data awesome Continually whiteboard</p>
                                                                     </div>
                                                                 </div>
-                                                                
+
                                                                 <div class="post-meta">
                                                                     <div class="post-meta-top">
                                                                         <p><a href="#"><i class="fa-solid fa-thumbs-up"></i> <i class="fa-solid fa-heart"></i> <i class="fa-solid fa-face-laugh"></i> <span>Julia, Petrova and 306 like this</span></a></p>
@@ -169,7 +178,7 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            
+
                                                             <div class="post-item mb-4">
                                                                 <div class="post-content">
                                                                     <div class="post-author">
@@ -186,7 +195,7 @@
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                    
+
                                                                     <div class="post-description">
                                                                         <p>Quickly deliver going forward methods info create empowerment before with client centered bandwdth Credibly pontficate interoperable leadership skills ands B2B data awesome Continually whiteboard ands B2B data awesome Continually whiteboard</p>
                                                                         <div class="post-desc-img">
@@ -194,7 +203,7 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                
+
                                                                 <div class="post-meta">
                                                                     <div class="post-meta-top">
                                                                         <p><a href="#"><i class="fa-solid fa-thumbs-up"></i> <i class="fa-solid fa-heart"></i> <i class="fa-solid fa-face-laugh"></i><span>Julia, Petrova and 306 like this</span></a></p>
@@ -226,7 +235,7 @@
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                    
+
                                                                     <div class="post-description">
                                                                         <p>Quickly deliver going forward methods info create empowerment before with client centered bandwdth Credibly pontficate interoperable leadership skills ands B2B data awesome Continually whiteboard ands B2B data awesome Continually whiteboard</p>
                                                                         <div class="post-desc-img">
@@ -241,7 +250,7 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                
+
                                                                 <div class="post-meta">
                                                                     <div class="post-meta-top">
                                                                         <p><a href="#"><i class="fa-solid fa-thumbs-up"></i> <i class="fa-solid fa-heart"></i> <i class="fa-solid fa-face-laugh"></i><span>Julia, Petrova and 306 like this</span></a></p>
@@ -261,7 +270,7 @@
                                                                 <a href="#" class="default-btn"><span>Load More Post</span></a>
                                                             </div>
                                                         </div>
-    
+
                                                         <div class="tab-pane fade" id="Mentions" role="tabpanel" aria-labelledby="Mentions-tab">
                                                             <div class="post-item">
                                                                 <div class="post-content">
@@ -279,14 +288,14 @@
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                    
+
                                                                     <div class="post-description ps-5">
-                                                                        <p class="ms-5 ps-2">Hello @@< a href="#">Sara Hartmann</a></p>
+                                                                        <p class="ms-5 ps-2">Hello @@<a href="#">Sara Hartmann</a></p>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        
+
                                                         <div class="tab-pane fade" id="Favorites" role="tabpanel" aria-labelledby="Favorites-tab">
                                                             <div class="post-item mb-4">
                                                                 <div class="post-content p-4">
@@ -294,7 +303,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        
+
                                                         <div class="tab-pane fade" id="Friends" role="tabpanel" aria-labelledby="Friends-tab">
                                                             <div class="activity__item mb-3">
                                                                 <div class="activity__inner bg-white">
@@ -352,7 +361,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        
+
                                                         <div class="tab-pane fade" id="Groups" role="tabpanel" aria-labelledby="Groups-tab">
                                                             <div class="activity__item mb-3">
                                                                 <div class="activity__inner bg-white">
@@ -418,8 +427,10 @@
                                                     </li>
                                                     <li>
                                                         <p class="info-name">Address</p>
-                                                        <p class="info-details">Streop Rd, Peosur, Inphodux,
-                                                            USA.</p>
+                                                        <p class="info-details">
+                                                            Streop Rd, Peosur, Inphodux,
+                                                            USA.
+                                                        </p>
                                                     </li>
                                                 </ul>
 
@@ -523,12 +534,17 @@
 
                                 <div class="tab-pane fade" style="padding-bottom:10px;" id="gt3" role="tabpanel" aria-labelledby="gt3-tab">
                                     <div class="site">
-                                        <div class="info-card mb-3">
-                                            <div class="text-center">
-                                                <figure class="figure">
-                                                    <img src="..." class="figure-img img-fluid rounded border border-dark" alt="..." style="width: 350px; height: 350px;">
-                                                    <button class="btn default-btn">上傳</button>
-                                                </figure>
+                                        <div class="info-card mb-3">                
+
+                                            <div class="mb-3 text-center">
+                                                <label class="form-label">大頭貼上傳</label>
+                                                <input id="imgFile" type="file" class="form-control" accept="image/*" />
+                                            </div>
+                                            <div class="mb-3 text-center">
+												<img id="imgPreview" src="~/images/noooo.jpg"  style="width:640px;height:480px;" />
+                                            </div>
+                                            <div class="mb-3 text-center">
+                                                <button id="btnAnalyze" class="btn default-btn">上傳</button>
                                             </div>
 
                                             <div>
@@ -539,13 +555,13 @@
                                                     <span class="tag">標籤2</span>
                                                     <span class="tag">標籤3</span>
                                                     <!-- 更多標籤 -->
-                                                </div>                                                
+                                                </div>
                                             </div>
                                             <div id="MemberProfile">
                                                 <div>
                                                     <h6>自我介紹:</h6>
                                                     <div id="introduction" class="border border-dark" style="width:auto;height:250px">
-                                                         <p contenteditable="false">這裡是自我介紹...</p>
+                                                        <p contenteditable="false">這裡是自我介紹...</p>
                                                     </div>
                                                 </div>
                                                 <ul class="list-group list-group-flush">
@@ -555,8 +571,11 @@
                                                     <li class="list-group-item">職業: <span contenteditable="false">職業</span></li>
                                                     <li class="list-group-item">興趣: <span contenteditable="false">興趣</span></li>
                                                 </ul>
-                                                <button id="edit-button" type="button" class="btn btn-secondary">編輯</button>
+                                                
                                             </div>
+                                            <p class="text-center fs-3">
+                                                <button type="button" class="btn default-btn"><a asp-action="Create">編輯</a></button>
+                                            </p>
 
                                             <script>
                                                 // JavaScript 用於切換編輯模式和儲存資料
@@ -1482,7 +1501,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="text-center mt-5">
                                                     <a href="#" class="default-btn"><i class="fa-solid fa-spinner"></i> Load More</a>
                                                 </div>
@@ -1514,7 +1533,7 @@
                                                 </ul>
                                                 <div class="tab-content" id="myTabContent3">
                                                     <div class="tab-pane fade show active" id="all-media"
-                                                        role="tabpanel" aria-labelledby="all-media-tab">
+                                                         role="tabpanel" aria-labelledby="all-media-tab">
                                                         <div class="media-content">
                                                             <ul class="media-upload">
                                                                 <li class="upload-now">
@@ -1631,7 +1650,7 @@
                                                     <div class="tab-pane fade" id="album" role="tabpanel" aria-labelledby="album-tab">
                                                         <div class="media-content">
                                                             <ul class="media-upload">
-                                                                 <li class="upload-now">
+                                                                <li class="upload-now">
                                                                     <div class="custom-upload">
                                                                         <div class="file-btn"><i class="fa-solid fa-upload"></i> Upload</div>
                                                                         <input type="file">
@@ -1672,17 +1691,17 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            
+
                                                             <div class="text-center mt-5">
                                                                 <a href="#" class="default-btn"><i class="fa-solid fa-spinner"></i> Load More</a>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    
+
                                                     <div class="tab-pane fade" id="photos-media" role="tabpanel" aria-labelledby="photos-media-tab">
                                                         <div class="media-content">
                                                             <ul class="media-upload">
-                                                                 <li class="upload-now">
+                                                                <li class="upload-now">
                                                                     <div class="custom-upload">
                                                                         <div class="file-btn"><i class="fa-solid fa-upload"></i> Upload</div>
                                                                         <input type="file">
@@ -1723,17 +1742,17 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            
+
                                                             <div class="text-center mt-5">
                                                                 <a href="#" class="default-btn"><i class="fa-solid fa-spinner"></i> Load More</a>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    
+
                                                     <div class="tab-pane fade" id="video" role="tabpanel" aria-labelledby="video-tab">
                                                         <div class="media-content">
                                                             <ul class="media-upload">
-                                                                 <li class="upload-now">
+                                                                <li class="upload-now">
                                                                     <div class="custom-upload">
                                                                         <div class="file-btn"><i class="fa-solid fa-upload"></i> Upload</div>
                                                                         <input type="file">
@@ -1774,17 +1793,17 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            
+
                                                             <div class="text-center mt-5">
                                                                 <a href="#" class="default-btn"><i class="fa-solid fa-spinner"></i> Load More</a>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    
+
                                                     <div class="tab-pane fade" id="music" role="tabpanel" aria-labelledby="music-tab">
                                                         <div class="media-content">
                                                             <ul class="media-upload">
-                                                                 <li class="upload-now">
+                                                                <li class="upload-now">
                                                                     <div class="custom-upload">
                                                                         <div class="file-btn"><i class="fa-solid fa-upload"></i> Upload</div>
                                                                         <input type="file">
@@ -1793,9 +1812,11 @@
                                                             </ul>
                                                             <div class="row">
                                                                 <div class="col">
-                                                                    <p><i class="icofont-worried"></i> Sorry !!
+                                                                    <p>
+                                                                        <i class="icofont-worried"></i> Sorry !!
                                                                         There's no media found for the
-                                                                        request !! </p>
+                                                                        request !!
+                                                                    </p>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1813,18 +1834,103 @@
         </div>
     </div>
 
-        <!-- All Needed JS -->
-        <script src="assets/js/vendor/jquery-3.6.0.min.js"></script>
-        <script src="assets/js/vendor/modernizr-3.11.2.min.js"></script>
-        <script src="assets/js/isotope.pkgd.min.js"></script>
-        <script src="assets/js/swiper.min.js"></script>
-        <!-- <script src="assets/js/all.min.js"></script> -->
-        <script src="assets/js/wow.js"></script>
-        <script src="assets/js/counterup.js"></script>
-        <script src="assets/js/jquery.countdown.min.js"></script>
-        <script src="assets/js/lightcase.js"></script>
-        <script src="assets/js/waypoints.min.js"></script>
-        <script src="assets/js/vendor/bootstrap.bundle.min.js"></script>
-        <script src="assets/js/plugins.js"></script>
-        <script src="assets/js/main.js"></script>
-        </body>
+    <!-- All Needed JS -->
+    <script src="assets/js/vendor/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/vendor/modernizr-3.11.2.min.js"></script>
+    <script src="assets/js/isotope.pkgd.min.js"></script>
+    <script src="assets/js/swiper.min.js"></script>
+    <!-- <script src="assets/js/all.min.js"></script> -->
+    <script src="assets/js/wow.js"></script>
+    <script src="assets/js/counterup.js"></script>
+    <script src="assets/js/jquery.countdown.min.js"></script>
+    <script src="assets/js/lightcase.js"></script>
+    <script src="assets/js/waypoints.min.js"></script>
+    <script src="assets/js/vendor/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/plugins.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nickname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Location)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Birthday)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Occupation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Interests)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Introduction)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nickname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Location)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Birthday)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Occupation)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Interests)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Introduction)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.MemberProfileId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.MemberProfileId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.MemberProfileId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        var imageData = null;
+        $("#imgFile").on("change", function () {
+            //alert("change");
+            var allowType = "image.*";
+            var file = this.files[0];
+            if (file.type.match(allowType)) {
+                $("#btnAnalyze").prop("disabled", false);
+                var reader = new FileReader();
+                reader.onload = function () {
+                    imageData = this.result;  //變成二進位
+                    var blob = new Blob([imageData], { type: "image/jpeg" });
+                    var uriCreator = window.URL || window.webkitURL;
+                    var imgUrl = uriCreator.createObjectURL(blob);
+                    $("#imgPreview").attr("src", imgUrl);
+                };
+                reader.readAsArrayBuffer(file);
+            }
+            else {
+                alert("不支援的視覺辨識格式!");
+                $("#btnAnalyze").prop("disabled", true);
+            }
+        });
+
+    </script>
+}
+

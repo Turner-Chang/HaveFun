@@ -412,6 +412,52 @@ namespace HaveFun.Migrations
                     b.ToTable("MemberLabels");
                 });
 
+            modelBuilder.Entity("HaveFun.Models.MemberProfile", b =>
+                {
+                    b.Property<int>("MemberProfileId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MemberProfileId"));
+
+                    b.Property<DateTime>("Birthday")
+                        .HasColumnType("Date")
+                        .HasColumnName("BirthDay");
+
+                    b.Property<byte[]>("Image")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("Interests")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("Introduction")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("Nickname")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("Occupation")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.HasKey("MemberProfileId");
+
+                    b.ToTable("MemberProfile");
+                });
+
             modelBuilder.Entity("HaveFun.Models.Post", b =>
                 {
                     b.Property<int>("Id")
