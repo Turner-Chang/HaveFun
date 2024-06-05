@@ -1,7 +1,6 @@
 ﻿using HaveFun.Common;
 using HaveFun.DTOs;
 using HaveFun.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Mono.TextTemplating;
 using System.Data.Common;
