@@ -32,8 +32,4 @@
     <Folder Include="wwwroot\images\headshots\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="Controllers\PostsApiController.cs" />
-  </ItemGroup>
-
 </Project>
