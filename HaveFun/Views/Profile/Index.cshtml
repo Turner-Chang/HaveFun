@@ -1,0 +1,145 @@
+﻿<!-- preloader start here -->
+<div class="preloader">
+    <div class="preloader-inner">
+        <div class="preloader-icon">
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+</div>
+<!-- preloader ending here -->
+<!-- scrollToTop start here -->
+<a href="#" class="scrollToTop"><i class="fa-solid fa-angle-up"></i></a>
+<!-- scrollToTop ending here -->
+<!-- ================> Page Header section start here <================== -->
+<div class="pageheader bg_img" style="background-image: url(assets/images/bg-img/pageheader.jpg);">
+    <div class="container">
+        <div class="pageheader__content text-center">
+            <h2>Member Single Page</h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center mb-0">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item"><a href="#">Community</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Member Single</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- ================> Page Header section end here <================== -->
+<!-- ================> Group section end here <================== -->
+<div class="group group--single padding-bottom">
+    <div class="group__top">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-3 d-none d-xl-block"></div>
+                <div class="col-xl-9">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="gt1-tab" data-bs-toggle="tab" data-bs-target="#gt1" type="button" role="tab" aria-controls="gt1" aria-selected="true"><i class="fa-solid fa-house"></i> 個人貼文</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="gt2-tab" data-bs-toggle="tab" data-bs-target="#gt2" type="button" role="tab" aria-controls="gt2" aria-selected="false"><i class="fa-solid fa-users"></i> 個人資料 </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="gt3-tab" data-bs-toggle="tab" data-bs-target="#gt3" type="button" role="tab" aria-controls="gt3" aria-selected="false"><i class="fa-solid fa-video"></i> 活動管理 </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="gt4-tab" data-bs-toggle="tab" data-bs-target="#gt4" type="button" role="tab" aria-controls="gt4" aria-selected="false"><i class="fa-solid fa-users"></i> 好友清單 </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="gt5-tab" data-bs-toggle="tab" data-bs-target="#gt5" type="button" role="tab" aria-controls="gt5" aria-selected="false"><i class="fa-solid fa-layer-group"></i> 誰喜歡我 </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="gt6-tab" data-bs-toggle="tab" data-bs-target="#gt6" type="button" role="tab" aria-controls="gt6" aria-selected="false"><i class="fa-solid fa-photo-film"></i> 付款紀錄 </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="group__bottom">
+        <div class="container">
+            <div class="group__bottom--left">
+                <div class="tab-content" id="myTabContent">
+
+                    <div class="tab-pane fade show active" id="gt1" role="tabpanel" aria-labelledby="gt1-tab">
+                        @await Html.PartialAsync("_Post")
+                    </div>
+
+                    <div class="tab-pane fade" id="gt2" role="tabpanel" aria-labelledby="gt2-tab">
+                    </div>
+
+                    <div class="tab-pane fade" id="gt3" role="tabpanel" aria-labelledby="gt3-tab">
+                    </div>
+
+                    <div class="tab-pane fade" id="gt4" role="tabpanel" aria-labelledby="gt4-tab">
+                    </div>
+
+                    <div class="tab-pane fade" id="gt5" role="tabpanel" aria-labelledby="gt5-tab">
+                    </div>
+
+                    <div class="tab-pane fade" id="gt6" role="tabpanel" aria-labelledby="gt6-tab">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="group__bottom">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-xl-3 order-xl-0">
+                    <div class="group__bottom--center">
+                        <div class="story__item style2">
+                            <div class="story__inner">
+                                <div class="story__thumb position-relative">
+                                    <img src="~/assets/images/member/profile/profile.jpg" alt="dating thumb">
+                                </div>
+                                <div class="story__content px-0 pb-0">
+                                    <h4>William Smith</h4>
+                                    <div class="story__content--content mb-2 pb-3">
+                                        <p><i class="fa-solid fa-clock"></i> Active 3 Days Ago</p>
+                                    </div>
+                                    <p class="mb-2">Challenges are whats make lifes interesting and overcoming them is what makes life meaningful.</p>
+                                    <div class="story__content--author mt-3 pb-2">
+                                        <h6 class="d-block w-100 mb-3">William Smith Photos</h6>
+                                        <div class="row g-2">
+                                            <div class="col-4">
+                                                <a href="#groupmodal" data-rel="lightcase:callection"><img src="~/assets/images/member/profile/01.jpg" alt="dating thumb"></a>
+                                            </div>
+                                            <div class="col-4">
+                                                <a href="#groupmodal" data-rel="lightcase:callection"><img src="~/assets/images/member/profile/02.jpg" alt="dating thumb"></a>
+                                            </div>
+                                            <div class="col-4">
+                                                <a href="#groupmodal" data-rel="lightcase:callection"><img src="~/assets/images/member/profile/03.jpg" alt="dating thumb"></a>
+                                            </div>
+                                            <div class="col-4">
+                                                <a href="#groupmodal" data-rel="lightcase:callection"><img src="~/assets/images/member/profile/04.jpg" alt="dating thumb"></a>
+                                            </div>
+                                            <div class="col-4">
+                                                <a href="#groupmodal" data-rel="lightcase:callection"><img src="~/assets/images/member/profile/05.jpg" alt="dating thumb"></a>
+                                            </div>
+                                            <div class="col-4">
+                                                <a href="#groupmodal" data-rel="lightcase:callection"><img src="~/assets/images/member/profile/06.jpg" alt="dating thumb"></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+
+
+}

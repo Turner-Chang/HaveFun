@@ -97,7 +97,7 @@
             </div>
         </div>
     </div>
-    </div>
+    
 </section>
 <!-- ================> login section end here <================== -->
 
@@ -132,7 +132,10 @@
             methods: {
                 isImage(even){
                     let file = even.target.files[0];
-                    if (file.type.startsWith('image/')) {
+                    if (file == null){
+                        document.querySelector('.imgPreview').src = '';
+                        this.profilePictureError = '';
+                    }else if (file.type.startsWith('image/')) {
                         this.profilePictureError = '';
                         const reader = new FileReader();
                         reader.onload = (e) => {
@@ -155,7 +158,15 @@
                         formData.append('Address', this.address);
                         formData.append('Gender', this.gender);
                         formData.append('BirthDay', this.birthDay);
-                        formData.append('ProfilePicture', this.profilePicture);
+                        formData.append('PhoneNumber', this.phoneNumber);
+                        formData.append('ProfilePicture', this.ProfilePicture);
+                        fetch('/api/Register/AddUser', {
+                            method: 'Post',
+                            body: formData
+                        })
+                        .then(resp => resp.json())
+                        .then(result => console.log(result))
+                        .catch(err => alert('網頁出現錯誤'));
                     }
                 }
             },
@@ -185,8 +196,19 @@
                     } else if (!emailRex.test(nval)) {
                         this.accountError = '請輸入有效的電子郵件地址';
                     }else{
-                        this.accountError = '';
-                    }
+                        let hasAccount = true;
+                        fetch(`/api/Register/HasAccount/${nval}`)
+                            .then(resp => resp.json())
+                            .then(bool => {
+                                hasAccount = bool;
+                                if (hasAccount == false) {
+                                    this.accountError = '帳號已重複';
+                                } else {
+                                    this.accountError = '';
+                                }
+                            })
+                            .catch(err => { this.accountError = '無法檢查帳號'; });
+                            }
                 },
                 password(nval, oval) {
                     const passwordRex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{10,20}$/

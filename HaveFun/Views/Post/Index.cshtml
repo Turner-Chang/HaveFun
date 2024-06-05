@@ -1,0 +1,247 @@
+﻿<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>個人貼文</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- site favicon -->
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <!-- Place favicon.ico in the root directory -->
+    <!-- All stylesheet and icons css  -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/animate.css">
+    <link rel="stylesheet" href="assets/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/swiper.min.css">
+    <link rel="stylesheet" href="assets/css/lightcase.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        #posts {
+            padding-top: 20px;
+            width: 50%;
+            margin: 0 auto;
+        }
+
+        .author-details {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            justify-content: space-between;
+        }
+
+        .userAction a {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 發文form -->
+    <div id="posts" class="col-xl-6 order-xl-1">
+        <div class="group__bottom--left">
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="gt1" role="tabpanel" aria-labelledby="gt1-tab">
+                    <div class="group__bottom--area group__bottom--memberactivity">
+                        <div class="group__bottom--body">
+                            <div class="group__bottom--allmedia">
+                                <div class="media-wrapper">
+                                    <div class="tab-content" id="myTabContent2">
+                                        <div class="tab-pane fade show active" id="Personal" role="tabpanel"
+                                             aria-labelledby="Personal-tab">
+                                            <div class="create-post mb-4">
+                                                <div class="lab-inner">
+                                                    <div class="lab-thumb">
+                                                        <div class="thumb-inner">
+                                                            <div class="thumb-img">
+                                                                <img src="assets/images/member/profile/profile.jpg"
+                                                                     alt="datting thumb">
+                                                            </div>
+                                                            <div class="thumb-content">
+                                                                <h6><a href="#">userName</a></h6>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="lab-content">
+                                                        <form action="#" class="post-form">
+                                                            <!-- 發文內容 -->
+                                                            <input type="text" id="postContent"
+                                                                   placeholder="說點什麼......">
+                                                            <div class="content-type">
+                                                                <ul class="content-list">
+
+                                                                    <li class="image-video">
+                                                                        <div class="file-btn">
+                                                                            <i class="fa-regular fa-image"></i>Photo
+                                                                        </div>
+                                                                        <input type="file">
+                                                                    </li>
+
+                                                                    <li class="post-submit">
+                                                                        <input type="submit" value="發佈"
+                                                                               class="default-btn">
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- 貼文+留言 -->
+                                            <!-- 大頭貼 + 名字 -->
+                                            <div class="post-item mb-4">
+                                                <div class="post-content">
+                                                    <div class="post-author">
+                                                        <div class="post-author-inner">
+                                                            <div class="author-thumb">
+                                                                <img src="assets/images/member/profile/profile.jpg"
+                                                                     alt="datting thumb">
+                                                            </div>
+                                                            <div class="author-details">
+                                                                <h6><a href="#">UserName</a></h6>
+                                                                <div class="userAction">
+                                                                    18
+                                                                    <a href="#" id="like">
+                                                                        <i class="fa-regular fa-heart"></i>
+                                                                    </a>
+                                                                    <a href="#" id="more">
+                                                                        <i class="fa-solid fa-ellipsis"></i>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                    <!-- 貼文內容 -->
+                                                    <div class="post-description">
+                                                        <p>哈哈哈哈哈哈ㄏㄏ</p>
+                                                    </div>
+                                                </div>
+                                                <!-- 貼文時間 回覆數 分享鍵 -->
+                                                <div class="post-meta">
+                                                    <div class="post-meta-top">
+                                                        <p class="postTime">2024/03/01 14:30:46</p>
+                                                        <p><a href="#">136 Comments</a></p>
+                                                        <a href="#"><i class="fa-solid fa-share"></i> Share</a>
+                                                    </div>
+                                                    <div class="commentInput">
+                                                        <input class="form-control" type="text" placeholder="請輸入回覆...">
+                                                        <button>送出</button>
+                                                    </div>
+                                                    <div class="expandComments">
+                                                        <details>
+                                                            <summary>展開所有回覆</summary>
+                                                            <ul>
+                                                                <li>
+                                                                    <div class="top">
+                                                                        <div class="left member--style2">
+                                                                            <div class="member__thumb">
+                                                                                <img src="assets/images/member/home2/01.jpg" alt="member-img">
+                                                                                <span class="member__activity"></span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="right">
+                                                                            <span>UserName</span>
+                                                                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum veritatis porro adipisci sequi consequuntur voluptatem debitis, dolorem corporis commodi, labore exercitationem odio ut esse asperiores, voluptate eos nulla. Dolor, nam!</p>
+                                                                            <p class="postTime">2024/03/01 14:30:46</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                                <li>
+                                                                    <div class="top">
+                                                                        <div class="left member--style2">
+                                                                            <div class="member__thumb">
+                                                                                <img src="assets/images/member/home2/01.jpg" alt="member-img">
+                                                                                <span class="member__activity"></span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="right">
+                                                                            <span>UserName</span>
+                                                                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum veritatis porro adipisci sequi consequuntur voluptatem debitis, dolorem corporis commodi, labore exercitationem odio ut esse asperiores, voluptate eos nulla. Dolor, nam!</p>
+                                                                            <p class="postTime">2024/03/01 14:30:46</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+
+                                                            </ul>
+                                                        </details>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="text-center mt-5">
+                                                <a href="#" class="default-btn">
+                                                    <i class="fa-solid fa-spinner"></i> Load
+                                                    More
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="tab-pane fade" id="music" role="tabpanel" aria-labelledby="music-tab">
+                                        <div class="media-content">
+                                            <ul class="media-upload">
+                                                <li class="upload-now">
+                                                    <div class="custom-upload">
+                                                        <div class="file-btn">
+                                                            <i class="fa-solid fa-upload"></i> Upload
+                                                        </div>
+                                                        <input type="file">
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <p>
+                                                        <i class="icofont-worried"></i> Sorry !!
+                                                        There's no media found for the
+                                                        request !!
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- All Needed JS -->
+    <script src="assets/js/vendor/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/vendor/modernizr-3.11.2.min.js"></script>
+    <script src="assets/js/isotope.pkgd.min.js"></script>
+    <script src="assets/js/swiper.min.js"></script>
+    <!-- <script src="assets/js/all.min.js"></script> -->
+    <script src="assets/js/wow.js"></script>
+    <script src="assets/js/counterup.js"></script>
+    <script src="assets/js/jquery.countdown.min.js"></script>
+    <script src="assets/js/lightcase.js"></script>
+    <script src="assets/js/waypoints.min.js"></script>
+    <script src="assets/js/vendor/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/plugins.js"></script>
+    <script src="assets/js/main.js"></script>
+
+
+    <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
+    <script>
+        window.ga = function () {
+            ga.q.push(arguments)
+        };
+        ga.q = [];
+        ga.l = +new Date;
+        ga('create', 'UA-XXXXX-Y', 'auto');
+        ga('set', 'anonymizeIp', true);
+        ga('set', 'transport', 'beacon');
+        ga('send', 'pageview')
+    </script>
+    <script src="https://www.google-analytics.com/analytics.js" async></script>
+</body>
+
+</html>
