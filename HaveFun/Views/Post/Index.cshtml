@@ -83,7 +83,7 @@
                                                 </div>
                                                 <!-- 貼文+留言 -->
                                                 <!-- 大頭貼 + 名字 -->
-                                                <div class="post-item mb-4">
+                                                <div v-for="post in posts" class="post-item mb-4">
                                                     <div class="post-content">
                                                         <div class="post-author">
                                                             <div class="post-author-inner">
@@ -108,13 +108,13 @@
                                                         </div>
                                                         <!-- 貼文內容 -->
                                                         <div class="post-description">
-                                                            <p>哈哈哈哈哈哈ㄏㄏ</p>
+                                                            <p>{{post.contents}}</p>
                                                         </div>
                                                     </div>
                                                     <!-- 貼文時間 回覆數 分享鍵 -->
                                                     <div class="post-meta">
                                                         <div class="post-meta-top">
-                                                            <p class="postTime">2024/03/01 14:30:46</p>
+                                                            <p class="postTime">{{post.time}}</p>
                                                             <p><a href="#">2 Comments</a></p>
                                                             <a href="#"><i class="fa-solid fa-share"></i> Share</a>
                                                         </div>
@@ -237,14 +237,24 @@
         const postPlatform = Vue.createApp({
             data() {
                 return {
-
+                    baseAddress: "https://localhost:7152",
+                    posts: [],
                 }
             },
             methods: {
+                getPostsList() {
+                    fetch(`${this.baseAddress}/api/PostsApi`)
+                        .then(res => res.json())
+                        .then(data => {this.posts = data})
+                        .catch(error => {console.log('fetch posts failed!')});
+                },
                 clickLike() {
                     event.target.classList.toggle('fa-solid');
                 },
-            }
+            },
+            mounted() {
+                this.getPostsList();
+            },
         })
         .mount("#postPlatform");
     </script>
