@@ -3,7 +3,7 @@ using HaveFun.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HaveFun.Controllers
+namespace HaveFun.Controllers.APIs
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -35,12 +35,12 @@ namespace HaveFun.Controllers
                 Time = DateTime.UtcNow,
                 Status = 0
             };
-            if(postDTO.Pictures != null)
+            if (postDTO.Pictures != null)
             {
                 using (BinaryReader br = new BinaryReader(postDTO.Pictures.OpenReadStream()))
                 {
-                   // p.Pictures = br.ReadBytes((int)postDTO.Pictures.Length);
-                   //byte[]最後要轉成存放位置的string @@
+                    // p.Pictures = br.ReadBytes((int)postDTO.Pictures.Length);
+                    //byte[]最後要轉成存放位置的string @@
                 }
             }
             _context.Posts.Add(p);
