@@ -11,7 +11,6 @@ namespace HaveFun.DTOs
 
         // 密碼
         [Required(ErrorMessage = "密碼不可為空")]
-        [StringLength(maximumLength: 20, MinimumLength = 10)]
         // 設定密碼一定要有一個大寫英文跟一個小寫英文，然後至少10字
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{10,20}$", 
             ErrorMessage = "密碼必須包含至少一個大寫字母、一個小寫字母和一個數字，且長度在 10 到 20 個字符之間")]
@@ -35,7 +34,7 @@ namespace HaveFun.DTOs
 
         // 性別
         [Required(ErrorMessage = "請輸入性別")]
-        [Range(0,1)]
+        [Range(0,1,ErrorMessage ="請輸入正確的性別")]
         public int? Gender { get; set; }
 
         // 生日
