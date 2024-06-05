@@ -97,7 +97,7 @@
             </div>
         </div>
     </div>
-    </div>
+    
 </section>
 <!-- ================> login section end here <================== -->
 
@@ -132,7 +132,10 @@
             methods: {
                 isImage(even){
                     let file = even.target.files[0];
-                    if (file.type.startsWith('image/')) {
+                    if (file == null){
+                        document.querySelector('.imgPreview').src = '';
+                        this.profilePictureError = '';
+                    }else if (file.type.startsWith('image/')) {
                         this.profilePictureError = '';
                         const reader = new FileReader();
                         reader.onload = (e) => {
@@ -155,8 +158,15 @@
                         formData.append('Address', this.address);
                         formData.append('Gender', this.gender);
                         formData.append('BirthDay', this.birthDay);
-                        formData.append('ProfilePicture', this.profilePicture);
-
+                        formData.append('PhoneNumber', this.phoneNumber);
+                        formData.append('ProfilePicture', this.ProfilePicture);
+                        fetch('/api/Register/AddUser', {
+                            method: 'Post',
+                            body: formData
+                        })
+                        .then(resp => resp.json())
+                        .then(result => console.log(result))
+                        .catch(err => alert('網頁出現錯誤'));
                     }
                 }
             },
