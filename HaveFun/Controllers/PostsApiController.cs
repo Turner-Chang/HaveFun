@@ -1,4 +1,5 @@
-﻿using HaveFun.Models;
+﻿using HaveFun.DTOs;
+using HaveFun.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,18 +22,30 @@ namespace HaveFun.Controllers
         {
             return _context.Posts;
         }
-        
+
         //新增貼文
+        // POST: api/PostsApi
         [HttpPost]
         public async Task<string> CreatePost(PostDTO postDTO)
         {
-            Post p = new Post();
+            Post p = new Post
             {
-                Id = postDTO.Id,
-                Content = postDTO.Content,
-                Time = DateTime.Now,
-                status = postDTO.Status
+                UserId = postDTO.UserId,
+                Contents = postDTO.Contents,
+                Time = DateTime.UtcNow,
+                Status = 0
+            };
+            if(postDTO.Pictures != null)
+            {
+                using (BinaryReader br = new BinaryReader(postDTO.Pictures.OpenReadStream()))
+                {
+                   // p.Pictures = br.ReadBytes((int)postDTO.Pictures.Length);
+                   //byte[]最後要轉成存放位置的string @@
+                }
             }
+            _context.Posts.Add(p);
+            await _context.SaveChangesAsync();
+            return "新增貼文成功";
         }
     }
 }
