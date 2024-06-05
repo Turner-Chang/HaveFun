@@ -66,13 +66,21 @@
                         <div class="group__bottom--left">
                             <div class="tab-content" id="myTabContent">
 
+                               
+
                                 @await Html.PartialAsync("_Post")
 
+                            
                                 @await Html.PartialAsync("_UserInfo")
+
+                                @await Html.PartialAsync("_FriendList")
 
                                 @* @await Html.PartialAsync("_WhoLikes") *@
                             <partial name="_WhoLikes" />
+                            
 
+                            
+                            
                                 <!-- <div class="tab-pane fade show active" id="gt1" role="tabpanel" aria-labelledby="gt1-tab">
                                     <div class="group__bottom--head group__bottom--activity bg-white mb-4 border-0">
                                         <ul class="nav nav-tabs" id="myTab2" role="tablist">
