@@ -1,6 +1,7 @@
 ﻿using HaveFun.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace HaveFun.Controllers.APIs
 {
@@ -23,11 +24,33 @@ namespace HaveFun.Controllers.APIs
 
         }
 
+        public class Member
+        {
+            public string Name { get; set; }
+            public int Age { get; set; }
+            public string Gender { get; set; }
+            public string Image { get; set; }
+            public bool Online { get; set; }
+        }
+
+
         [HttpGet]
         // GET: api/Profile/GetWhoLike
         public async Task<string> GetWhoLike()
         {
-            return "GetWhoLike呼叫成功";
+            var members = new List<Member>{
+            new Member
+            {
+                Name = "Michele Storm",
+                Age = 32,
+                Gender = "male",
+                Image = "assets/images/member/profile/profile.jpg",
+                Online = true
+            },
+        };
+            //return "GetWhoLike呼叫成功";
+            var json = JsonSerializer.Serialize(members);
+            return json;
         }
     }
 }

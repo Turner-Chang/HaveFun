@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HaveFun.Controllers.APIs
 {
-    [Route("api/[controller]")]
+    [Route("api/Posts/[action]")]
     [ApiController]
     public class PostsApiController : ControllerBase
     {
