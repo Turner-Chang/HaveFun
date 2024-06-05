@@ -2,6 +2,7 @@
 using HaveFun.DTOs;
 using HaveFun.Models;
 using Microsoft.AspNetCore.Mvc;
+using Mono.TextTemplating;
 using System.Data.Common;
 
 namespace HaveFun.Controllers.APIs
