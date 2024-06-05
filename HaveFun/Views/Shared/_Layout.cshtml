@@ -31,9 +31,11 @@
 		</div>
 	</div>
 	<!-- preloader ending here -->
+
 	<!-- scrollToTop start here -->
 	<a href="#" class="scrollToTop"><i class="fa-solid fa-angle-up"></i></a>
 	<!-- scrollToTop ending here -->
+
 	<!-- ================> header section start here <================== -->
 	<header class="header" id="navbar">
 		<div class="header__bottom">
@@ -52,6 +54,7 @@
 						<div class="navbar-nav mainmenu">
 							<ul>
 								<li >
+
 									<a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">首頁</a>
 								</li>
 								<li>
@@ -64,8 +67,43 @@
 									<a class="nav-link" asp-area="" asp-controller="ChatRooms" asp-action="Index">好友聊天室</a>
 								</li>
 								<li>
+<<<<<<< HEAD
+<<<<<<< HEAD
+									<a class="nav-link" asp-area="" asp-controller="Profile" asp-action="Index">個人主頁</a>
+=======
 									<a href="#">個人主頁</a>
+=======
+									<a class="btn nav-link" asp-area="" asp-controller="Home" asp-action="Index">首頁</a>
+									
 								</li>
+								<li>
+									<a class="btn" href="#">配對</a>
+									
+								</li>
+								<li>
+
+									<a class="btn" href="#">糾團</a>
+								</li>
+									
+								</li>
+								<li>
+									<a class="btn" href="#">好友清單</a>
+									
+								</li>
+								<li>
+									<a class="btn" href="#">個人主頁</a>
+									
+>>>>>>> origin/後台/layout
+>>>>>>> main
+								</li>
+=======
+									<a class="nav-link" asp-area="" asp-controller="POST" asp-action="Index">POST</a>
+								</li>
+								<li>
+									<a class="btn" href="#">好友清單</a>
+									</li>
+								
+>>>>>>> TIM02CHAT
 						<teplate v-if="isLogin">
 							<li>
 							<img src="~/assets/images/member/profile/01.jpg" />
@@ -74,10 +112,13 @@
 						</teplate>
 						<template v-else>
 							<li>
+
 							<a asp-area="" asp-controller="Register" asp-action="Index">註冊</a>
+
+
 							</li>
 							<li>
-								<a  href="#">登入</a>
+										<a class="btn" href="#">登入</a>
 							</li>
 								
 						</template>
@@ -165,6 +206,7 @@
 					<h5 style="color:antiquewhite;" class="mb-0">TIM101 C#全端班專題</h5>
 				</div>
 			</div>
+		</div>
 		</div>
 	</footer>
     <!-- ================> Footer section end here <================== -->

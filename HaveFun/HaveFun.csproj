@@ -24,6 +24,7 @@
   <ItemGroup>
     <Folder Include="Areas\ManagementSystem\Data\" />
     <Folder Include="Areas\ManagementSystem\Models\" />
+    <Folder Include="wwwroot\images\headshots\" />
   </ItemGroup>
 
 </Project>
