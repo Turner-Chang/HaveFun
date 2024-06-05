@@ -7,11 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-<<<<<<< HEAD
-    <Compile Remove="Controllers\PostDTO.cs" />
-=======
-    <Compile Remove="Controllers\PostsApiController.cs" />
->>>>>>> origin/TIM07/register
+
+
   </ItemGroup>
 
   <ItemGroup>
