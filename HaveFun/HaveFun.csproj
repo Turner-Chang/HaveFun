@@ -7,7 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+<<<<<<< HEAD
     <Compile Remove="Controllers\PostDTO.cs" />
+=======
+    <Compile Remove="Controllers\PostsApiController.cs" />
+>>>>>>> origin/TIM07/register
   </ItemGroup>
 
   <ItemGroup>
@@ -29,6 +33,10 @@
     <Folder Include="Areas\ManagementSystem\Data\" />
     <Folder Include="Areas\ManagementSystem\Models\" />
     <Folder Include="wwwroot\images\headshots\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Controllers\PostsApiController.cs" />
   </ItemGroup>
 
 </Project>
