@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HaveFun.Controllers.APIs
 {
-    [Route("api/[controller]")]
+    [Route("api/Post/[action]")]
     [ApiController]
     public class PostsApiController : ControllerBase
     {
@@ -17,7 +17,7 @@ namespace HaveFun.Controllers.APIs
             _context = context;
         }
         //顯示貼文
-        // GET : api/PostsApi
+        // GET : api/Post/GetPosts
         [HttpGet]
         public async Task<IQueryable<Post>> GetPosts()
         {
@@ -25,7 +25,7 @@ namespace HaveFun.Controllers.APIs
         }
 
         //新增貼文 //未完成
-        // POST: api/PostsApi
+        // POST: api/Post/CreatePost
         [HttpPost]
         public async Task<string> CreatePost(PostDTO postDTO)
         {

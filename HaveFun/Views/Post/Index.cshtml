@@ -243,7 +243,7 @@
             },
             methods: {
                 getPostsList() {
-                    fetch(`${this.baseAddress}/api/PostsApi`)
+                    fetch(`${this.baseAddress}/api/Post/GetPosts`)
                         .then(res => res.json())
                         .then(data => {this.posts = data})
                         .catch(error => {console.log('fetch posts failed!')});
