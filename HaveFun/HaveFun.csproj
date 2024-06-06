@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\PostsApiController.cs" />
+
+
   </ItemGroup>
 
   <ItemGroup>
@@ -33,10 +34,6 @@
     <Folder Include="Areas\ManagementSystem\Data\" />
     <Folder Include="Areas\ManagementSystem\Models\" />
     <Folder Include="wwwroot\images\headshots\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Controllers\PostsApiController.cs" />
   </ItemGroup>
 
 </Project>

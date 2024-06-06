@@ -22,17 +22,17 @@ namespace HaveFun.Controllers
             return _context.Posts;
         }
         
-        //新增貼文
-        [HttpPost]
-        public async Task<string> CreatePost(PostDTO postDTO)
-        {
-            Post p = new Post();
-            {
-                Id = postDTO.Id,
-                Content = postDTO.Content,
-                Time = DateTime.Now,
-                status = postDTO.Status
-            }
-        }
+        ////新增貼文
+        //[HttpPost]
+        //public async Task<string> CreatePost(PostDTO postDTO)
+        //{
+        //    Post p = new Post();
+        //    {
+        //        Id = postDTO.Id,
+        //        Content = postDTO.Content,
+        //        Time = DateTime.Now,
+        //        status = postDTO.Status
+        //    }
+        //}
     }
 }
