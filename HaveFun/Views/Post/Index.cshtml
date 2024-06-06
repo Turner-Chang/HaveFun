@@ -6,202 +6,203 @@
             width: 50%;
             margin: 0 auto;
         }
-
         .author-details {
             display: flex;
             align-items: center;
             flex-grow: 1;
             justify-content: space-between;
         }
-
         .userAction a {
             margin-left: 10px;
         }
 
+        .post-footer{
+            display: flex;
+            align-items:flex-end;
+            margin-top: 12px;
+            gap: 20px;
+        }
+        .commentInput{
+            padding-bottom:0;
+        }
         #commentText {
             width: 80%;
         }
-
         #commentSubmit {
             padding: 0;
             width: 15%;
+        }
+        .time{
+            font-size: 12px;
+            color: #888888;
+        }
+        summary {
+            list-style: none;
+            margin: 5px;
+            text-align:center;
         }
     </style>
 }
 
 <body>
-    <div id="postPlatform">
-        <!-- 發文form -->
-        <div id="posts" class="col-xl-6 order-xl-1">
-            <div class="group__bottom--left">
-                <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade show active" id="gt1" role="tabpanel" aria-labelledby="gt1-tab">
-                        <div class="group__bottom--area group__bottom--memberactivity">
-                            <div class="group__bottom--body">
-                                <div class="group__bottom--allmedia">
-                                    <div class="media-wrapper">
-                                        <div class="tab-content" id="myTabContent2">
-                                            <div class="tab-pane fade show active" id="Personal" role="tabpanel"
-                                                 aria-labelledby="Personal-tab">
-                                                <div class="create-post mb-4">
-                                                    <div class="lab-inner">
-                                                        <div class="lab-thumb">
-                                                            <div class="thumb-inner">
-                                                                <div class="thumb-img">
-                                                                    <img src="assets/images/member/profile/profile.jpg"
-                                                                         alt="datting thumb">
-                                                                </div>
-                                                                <div class="thumb-content">
-                                                                    <h6><a href="#">userName</a></h6>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="lab-content">
-                                                            <form action="#" class="post-form">
-                                                                <!-- 發文內容 -->
-                                                                <input type="text" id="postContent"
-                                                                       placeholder="說點什麼......">
-                                                                <div class="content-type">
-                                                                    <ul class="content-list">
-
-                                                                        <li class="image-video">
-                                                                            <div class="file-btn">
-                                                                                <i class="fa-regular fa-image"></i>Photo
-                                                                            </div>
-                                                                            <input type="file">
-                                                                        </li>
-
-                                                                        <li class="post-submit">
-                                                                            <input type="submit" value="發佈"
-                                                                                   class="default-btn">
-                                                                        </li>
-                                                                    </ul>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <!-- 貼文+留言 -->
-                                                <!-- 大頭貼 + 名字 -->
-                                                <div v-for="post in posts" class="post-item mb-4">
-                                                    <div class="post-content">
-                                                        <div class="post-author">
-                                                            <div class="post-author-inner">
-                                                                <div class="author-thumb">
-                                                                    <img src="assets/images/member/profile/profile.jpg"
-                                                                         alt="datting thumb">
-                                                                </div>
-                                                                <div class="author-details">
-                                                                    <h6><a href="#">UserName</a></h6>
-                                                                    <div class="userAction">
-                                                                        18
-                                                                        <a href="#" id="like">
-                                                                            <i id="heart" @@click="clickLike" class="fa-regular fa-heart"></i>
-                                                                        </a>
-                                                                        <a href="#" id="more">
-                                                                            <i class="fa-solid fa-ellipsis"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-
-                                                            </div>
-                                                        </div>
-                                                        <!-- 貼文內容 -->
-                                                        <div class="post-description">
-                                                            <p>{{post.contents}}</p>
-                                                        </div>
-                                                    </div>
-                                                    <!-- 貼文時間 回覆數 分享鍵 -->
-                                                    <div class="post-meta">
-                                                        <div class="post-meta-top">
-                                                            <p class="postTime">{{post.time}}</p>
-                                                            <p><a href="#">2 Comments</a></p>
-                                                            <a href="#"><i class="fa-solid fa-share"></i> Share</a>
-                                                        </div>
-                                                        <div class="commentInput post-meta-top">
-                                                            <input id="commentText" class="form-control" type="text" placeholder="請輸入回覆...">
-                                                            <button id="commentSubmit" class="default-btn">送出</button>
-                                                        </div>
-                                                        <div class="expandComments">
-                                                            <details>
-                                                                <summary>展開所有回覆</summary>
-                                                                <ul class="post-meta-bottom">
-                                                                    <li>
-                                                                        <div class="top">
-                                                                            <div class="left member--style2">
-                                                                                <div class="member__thumb">
-                                                                                    <img src="assets/images/member/home2/01.jpg" alt="member-img">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="right">
-                                                                                <span>UserName</span>
-                                                                                <p>我是一樓!</p>
-                                                                                <p class="postTime">2024/03/01 14:30:46</p>
-                                                                            </div>
-                                                                        </div>
-                                                                    </li>
-                                                                    <li>
-                                                                        <div class="top">
-                                                                            <div class="left member--style2">
-                                                                                <div class="member__thumb">
-                                                                                    <img src="assets/images/member/home2/01.jpg" alt="member-img">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="right">
-                                                                                <span>UserName</span>
-                                                                                <p>我是二樓!</p>
-                                                                                <p class="postTime">2024/03/01 14:30:46</p>
-                                                                            </div>
-                                                                        </div>
-                                                                    </li>
-
-                                                                </ul>
-                                                            </details>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="text-center mt-5">
-                                                    <a href="#" class="default-btn">
-                                                        <i class="fa-solid fa-spinner"></i> Load
-                                                        More
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="tab-pane fade" id="music" role="tabpanel" aria-labelledby="music-tab">
-                                            <div class="media-content">
-                                                <ul class="media-upload">
-                                                    <li class="upload-now">
-                                                        <div class="custom-upload">
-                                                            <div class="file-btn">
-                                                                <i class="fa-solid fa-upload"></i> Upload
-                                                            </div>
-                                                            <input type="file">
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                                <div class="row">
-                                                    <div class="col">
-                                                        <p>
-                                                            <i class="icofont-worried"></i> Sorry !!
-                                                            There's no media found for the
-                                                            request !!
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+<div id="postPlatform">
+<!-- 發文form -->
+<div id="posts" class="col-xl-6 order-xl-1">
+<div class="group__bottom--left">
+<div class="tab-content" id="myTabContent">
+<div class="tab-pane fade show active" id="gt1" role="tabpanel" aria-labelledby="gt1-tab">
+<div class="group__bottom--area group__bottom--memberactivity">
+<div class="group__bottom--body">
+    <div class="group__bottom--allmedia">
+        <div class="media-wrapper">
+            <div class="tab-content" id="myTabContent2">
+                <div class="tab-pane fade show active" id="Personal" role="tabpanel"
+                        aria-labelledby="Personal-tab">
+                    <div class="create-post mb-4">
+                        <div class="lab-inner">
+                            <div class="lab-thumb">
+                                <div class="thumb-inner">
+                                    <div class="thumb-img">
+                                        <img src="assets/images/member/profile/profile.jpg"
+                                                alt="datting thumb">
+                                    </div>
+                                    <div class="thumb-content">
+                                        <h6><a href="#">userName</a></h6>
                                     </div>
                                 </div>
                             </div>
+                            <div class="lab-content">
+                                <form action="#" class="post-form">
+                                    <!-- 發文內容 -->
+                                    <input type="text" id="postContent"
+                                            placeholder="說點什麼......">
+                                    <div class="content-type">
+                                        <ul class="content-list">
+
+                                            <li class="image-video">
+                                                <div class="file-btn">
+                                                    <i class="fa-regular fa-image"></i>Photo
+                                                </div>
+                                                <input type="file">
+                                            </li>
+
+                                            <li class="post-submit">
+                                                <input type="submit" value="發佈"
+                                                        class="default-btn">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
+                    </div>
+                    <!-- 貼文+留言 -->
+                    <!-- 大頭貼 + 名字 -->
+                    <div v-for="post in posts" class="post-item mb-4">
+                        <div class="post-content">
+                            <div class="post-author">
+                                <div class="post-author-inner">
+                                    <div class="author-thumb">
+                                        <img src="assets/images/member/profile/profile.jpg"
+                                                alt="datting thumb">
+                                    </div>
+                                    <div class="author-details">
+                                        <h6><a href="#">{{post.userName}}</a></h6>
+                                        <div class="userAction">
+                                            18
+                                            <a href="#" id="like">
+                                                <i id="heart" @@click="clickLike" class="fa-regular fa-heart"></i>
+                                            </a>
+                                            <a href="#" id="more">
+                                                <i class="fa-solid fa-ellipsis"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <!-- 貼文內容 -->
+                            <div class="post-description">
+                                <p>{{post.contents}}</p>
+                             </div>
+                             <!-- 貼文時間 回覆數 分享鍵 -->
+                             <div class="post-footer">
+                             <div class="time">{{post.time}}</div>
+                             <div><a href="#">{{post.comment.length}} Comments</a></div>
+                             <div><a href="#"><i class="fa-solid fa-share"></i> Share</a></div>
+                             </div>
+                        </div>
+                        
+                        <div class="post-meta">
+                            <div class="commentInput post-meta-top">
+                                <input id="commentText" class="form-control" type="text" placeholder="請輸入回覆...">
+                                <button id="commentSubmit" class="default-btn">送出</button>
+                            </div>
+                            <div class="expandComments">
+                                <details>
+                                    <summary>展開所有回覆</summary>
+                                    <ul class="post-meta-bottom">
+                                        <li v-for="com in post.comment">
+                                            <div class="top">
+                                                <div class="left member--style2">
+                                                    <div class="member__thumb">
+                                                        <img src="assets/images/member/home2/01.jpg" alt="member-img">
+                                                    </div>
+                                                </div>
+                                                <div class="right">
+                                                    <p>{{com.userName}}</p>
+                                                    <p>{{com.contents}}</p>
+                                                    <p class="time">{{com.time}}</p>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </details>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-5">
+                        <a href="#" class="default-btn">
+                            <i class="fa-solid fa-spinner"></i> Load
+                            More
+                        </a>
                     </div>
                 </div>
             </div>
+
+            @* <div class="tab-pane fade" id="music" role="tabpanel" aria-labelledby="music-tab">
+                <div class="media-content">
+                    <ul class="media-upload">
+                        <li class="upload-now">
+                            <div class="custom-upload">
+                                <div class="file-btn">
+                                    <i class="fa-solid fa-upload"></i> Upload
+                                </div>
+                                <input type="file">
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="row">
+                        <div class="col">
+                            <p>
+                                <i class="icofont-worried"></i> Sorry !!
+                                There's no media found for the
+                                request !!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div> *@
         </div>
     </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </body>
 
 
@@ -243,7 +244,7 @@
             },
             methods: {
                 getPostsList() {
-                    fetch(`${this.baseAddress}/api/Post/GetPosts`)
+                    fetch(`${this.baseAddress}/api/Post/GetPostsRel`)
                         .then(res => res.json())
                         .then(data => {this.posts = data})
                         .catch(error => {console.log('fetch posts failed!')});

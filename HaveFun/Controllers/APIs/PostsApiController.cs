@@ -34,10 +34,19 @@ namespace HaveFun.Controllers.APIs
                 .Select(r => new 
                 { UserName = r.User.Name,
                   Contents = r.Contents,
-                  Time = r.Time,
+                  Time = r.Time.ToString("yyyy-MM-dd HH:mm:ss"),
                   Picture = r.Pictures,
                   Status = r.Status,
-                  Comment = r.Comments
+                  Comment = r.Comments.Select(c => new
+                  {
+                      CommentId = c.Id,
+                      ParentCommentId = c.ParentCommentId,
+                      PostId = c.PostId,
+                      UserId = c.User.Id,
+                      UserName = c.User.Name,
+                      Contents = c.Contents,
+                      Time = c.Time.ToString("yyyy-MM-dd HH:mm:ss")
+                  })
                 })
                 .ToList();
             return result;
