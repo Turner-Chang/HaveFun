@@ -3,6 +3,7 @@ using HaveFun.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Nodes;
 
 namespace HaveFun.Controllers.APIs
 {
@@ -19,11 +20,24 @@ namespace HaveFun.Controllers.APIs
         //顯示貼文
         // GET : api/Post/GetPosts
         [HttpGet]
-        public async Task<IQueryable<Post>> GetPosts()
+        public async Task<IEnumerable<Post>> GetPosts()
         {
             return _context.Posts;
         }
-
+        public async Task<IEnumerable<object>> GetPostsRel()
+        {
+            var result = _context.Posts
+                .Include(p => p.User)
+                .Select(r => new 
+                { UserName = r.User.Name,
+                  Contents = r.Contents,
+                  Time = r.Time,
+                  Picture = r.Pictures,
+                  Status = r.Status
+                })
+                .ToList();
+            return result;
+        }
         //新增貼文 //未完成
         // POST: api/Post/CreatePost
         [HttpPost]
