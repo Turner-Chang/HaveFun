@@ -21,13 +21,13 @@
         }
 
         // 存圖片的方法
-        public bool Save()
+        public bool Save(out string fullPath)
         {
             try
             {
                 if (isImage())
                 {
-                    string fullPath = Path + "\\" + Name;
+                    fullPath = Path + "\\" + Name;
                     using (FileStream fileStream = new FileStream(fullPath, FileMode.Create))
                     {
                         Picture.CopyTo(fileStream);
@@ -36,13 +36,14 @@
                 }
                 else
                 {
+                    fullPath = string.Empty;
                     return false;
                 }
   
             }
             catch (Exception)
             {
-
+                fullPath = string.Empty;
                 return false;
             }
         }

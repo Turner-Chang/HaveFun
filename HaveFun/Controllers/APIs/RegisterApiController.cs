@@ -67,12 +67,14 @@ namespace HaveFun.Controllers.APIs
                 //    errors
                 //});
             }
-            
+
             // 資料驗證過的處理
+
+            // 密碼加密
 
 
             //圖片處理
-            if(userRegisterDTO.ProfilePicture != null)
+            if (userRegisterDTO.ProfilePicture != null)
             {
                 // 把大頭照丟到wwwtoot的images的headshots資料夾內
                 string imgPath = "../HaveFun/wwwroot/images/headshots";
@@ -83,9 +85,8 @@ namespace HaveFun.Controllers.APIs
                 _saveImage.Path = imgPath;
                 _saveImage.Name = imgName;
                 _saveImage.Picture = userRegisterDTO.ProfilePicture;
-                SaveImage saveImage = new SaveImage(imgPath, imgName, userRegisterDTO.ProfilePicture);
-
-                bool isSave = _saveImage.Save();
+                string fullPath = string.Empty;
+                bool isSave = _saveImage.Save(out fullPath);
                 if (isSave == false)
                 {
                     return new JsonResult(
