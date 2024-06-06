@@ -8,15 +8,19 @@ namespace HaveFun.Controllers
 		{
 			return View();
 		}
-        public IActionResult Post()
-        {
+		public IActionResult Post()
+		{
 
-            return PartialView("_Post");
-        }
+			return PartialView("_Post");
+		}
 
+		public IActionResult UserInfo()
+		{
+			return PartialView("_UserInfo");
+		}
 
-        public IActionResult WhoLikes() { 
-		
+		public IActionResult WhoLikes()
+		{
 			return PartialView("_WhoLikes");
 		}
 	}
