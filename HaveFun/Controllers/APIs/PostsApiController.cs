@@ -30,12 +30,14 @@ namespace HaveFun.Controllers.APIs
         {
             var result = _context.Posts
                 .Include(p => p.User)
+                .Include(p => p.Comments)
                 .Select(r => new 
                 { UserName = r.User.Name,
                   Contents = r.Contents,
                   Time = r.Time,
                   Picture = r.Pictures,
-                  Status = r.Status
+                  Status = r.Status,
+                  Comment = r.Comments
                 })
                 .ToList();
             return result;
