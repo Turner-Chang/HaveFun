@@ -45,7 +45,6 @@
 			user-select: none;
 		}
 
-
 		.cards.dragging {
 			transition: none;
 		}
@@ -81,16 +80,12 @@
 			height: auto;
 		}
 
-		.card0 {
-			z-index: 0;
+		.card3 {
+			z-index: 3;
 		}
 
-		.card1 {
-			z-index: 1;
-		}
-
-		.card2 {
-			z-index: 2;
+		.card4 {
+			z-index: 4;
 		}
 
 		.carousel-indicators {
@@ -109,7 +104,7 @@
 }
 
 
-<div class="app">
+<div id="matchApp">
 	<div class="banner p-3 bg_img" style="background-image: url(assets/images/banner/bg.jpg); outline: 2px solid yellow;">
 		<div class="container" style="outline:2px solid blue;">
 			<div class="row justify-content-center" style="outline:2px solid red;">
@@ -180,12 +175,13 @@
 				<div class="col-lg-8 col-12">
 					<div id="out" class="wow fadeInUp" data-wow-duration="1.5s" data-wow-delay="1s">
 						<div id="card-container">
-							<div class="card cards card0">
-								<div id="carouselExampleIndicators1" class="carousel slide">
+							<div v-for="(user, index) in notMatchUsers" class="card cards" :style="{'z-index': index}" @@mousedown="startDrag($event, index)"
+							@@touchstart="startDrag($event, index)">
+								<div :id="`carouselExampleIndicators${index}`" class="carousel slide">
 									<div class="carousel-indicators">
-										<button type="button" data-bs-target="#carouselExampleIndicators1" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-										<button type="button" data-bs-target="#carouselExampleIndicators1" data-bs-slide-to="1" aria-label="Slide 2"></button>
-										<button type="button" data-bs-target="#carouselExampleIndicators1" data-bs-slide-to="2" aria-label="Slide 3"></button>
+										<button type="button" :data-bs-target="`#carouselExampleIndicators${index}`" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+										<button type="button" :data-bs-target="`#carouselExampleIndicators${index}`" data-bs-slide-to="1" aria-label="Slide 2"></button>
+										<button type="button" :data-bs-target="`#carouselExampleIndicators${index}`" data-bs-slide-to="2" aria-label="Slide 3"></button>
 									</div>
 									<div class="carousel-inner">
 										<div class="carousel-item active">
@@ -198,20 +194,21 @@
 											<img src="@Url.Content(ViewBag.ImageUrlArr[2])" class="d-block w-100" alt="...">
 										</div>
 									</div>
-									<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators1" data-bs-slide="prev">
+									<button class="carousel-control-prev" type="button" :data-bs-target="`#carouselExampleIndicators${index}`" data-bs-slide="prev">
 										<span class="carousel-control-prev-icon" aria-hidden="true"></span>
 										<span class="visually-hidden">Previous</span>
 									</button>
-									<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators1" data-bs-slide="next">
+									<button class="carousel-control-next" type="button" :data-bs-target="`#carouselExampleIndicators${index}`" data-bs-slide="next">
 										<span class="carousel-control-next-icon" aria-hidden="true"></span>
 										<span class="visually-hidden">Next</span>
 									</button>
 								</div>
 								<div class="card-body">
-									<h5 class="card-title">Card title1</h5>
-									<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-									<button id="btnCollapse0" data-bs-target="#collapseExample0" class="btn btn-primary detail" type="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseExample0">Detail <i class="fa-solid fa-angle-down"></i></button>
-									<div class="collapse collapsing" id="collapseExample0" style="width: 20rem; ">
+									<h5 class="card-title">{{index}}</h5>
+									<h5 class="card-title">{{user.name}}</h5>
+									<p class="card-text">{{user.introduction}}</p>
+									<button :id="`btnCollapse${index}`" :data-bs-target="`#collapseExample${index}`" class="btn btn-primary detail" type="button" data-bs-toggle="collapse" aria-expanded="false" :aria-controls="`collapseExample${index}`" @@click="showDetail">Detail<i class="fa-solid fa-angle-down"></i></button>
+									<div class="collapse collapsing" :id="`collapseExample${index}`" style="width: 20rem; ">
 										<div class="card card-body collapseCard">
 											Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
 										</div>
@@ -219,46 +216,7 @@
 								</div>
 							</div>
 
-							<div class="card cards card1">
-								<div id="carouselExampleIndicators2" class="carousel slide">
-									<div class="carousel-indicators">
-										<button type="button" data-bs-target="#carouselExampleIndicators2" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-										<button type="button" data-bs-target="#carouselExampleIndicators2" data-bs-slide-to="1" aria-label="Slide 2"></button>
-										<button type="button" data-bs-target="#carouselExampleIndicators2" data-bs-slide-to="2" aria-label="Slide 3"></button>
-									</div>
-									<div class="carousel-inner">
-										<div class="carousel-item active">
-											<img src="@Url.Content(ViewBag.ImageUrlArr[0])" class="d-block w-100" alt="...">
-										</div>
-										<div class="carousel-item">
-											<img src="@Url.Content(ViewBag.ImageUrlArr[1])" class="d-block w-100" alt="...">
-										</div>
-										<div class="carousel-item">
-											<img src="@Url.Content(ViewBag.ImageUrlArr[2])" class="d-block w-100" alt="...">
-										</div>
-									</div>
-									<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators2" data-bs-slide="prev">
-										<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-										<span class="visually-hidden">Previous</span>
-									</button>
-									<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators2" data-bs-slide="next">
-										<span class="carousel-control-next-icon" aria-hidden="true"></span>
-										<span class="visually-hidden">Next</span>
-									</button>
-								</div>
-								<div class="card-body">
-									<h5 class="card-title">Card title2</h5>
-									<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-									<button id="btnCollapse1" data-bs-target="#collapseExample1" class="btn btn-primary detail" type="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseExample1">Detail <i class="fa-solid fa-angle-down"></i></button>
-									<div class="collapse collapsing" id="collapseExample1" style="width: 20rem; ">
-										<div class="card card-body collapseCard">
-											Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<div class="card cards card2">
+							<div class="card cards card3">
 								<div id="carouselExampleIndicators3" class="carousel slide">
 									<div class="carousel-indicators">
 										<button type="button" data-bs-target="#carouselExampleIndicators3" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
@@ -286,6 +244,45 @@
 									</button>
 								</div>
 								<div class="card-body">
+									<h5 class="card-title">Card title2</h5>
+									<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+									<button id="btnCollapse1" data-bs-target="#collapseExample3" class="btn btn-primary detail" type="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseExample3">Detail <i class="fa-solid fa-angle-down"></i></button>
+									<div class="collapse collapsing" id="collapseExample3" style="width: 20rem; ">
+										<div class="card card-body collapseCard">
+											Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="card cards card4">
+								<div id="carouselExampleIndicators4" class="carousel slide">
+									<div class="carousel-indicators">
+										<button type="button" data-bs-target="#carouselExampleIndicators4" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+										<button type="button" data-bs-target="#carouselExampleIndicators4" data-bs-slide-to="1" aria-label="Slide 2"></button>
+										<button type="button" data-bs-target="#carouselExampleIndicators4" data-bs-slide-to="2" aria-label="Slide 3"></button>
+									</div>
+									<div class="carousel-inner">
+										<div class="carousel-item active">
+											<img src="@Url.Content(ViewBag.ImageUrlArr[0])" class="d-block w-100" alt="...">
+										</div>
+										<div class="carousel-item">
+											<img src="@Url.Content(ViewBag.ImageUrlArr[1])" class="d-block w-100" alt="...">
+										</div>
+										<div class="carousel-item">
+											<img src="@Url.Content(ViewBag.ImageUrlArr[2])" class="d-block w-100" alt="...">
+										</div>
+									</div>
+									<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators4" data-bs-slide="prev">
+										<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+										<span class="visually-hidden">Previous</span>
+									</button>
+									<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators4" data-bs-slide="next">
+										<span class="carousel-control-next-icon" aria-hidden="true"></span>
+										<span class="visually-hidden">Next</span>
+									</button>
+								</div>
+								<div class="card-body">
 									<h5 class="card-title">@Model.Name</h5>
 
 									@*使用前記得塞資料*@
@@ -296,8 +293,8 @@
 										Some quick example text to build on the card title and make up the bulk of the card's content.
 										Some quick example text to build on the card title and make up the bulk of the card's content.
 									</p>
-									<button id="btnCollapse2" data-bs-target="#collapseExample2" class="btn btn-primary detail" type="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseExample2">Detail <i class="fa-solid fa-angle-down"></i></button>
-									<div class="collapse collapsing" id="collapseExample2" style="width: 20rem; ">
+									<button id="btnCollapse4" data-bs-target="#collapseExample4" class="btn btn-primary detail" type="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseExample4">Detail <i class="fa-solid fa-angle-down"></i></button>
+									<div class="collapse collapsing" id="collapseExample4" style="width: 20rem; ">
 										<div class="card card-body collapseCard">
 											Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
 										</div>
@@ -321,6 +318,85 @@
 
 @section Scripts
 {
+	<script>
+		const matchApp = Vue.createApp({
+			data() {
+				return {
+					notMatchUsers: [],
+					startX:0,
+					startY:0,
+					currentCard:null,
+				}
+			},
+			computed: {
+			},
+			methods: {
+				getNotMatchUsers() {
+					fetch("https://localhost:7152/api/MatchApi/1")
+						.then(res => res.json())
+						.then(u => this.notMatchUsers = u)
+				},
+				startDrag(event,index) {
+					this.currentCard = event.target;
+					this.startX = event.touches ? event.touches[0].clientX : event.clientX;
+					this.startY = event.touches ? event.touches[0].clientY : event.clientY;
+					this.currentCard.classList.add('dragging');
+					document.addEventListener('mousemove', this.onDrag);
+					document.addEventListener('touchmove', this.onDrag);
+					document.addEventListener('mouseup', this.endDrag);
+					document.addEventListener('touchend', this.endDrag);
+				},
+				onDrag(event) {
+					if (!this.currentCard) return;
+
+					let clientX = event.touches ? event.touches[0].clientX : event.clientX;
+					let clientY = event.touches ? event.touches[0].clientY : event.clientY;
+					let dx = clientX - this.startX;
+					let dy = clientY - this.startY;
+
+					this.currentCard.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx * 0.05}deg)`;
+				},
+				endDrag(event) {
+					if (!this.currentCard) return;
+
+					let endX = event.changedTouches ? event.changedTouches[0].clientX : event.clientX;
+					let dx = endX - this.startX;
+
+					if (dx > 100) {
+						this.currentCard.style.transform = `translate(100vw, 0)`;
+					} else if (dx < -100) {
+						this.currentCard.style.transform = `translate(-100vw, 0)`;
+					} else {
+						this.currentCard.style.transform = '';
+					}
+
+					this.currentCard.classList.remove('dragging');
+					document.removeEventListener('mousemove', this.onDrag);
+					document.removeEventListener('touchmove', this.onDrag);
+					document.removeEventListener('mouseup', this.endDrag);
+					document.removeEventListener('touchend', this.endDrag);
+
+					this.currentCard = null;
+				},
+				showDetail() {
+					var div = $(".buttons");
+					var currentPosition = div.css('position');
+					if (currentPosition === 'absolute') {
+						div.css('position', 'fixed');
+
+					} else if (currentPosition === 'fixed') {
+						div.css('position', 'absolute');
+					}
+				},
+			},
+			watch: {
+			},
+			mounted() {
+				this.getNotMatchUsers();
+			},
+		}).mount("#matchApp");
+	</script>
+
 	<script>
 		// 選取所有卡片元素
 		const cards = document.querySelectorAll('.cards');
@@ -390,8 +466,8 @@
 			}
 		});
 
-
-		$(".detail").on('click',function () {
+		function showDetail() 
+		{
 			var div = $(".buttons");
 			var currentPosition = div.css('position');
 			if (currentPosition === 'absolute') {
@@ -400,7 +476,9 @@
 			} else if (currentPosition === 'fixed') {
 				div.css('position', 'absolute');
 			}
-		});
+		}
+
+		$(".detail").on("click", showDetail);
 
 
 		const likeButton = document.getElementById('like-button');
