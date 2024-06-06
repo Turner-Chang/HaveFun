@@ -8,6 +8,7 @@ namespace HaveFun.Controllers.APIs
 {
 
     [Route("api/Post/[action]")]
+
     [ApiController]
     public class PostsApiController : ControllerBase
     {
