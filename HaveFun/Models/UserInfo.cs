@@ -80,5 +80,7 @@ namespace HaveFun.Models
         public virtual ICollection<Like> Likes { get; set; }
 
 		public virtual ICollection<PostReview> PostReviews { get; set; }
+
+        public virtual ICollection<MemberLabel> MemberLabels { get; set; }
 	}
 }
