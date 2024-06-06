@@ -4,52 +4,48 @@
 {
 	<style>
 		#out {
-			/* outline: 2px solid red; */
+			outline: 2px solid red;
 			display: flex;
 			justify-content: center;
-			align-items: center;
+			
 			height: 100%;
-			width: 40rem;
 			margin: 0 auto;
-
-			position:relative;
+			position: relative;
+			padding: 80px;
 		}
 
 		.card {
-			
 		}
 
-		#card-container{
+		#card-container {
 			outline: 2px solid green;
 			position: relative;
 			width: 23rem;
 			height: 500px;
 		}
 
-		.collapseCard{
+		.collapseCard {
 			width: 105%;
 			margin-top: 25px;
 		}
 
-		.cards{
+		.cards {
 			/* outline: 2px solid blue; */
 
 			height: 500px;
 			width: 23rem;
-
 			left: 0;
 			right: 0;
-			top: 0;
+			top: 0px;
 			bottom: 0;
 			margin: auto;
 			position: absolute;
-
 			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 			transition: transform 0.3s ease, opacity 0.3s ease;
-			user-select: none; 
+			user-select: none;
 		}
 
-		
+
 		.cards.dragging {
 			transition: none;
 		}
@@ -104,7 +100,7 @@
 			bottom: auto;
 		}
 
-		.buttons .btn{
+		.buttons .btn {
 			height: 60px;
 			width: 60px;
 			border-radius: 50%;
@@ -114,9 +110,9 @@
 
 
 <div class="app">
-	<div class="banner padding-top padding-bottom bg_img" style="background-image: url(assets/images/banner/bg.jpg);">
-		<div class="container" style="height:none;">
-			<div class="row justify-content-center">
+	<div class="banner p-3 bg_img" style="background-image: url(assets/images/banner/bg.jpg); outline: 2px solid yellow;">
+		<div class="container" style="outline:2px solid blue;">
+			<div class="row justify-content-center" style="outline:2px solid red;">
 				<div class="col-lg-4 col-12">
 					<div class="banner__content wow fadeInUp" data-wow-duration="1.5s" data-wow-delay=".5s">
 						<div class="banner__title">
@@ -164,16 +160,16 @@
 								<div class="banner__list">
 									@* <label>Country</label>
 									<div class="row">
-										<div class="col-12">
-											<div class="banner__inputlist">
-												<select id="country" name="country">
-													<option value="Afganistan">Afghanistan</option>
-													<option value="Albania">Albania</option>
-													<option value="Algeria">Algeria</option>
-													<option value="American Samoa">American Samoa</option>
-												</select>
-											</div>
-										</div>
+									<div class="col-12">
+									<div class="banner__inputlist">
+									<select id="country" name="country">
+									<option value="Afganistan">Afghanistan</option>
+									<option value="Albania">Albania</option>
+									<option value="Algeria">Algeria</option>
+									<option value="American Samoa">American Samoa</option>
+									</select>
+									</div>
+									</div>
 									</div> *@
 								</div>
 								<button type="submit" class="default-btn reverse d-block mt-5"><span>Find Your Partner</span></button>
@@ -214,9 +210,15 @@
 								<div class="card-body">
 									<h5 class="card-title">Card title1</h5>
 									<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-									<a href="#" class="btn btn-primary">Detail <i class="fa-solid fa-angle-down"></i></a>
+									<button id="btnCollapse0" data-bs-target="#collapseExample0" class="btn btn-primary detail" type="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseExample0">Detail <i class="fa-solid fa-angle-down"></i></button>
+									<div class="collapse collapsing" id="collapseExample0" style="width: 20rem; ">
+										<div class="card card-body collapseCard">
+											Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+										</div>
+									</div>
 								</div>
 							</div>
+
 							<div class="card cards card1">
 								<div id="carouselExampleIndicators2" class="carousel slide">
 									<div class="carousel-indicators">
@@ -247,9 +249,15 @@
 								<div class="card-body">
 									<h5 class="card-title">Card title2</h5>
 									<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-									<a href="#" class="btn btn-primary">Detail <i class="fa-solid fa-angle-down"></i></a>
+									<button id="btnCollapse1" data-bs-target="#collapseExample1" class="btn btn-primary detail" type="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseExample1">Detail <i class="fa-solid fa-angle-down"></i></button>
+									<div class="collapse collapsing" id="collapseExample1" style="width: 20rem; ">
+										<div class="card card-body collapseCard">
+											Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+										</div>
+									</div>
 								</div>
 							</div>
+
 							<div class="card cards card2">
 								<div id="carouselExampleIndicators3" class="carousel slide">
 									<div class="carousel-indicators">
@@ -288,33 +296,22 @@
 										Some quick example text to build on the card title and make up the bulk of the card's content.
 										Some quick example text to build on the card title and make up the bulk of the card's content.
 									</p>
-									<button id="btnCollapse2" data-bs-target="#collapseExample2" class="btn btn-primary" type="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseExample2">Detail <i class="fa-solid fa-angle-down"></i></button>
+									<button id="btnCollapse2" data-bs-target="#collapseExample2" class="btn btn-primary detail" type="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseExample2">Detail <i class="fa-solid fa-angle-down"></i></button>
 									<div class="collapse collapsing" id="collapseExample2" style="width: 20rem; ">
 										<div class="card card-body collapseCard">
 											Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
-											@* Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
-											Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
-											Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
-											Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
-											Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
-											Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
-											Some placeholder content for the collapse component. This panel is
-											Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
-											vhidden by default but revealed when the user activates the relevant trigger. *@
-
 										</div>
 									</div>
 								</div>
 							</div>
 
 						</div>
-						
 						<div class="d-flex justify-content-around buttons" style="width: 500px;">
 							<button id="dislike-button" class="btn btn-secondary"><i class="fa-solid fa-xmark fa-shake"></i></button>
 							<button class="btn btn-light"><i class="fa-regular fa-star fa-bounce"></i></button>
 							<button id="like-button" class="btn btn-danger"><i class="fa-regular fa-heart fa-beat"></i></button>
 						</div>
-					</div>
+					</div>					
 				</div>
 			</div>
 		</div>
@@ -325,64 +322,64 @@
 @section Scripts
 {
 	<script>
-
+		// 選取所有卡片元素
 		const cards = document.querySelectorAll('.cards');
 		let startX, startY, currentCard;
 
-		
+		// 為每張卡片添加事件監聽器
 		cards.forEach(card => {
 			card.addEventListener('mousedown', startDrag);
 			card.addEventListener('touchstart', startDrag);
 
-			
+			// 開始拖動時觸發的函數
 			function startDrag(event) {
 				currentCard = card;
 				startX = event.touches ? event.touches[0].clientX : event.clientX;
 				startY = event.touches ? event.touches[0].clientY : event.clientY;
 				card.classList.add('dragging');
 
-				
+				// 添加全局事件監聽器
 				document.addEventListener('mousemove', onDrag);
 				document.addEventListener('touchmove', onDrag);
 				document.addEventListener('mouseup', endDrag);
 				document.addEventListener('touchend', endDrag);
 			}
 
-			
+			// 拖動過程中觸發的函數
 			function onDrag(event) {
 				if (!currentCard) return;
 
-				
+				// 計算拖動距離
 				let clientX = event.touches ? event.touches[0].clientX : event.clientX;
 				let clientY = event.touches ? event.touches[0].clientY : event.clientY;
 				let dx = clientX - startX;
 				let dy = clientY - startY;
 
-				
+				// 更新卡片的位置和旋轉角度
 				currentCard.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx * 0.05}deg)`;
 			}
 
-			
+			// 結束拖動時觸發的函數
 			function endDrag(event) {
 				if (!currentCard) return;
 
-				
+				// 計算拖動的最終距離
 				let endX = event.changedTouches ? event.changedTouches[0].clientX : event.clientX;
 				let dx = endX - startX;
 
-				
+				// 根據拖動距離決定卡片的去向
 				if (dx > 100) {
-					
+					// 向右滑動，表示喜歡
 					currentCard.style.transform = `translate(100vw, 0)`;
 				} else if (dx < -100) {
-					
+					// 向左滑動，表示不喜歡
 					currentCard.style.transform = `translate(-100vw, 0)`;
 				} else {
-					
+					// 返回原位置
 					currentCard.style.transform = '';
 				}
 
-				
+				// 移除拖動樣式和事件監聽器
 				currentCard.classList.remove('dragging');
 				document.removeEventListener('mousemove', onDrag);
 				document.removeEventListener('touchmove', onDrag);
@@ -393,7 +390,8 @@
 			}
 		});
 
-		$("#btnCollapse2").click(function () {
+
+		$(".detail").on('click',function () {
 			var div = $(".buttons");
 			var currentPosition = div.css('position');
 			if (currentPosition === 'absolute') {
@@ -404,23 +402,27 @@
 			}
 		});
 
-		
+
 		const likeButton = document.getElementById('like-button');
 		likeButton.addEventListener('click', () => {
 			const currentCard = document.querySelectorAll('.cards:not(.liked):not(.disliked)');
 			if (currentCard.length) {
-				currentCard[currentCard.length-1].style.transform = `translate(100vw, 0)`;
+				currentCard[currentCard.length - 1].style.transform = `translate(100vw, 0)`;
 				currentCard[currentCard.length - 1].classList.add('liked');
 			}
+			var div = $(".buttons");
+			div.css('position', 'absolute');
 		});
 
 		const dislikeButton = document.getElementById('dislike-button');
 		dislikeButton.addEventListener('click', () => {
 			const currentCard = document.querySelectorAll('.cards:not(.liked):not(.disliked)');
 			if (currentCard.length) {
-				currentCard[currentCard.length-1].style.transform = `translate(-100vw, 0)`;
+				currentCard[currentCard.length - 1].style.transform = `translate(-100vw, 0)`;
 				currentCard[currentCard.length - 1].classList.add('disliked');
 			}
+			var div = $(".buttons");
+			div.css('position', 'absolute');
 		});
 	</script>
 }
