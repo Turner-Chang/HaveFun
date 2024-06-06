@@ -26,18 +26,22 @@ namespace HaveFun.Controllers.APIs
         {
             return _context.Posts;
         }
-        public async Task<IEnumerable<object>> GetPostsRel()
+        //顯示貼文+回覆相關資料
+        // GET : api/Post/GetPostsRel
+        [HttpGet]
+        public async Task<JsonResult> GetPostsRel()
         {
-            var result = _context.Posts
+            var result = await _context.Posts
                 .Include(p => p.User)
                 .Include(p => p.Comments)
+                .OrderByDescending(p => p.Time)
                 .Select(r => new 
                 { UserName = r.User.Name,
                   Contents = r.Contents,
                   Time = r.Time.ToString("yyyy-MM-dd HH:mm:ss"),
                   Picture = r.Pictures,
                   Status = r.Status,
-                  Comment = r.Comments.Select(c => new
+                  Comment = r.Comments.OrderBy(c => c.Time).Select(c => new
                   {
                       CommentId = c.Id,
                       ParentCommentId = c.ParentCommentId,
@@ -46,10 +50,9 @@ namespace HaveFun.Controllers.APIs
                       UserName = c.User.Name,
                       Contents = c.Contents,
                       Time = c.Time.ToString("yyyy-MM-dd HH:mm:ss")
-                  })
-                })
-                .ToList();
-            return result;
+                  }).ToList()
+                }).ToListAsync();
+            return new JsonResult(result);
         }
         //新增貼文 //未完成
         // POST: api/Post/CreatePost

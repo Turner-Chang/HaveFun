@@ -18,9 +18,10 @@
 
         .post-footer{
             display: flex;
-            align-items:flex-end;
-            margin-top: 12px;
-            gap: 20px;
+            justify-content:flex-end;
+            margin-top: 5px;
+            gap:30px;
+            margin-right:25px;
         }
         .commentInput{
             padding-bottom:0;
@@ -127,9 +128,9 @@
                              </div>
                              <!-- 貼文時間 回覆數 分享鍵 -->
                              <div class="post-footer">
-                             <div class="time">{{post.time}}</div>
-                             <div><a href="#">{{post.comment.length}} Comments</a></div>
-                             <div><a href="#"><i class="fa-solid fa-share"></i> Share</a></div>
+                             <p class="time">{{post.time}}</p>
+                             <p>{{post.comment.length}} Comments</p>
+                             <a href="#"><i class="fa-solid fa-share"></i> Share</a>
                              </div>
                         </div>
                         
@@ -138,9 +139,9 @@
                                 <input id="commentText" class="form-control" type="text" placeholder="請輸入回覆...">
                                 <button id="commentSubmit" class="default-btn">送出</button>
                             </div>
-                            <div class="expandComments">
-                                <details>
-                                    <summary>展開所有回覆</summary>
+                            <div class="expandComments" v-if="post.comment.length > 0">
+                                <details @@toggle="post.expandState = !post.expandState">
+                                    <summary>{{post.expandState? '隱藏所有回覆' : '展開所有回覆'}}</summary>
                                     <ul class="post-meta-bottom">
                                         <li v-for="com in post.comment">
                                             <div class="top">
@@ -246,7 +247,7 @@
                 getPostsList() {
                     fetch(`${this.baseAddress}/api/Post/GetPostsRel`)
                         .then(res => res.json())
-                        .then(data => {this.posts = data})
+                        .then(data => { this.posts = data.map(post => ({ ...post, expandState: false })); })
                         .catch(error => {console.log('fetch posts failed!')});
                 },
                 clickLike() {
