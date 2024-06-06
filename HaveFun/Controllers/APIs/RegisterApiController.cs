@@ -13,11 +13,13 @@ namespace HaveFun.Controllers.APIs
     {
         HaveFunDbContext _dbContext;
         SaveImage _saveImage;
+        PasswordSecure _passwordSecure;
 
-        public RegisterApiController(HaveFunDbContext dbContext, SaveImage saveImage)
+        public RegisterApiController(HaveFunDbContext dbContext, SaveImage saveImage, PasswordSecure passwordSecure)
         {
             _dbContext = dbContext;
             _saveImage = saveImage;
+            _passwordSecure = passwordSecure;
         }
 
         // 驗證帳號是否重複
@@ -72,7 +74,11 @@ namespace HaveFun.Controllers.APIs
             // 資料驗證過的處理
 
             // 密碼加密
-           
+            byte[] salt = _passwordSecure.CreateSalt();
+            Console.WriteLine(Convert.ToBase64String(salt));
+            string password = userRegisterDTO.Password;
+            byte[] hashPassword = _passwordSecure.HashPassword(password, salt);
+            Console.WriteLine(Convert.ToBase64String(hashPassword));
             
 
             //圖片處理
