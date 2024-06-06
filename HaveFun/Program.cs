@@ -1,3 +1,4 @@
+using HaveFun.Common;
 using HaveFun.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddScoped<SaveImage>();
 builder.Services.AddSwaggerGen();
 
 
