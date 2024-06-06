@@ -160,12 +160,25 @@
                         formData.append('BirthDay', this.birthDay);
                         formData.append('PhoneNumber', this.phoneNumber);
                         formData.append('ProfilePicture', this.ProfilePicture);
+
                         fetch('/api/Register/AddUser', {
                             method: 'Post',
                             body: formData
                         })
                         .then(resp => resp.json())
-                        .then(result => console.log(result))
+                        .then(result => {
+                            if (result.status == 400) {
+                                this.accountError = result.errors.Account.toString();
+                                this.passwordError = result.errors.Password.toString();
+                                this.nameError = result.errors.Name.toString();
+                                this.birthDayError = result.errors.BirthDay.toString();
+                                this.genderError = result.errors.Gender.toString();
+                                this.phoneNumberError = result.errors.PhoneNumber.toString();
+                                this.addressError = result.errors.Address.toString();
+                            }else{
+
+                            }
+                        })
                         .catch(err => alert('網頁出現錯誤'));
                     }
                 }
@@ -194,8 +207,8 @@
                     if (nval == '') {
                         this.accountError = '帳號不可為空';
                     } else if (!emailRex.test(nval)) {
-                        this.accountError = '請輸入有效的電子郵件地址';
-                    }else{
+                         this.accountError = '請輸入有效的電子郵件地址';
+                    } else {
                         let hasAccount = true;
                         fetch(`/api/Register/HasAccount/${nval}`)
                             .then(resp => resp.json())
