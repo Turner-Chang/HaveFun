@@ -147,26 +147,50 @@
                         this.profilePictureError = '請傳入圖片檔';
                     }
                 },
+                generateFromData() {
+                    let formData = new FormData();
+                    formData.append('Account', this.account);
+                    formData.append('Password', this.password);
+                    formData.append('Name', this.name);
+                    formData.append('Address', this.address);
+                    formData.append('Gender', this.gender);
+                    formData.append('BirthDay', this.birthDay);
+                    formData.append('PhoneNumber', this.phoneNumber);
+                    formData.append('ProfilePicture', this.ProfilePicture);
+                    return fromData;
+                },
                 submit(){
                     if (!this.isFormValid) {
                         alert('請填好資料才能送出');
                     } else {
-                        let formData = new FormData();
-                        formData.append('Account', this.account);
-                        formData.append('Password', this.password);
-                        formData.append('Name', this.name);
-                        formData.append('Address', this.address);
-                        formData.append('Gender', this.gender);
-                        formData.append('BirthDay', this.birthDay);
-                        formData.append('PhoneNumber', this.phoneNumber);
-                        formData.append('ProfilePicture', this.ProfilePicture);
+                        const userData =  generateFromData();
                         fetch('/api/Register/AddUser', {
                             method: 'Post',
-                            body: formData
+                            body: userData
                         })
-                        .then(resp => resp.json())
-                        .then(result => console.log(result))
-                        .catch(err => alert('網頁出現錯誤'));
+                        .then(resp => {
+                            if (resp.ok) {
+                                return resp.json();
+                            }else if(resp.status === 400){
+                                return resp.json();
+                            }else{
+                                throw "網站出現錯誤，請洽管理員";
+                            }   
+                        })
+                        .then(result => {
+                            if (result.status == 400) {
+                                this.accountError = result.errors.Account.toString();
+                                this.passwordError = result.errors.Password.toString();
+                                this.nameError = result.errors.Name.toString();
+                                this.birthDayError = result.errors.BirthDay.toString();
+                                this.genderError = result.errors.Gender.toString();
+                                this.phoneNumberError = result.errors.PhoneNumber.toString();
+                                this.addressError = result.errors.Address.toString();
+                            }else{
+
+                            }
+                        })
+                        .catch(err => alert(err));
                     }
                 }
             },
@@ -194,8 +218,8 @@
                     if (nval == '') {
                         this.accountError = '帳號不可為空';
                     } else if (!emailRex.test(nval)) {
-                        this.accountError = '請輸入有效的電子郵件地址';
-                    }else{
+                         this.accountError = '請輸入有效的電子郵件地址';
+                    } else {
                         let hasAccount = true;
                         fetch(`/api/Register/HasAccount/${nval}`)
                             .then(resp => resp.json())

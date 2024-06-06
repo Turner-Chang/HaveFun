@@ -12,10 +12,12 @@ namespace HaveFun.Controllers.APIs
     public class RegisterApiController : ControllerBase
     {
         HaveFunDbContext _dbContext;
+        SaveImage _saveImage;
 
-        public RegisterApiController(HaveFunDbContext dbContext)
+        public RegisterApiController(HaveFunDbContext dbContext, SaveImage saveImage)
         {
             _dbContext = dbContext;
+            _saveImage = saveImage;
         }
 
         // 驗證帳號是否重複
@@ -66,12 +68,14 @@ namespace HaveFun.Controllers.APIs
                 //    errors
                 //});
             }
-            
+
             // 資料驗證過的處理
+
+            // 密碼加密
 
 
             //圖片處理
-            if(userRegisterDTO.ProfilePicture != null)
+            if (userRegisterDTO.ProfilePicture != null)
             {
                 // 把大頭照丟到wwwtoot的images的headshots資料夾內
                 string imgPath = "../HaveFun/wwwroot/images/headshots";
@@ -79,10 +83,11 @@ namespace HaveFun.Controllers.APIs
                 // 檔案名為帳號+檔案名
                 string imgName = userRegisterDTO.Account + userRegisterDTO.ProfilePicture.FileName;
 
-
-                SaveImage saveImage = new SaveImage(imgPath, imgName, userRegisterDTO.ProfilePicture);
-
-                bool isSave = saveImage.Save();
+                _saveImage.Path = imgPath;
+                _saveImage.Name = imgName;
+                _saveImage.Picture = userRegisterDTO.ProfilePicture;
+                string fullPath = string.Empty;
+                bool isSave = _saveImage.Save(out fullPath);
                 if (isSave == false)
                 {
                     return new JsonResult(
