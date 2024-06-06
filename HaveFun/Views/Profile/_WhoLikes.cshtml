@@ -8,7 +8,7 @@
                 </form>
             </div>
             <hr>
-            <button id="btn_WhoLikes">Test!!!!!</button>
+            <button id="btn_WhoLikes">Load Members</button>
 
             <div class="right">
                 Orader By:
@@ -24,7 +24,7 @@
         </div>
         <div class="group__bottom--body">
             <div class="member">
-                <div class="row g-3 row-cols-lg-3 row-cols-sm-2 row-cols-1">
+                <div class="row g-3 row-cols-lg-3 row-cols-sm-2 row-cols-1" id="memberContainer">
                     <div class="col">
                         <div class="member__item w-100">
                             <div class="member__inner m-0">
@@ -246,8 +246,11 @@
 
 @section Scripts {
     <script>
-        $("#btn_WhoLikes").on("click",function(){
-            alert("btn_WhoLikes");
-        })
+        // console.log("Script in _WhoLikes loaded");
+        // $(function () {
+        //     $(document).on("click", "#btn_WhoLikes", function () {
+        //         alert("btn_WhoLikes");
+        //     });
+        // });
     </script>
 }
