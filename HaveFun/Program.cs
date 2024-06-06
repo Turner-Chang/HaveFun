@@ -1,3 +1,4 @@
+using HaveFun.Common;
 using HaveFun.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,9 @@ builder.Services.AddSwaggerGen();
 
 var connHaveFunStr = builder.Configuration.GetConnectionString("HaveFunDbContext");
 builder.Services.AddSqlServer<HaveFunDbContext>(connHaveFunStr);
-
+builder.Services.AddSignalR();
+builder.Services.AddScoped<SaveImage>();
+builder.Services.AddSingleton<PasswordSecure>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -38,5 +41,7 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+//²K¥[chathub
+app.MapHub<ChatHub>("/chathub");
 
 app.Run();
