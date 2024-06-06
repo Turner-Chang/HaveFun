@@ -6,13 +6,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddScoped<SaveImage>();
 builder.Services.AddSwaggerGen();
 
 
 var connHaveFunStr = builder.Configuration.GetConnectionString("HaveFunDbContext");
 builder.Services.AddSqlServer<HaveFunDbContext>(connHaveFunStr);
 builder.Services.AddSignalR();
+builder.Services.AddScoped<SaveImage>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

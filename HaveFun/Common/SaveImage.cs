@@ -11,6 +11,7 @@
         // 從IFormFile存取來的圖片檔案
         public IFormFile Picture { get; set; }
 
+        public SaveImage() { }
 
         public SaveImage(string path, string name, IFormFile picture)
         {
