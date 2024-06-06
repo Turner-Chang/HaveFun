@@ -11,12 +11,12 @@ namespace HaveFun.Controllers.APIs
 	public class MatchApiController : ControllerBase
 	{
 		private readonly HaveFunDbContext _context;
-		public MatchApiController(HaveFunDbContext context) 
+		public MatchApiController(HaveFunDbContext context)
 		{
 			_context = context;
 		}
 
-		[HttpGet]
+		[HttpGet("{userId}")]
 		public IEnumerable<MatchUserInfoDTO> GetNotMatchUser(int userId) 
 		{
 			var interactedUser = _context.FriendLists
