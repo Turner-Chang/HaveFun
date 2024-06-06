@@ -147,25 +147,36 @@
                         this.profilePictureError = '請傳入圖片檔';
                     }
                 },
+                generateFromData() {
+                    let formData = new FormData();
+                    formData.append('Account', this.account);
+                    formData.append('Password', this.password);
+                    formData.append('Name', this.name);
+                    formData.append('Address', this.address);
+                    formData.append('Gender', this.gender);
+                    formData.append('BirthDay', this.birthDay);
+                    formData.append('PhoneNumber', this.phoneNumber);
+                    formData.append('ProfilePicture', this.ProfilePicture);
+                    return fromData;
+                },
                 submit(){
                     if (!this.isFormValid) {
                         alert('請填好資料才能送出');
                     } else {
-                        let formData = new FormData();
-                        formData.append('Account', this.account);
-                        formData.append('Password', this.password);
-                        formData.append('Name', this.name);
-                        formData.append('Address', this.address);
-                        formData.append('Gender', this.gender);
-                        formData.append('BirthDay', this.birthDay);
-                        formData.append('PhoneNumber', this.phoneNumber);
-                        formData.append('ProfilePicture', this.ProfilePicture);
-
+                        const userData =  generateFromData();
                         fetch('/api/Register/AddUser', {
                             method: 'Post',
-                            body: formData
+                            body: userData
                         })
-                        .then(resp => resp.json())
+                        .then(resp => {
+                            if (resp.ok) {
+                                return resp.json();
+                            }else if(resp.status === 400){
+                                return resp.json();
+                            }else{
+                                throw "網站出現錯誤，請洽管理員";
+                            }   
+                        })
                         .then(result => {
                             if (result.status == 400) {
                                 this.accountError = result.errors.Account.toString();
@@ -179,7 +190,7 @@
 
                             }
                         })
-                        .catch(err => alert('網頁出現錯誤'));
+                        .catch(err => alert(err));
                     }
                 }
             },

@@ -11,10 +11,12 @@ namespace HaveFun.Controllers.APIs
     public class RegisterApiController : ControllerBase
     {
         HaveFunDbContext _dbContext;
+        SaveImage _saveImage;
 
-        public RegisterApiController(HaveFunDbContext dbContext)
+        public RegisterApiController(HaveFunDbContext dbContext, SaveImage saveImage)
         {
             _dbContext = dbContext;
+            _saveImage = saveImage;
         }
 
         // 驗證帳號是否重複
@@ -78,10 +80,12 @@ namespace HaveFun.Controllers.APIs
                 // 檔案名為帳號+檔案名
                 string imgName = userRegisterDTO.Account + userRegisterDTO.ProfilePicture.FileName;
 
-
+                _saveImage.Path = imgPath;
+                _saveImage.Name = imgName;
+                _saveImage.Picture = userRegisterDTO.ProfilePicture;
                 SaveImage saveImage = new SaveImage(imgPath, imgName, userRegisterDTO.ProfilePicture);
 
-                bool isSave = saveImage.Save();
+                bool isSave = _saveImage.Save();
                 if (isSave == false)
                 {
                     return new JsonResult(
