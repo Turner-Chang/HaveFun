@@ -72,7 +72,8 @@ namespace HaveFun.Controllers.APIs
             // 資料驗證過的處理
 
             // 密碼加密
-
+           
+            
 
             //圖片處理
             if (userRegisterDTO.ProfilePicture != null)
