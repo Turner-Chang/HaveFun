@@ -8,7 +8,6 @@
                 </form>
             </div>
             <hr>
-            <button id="btn_WhoLikes">Load Members</button>
 
             <div class="right">
                 Orader By:
@@ -62,24 +61,65 @@
     </div>
 </div>
 
-@section Scripts {
-    <script>
-        // var memberHTML = `
-        //             <div class="col">
-        //                 <div class="member__item w-100">
-        //                     <div class="member__inner m-0">
-        //                         <div class="member__thumb">
-        //                            <img src="${member.profilePicture}" alt="member-img">
-        //                         </div>
-        //                         <div class="member__content">
-        //                             <a href="member-single.html"><h6>${member.name}</h6></a>
-        //                             <p>${member.age} Years old <i class="fa-solid fa-${member.gender === 'male' ? 'mars' : 'venus'}"></i></p>
-        //                         </div>
-        //                     </div>
-        //                 </div>
-        //             </div>
-        //         `;
-        // memberContainer.append(memberHTML);
+<script>
+    // $("#gt5-tab").on('click', function () {
+    //     alert("gt5-tab wholikes");
+    // })
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('gt5-tab').addEventListener('click', function () {
+            axios.get('https://localhost:7152/api/Profile/GetWhoLikeList')
+                .then(function (response) {
+                    var data = response.data;
+                    var memberContainer = document.getElementById('memberContainer');
+                    memberContainer.innerHTML = ''; // 清空Container
 
-    </script>
-}
+                    data.forEach(function (member) {
+                        var div_col = document.createElement("div");
+                        div_col.className = "col";
+
+                        var div_member__item = document.createElement("div");
+                        div_member__item.className = "member__item w-100";
+
+                        var div_member__inner = document.createElement("div");
+                        div_member__inner.className = "member__inner m-0";
+
+                        var div_member__thumb = document.createElement("div");
+                        div_member__thumb.className = "member__thumb";
+
+                        var img = document.createElement("img");
+                        img.src = member.profilePicture;
+                        img.alt = "member-img";
+                        div_member__thumb.appendChild(img);
+
+                        var div_member__content = document.createElement("div");
+                        div_member__content.className = "member__content";
+
+                        var a = document.createElement("a");
+                        a.href = "member-single.html";
+
+                        var h6 = document.createElement("h6");
+                        h6.textContent = member.name;
+                        a.appendChild(h6);
+                        div_member__content.appendChild(a);
+
+                        var p = document.createElement("p");
+                        p.textContent = `${member.age} Years old `;
+                        var i = document.createElement("i");
+                        i.className = `fa-solid fa-${member.gender === 'male' ? 'mars' : 'venus'}`;
+                        p.appendChild(i);
+
+                        div_member__content.appendChild(p);
+                        div_member__inner.appendChild(div_member__thumb);
+                        div_member__inner.appendChild(div_member__content);
+                        div_member__item.appendChild(div_member__inner);
+                        div_col.appendChild(div_member__item);
+
+                        memberContainer.appendChild(div_col);
+                    });
+                })
+                .catch(function (err) {
+                    alert(err);
+                });
+        });
+    });
+</script>

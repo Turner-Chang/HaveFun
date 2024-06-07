@@ -10,11 +10,26 @@
     <!-- Place favicon.ico in the root directory -->
     <!-- All stylesheet and icons css  -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="assets/css/animate.css">
-    <link rel="stylesheet" href="assets/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/swiper.min.css">
-    <link rel="stylesheet" href="assets/css/lightcase.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="~/assets/css/animate.css">
+    <link rel="stylesheet" href="~/assets/css/all.min.css">
+    <link rel="stylesheet" href="~/assets/css/swiper.min.css">
+    <link rel="stylesheet" href="~/assets/css/lightcase.css">
+    <link rel="stylesheet" href="~/assets/css/style.css">
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- All Needed JS -->
+    <script src="~/assets/js/vendor/modernizr-3.11.2.min.js"></script>
+    <script src="~/assets/js/isotope.pkgd.min.js"></script>
+    <script src="~/assets/js/swiper.min.js"></script>
+    <!-- <script src="assets/js/all.min.js"></script> -->
+    <script src="~/assets/js/wow.js"></script>
+    <script src="~/assets/js/lightcase.js"></script>
+    <script src="~/assets/js/jquery.countdown.min.js"></script>
+    <script src="~/assets/js/waypoints.min.js"></script>
+    <script src="~/assets/js/plugins.js"></script>
+    <script src="~/assets/js/main.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Styles", required: false)
 
@@ -109,7 +124,7 @@
 
     <!-- ================> Footer section start here <================== -->
     <footer class="footer overflow-hidden">
-        <div class="footer__top bg_img" style="background-image: url(assets/images/footer/bg-3.jpg)">
+        <div class="footer__top bg_img" style="background-image: url(~/assets/images/footer/bg-3.jpg)">
             <div class="footer__newsletter wow fadeInUp" data-wow-duration="1.5s">
                 <div class="container">
                     <div class="row  justify-content-center">
@@ -207,7 +222,11 @@
             $(this).css("color", "black");
         });
     </script>
+<<<<<<< HEAD
+@*     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+=======
     
+>>>>>>> main
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <!-- All Needed JS -->
     <script src="assets/js/vendor/modernizr-3.11.2.min.js"></script>
@@ -220,7 +239,8 @@
     <script src="assets/js/waypoints.min.js"></script>
     <script src="assets/js/plugins.js"></script>
     <script src="assets/js/main.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script> *@
     @await RenderSectionAsync("Scripts", required: false)
+    
 </body>
 </html>
