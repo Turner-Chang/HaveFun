@@ -7,7 +7,6 @@
 			outline: 2px solid red;
 			display: flex;
 			justify-content: center;
-			
 			height: 100%;
 			margin: 0 auto;
 			position: relative;
@@ -20,8 +19,8 @@
 		#card-container {
 			outline: 2px solid green;
 			position: relative;
-			width: 23rem;
-			height: 500px;
+			width: 25rem; /* 23rem */
+			height: 600px; /* 500px */
 		}
 
 		.collapseCard {
@@ -45,9 +44,9 @@
 			user-select: none;
 		}
 
-		.cards.dragging {
-			transition: none;
-		}
+			.cards.dragging {
+				transition: none;
+			}
 
 		.card-text {
 			display: -webkit-box;
@@ -107,11 +106,11 @@
 <div id="matchApp">
 	<div class="banner p-3 bg_img" style="background-image: url(assets/images/banner/bg.jpg); outline: 2px solid yellow;">
 		<div class="container" style="outline:2px solid blue;">
-			<div class="row justify-content-center" style="outline:2px solid red;">
-				<div class="col-lg-4 col-12">
+			<div class="row">
+				<div class="col-lg-5 col-12">
 					<div class="banner__content wow fadeInUp" data-wow-duration="1.5s" data-wow-delay=".5s">
 						<div class="banner__title">
-							<h2>Find your ture love</h2>
+							<h2>Find your true love</h2>
 							<p>Serious dating with your perfect match is just a click away.</p>
 						</div>
 						<div class="banner__form">
@@ -172,11 +171,11 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-lg-8 col-12">
+				<div class="col-lg-7 col-12">
 					<div id="out" class="wow fadeInUp" data-wow-duration="1.5s" data-wow-delay="1s">
 						<div id="card-container">
 							<div v-for="(user, index) in notMatchUsers" class="card cards" :style="{'z-index': index}" @@mousedown="startDrag($event, index)"
-							@@touchstart="startDrag($event, index)">
+								 @@touchstart="startDrag($event, index)">
 								<div :id="`carouselExampleIndicators${index}`" class="carousel slide">
 									<div class="carousel-indicators">
 										<button type="button" :data-bs-target="`#carouselExampleIndicators${index}`" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
@@ -308,7 +307,7 @@
 							<button class="btn btn-light"><i class="fa-regular fa-star fa-bounce"></i></button>
 							<button id="like-button" class="btn btn-danger"><i class="fa-regular fa-heart fa-beat"></i></button>
 						</div>
-					</div>					
+					</div>
 				</div>
 			</div>
 		</div>
@@ -323,9 +322,9 @@
 			data() {
 				return {
 					notMatchUsers: [],
-					startX:0,
-					startY:0,
-					currentCard:null,
+					startX: 0,
+					startY: 0,
+					currentCard: null,
 				}
 			},
 			computed: {
@@ -336,7 +335,7 @@
 						.then(res => res.json())
 						.then(u => this.notMatchUsers = u)
 				},
-				startDrag(event,index) {
+				startDrag(event, index) {
 					this.currentCard = event.target;
 					this.startX = event.touches ? event.touches[0].clientX : event.clientX;
 					this.startY = event.touches ? event.touches[0].clientY : event.clientY;
@@ -400,6 +399,7 @@
 	<script>
 		// 選取所有卡片元素
 		const cards = document.querySelectorAll('.cards');
+		console.log(cards);
 		let startX, startY, currentCard;
 
 		// 為每張卡片添加事件監聽器
@@ -466,8 +466,7 @@
 			}
 		});
 
-		function showDetail() 
-		{
+		function showDetail() {
 			var div = $(".buttons");
 			var currentPosition = div.css('position');
 			if (currentPosition === 'absolute') {
