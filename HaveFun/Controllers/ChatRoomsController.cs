@@ -25,6 +25,8 @@ namespace HaveFun.Controllers
             return View(await haveFunDbContext.ToListAsync());
         }
 
+
+
         // GET: ChatRooms/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -159,6 +161,17 @@ namespace HaveFun.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+        [HttpPost]
+        public async Task<IActionResult> MarkAsRead(int messageId)
+        {
+            var message = await _context.ChatRooms.FindAsync(messageId);
+            if (message != null && !message.IsRead)
+            {
+                message.IsRead = true;
+                await _context.SaveChangesAsync();
+            }
+            return Ok();
         }
 
         private bool ChatRoomExists(int id)

@@ -4,6 +4,7 @@ using HaveFun.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HaveFun.Migrations
 {
     [DbContext(typeof(HaveFunDbContext))]
-    partial class HaveFunDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240606050316_edit Post table")]
+    partial class editPosttable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -410,52 +413,6 @@ namespace HaveFun.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("MemberLabels");
-                });
-
-            modelBuilder.Entity("HaveFun.Models.MemberProfile", b =>
-                {
-                    b.Property<int>("MemberProfileId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MemberProfileId"));
-
-                    b.Property<DateTime>("Birthday")
-                        .HasColumnType("Date")
-                        .HasColumnName("BirthDay");
-
-                    b.Property<byte[]>("Image")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("Interests")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("Introduction")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("Nickname")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("Occupation")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.HasKey("MemberProfileId");
-
-                    b.ToTable("MemberProfile");
                 });
 
             modelBuilder.Entity("HaveFun.Models.Post", b =>

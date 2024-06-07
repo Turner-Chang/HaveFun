@@ -1,0 +1,288 @@
+﻿@{
+    Layout = "_Layout";
+}
+<!-- preloader start here -->
+<div class="preloader">
+    <div class="preloader-inner">
+        <div class="preloader-icon">
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+</div>
+<!-- preloader ending here -->
+<!-- scrollToTop start here -->
+<a href="#" class="scrollToTop"><i class="fa-solid fa-angle-up"></i></a>
+<!-- scrollToTop ending here -->
+<!-- ================> login section start here <================== -->
+<section class="log-reg">
+    <div class="top-menu-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-5">
+                    <a href="~/" class="backto-home text-black"><i class="fas fa-chevron-left"></i> 回到首頁</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container" id="register">
+        <div class="row">
+            <div class="image">
+            </div>
+            <div class="col-lg-7">
+                <div class="log-reg-inner">
+                    <div class="section-header">
+                        <h2 class="title">填寫會員資料 </h2>
+                        <br />
+                    </div>
+                    <div class="main-content">
+                        <h4 class="content-title">設定會員帳號及密碼</h4>
+                        <div class="form-group">
+                            <label>會員帳號*</label>
+                            <input type="text" class="my-form-control" placeholder="請填入信箱" v-model.lazy.trim="account">
+                            <div class="text-danger">{{accountError}}</div>
+                        </div>
+                        <div class="form-group">
+                            <label>密碼*</label>
+                            <input type="password" class="my-form-control" placeholder="請填入密碼" v-model.lazy="password">
+                            <div class="text-danger">{{passwordError}}</div>
+                        </div>
+                        <div class="form-group">
+                            <label>確認密碼*</label>
+                            <input type="password" class="my-form-control" placeholder="請填入確認密碼" v-model.lazy="checkPassword" />
+                            <div class="text-danger">{{checkpasswordError}}</div>
+                        </div>
+                        <h4 class="content-title mt-5">設定基本資料</h4>
+                        <div class="form-group">
+                            <label>暱稱*</label>
+                            <input type="text" class="my-form-control" placeholder="請填入名稱" v-model.lazy="name">
+                            <div class="text-danger">{{nameError}}</div>
+                        </div>
+                        <div class="form-group">
+                            <label>生日*</label>
+                            <input type="date" class="my-form-control" v-model="birthDay" :max="birthDayMax">
+                            <div class="text-danger">{{birthDayError}}</div>
+                        </div>
+                        <div class="form-group">
+                            <label>性別*</label>
+                            <div class="banner__inputlist">
+                                <div class="s-input me-3">
+                                    <input type="radio" name="gender1" id="males1" value="0" v-model="gender"><label for="males1">男性</label>
+                                </div>
+                                <div class="s-input">
+                                    <input type="radio" name="gender1" id="females1" value="1" v-model="gender"><label for="females1">女性</label>
+                                </div>                          
+                            </div>
+                            <div class="text-danger">{{genderError}}</div>
+                        </div>
+                        <div class="form-group">
+                            <label>電話</label>
+                            <input type="text" maxlength="20" class="my-form-control" placeholder="請填入電話" v-model.lazy.trim="phoneNumber">
+                            <div class="text-danger">{{phoneNumberError}}</div>
+                        </div>
+                        <div class="form-group">
+                            <label>地址</label>
+                            <input type="text" maxlength="100" class="my-form-control" placeholder="請填入地址" v-model.lazy.trim="address" max="100">
+                            <div class="text-danger">{{addressError}}</div>
+                        </div>
+                        <div class="form-group">
+                            <label>大頭貼</label>
+                            <input type="file" class="form-control" v-model="profilePicture" @@change="isImage" accept="image/*">
+                            <div class="text-danger">{{profilePictureError}}</div>
+                            <img class="imgPreview img-thumbnail" />
+                        </div>
+                    </div>
+                    <button class="default-btn reverse" data-toggle="modal" data-target="#email-confirm" @@click="submit"><span>建立帳號</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</section>
+<!-- ================> login section end here <================== -->
+
+@section Scripts{
+    <script>
+
+        // ----------設定Vue-----------
+        const register = Vue.createApp({
+            data() {
+                return {
+                    account:'',
+                    password:'',
+                    checkPassword:'',
+                    name:'',
+                    address:'',
+                    phoneNumber:'',
+                    gender:'',
+                    birthDay:'',
+                    accountError:'',
+                    passwordError:'',
+                    checkpasswordError: '',
+                    nameError:'',
+                    birthDayError: '',
+                    genderError:'',
+                    phoneNumberError: '',
+                    addressError:'',
+                    profilePictureError:'',
+                    profilePicture: null,
+                    
+                }
+            },
+            methods: {
+                isImage(even){
+                    let file = even.target.files[0];
+                    if (file == null){
+                        document.querySelector('.imgPreview').src = '';
+                        this.profilePictureError = '';
+                    }else if (file.type.startsWith('image/')) {
+                        this.profilePictureError = '';
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            document.querySelector('.imgPreview').src = e.target.result;
+                        }
+                        reader.readAsDataURL(file);
+                        this.ProfilePicture = file;
+                    }else{
+                        this.profilePictureError = '請傳入圖片檔';
+                    }
+                },
+                generateFromData() {
+                    let formData = new FormData();
+                    formData.append('Account', this.account);
+                    formData.append('Password', this.password);
+                    formData.append('Name', this.name);
+                    formData.append('Address', this.address);
+                    formData.append('Gender', this.gender);
+                    formData.append('BirthDay', this.birthDay);
+                    formData.append('PhoneNumber', this.phoneNumber);
+                    formData.append('ProfilePicture', this.ProfilePicture);
+                    return fromData;
+                },
+                submit(){
+                    if (!this.isFormValid) {
+                        alert('請填好資料才能送出');
+                    } else {
+                        const userData =  generateFromData();
+                        fetch('/api/Register/AddUser', {
+                            method: 'Post',
+                            body: userData
+                        })
+                        .then(resp => {
+                            if (resp.ok) {
+                                return resp.json();
+                            }else if(resp.status === 400){
+                                return resp.json();
+                            }else{
+                                throw "網站出現錯誤，請洽管理員";
+                            }   
+                        })
+                        .then(result => {
+                            if (result.status == 400) {
+                                this.accountError = result.errors.Account.toString();
+                                this.passwordError = result.errors.Password.toString();
+                                this.nameError = result.errors.Name.toString();
+                                this.birthDayError = result.errors.BirthDay.toString();
+                                this.genderError = result.errors.Gender.toString();
+                                this.phoneNumberError = result.errors.PhoneNumber.toString();
+                                this.addressError = result.errors.Address.toString();
+                            }else{
+
+                            }
+                        })
+                        .catch(err => alert(err));
+                    }
+                }
+            },
+            computed: {
+                birthDayMax() {
+                    const max = new Date();
+                    max.setFullYear(max.getFullYear() - 18);
+                    return max.toISOString().split('T')[0];
+                },
+                isFormValid() {
+                    return (
+                        this.accountError == '' && this.passwordError == '' &&
+                        this.checkpasswordError == '' && this.nameError == '' &&
+                        this.birthDayError == '' && this.genderError == '' &&
+                        this.phoneNumberError == '' && this.addressError == '' &&
+                        this.profilePictureError == '' &&
+                        this.account != '' && this.password != '' &&
+                        this.name != '' && this.birthDay != ''
+                    );
+                }
+            },
+            watch: {
+                account(nval, oval) {
+                    const emailRex = /^\w+((-\w+)|(\.\w+))*\@@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/
+                    if (nval == '') {
+                        this.accountError = '帳號不可為空';
+                    } else if (!emailRex.test(nval)) {
+                         this.accountError = '請輸入有效的電子郵件地址';
+                    } else {
+                        let hasAccount = true;
+                        fetch(`/api/Register/HasAccount/${nval}`)
+                            .then(resp => resp.json())
+                            .then(bool => {
+                                hasAccount = bool;
+                                if (hasAccount == false) {
+                                    this.accountError = '帳號已重複';
+                                } else {
+                                    this.accountError = '';
+                                }
+                            })
+                            .catch(err => { this.accountError = '無法檢查帳號'; });
+                            }
+                },
+                password(nval, oval) {
+                    const passwordRex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{10,20}$/
+                    if (nval == '') {
+                        this.passwordError = '密碼不可為空';
+                    } else if (!passwordRex.test(nval)){
+                        this.passwordError = '密碼必須包含至少一個大寫字母、一個小寫字母和一個數字，且長度在 10 到 20 個字符之間';
+                    } else {
+                        this.passwordError = '';
+                    }     
+                },
+                checkPassword(nval, oval) {
+                    if(nval == ''){
+                        this.checkpasswordError = '確認密碼不可為空';
+                    }else if(nval !== this.password){
+                        this.checkpasswordError = '與密碼不一致';
+                    }else{
+                        this.checkpasswordError = '';
+                    }
+                },
+                name(nval, oval) {
+                    if (nval == '') {
+                        this.nameError = '請輸入暱稱';
+                    } else if (nval.length > 50) {
+                        this.nameError = '暱稱長度不能超過50字';
+                    }else{
+                        this.nameError = '';
+                    }
+                },
+                phoneNumber(nval, oval) {
+                    const phoneNumberRex = /^[\d\+\-\(\) ]+$/;
+                    if (nval != '' && (nval.length < 10 || nval.length > 20)) {
+                        this.phoneNumberError = '電話長度為10到20字之間';
+                    } else if (nval != '' && !phoneNumberRex.test(nval)) {
+                        this.phoneNumberError = '電話號碼格式不正確';
+                    } else {
+                        this.phoneNumberError = '';
+                    }
+                }
+                ,
+                address(nval, oval) {
+                    if(nval.length > 100){
+                        this.addressError = '地址不可超過100字';
+                    }else{
+                        this.addressError = '';
+                    }   
+                },
+            }
+        }).mount('#register');
+        // ----------------------------
+
+    </script>
+}                      
