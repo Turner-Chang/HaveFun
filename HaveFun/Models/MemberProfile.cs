@@ -11,8 +11,8 @@ namespace HaveFun.Models
 
 			[Required]
 			[ForeignKey("UseId")]
-			public int UsId { get; set; }
-			public virtual UserInfo UseId { get; set; }
+			public int UseId { get; set; }
+			//public virtual UserInfo UseId { get; set; }
 
 			[Required]
 			[MaxLength(10)]

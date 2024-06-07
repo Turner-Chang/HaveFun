@@ -532,141 +532,105 @@
                                     </div>
                                 </div> *@
 
-                                <div class="tab-pane fade" style="padding-bottom:10px;" id="gt3" role="tabpanel" aria-labelledby="gt3-tab">
-                                    <div class="site" id="app2">
-                                       <div class="container">
-                                            <div class="mb-3">
-                                                <button type="button" class="btn btn-primary" @@click="showModal">建立個人資料</button>
-                                            </div>
-                                        <div class="mb-3">
-                                            <div class="row">
-                                                 <div class="col-md-3" v-for="item in memberprofile">
-                                                        <template v-if="item.Edit==true">
-                                                            <div class="card h-700">
-                                                                <img class="card-img-top" v-bind:title="item.nickname" style="width:400px;height:400px"
-                                                                     v-bind:src="`${baseAddress}/api/MemberProfile/GETImage/${item.memberProfileId}?rand=${rand}`" />
-                                                                <div class="card-body">
-                                                                    <h5 class="card-title">暱稱:</h5>
-                                                                    <input type="text" class="form-control" v-model="item.nickname" />
-                                                                    <h5 class="card-title">所在地:</h5>
-                                                                    <input type="text" class="form-control" v-model="item.location" />
-                                                                    <h5 class="card-title">生日:</h5>
-                                                                    <input type="text" class="form-control" v-model="item.birthday" />
-                                                                    <h5 class="card-title">職業</h5>
-                                                                    <input type="text" class="form-control" v-model="occupation" />
-                                                                    <h5 class="card-title">興趣</h5>
-                                                                    <input type="text" class="form-control" v-model="item.interests" />
-                                                                    <h5 class="card-title">自我介紹</h5>
-                                                                    <input type="text" class="form-control" v-model="item.introduction" />
-                                                                    <input id="editFile" type="file" @@change="editFileChange($event.target)" accept="image/*" class="form-control" />
-                                                                    <div class="mb-3">
-                                                                        <button type="button" class="btn btn-success" @@click="update(item)">修改</button>
-                                                                        <button type="button" class="btn btn-warning" @@click="cancel">取消</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+								<div class="tab-pane fade" style="padding-bottom:10px;" id="gt3" role="tabpanel" aria-labelledby="gt3-tab">
+									<div id="app2">
+                                        <div>
+                                            <img style="width:400px;height:400px" />
+                                            <h5 class="title">暱稱:</h5>
+                                            <input type="text" class="form-control"  />
+                                            <h5 class="title">所在地:</h5>
+                                            <input type="text" class="form-control" />
+                                            <h5 class="title">生日:</h5>
+                                            <input type="text" class="form-control" />
+                                            <h5 class="title">職業:</h5>
+                                            <input type="text" class="form-control" />
+                                            <h5 class="title">興趣:</h5>
+                                            <input type="text" class="form-control" />
+                                            <h5 class="title">自我介紹:</h5>
+                                            <input type="text" class="form-control" />
 
-                                                        </template>
-
-                                                        <template v-else>
-                                                            <div class="card h-700">
-                                                                <img class="card-img-top" v-bind:title="item.nickname" style="width:400px;height:400px"
-                                                                     v-bind:src="`${baseAddress}/api/MemberProfile/GETImage/${item.memberProfileId}?rand =${rand}`" />
-                                                                <div class="card-body">
-                                                                    <h5 class="card-title">暱稱:</h5>
-                                                                    <p class="card-text">{{item.nickname}}</p>
-                                                                    <h5 class="card-title">所在地:</h5>
-                                                                    <p class="card-text">{{item.location}}</p>
-                                                                    <h5 class="card-title">生日:</h5>
-                                                                    <p class="card-text">{{item.birthday}}</p>
-                                                                    <h5 class="card-title">職業</h5>
-                                                                    <p class="card-text">{{item.occupation}}</p>
-                                                                    <h5 class="card-title">興趣</h5>
-                                                                    <p class="card-text">{{item.interests}}</p>
-                                                                    <h5 class="card-title">自我介紹</h5>
-                                                                    <p class="card-text">{{item.introduction}}</p>
-                                                                    <div class="mb-3">
-                                                                        <button type="button" class="btn btn-primary" @@click="edit(item.memberProfileId)">編輯</button>
-                                                                        <button type="button" class="btn btn-danger" @@click="deleteMemberProfile(item.memberProfileId)">刪除</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                        </template>
-
-                                                       <div>
-                                                            <h6>你的標籤:</h6>
-                                                            <!-- 標籤可以隨意替換 -->
-                                                            <div id="introduction" class="border border-dark" style="width:auto;height:60px">
-                                                                   <span class="tag">標籤1</span>
-                                                                   <span class="tag">標籤2</span>
-                                                                   <span class="tag">標籤3</span>
-                                                                <!-- 更多標籤 -->                                                 
-                                                            </div>
-                                                       </div>
-                                                 </div>
-                                            </div>
                                         </div>
-                                       </div>
-                                            <div class="modal fade"
-                                                 id="insertModal"
-                                                 tabindex="-1"
-                                                 data-bs-backdrop="static"
-                                                 data-bs-keyboard="false"
-                                                 role="dialog"
-                                                 aria-labelledby="modalTitleId"
-                                                 aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md"
-                                                     role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="modalTitleId">建立個人資料</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div class="container">
-                                                                <div class="mb-3">
-                                                                    <label class="form-label">暱稱:</label>
-                                                                    <input class="form-control" v-model="nickname" />
-                                                                </div>
-                                                                 <div class="mb-3">
-                                                                    <label class="form-label">所在地:</label>
-                                                                <input class="form-control" v-model="location" />
-                                                                </div>
-                                                                 <div class="mb-3">
-                                                                    <label class="form-label">生日:</label>
-                                                                    <input class="form-control" v-model="birthday" />
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label class="form-label">職業:</label>
-                                                                    <input class="form-control" v-model="occupation" />
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label class="form-label">興趣:</label>
-                                                                    <input class="form-control" v-model="interests" />
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label class="form-label">自我介紹:</label>
-                                                                    <input class="form-control" v-model="introduction" />
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label class="form-label">Picture:</label>
-                                                                    <img id="insertPreview" title="待上傳" src="~/images/noooo.jpg" style="width:320px;height:240px" asp-append-version />
-                                                                    <input type="file" id="insertFile" class="form-control" accept="image/*"
-                                                                           @@change="insertFileChange($event.target)" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">取消</button>
-                                                            <button id="btnInsert" type="button" class="btn btn-primary" @@click="insert">保存</button>
+										<div class="container">
+											<div class="mb-3">
+												<button type="button" class="btn default-btn" @@click="showModal">修改</button>
+											</div>
+											<div class="mb-3">
+												<div class="row">
+													<div class="col-md-3" v-for="item in memberprofile">
+											
+													</div>
+                                                    <div>
+                                                        <h6>你的標籤:</h6>
+                                                        <!-- 標籤可以隨意替換 -->
+                                                        <div id="introduction" class="border border-dark" style="width:auto;height:60px">
+                                                            <span class="tag">標籤1</span>
+                                                            <span class="tag">標籤2</span>
+                                                            <span class="tag">標籤3</span>
+                                                            <!-- 更多標籤 -->
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div>
+												</div>
+											</div>
+										</div>
+										<div class="modal fade"
+											 id="insertModal"
+											 tabindex="-1"
+											 data-bs-backdrop="static"
+											 data-bs-keyboard="false"
+											 role="dialog"
+											 aria-labelledby="modalTitleId"
+											 aria-hidden="true">
+											<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md"
+												 role="document">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h5 class="modal-title" id="modalTitleId">更新個人資料</h5>
+														<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+													</div>
+													<div class="modal-body">
+														<div class="container">
+															<div class="mb-3">
+																<label class="form-label">暱稱:</label>
+																<input class="form-control" v-model="nickname" />
+															</div>
+															<div class="mb-3">
+																<label class="form-label">所在地:</label>
+																<input class="form-control" v-model="location" />
+															</div>
+															<div class="mb-3">
+																<label class="form-label">生日:</label>
+																<input class="form-control" v-model="birthday" />
+															</div>
+															<div class="mb-3">
+																<label class="form-label">職業:</label>
+																<input class="form-control" v-model="occupation" />
+															</div>
+															<div class="mb-3">
+																<label class="form-label">興趣:</label>
+																<input class="form-control" v-model="interests" />
+															</div>
+															<div class="mb-3">
+																<label class="form-label">自我介紹:</label>
+																<input class="form-control" v-model="introduction" />
+															</div>
+															<div class="mb-3">
+																<label class="form-label">Picture:</label>
+																<img id="insertPreview" title="待上傳" src="~/images/noooo.jpg" style="width:320px;height:240px" asp-append-version />
+																<input type="file" id="insertFile" class="form-control" accept="image/*"
+																	   @@change="insertFileChange($event.target)" />
+															</div>
+														</div>
+													</div>
+													<div class="modal-footer">
+														<button type="button" class="btn btn-primary" data-bs-dismiss="modal">取消</button>
+														<button id="btnInsert" type="button" class="btn btn-primary" @@click="insert">確定</button>
+													</div>
+												</div>
+											</div>
+										</div>
 
-                                    </div>
-                                </div>
+									</div>
+								</div>
 
                                 <div class="tab-pane fade" id="gt4" role="tabpanel" aria-labelledby="gt4-tab">
                                     <div class="group__bottom--area">
@@ -1630,7 +1594,9 @@
                     filter: "",
                     memberprofile: [],
                     baseAddress: "https://localhost:7152",
+                    memberProfileId: 0,
                     nickname: "",
+                    useId: 0,
                     location: "",
                     birthday: "",
                     occupation: "",
@@ -1648,20 +1614,6 @@
                 showModal: function () {
                     //alert("show");
                     $("#insertModal").modal("show");
-                },
-                filterMemberProfile: function () {
-                    //alert("filter");
-                    let _this = this;
-                    var request = {};
-                    request.memberProfileId.isNaN(Number(_this.filter)) ? -1 : Number(_this.filter);
-                    request.nickname = request.interests = _this.filter;
-                    request.image = null;
-                    axios.post(`${_this.baseAddress}/api/MemberProfile/Filter`, request).then(response => {
-                        //alert(JSON.stringify(response));
-                        _this.memberprofile = response.data;
-                    }).catch(err => {
-                        alert(err);
-                    });
                 },
                 edit: function (memberProfileId) {
                     //alert(`Edit:${memberProfileId}`);
@@ -1683,10 +1635,14 @@
                     alert(`delete:${memberProfileId}`);
                 },
                 editFileChange: function (file) {
-                    alert(file.name);
+                    //alert(file.name);
+                    let _this = this;
+                    _this.readURL(file, file.parentElement.parentElement.firstChild, $("#btnupdate"));
                 },
                 insertFileChange: function (file) {
-                    alert(file.name);
+                    //alert(file.name);
+                    let _this = this;
+                    _this.readURL(file, file.previousElementSibling, $("#btnInsert"));
                 },
                 update: function (item) {
                     //alert(item.nickname);
@@ -1700,9 +1656,9 @@
                     formData.append("Interests", item.interests);
                     formData.append("Introduction", item.introduction);
                     formData.append("Image", document.querySelector("#editFile").files[0]);
-                    axios.put(`${_this.baseAddress}/api/MemberProfiles/${item.memberProfileId}`, FormData).then(response => {
+                    axios.put(`${_this.baseAddress}/api/MemberProfilesApi/${item.memberProfileId}`, FormData).then(response => {
                         alert(response.data);
-                        _this.filterMemberProfile();
+                        _this.memberprofile;
                     }).catch(err => {
                         alert(err);
                     });
@@ -1725,13 +1681,56 @@
                     }
                 },
                 insert: function(){
-                    alert("insert");
+                    //alert("insert");
+                    let _this = this;
+                    var formData = new FormData;
+                    formData.append("nickname", _this.nickname);
+                    formData.append("location", _this.location);
+                    formData.append("birthDay", _this.birthday);
+                    formData.append("occupation", _this.occupation);
+                    formData.append("interests", _this.interests);
+                    formData.append("introduction", _this.introduction);
+                    formData.append("Image", document.querySelector("#insertFile").files[0]);
+                    axios.post(`${_this.baseAddress}/api/MemberProfilesApi/`, formData).then(response => {
+                        alert(response.data);
+                        _this.memberProfileId = isNaN(Number(_this.filter)) ? -1 : Number(_this.filter);
+                        _this.nickname = "";
+                        _this.useId = 0;
+                        _this.location = "";
+                        _this.birthday = "";
+                        _this.occupation = "";
+                        _this.interests = "";
+                        _this.introduction = "";
+                        document.querySelector("#insertFile").value = "";
+                        $("#insertPreview").attr("src", "@Url.Content("~/images/noooo.jpg")");
+                        $("#insertModal").modal("hide");
+                        _this.memberprofile; //回首頁
+                    }).catch(err => {
+                        alert(err);
+                    });
                 },
-                
+                readURL: function (file, img, button) {
+                    if (file.files && file.files[0]) {
+                        var allowType = "image.*";
+                        var uploadFile = file.file[0];
+                        if (uploadFile.type.match(allowType)) {
+                            var reader = new FileReader();
+                            reader.onload = function (e) {
+                                img.src = e.target.result;
+                            };
+                            reader.readAsDataURL(uploadFile);
+                            button.prop("disabled", false);
+                        }else{
+                            alert("不支援上傳檔案類型~")
+                            button.prop("disabled", true)
+                        }
+                    }
+                },
+              
             },
-            mounted: function () {
+            mounted: function () {  //頁面載入成功
                 let _this = this;
-                _this.filterMemberProfile();
+                _this.memberprofile;
             },
         }).mount("#app2");
 

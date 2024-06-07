@@ -9,7 +9,7 @@ using HaveFun.Models;
 using Microsoft.AspNetCore.Cors;
 using HaveFun.DTO;
 
-namespace HaveFun.Controllers.API
+namespace HaveFun.Controllers.APIs
 {
 
     [EnableCors("MyCorsPolicy")]
@@ -32,7 +32,7 @@ namespace HaveFun.Controllers.API
             return await _context.MemberProfile.ToListAsync();
         }
 
-        //POST: api/MemberProfile/Filter
+        //POST: api/MemberProfilesApi/Filter
         [HttpPost("Filter")]
         // 篩選功能
         public async Task<IEnumerable<MemberProfile>> FilterMemberProfile(MemberProfile memberprofile)
@@ -43,7 +43,7 @@ namespace HaveFun.Controllers.API
                 m.Interests.Contains(memberprofile.Interests)
                 );
         }
-        //GET: api/MemberProfile/GETImage
+        //GET: api/MemberProfilesApi/GETImage
         [HttpGet("GETImage/{id}")]
         //找到圖片
         public async Task<FileResult> GetImage(int id)
@@ -113,7 +113,7 @@ namespace HaveFun.Controllers.API
             return "修改紀錄成功!";
         }
 
-        // POST: api/MemberProfiles
+        // POST: api/MemberProfilesApi
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<string> PostMemberProfile(MemberProfileDTO memberProfileDTO)
@@ -121,7 +121,11 @@ namespace HaveFun.Controllers.API
             MemberProfile m = new MemberProfile()
             {
                 Nickname = memberProfileDTO.Nickname,
-                Interests = memberProfileDTO.Interests
+                Location = memberProfileDTO.Location,
+                Birthday = memberProfileDTO.BirthDay,
+                Occupation = memberProfileDTO.Occupation,
+                Interests = memberProfileDTO.Interests,
+                Introduction = memberProfileDTO.Introduction
             };
             if (memberProfileDTO.Image != null)
             {

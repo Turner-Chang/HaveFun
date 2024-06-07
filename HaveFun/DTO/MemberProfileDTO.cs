@@ -12,8 +12,8 @@ namespace HaveFun.DTO
 
         [Required]
         [ForeignKey("UseId")]
-        public int UsId { get; set; }
-        public virtual UserInfo UseId { get; set; }
+        public int UseId { get; set; }
+        //public virtual UserInfo UseId { get; set; }
 
         
         [MaxLength(10)]
@@ -25,7 +25,7 @@ namespace HaveFun.DTO
 
         [Required]
         [Column("BirthDay", TypeName = "Date")]
-        public DateTime Birthday { get; set; }
+        public DateTime BirthDay { get; set; }
 
         [MaxLength(10)]
         public string Occupation { get; set; }
