@@ -23,5 +23,10 @@ namespace HaveFun.Controllers
 		{
 			return PartialView("_WhoLikes");
 		}
-	}
+
+        public IActionResult FriendList()
+        {
+            return PartialView("_FriendList");
+        }
+    }
 }

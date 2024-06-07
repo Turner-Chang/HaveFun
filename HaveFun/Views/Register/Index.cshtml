@@ -157,13 +157,13 @@
                     formData.append('BirthDay', this.birthDay);
                     formData.append('PhoneNumber', this.phoneNumber);
                     formData.append('ProfilePicture', this.ProfilePicture);
-                    return fromData;
+                    return formData;
                 },
                 submit(){
                     if (!this.isFormValid) {
                         alert('請填好資料才能送出');
                     } else {
-                        const userData =  generateFromData();
+                        const userData =  this.generateFromData();
                         fetch('/api/Register/AddUser', {
                             method: 'Post',
                             body: userData

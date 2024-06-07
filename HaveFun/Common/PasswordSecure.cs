@@ -20,9 +20,9 @@ namespace HaveFun.Common
         {
             var argon2 = new Argon2id(Encoding.UTF8.GetBytes(password));
             argon2.Salt = salt;
-            argon2.DegreeOfParallelism = 12; // 平行運算(基本上看核心數)
-            argon2.MemorySize = 1024 * 1024; // 用於計算的記憶體大小，1GB
-            argon2.Iterations = 10; // 迭代運算次數
+            argon2.DegreeOfParallelism = 24; // 平行運算(基本上看核心數)
+            argon2.MemorySize = 1024 * 1024 * 2; // 用於計算的記憶體大小，2GB
+            argon2.Iterations = 4; // 迭代運算次數
 
             return argon2.GetBytes(32);
         }
