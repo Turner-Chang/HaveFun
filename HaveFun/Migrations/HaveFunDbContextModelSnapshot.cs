@@ -596,6 +596,27 @@ namespace HaveFun.Migrations
                     b.ToTable("UserInfos");
                 });
 
+            modelBuilder.Entity("HaveFun.Models.UserPicture", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Picture")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserPictures");
+                });
+
             modelBuilder.Entity("HaveFun.Models.Activity", b =>
                 {
                     b.HasOne("HaveFun.Models.ActivityType", "ActivityType")
@@ -833,6 +854,17 @@ namespace HaveFun.Migrations
                     b.Navigation("UserInfo");
                 });
 
+            modelBuilder.Entity("HaveFun.Models.UserPicture", b =>
+                {
+                    b.HasOne("HaveFun.Models.UserInfo", "UserInfo")
+                        .WithMany("Pictures")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserInfo");
+                });
+
             modelBuilder.Entity("HaveFun.Models.Activity", b =>
                 {
                     b.Navigation("ActivityParticipants");
@@ -870,6 +902,8 @@ namespace HaveFun.Migrations
                     b.Navigation("Likes");
 
                     b.Navigation("MemberLabels");
+
+                    b.Navigation("Pictures");
 
                     b.Navigation("PostReviews");
 
