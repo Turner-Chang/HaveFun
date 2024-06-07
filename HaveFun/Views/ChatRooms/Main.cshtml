@@ -1,10 +1,11 @@
-﻿@{
+﻿@model IEnumerable<HaveFun.Models.ChatRoom>
+
+@{
     Layout = "_Layout";
 }
-@{
-    ViewData["Title"] = "ChatRoom";
-}
-<style>
+@section Styles
+{
+    <style>
     body {
         background-color: #f4f7f6;
         margin-top: 20px;
@@ -263,17 +264,17 @@
     }
 
     @@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
-        .chat-app .chat-list {
-            height: 480px;
-            overflow-x: auto
-        }
-
-        .chat-app .chat-history {
-            height: calc(100vh - 350px);
-            overflow-x: auto
-        }
+    .chat-app .chat-list {
+        height: 480px;
+        overflow-x: auto
     }
-</style>
+
+    .chat-app .chat-history {
+        height: calc(100vh - 350px);
+        overflow-x: auto
+    }}
+    </style>
+}
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.5/signalr.min.js"></script>
 
@@ -393,39 +394,44 @@
     </div>
 
 </div>
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
-<script>
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/chathub")
-        .build();
+@section Scripts
+{
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chathub")
+            .build();
 
-    connection.on("ReceiveMessage", (user, message) => {
-        const msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        const encodedMsg = `${user} says: ${msg}`;
-        const li = document.createElement("li");
-        li.classList.add("clearfix");
-        li.innerHTML = `<div class="message-data">
-                                            <span class="message-data-time">${new Date().toLocaleTimeString()}</span>
-                                        </div>
-                                        <div class="message my-message">${encodedMsg}</div>`;
-        document.getElementById("messagesList").appendChild(li);
-    });
+        connection.on("ReceiveMessage", (user, message) => {
+            const msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            const encodedMsg = `${user} says: ${msg}`;
+            const li = document.createElement("li");
+            li.classList.add("clearfix");
+            li.innerHTML = `<div class="message-data">
+                                                    <span class="message-data-time">${new Date().toLocaleTimeString()}</span>
+                                                </div>
+                                                <div class="message my-message">${encodedMsg}</div>`;
+            document.getElementById("messagesList").appendChild(li);
+        });
 
-    connection.on("SomeOneOnline", (connid) => {
-        console.log(`有人連線了,Id:${connid}`)
-    });
-    connection.on("SomeOneOffline", (connid) => {
-        console.log(`有人離線了,Id:${connid}`)
-    });
+        connection.on("SomeOneOnline", (connid) => {
+            console.log(`有人連線了,Id:${connid}`)
+        });
+        connection.on("SomeOneOffline", (connid) => {
+            console.log(`有人離線了,Id:${connid}`)
+        });
 
-    connection.start().catch(err => console.error(err.toString()));
+        connection.start().catch(err => console.error(err.toString()));
 
-    document.getElementById("sendButton").addEventListener("click", event => {
-        const user = "Aiden Chavez"; // Replace with the dynamic user data if needed
-        const message = document.getElementById("messageInput").value;
-        connection.invoke("SendMessage", user, message).catch(err => console.error(err.toString()));
-        document.getElementById("messageInput").value = '';
-        event.preventDefault();
-    });
+        document.getElementById("sendButton").addEventListener("click", event => {
+            const user = "Aiden Chavez"; // Replace with the dynamic user data if needed
+            const message = document.getElementById("messageInput").value;
+            connection.invoke("SendMessage", user, message).catch(err => console.error(err.toString()));
+            document.getElementById("messageInput").value = '';
+            event.preventDefault();
+        });
 
-</script>
+    </script>
+}
