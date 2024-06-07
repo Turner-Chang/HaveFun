@@ -35,6 +35,11 @@ namespace HaveFun.Controllers.APIs
 					ProfilePicture = u.ProfilePicture,
 					Introduction = u.Introduction,
 					Level = u.Level,
+					Pictures = u.Pictures.Select(p => new UserPicture{ 
+						Id = p.Id,
+						UserId = p.UserId,
+						Picture = p.Picture,
+					}).ToList(),
 					Labels = u.MemberLabels.Select(m1 => new MatchLabelDTO
 					{
 						Id = m1.Label.Id,
