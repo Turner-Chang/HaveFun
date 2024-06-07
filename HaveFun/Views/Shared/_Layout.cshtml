@@ -198,12 +198,12 @@
 
        
         $('.navbar-nav>ul>li a ').hover(function () {
-            // 移除其他 a 标签的 hover 效果
+            // 移除其他 <a> 的 hover 效果
             $('.navbar-nav>ul>li a ').not(this).css("color", "black");
-            // 添加当前悬停的 a 标签的 hover 效果
+            // 添加當前懸停的 <a> 的 hover 效果
             $(this).css("color", "red");
         }, function () {
-            // 鼠标移开时移除 hover 效果
+            // 移開时移除 hover 效果
             $(this).css("color", "black");
         });
     </script>
