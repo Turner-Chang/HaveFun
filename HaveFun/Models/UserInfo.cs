@@ -62,6 +62,7 @@ namespace HaveFun.Models
         [Required]
         public string PasswordSalt { get; set; }
 
+        public virtual ICollection<UserPicture> Pictures { get; set; }
         
         public virtual ICollection<ChatRoom> SenderMessages { get; set; }
 

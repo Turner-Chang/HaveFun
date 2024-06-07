@@ -16,6 +16,21 @@
     <link rel="stylesheet" href="assets/css/lightcase.css">
     <link rel="stylesheet" href="assets/css/style.css">
 
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- All Needed JS -->
+    <script src="assets/js/vendor/modernizr-3.11.2.min.js"></script>
+    <script src="assets/js/isotope.pkgd.min.js"></script>
+    <script src="assets/js/swiper.min.js"></script>
+    <!-- <script src="assets/js/all.min.js"></script> -->
+    <script src="assets/js/wow.js"></script>
+    <script src="assets/js/lightcase.js"></script>
+    <script src="assets/js/jquery.countdown.min.js"></script>
+    <script src="assets/js/waypoints.min.js"></script>
+    <script src="assets/js/plugins.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Styles", required: false)
 
 </head>
@@ -53,7 +68,7 @@
                             <ul>
                                 <li>
 
-                                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">首頁</a>
+                                    <a class="nav-link"  asp-area="" asp-controller="Home" asp-action="Index">首頁</a>
                                 </li>
                                 <li>
                                     <a class="nav-link" asp-area="" asp-controller="Match" asp-action="Index">配對</a>
@@ -62,7 +77,7 @@
                                     <a class="nav-link" href="#">糾團</a>
                                 </li>
                                 <li>
-                                    <a class="nav-link" asp-area="" asp-controller="ChatRooms" asp-action="Index">好友聊天室</a>
+                                    <a class="nav-link" asp-area="" asp-controller="ChatRooms" asp-action="Main">好友聊天室</a>
                                 </li>
                                 <li>
                                     <a class="nav-link" asp-area="" asp-controller="Profile" asp-action="Index">個人主頁</a>
@@ -179,6 +194,7 @@
         </div>
     </footer>
     <!-- ================> Footer section end here <================== -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
     <script>
         const app_Layout = Vue.createApp({
@@ -194,8 +210,23 @@
             watch: {
             },
         }).mount("#app_Layout");
+
+       
+        $('.navbar-nav>ul>li a ').hover(function () {
+            // 移除其他 <a> 的 hover 效果
+            $('.navbar-nav>ul>li a ').not(this).css("color", "black");
+            // 添加當前懸停的 <a> 的 hover 效果
+            $(this).css("color", "red");
+        }, function () {
+            // 移開时移除 hover 效果
+            $(this).css("color", "black");
+        });
     </script>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+<<<<<<< HEAD
+@*     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+=======
+    
+>>>>>>> main
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <!-- All Needed JS -->
     <script src="assets/js/vendor/modernizr-3.11.2.min.js"></script>
@@ -208,7 +239,8 @@
     <script src="assets/js/waypoints.min.js"></script>
     <script src="assets/js/plugins.js"></script>
     <script src="assets/js/main.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script> *@
     @await RenderSectionAsync("Scripts", required: false)
+    
 </body>
 </html>

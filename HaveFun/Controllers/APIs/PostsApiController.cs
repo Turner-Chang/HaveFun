@@ -3,6 +3,7 @@ using HaveFun.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Nodes;
 
 namespace HaveFun.Controllers.APIs
 {
@@ -21,11 +22,41 @@ namespace HaveFun.Controllers.APIs
         //顯示貼文
         // GET : api/Post/GetPosts
         [HttpGet]
-        public async Task<IQueryable<Post>> GetPosts()
+        public async Task<IEnumerable<Post>> GetPosts()
         {
             return _context.Posts;
         }
-
+        //顯示貼文+回覆相關資料
+        // GET : api/Post/GetPostsRel
+        [HttpGet]
+        public async Task<JsonResult> GetPostsRel()
+        {
+            var result = await _context.Posts
+                .Where(p => p.Status == 0)
+                .Include(p => p.User)
+                .Include(p => p.Comments)
+                .OrderByDescending(p => p.Time)
+                .Select(r => new 
+                { UserName = r.User.Name,
+                  ProfilePicture = r.User.ProfilePicture,
+                  Contents = r.Contents,
+                  Time = r.Time.ToString("yyyy-MM-dd HH:mm:ss"),
+                  Picture = r.Pictures,
+                  Status = r.Status,
+                  Comment = r.Comments.OrderBy(c => c.Time).Select(c => new
+                  {
+                      CommentId = c.Id,
+                      ParentCommentId = c.ParentCommentId,
+                      PostId = c.PostId,
+                      UserId = c.User.Id,
+                      UserName = c.User.Name,
+                      ProfilePicture = c.User.ProfilePicture,
+                      Contents = c.Contents,
+                      Time = c.Time.ToString("yyyy-MM-dd HH:mm:ss")
+                  }).ToList()
+                }).ToListAsync();
+            return new JsonResult(result);
+        }
         //新增貼文 //未完成
         // POST: api/Post/CreatePost
         [HttpPost]
@@ -50,5 +81,26 @@ namespace HaveFun.Controllers.APIs
             await _context.SaveChangesAsync();
             return "新增貼文成功";
         }
+
+        //查詢檢舉項目
+        // GET : api/Post/GetComplaintCategory
+        [HttpGet]
+        public async Task<JsonResult> GetComplaintCategory()
+        {
+            var result = await _context.ComplaintCategories.ToListAsync();
+            return new JsonResult(result);
+        }
+        //檢舉貼文
+        // POST: api/Post/RatPostReview
+        //[HttpPost]
+        //public async Task<string> RatPostReview(PostReview ratPost)
+        //{
+            //PostReview ratPost = new PostReview
+            //{
+      
+
+            //};
+            //return "新增檢舉貼文成功";
+        //}
     }
 }
