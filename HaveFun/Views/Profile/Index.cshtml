@@ -66,9 +66,14 @@
                         <div class="group__bottom--left">
                             <div class="tab-content" id="myTabContent">
 
+<<<<<<< HEAD
 
                             <partial name="_Post" />
                             <partial name="_UserInfo" />
+=======
+                            @* <partial name="_Post" />
+                            <partial name="_UserInfo" /> *@
+>>>>>>> origin/TIM04/ProfilePage
                             <partial name="_WhoLikes" />
                             <partial name="_FriendList" />
 
@@ -2605,56 +2610,57 @@
 
 @section Scripts {
     <script>
-        $(document).ready(function () {
-            $(document).on("click", "#gt5-tab", function () {
+        // 誰喜歡我
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('gt5-tab').addEventListener('click', function () {
                 axios.get('https://localhost:7152/api/Profile/GetWhoLikeList')
                     .then(function (response) {
                         var data = response.data;
-                        var memberContainer = $('#memberContainer');
-                        memberContainer.empty(); // 清空Container
+                        var memberContainer = document.getElementById('memberContainer');
+                        memberContainer.innerHTML = ''; // 清空Container
+
                         data.forEach(function (member) {
+                            var div_col = document.createElement("div");
+                            div_col.className = "col";
 
-                                const div_col = document.createElement("div");
-                                div_col.setAttribute("class", "col");
+                            var div_member__item = document.createElement("div");
+                            div_member__item.className = "member__item w-100";
 
-                                const div_member__item = document.createElement("div");
-                                div_member__item.setAttribute("class", "member__item w-100");
+                            var div_member__inner = document.createElement("div");
+                            div_member__inner.className = "member__inner m-0";
 
-                                const div_member__inner = document.createElement("div");
-                                div_member__inner.setAttribute("class", "member__inner m-0");
+                            var div_member__thumb = document.createElement("div");
+                            div_member__thumb.className = "member__thumb";
 
-                                const div_member__thumb = document.createElement("div");
-                                div_member__thumb.setAttribute("class", "member__thumb");
+                            var img = document.createElement("img");
+                            img.src = member.profilePicture;
+                            img.alt = "member-img";
+                            div_member__thumb.appendChild(img);
 
-                                const img = document.createElement("img");
-                                img.setAttribute("src", member.profilePicture);
-                                img.setAttribute("alt", "member-img");
-                                div_member__thumb.appendChild(img);
+                            var div_member__content = document.createElement("div");
+                            div_member__content.className = "member__content";
 
-                                const div_member__content = document.createElement("div");
-                                div_member__content.setAttribute("class", "member__content");
+                            var a = document.createElement("a");
+                            a.href = "member-single.html";
 
-                                const a = document.createElement("a");
-                                a.setAttribute("href", "member-single.html");
+                            var h6 = document.createElement("h6");
+                            h6.textContent = member.name;
+                            a.appendChild(h6);
+                            div_member__content.appendChild(a);
 
-                                const h6 = document.createElement("h6");
-                                h6.textContent = member.name;
-                                a.appendChild(h6);
-                                div_member__content.appendChild(a);
+                            var p = document.createElement("p");
+                            p.textContent = `${member.age} Years old `;
+                            var i = document.createElement("i");
+                            i.className = `fa-solid fa-${member.gender === 'male' ? 'mars' : 'venus'}`;
+                            p.appendChild(i);
 
-                                const p = document.createElement("p");
-                                p.textContent = `${member.age} Years old `;
-                                const i = document.createElement("i");
-                                i.setAttribute("class", `fa-solid fa-${member.gender === 'male' ? 'mars' : 'venus'}`);
-                                p.appendChild(i);
+                            div_member__content.appendChild(p);
+                            div_member__inner.appendChild(div_member__thumb);
+                            div_member__inner.appendChild(div_member__content);
+                            div_member__item.appendChild(div_member__inner);
+                            div_col.appendChild(div_member__item);
 
-                                div_member__content.appendChild(p);
-                                div_member__inner.appendChild(div_member__thumb);
-                                div_member__inner.appendChild(div_member__content);
-                                div_member__item.appendChild(div_member__inner)
-                                div_col.appendChild(div_member__item);
-
-                            memberContainer.append(div_col);
+                            memberContainer.appendChild(div_col);
                         });
                     })
                     .catch(function (err) {
@@ -2663,6 +2669,7 @@
             });
         });
 
+<<<<<<< HEAD
         // $("#gt1-tab").on("click", function () {
         //     alert("個人貼文");
         // });
@@ -2680,5 +2687,67 @@
         //     alert("btn_WhoLikes");
         // })
 
+=======
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelector('.post-form').addEventListener('submit', function (event) {
+                event.preventDefault();  
+
+                var postContent = document.getElementById('post-input').value; 
+                if (postContent.trim() === '') {
+                    alert('貼文不可空白');
+                    return;
+                }
+
+                // 新增貼文HTML
+                var newPost = document.createElement('div');
+                newPost.className = 'post-item mb-4';
+                newPost.innerHTML = `
+                            <div class="post-content">
+                                <div class="post-author">
+                                    <div class="post-author-inner">
+                                        <div class="author-thumb">
+                                            <img src="assets/images/member/profile/Member1.jpg" alt="datting thumb">
+                                        </div>
+                                        <div class="author-details">
+                                            <h6><a href="#">William Smith</a></h6>
+                                            <ul class="post-status">
+                                                <li class="post-privacy"><i class="icofont-world"></i> Public</li>
+                                                <li class="post-time">Just Now</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="post-description">
+                                    <p>${postContent}</p>
+                                </div>
+                            </div>
+                            <div class="post-meta">
+                                <div class="post-meta-top">
+                                    <p><a href="#"><i class="fa-solid fa-thumbs-up"></i> <i class="fa-solid fa-heart"></i> <i class="fa-solid fa-face-laugh"></i> <span>0 likes</span></a></p>
+                                    <p><a href="#">0 Comments</a></p>
+                                </div>
+                                <div class="post-meta-bottom">
+                                    <ul class="react-list">
+                                        <li class="react"><a href="#"><i class="fa-solid fa-thumbs-up"></i>Like</a></li>
+                                        <li class="react"><a href="#"><i class="fa-solid fa-comment"></i>Comment</a></li>
+                                        <li class="react"><a href="#"><i class="fa-solid fa-share-nodes"></i>Share</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        `;
+
+                // insertAdjacentElement
+                var createPostElement = document.querySelector('.create-post.mb-4');
+                if (createPostElement) {
+                   
+                    createPostElement.insertAdjacentElement('afterend', newPost);
+                }
+
+                // 清空
+                document.getElementById('post-input').value = '';
+            });
+        });
+    </script>
+>>>>>>> origin/TIM04/ProfilePage
     </script>
 }
