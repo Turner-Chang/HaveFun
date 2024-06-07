@@ -27,11 +27,11 @@ namespace HaveFun.Models
 
         [StringLength(maximumLength: 100)]
         [Column("Address", TypeName = "nvarchar(100)")]
-        public string Address { get; set; }
+        public string? Address { get; set; }
 
         [StringLength(maximumLength: 20,MinimumLength =10)]
         [Column("PhoneNumber", TypeName = "varchar(20)")]
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
 
         [Required]
         public int Gender { get; set; }
@@ -40,7 +40,7 @@ namespace HaveFun.Models
         [Column("BirthDay",TypeName ="Date")]
         public DateTime BirthDay { get; set; }
 
-        public string ProfilePicture { get; set; }
+        public string? ProfilePicture { get; set; }
 
         [Required]
         public int Status { get; set; } = 0;
@@ -48,13 +48,13 @@ namespace HaveFun.Models
         [Required]
         public int AccountStatus { get; set; } = 0;
 
-        public DateTime RegistrationDate { get; set; }
+        public DateTime? RegistrationDate { get; set; }
 
-        public DateTime LastLoginTime { get; set; }
+        public DateTime? LastLoginTime { get; set; }
 
         [StringLength(maximumLength:100)]
         [Column("Introduction",TypeName ="nvarchar(100)")]
-        public string Introduction { get; set; }
+        public string? Introduction { get; set; }
 
         [Required]
         public int Level { get; set; } = 0;
@@ -62,6 +62,7 @@ namespace HaveFun.Models
         [Required]
         public string PasswordSalt { get; set; }
 
+        public virtual ICollection<UserPicture> Pictures { get; set; }
         
         public virtual ICollection<ChatRoom> SenderMessages { get; set; }
 

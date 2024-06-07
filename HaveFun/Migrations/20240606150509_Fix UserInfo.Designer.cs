@@ -4,6 +4,7 @@ using HaveFun.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HaveFun.Migrations
 {
     [DbContext(typeof(HaveFunDbContext))]
-    partial class HaveFunDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240606150509_Fix UserInfo")]
+    partial class FixUserInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -412,52 +415,6 @@ namespace HaveFun.Migrations
                     b.ToTable("MemberLabels");
                 });
 
-            modelBuilder.Entity("HaveFun.Models.MemberProfile", b =>
-                {
-                    b.Property<int>("MemberProfileId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MemberProfileId"));
-
-                    b.Property<DateTime>("Birthday")
-                        .HasColumnType("Date")
-                        .HasColumnName("BirthDay");
-
-                    b.Property<byte[]>("Image")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("Interests")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("Introduction")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("Nickname")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("Occupation")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.HasKey("MemberProfileId");
-
-                    b.ToTable("MemberProfile");
-                });
-
             modelBuilder.Entity("HaveFun.Models.Post", b =>
                 {
                     b.Property<int>("Id")
@@ -642,27 +599,6 @@ namespace HaveFun.Migrations
                     b.ToTable("UserInfos");
                 });
 
-            modelBuilder.Entity("HaveFun.Models.UserPicture", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Picture")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserPictures");
-                });
-
             modelBuilder.Entity("HaveFun.Models.Activity", b =>
                 {
                     b.HasOne("HaveFun.Models.ActivityType", "ActivityType")
@@ -765,7 +701,7 @@ namespace HaveFun.Migrations
                         .HasForeignKey("ParentCommentId");
 
                     b.HasOne("HaveFun.Models.Post", "Post")
-                        .WithMany("Comments")
+                        .WithMany()
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -900,17 +836,6 @@ namespace HaveFun.Migrations
                     b.Navigation("UserInfo");
                 });
 
-            modelBuilder.Entity("HaveFun.Models.UserPicture", b =>
-                {
-                    b.HasOne("HaveFun.Models.UserInfo", "UserInfo")
-                        .WithMany("Pictures")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("UserInfo");
-                });
-
             modelBuilder.Entity("HaveFun.Models.Activity", b =>
                 {
                     b.Navigation("ActivityParticipants");
@@ -928,11 +853,6 @@ namespace HaveFun.Migrations
                     b.Navigation("Labels");
                 });
 
-            modelBuilder.Entity("HaveFun.Models.Post", b =>
-                {
-                    b.Navigation("Comments");
-                });
-
             modelBuilder.Entity("HaveFun.Models.UserInfo", b =>
                 {
                     b.Navigation("ActivityParticipants");
@@ -948,8 +868,6 @@ namespace HaveFun.Migrations
                     b.Navigation("Likes");
 
                     b.Navigation("MemberLabels");
-
-                    b.Navigation("Pictures");
 
                     b.Navigation("PostReviews");
 

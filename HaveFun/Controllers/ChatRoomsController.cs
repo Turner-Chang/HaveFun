@@ -9,6 +9,7 @@ using HaveFun.Models;
 
 namespace HaveFun.Controllers
 {
+    
     public class ChatRoomsController : Controller
     {
         private readonly HaveFunDbContext _context;
@@ -16,6 +17,13 @@ namespace HaveFun.Controllers
         public ChatRoomsController(HaveFunDbContext context)
         {
             _context = context;
+        }
+
+
+        public async Task<IActionResult> Main()
+        {
+            var haveFunDbContext = _context.ChatRooms.Include(c => c.Receiver).Include(c => c.Sender);
+            return View(await haveFunDbContext.ToListAsync());
         }
 
         // GET: ChatRooms
@@ -72,7 +80,7 @@ namespace HaveFun.Controllers
             ViewData["User1Id"] = new SelectList(_context.UserInfos, "Id", "Account", chatRoom.User1Id);
             return View(chatRoom);
         }
-
+        [HttpGet]
         // GET: ChatRooms/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -94,7 +102,6 @@ namespace HaveFun.Controllers
         // POST: ChatRooms/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,MessageText,CreateTime,User1Id,User2Id,IsRead")] ChatRoom chatRoom)
         {
@@ -127,7 +134,7 @@ namespace HaveFun.Controllers
             ViewData["User1Id"] = new SelectList(_context.UserInfos, "Id", "Account", chatRoom.User1Id);
             return View(chatRoom);
         }
-
+        [HttpGet]
         // GET: ChatRooms/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

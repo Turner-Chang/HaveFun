@@ -37,6 +37,7 @@ namespace HaveFun.Controllers.APIs
                 .OrderByDescending(p => p.Time)
                 .Select(r => new 
                 { UserName = r.User.Name,
+                  ProfilePicture = r.User.ProfilePicture,
                   Contents = r.Contents,
                   Time = r.Time.ToString("yyyy-MM-dd HH:mm:ss"),
                   Picture = r.Pictures,
@@ -48,6 +49,7 @@ namespace HaveFun.Controllers.APIs
                       PostId = c.PostId,
                       UserId = c.User.Id,
                       UserName = c.User.Name,
+                      ProfilePicture = c.User.ProfilePicture,
                       Contents = c.Contents,
                       Time = c.Time.ToString("yyyy-MM-dd HH:mm:ss")
                   }).ToList()

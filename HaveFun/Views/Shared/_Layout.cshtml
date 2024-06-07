@@ -61,6 +61,7 @@
 								</li>
 								<li>
 
+<<<<<<< HEAD
 									<a class="btn" href="#">糾團</a>
 								</li>
 									
@@ -75,6 +76,38 @@
 								</li>
 						<template v-if="isLogin">
 							<li>
+=======
+                                    <a class="nav-link"  asp-area="" asp-controller="Home" asp-action="Index">首頁</a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" asp-area="" asp-controller="Match" asp-action="Index">配對</a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" href="#">糾團</a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" asp-area="" asp-controller="ChatRooms" asp-action="Main">好友聊天室</a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" asp-area="" asp-controller="Profile" asp-action="Index">個人主頁</a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" asp-area="" asp-controller="POST" asp-action="Index">POST</a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" href="#">好友清單</a>
+                                </li>
+                                <teplate v-if="isLogin">
+                                    <li>
+                                        <a >
+                                        <img  src="~/assets/images/member/profile/01.jpg" />
+                                        </a>
+                                    </li>
+                                </teplate>
+                                <template v-else>
+                                    <li>
+                                        <a class="nav-link" asp-area="" asp-controller="Register" asp-action="Index">註冊</a>
+>>>>>>> main
 
 							<img src="~/assets/images/member/profile/01.jpg" />
 							<p style="text-align:center;">{{user}}</p>
@@ -177,6 +210,7 @@
 		</div>
 	</footer>
     <!-- ================> Footer section end here <================== -->
+<<<<<<< HEAD
 	<script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
 	<script>
 		const app = Vue.createApp({
@@ -195,6 +229,37 @@
 		}).mount("#app");
 	</script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+=======
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
+    <script>
+        const app_Layout = Vue.createApp({
+            data() {
+                return {
+                    isLogin: false,
+                }
+            },
+            computed: {
+            },
+            methods: {
+            },
+            watch: {
+            },
+        }).mount("#app_Layout");
+
+       
+        $('.navbar-nav>ul>li a ').hover(function () {
+            // 移除其他 <a> 的 hover 效果
+            $('.navbar-nav>ul>li a ').not(this).css("color", "black");
+            // 添加當前懸停的 <a> 的 hover 效果
+            $(this).css("color", "red");
+        }, function () {
+            // 移開时移除 hover 效果
+            $(this).css("color", "black");
+        });
+    </script>
+    
+>>>>>>> main
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 	<!-- All Needed JS -->
 	<script src="assets/js/vendor/modernizr-3.11.2.min.js"></script>
