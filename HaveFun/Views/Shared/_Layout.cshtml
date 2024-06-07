@@ -37,7 +37,7 @@
     <!-- ================> header section start here <================== -->
     <header class="header" id="navbar">
         <div class="header__bottom">
-            <div class="container" id="app">
+            <div class="container" id="app_Layout">
                 <nav class="navbar navbar-expand-lg">
                     <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
                         @* <img src="assets/images/logo/logo.png" alt="logo"> *@
@@ -53,13 +53,13 @@
                             <ul>
                                 <li>
 
-                                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">首頁</a>
+                                    <a class="nav-link"  asp-area="" asp-controller="Home" asp-action="Index">首頁</a>
                                 </li>
                                 <li>
                                     <a class="nav-link" asp-area="" asp-controller="Match" asp-action="Index">配對</a>
                                 </li>
                                 <li>
-                                    <a href="#">糾團</a>
+                                    <a class="nav-link" href="#">糾團</a>
                                 </li>
                                 <li>
                                     <a class="nav-link" asp-area="" asp-controller="ChatRooms" asp-action="Index">好友聊天室</a>
@@ -71,23 +71,23 @@
                                     <a class="nav-link" asp-area="" asp-controller="POST" asp-action="Index">POST</a>
                                 </li>
                                 <li>
-                                    <a class="btn" href="#">好友清單</a>
+                                    <a class="nav-link" href="#">好友清單</a>
                                 </li>
                                 <teplate v-if="isLogin">
                                     <li>
-                                        <img src="~/assets/images/member/profile/01.jpg" />
-                                        <p style="text-align:center;">{{user}}</p>
+                                        <a >
+                                        <img  src="~/assets/images/member/profile/01.jpg" />
+                                        </a>
                                     </li>
                                 </teplate>
                                 <template v-else>
                                     <li>
-
-                                        <a asp-area="" asp-controller="Register" asp-action="Index">註冊</a>
+                                        <a class="nav-link" asp-area="" asp-controller="Register" asp-action="Index">註冊</a>
 
 
                                     </li>
                                     <li>
-                                        <a class="btn" href="#">登入</a>
+                                        <a class="nav-link" href="#">登入</a>
                                     </li>
 
                                 </template>
@@ -179,13 +179,13 @@
         </div>
     </footer>
     <!-- ================> Footer section end here <================== -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
     <script>
-        const app = Vue.createApp({
+        const app_Layout = Vue.createApp({
             data() {
                 return {
                     isLogin: false,
-                    user: "user1",
                 }
             },
             computed: {
@@ -194,9 +194,20 @@
             },
             watch: {
             },
-        }).mount("#app");
+        }).mount("#app_Layout");
+
+       
+        $('.navbar-nav>ul>li a ').hover(function () {
+            // 移除其他 <a> 的 hover 效果
+            $('.navbar-nav>ul>li a ').not(this).css("color", "black");
+            // 添加當前懸停的 <a> 的 hover 效果
+            $(this).css("color", "red");
+        }, function () {
+            // 移開时移除 hover 效果
+            $(this).css("color", "black");
+        });
     </script>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <!-- All Needed JS -->
     <script src="assets/js/vendor/modernizr-3.11.2.min.js"></script>

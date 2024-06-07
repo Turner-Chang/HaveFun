@@ -18,11 +18,11 @@
                                     </div>
                                     <div class="form-check mb-3">
                                         <input class="form-check-input" id="inputRememberPassword" type="checkbox" value="" />
-                                        <label class="form-check-label" for="inputRememberPassword">Remember Password</label>
-                                    </div>
+                                     @*    <label class="form-check-label" for="inputRememberPassword">Remember Password</label>
+                                    </div> *@
                                     <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
 
-                                        <a class="btn btn-primary">Login</a>
+                                        <a id="btnLogin" class="btn btn-primary">Login</a>
                                     </div>
                                 </form>
                             </div>
@@ -35,3 +35,19 @@
     </div>
 
 </div>
+
+@section Scripts {
+    <script>
+        $("#btnLogin").on("click", () => 
+        {
+          //  alert("#btnLogin")
+            if (true) {
+            $(window).attr('location', '../home/Management');
+                app.islogin = true;
+            }
+        }
+        )
+
+    </script>
+
+}
