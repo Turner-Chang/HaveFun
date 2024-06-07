@@ -32,6 +32,7 @@ namespace HaveFun.Controllers.APIs
         public async Task<JsonResult> GetPostsRel()
         {
             var result = await _context.Posts
+                .Where(p => p.Status == 0)
                 .Include(p => p.User)
                 .Include(p => p.Comments)
                 .OrderByDescending(p => p.Time)
@@ -80,5 +81,26 @@ namespace HaveFun.Controllers.APIs
             await _context.SaveChangesAsync();
             return "新增貼文成功";
         }
+
+        //查詢檢舉項目
+        // GET : api/Post/GetComplaintCategory
+        [HttpGet]
+        public async Task<JsonResult> GetComplaintCategory()
+        {
+            var result = await _context.ComplaintCategories.ToListAsync();
+            return new JsonResult(result);
+        }
+        //檢舉貼文
+        // POST: api/Post/RatPostReview
+        //[HttpPost]
+        //public async Task<string> RatPostReview(PostReview ratPost)
+        //{
+            //PostReview ratPost = new PostReview
+            //{
+      
+
+            //};
+            //return "新增檢舉貼文成功";
+        //}
     }
 }

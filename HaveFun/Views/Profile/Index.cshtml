@@ -66,14 +66,14 @@
                         <div class="group__bottom--left">
                             <div class="tab-content" id="myTabContent">
 
-<<<<<<< HEAD
-                               
-=======
+
                             <partial name="_Post" />
                             <partial name="_UserInfo" />
                             <partial name="_WhoLikes" />
+<<<<<<< HEAD
+                            <partial name="_PostPartial" />
+=======
                             <partial name="_FriendList" />
->>>>>>> main
 
                                 @await Html.PartialAsync("_Post")
 
@@ -1876,6 +1876,7 @@
                                         </div>
                                     </div>
                                 </div> -->
+>>>>>>> main
                             </div>
                         </div>
                     </div>
@@ -2608,6 +2609,63 @@
 
 @section Scripts {
     <script>
+        $(document).ready(function () {
+            $(document).on("click", "#gt5-tab", function () {
+                axios.get('https://localhost:7152/api/Profile/GetWhoLikeList')
+                    .then(function (response) {
+                        var data = response.data;
+                        var memberContainer = $('#memberContainer');
+                        memberContainer.empty(); // 清空Container
+                        data.forEach(function (member) {
+
+                                const div_col = document.createElement("div");
+                                div_col.setAttribute("class", "col");
+
+                                const div_member__item = document.createElement("div");
+                                div_member__item.setAttribute("class", "member__item w-100");
+
+                                const div_member__inner = document.createElement("div");
+                                div_member__inner.setAttribute("class", "member__inner m-0");
+
+                                const div_member__thumb = document.createElement("div");
+                                div_member__thumb.setAttribute("class", "member__thumb");
+
+                                const img = document.createElement("img");
+                                img.setAttribute("src", member.profilePicture);
+                                img.setAttribute("alt", "member-img");
+                                div_member__thumb.appendChild(img);
+
+                                const div_member__content = document.createElement("div");
+                                div_member__content.setAttribute("class", "member__content");
+
+                                const a = document.createElement("a");
+                                a.setAttribute("href", "member-single.html");
+
+                                const h6 = document.createElement("h6");
+                                h6.textContent = member.name;
+                                a.appendChild(h6);
+                                div_member__content.appendChild(a);
+
+                                const p = document.createElement("p");
+                                p.textContent = `${member.age} Years old `;
+                                const i = document.createElement("i");
+                                i.setAttribute("class", `fa-solid fa-${member.gender === 'male' ? 'mars' : 'venus'}`);
+                                p.appendChild(i);
+
+                                div_member__content.appendChild(p);
+                                div_member__inner.appendChild(div_member__thumb);
+                                div_member__inner.appendChild(div_member__content);
+                                div_member__item.appendChild(div_member__inner)
+                                div_col.appendChild(div_member__item);
+
+                            memberContainer.append(div_col);
+                        });
+                    })
+                    .catch(function (err) {
+                        alert(err);
+                    });
+            });
+        });
 
         // $("#gt1-tab").on("click", function () {
         //     alert("個人貼文");
