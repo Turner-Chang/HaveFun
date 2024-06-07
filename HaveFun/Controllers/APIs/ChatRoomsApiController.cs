@@ -26,8 +26,7 @@ namespace HaveFun.Controllers.APIs
                 CreateTime = chatRoom.CreateTime,
                 User1Id = chatRoom.User1Id,
                 User2Id = chatRoom.User2Id,
-                IsRead = chatRoom.IsRead,
-                
+                IsRead = chatRoom.IsRead,  
             };
         }
 

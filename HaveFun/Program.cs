@@ -1,5 +1,6 @@
 using HaveFun.Common;
 using HaveFun.Models;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
