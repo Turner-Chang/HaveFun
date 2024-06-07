@@ -10,6 +10,11 @@ namespace HaveFun.Models
 			public int MemberProfileId { get; set; }
 
 			[Required]
+			[ForeignKey("UseId")]
+			public int UsId { get; set; }
+			public virtual UserInfo UseId { get; set; }
+
+			[Required]
 			[MaxLength(10)]
 			public string Nickname { get; set; }
 

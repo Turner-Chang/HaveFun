@@ -71,7 +71,7 @@
                     <div class="col order-xl-1">
                         <div class="group__bottom--left">
                             <div class="tab-content" id="myTabContent">
-                                <div class="tab-pane fade show active" id="gt1" role="tabpanel" aria-labelledby="gt1-tab">
+@*                                 <div class="tab-pane fade show active" id="gt1" role="tabpanel" aria-labelledby="gt1-tab">
                                     <div class="group__bottom--head group__bottom--activity bg-white mb-4 border-0">
                                         <ul class="nav nav-tabs" id="myTab2" role="tablist">
                                             <li class="nav-item" role="presentation">
@@ -94,7 +94,7 @@
 
                                     <div class="group__bottom--area group__bottom--memberactivity">
                                         <div class="group__bottom--body">
-                                            <div class="group__bottom--allmedia">
+                                           <div class="group__bottom--allmedia">
                                                 <div class="media-wrapper">
                                                     <div class="tab-content" id="myTabContent2">
                                                         <div class="tab-pane fade show active" id="Personal"
@@ -530,58 +530,141 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> *@
 
                                 <div class="tab-pane fade" style="padding-bottom:10px;" id="gt3" role="tabpanel" aria-labelledby="gt3-tab">
-                                    <div class="site">
-                                        <div class="info-card mb-3">                
+                                    <div class="site" id="app2">
+                                       <div class="container">
+                                            <div class="mb-3">
+                                                <button type="button" class="btn btn-primary" @@click="showModal">建立個人資料</button>
+                                            </div>
+                                        <div class="mb-3">
+                                            <div class="row">
+                                                 <div class="col-md-3" v-for="item in memberprofile">
+                                                        <template v-if="item.Edit==true">
+                                                            <div class="card h-700">
+                                                                <img class="card-img-top" v-bind:title="item.nickname" style="width:400px;height:400px"
+                                                                     v-bind:src="`${baseAddress}/api/MemberProfile/GETImage/${item.memberProfileId}?rand=${rand}`" />
+                                                                <div class="card-body">
+                                                                    <h5 class="card-title">暱稱:</h5>
+                                                                    <input type="text" class="form-control" v-model="item.nickname" />
+                                                                    <h5 class="card-title">所在地:</h5>
+                                                                    <input type="text" class="form-control" v-model="item.location" />
+                                                                    <h5 class="card-title">生日:</h5>
+                                                                    <input type="text" class="form-control" v-model="item.birthday" />
+                                                                    <h5 class="card-title">職業</h5>
+                                                                    <input type="text" class="form-control" v-model="occupation" />
+                                                                    <h5 class="card-title">興趣</h5>
+                                                                    <input type="text" class="form-control" v-model="item.interests" />
+                                                                    <h5 class="card-title">自我介紹</h5>
+                                                                    <input type="text" class="form-control" v-model="item.introduction" />
+                                                                    <input id="editFile" type="file" @@change="editFileChange($event.target)" accept="image/*" class="form-control" />
+                                                                    <div class="mb-3">
+                                                                        <button type="button" class="btn btn-success" @@click="update(item)">修改</button>
+                                                                        <button type="button" class="btn btn-warning" @@click="cancel">取消</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
 
-                                            <div class="mb-3 text-center">
-                                                <label class="form-label">大頭貼上傳</label>
-                                                <input id="imgFile" type="file" class="form-control" accept="image/*" />
-                                            </div>
-                                            <div class="mb-3 text-center">
-												<img id="imgPreview" src="~/images/noooo.jpg"  style="width:640px;height:480px;" />
-                                            </div>
-                                            <div class="mb-3 text-center">
-                                                <button id="btnAnalyze" class="btn default-btn">上傳</button>
-                                            </div>
+                                                        </template>
 
-                                            <div>
-                                                <h6>你的標籤:</h6>
-                                                <!-- 標籤可以隨意替換 -->
-                                                <div id="introduction" class="border border-dark" style="width:auto;height:60px">
-                                                    <span class="tag">標籤1</span>
-                                                    <span class="tag">標籤2</span>
-                                                    <span class="tag">標籤3</span>
-                                                    <!-- 更多標籤 -->
-                                                </div>
+                                                        <template v-else>
+                                                            <div class="card h-700">
+                                                                <img class="card-img-top" v-bind:title="item.nickname" style="width:400px;height:400px"
+                                                                     v-bind:src="`${baseAddress}/api/MemberProfile/GETImage/${item.memberProfileId}?rand =${rand}`" />
+                                                                <div class="card-body">
+                                                                    <h5 class="card-title">暱稱:</h5>
+                                                                    <p class="card-text">{{item.nickname}}</p>
+                                                                    <h5 class="card-title">所在地:</h5>
+                                                                    <p class="card-text">{{item.location}}</p>
+                                                                    <h5 class="card-title">生日:</h5>
+                                                                    <p class="card-text">{{item.birthday}}</p>
+                                                                    <h5 class="card-title">職業</h5>
+                                                                    <p class="card-text">{{item.occupation}}</p>
+                                                                    <h5 class="card-title">興趣</h5>
+                                                                    <p class="card-text">{{item.interests}}</p>
+                                                                    <h5 class="card-title">自我介紹</h5>
+                                                                    <p class="card-text">{{item.introduction}}</p>
+                                                                    <div class="mb-3">
+                                                                        <button type="button" class="btn btn-primary" @@click="edit(item.memberProfileId)">編輯</button>
+                                                                        <button type="button" class="btn btn-danger" @@click="deleteMemberProfile(item.memberProfileId)">刪除</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </template>
+
+                                                       <div>
+                                                            <h6>你的標籤:</h6>
+                                                            <!-- 標籤可以隨意替換 -->
+                                                            <div id="introduction" class="border border-dark" style="width:auto;height:60px">
+                                                                   <span class="tag">標籤1</span>
+                                                                   <span class="tag">標籤2</span>
+                                                                   <span class="tag">標籤3</span>
+                                                                <!-- 更多標籤 -->                                                 
+                                                            </div>
+                                                       </div>
+                                                 </div>
                                             </div>
-                                            <div id="MemberProfile">
-                                                <div>
-                                                    <h6>自我介紹:</h6>
-                                                    <div id="introduction" class="border border-dark" style="width:auto;height:250px">
-                                                        <p contenteditable="false">這裡是自我介紹...</p>
+                                        </div>
+                                       </div>
+                                            <div class="modal fade"
+                                                 id="insertModal"
+                                                 tabindex="-1"
+                                                 data-bs-backdrop="static"
+                                                 data-bs-keyboard="false"
+                                                 role="dialog"
+                                                 aria-labelledby="modalTitleId"
+                                                 aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md"
+                                                     role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="modalTitleId">建立個人資料</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="container">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">暱稱:</label>
+                                                                    <input class="form-control" v-model="nickname" />
+                                                                </div>
+                                                                 <div class="mb-3">
+                                                                    <label class="form-label">所在地:</label>
+                                                                <input class="form-control" v-model="location" />
+                                                                </div>
+                                                                 <div class="mb-3">
+                                                                    <label class="form-label">生日:</label>
+                                                                    <input class="form-control" v-model="birthday" />
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">職業:</label>
+                                                                    <input class="form-control" v-model="occupation" />
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">興趣:</label>
+                                                                    <input class="form-control" v-model="interests" />
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">自我介紹:</label>
+                                                                    <input class="form-control" v-model="introduction" />
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">Picture:</label>
+                                                                    <img id="insertPreview" title="待上傳" src="~/images/noooo.jpg" style="width:320px;height:240px" asp-append-version />
+                                                                    <input type="file" id="insertFile" class="form-control" accept="image/*"
+                                                                           @@change="insertFileChange($event.target)" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">取消</button>
+                                                            <button id="btnInsert" type="button" class="btn btn-primary" @@click="insert">保存</button>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <ul class="list-group list-group-flush">
-                                                    <li class="list-group-item">用戶暱稱: <span style="font-weight:bold" contenteditable="false">暱稱</span></li>
-                                                    <li class="list-group-item">所在地: <span contenteditable="false">所在地</span></li>
-                                                    <li class="list-group-item">生日: <span contenteditable="false">生日</span></li>
-                                                    <li class="list-group-item">職業: <span contenteditable="false">職業</span></li>
-                                                    <li class="list-group-item">興趣: <span contenteditable="false">興趣</span></li>
-                                                </ul>
-                                                
                                             </div>
-                                            <p class="text-center fs-3">
-                                                <button type="button" class="btn default-btn"><a asp-action="Create">編輯</a></button>
-                                            </p>
 
-                                            <script>
-                                                // JavaScript 用於切換編輯模式和儲存資料
-                                            </script>
-
-                                        </div>
                                     </div>
                                 </div>
 
@@ -1510,322 +1593,6 @@
                                     </div>
                                 </div>
 
-                                <div class="tab-pane fade" id="gt6" role="tabpanel" aria-labelledby="gt6-tab">
-                                    <div class="group__bottom--body bg-white">
-                                        <div class="group__bottom--allmedia">
-                                            <div class="media-wrapper">
-                                                <ul class="nav nav-tabs" id="myTab3" role="tablist">
-                                                    <li class="nav-item" role="presentation">
-                                                        <button class="nav-link active" id="all-media-tab" data-bs-toggle="tab" data-bs-target="#all-media" type="button" role="tab" aria-controls="all-media" aria-selected="true"><i class="fa-solid fa-table-cells-large"></i> All <span>12</span></button>
-                                                    </li>
-                                                    <li class="nav-item" role="presentation">
-                                                        <button class="nav-link" id="album-tab" data-bs-toggle="tab" data-bs-target="#album" type="button" role="tab" aria-controls="album" aria-selected="false"><i class="fa-solid fa-camera"></i> Albums <span>4</span></button>
-                                                    </li>
-                                                    <li class="nav-item" role="presentation">
-                                                        <button class="nav-link" id="photos-media-tab" data-bs-toggle="tab" data-bs-target="#photos-media" type="button" role="tab" aria-controls="photos-media" aria-selected="false"><i class="fa-solid fa-image"></i> Photos <span>4</span></button>
-                                                    </li>
-                                                    <li class="nav-item" role="presentation">
-                                                        <button class="nav-link" id="video-tab" data-bs-toggle="tab" data-bs-target="#video" type="button" role="tab" aria-controls="video" aria-selected="false"><i class="fa-solid fa-video"></i> Videos <span>4</span></button>
-                                                    </li>
-                                                    <li class="nav-item" role="presentation">
-                                                        <button class="nav-link" id="music-tab" data-bs-toggle="tab" data-bs-target="#music" type="button" role="tab" aria-controls="music" aria-selected="false"><i class="fa-solid fa-music"></i> Music <span>0</span></button>
-                                                    </li>
-                                                </ul>
-                                                <div class="tab-content" id="myTabContent3">
-                                                    <div class="tab-pane fade show active" id="all-media"
-                                                         role="tabpanel" aria-labelledby="all-media-tab">
-                                                        <div class="media-content">
-                                                            <ul class="media-upload">
-                                                                <li class="upload-now">
-                                                                    <div class="custom-upload">
-                                                                        <div class="file-btn"><i class="fa-solid fa-upload"></i> Upload</div>
-                                                                        <input type="file">
-                                                                    </div>
-                                                                </li>
-                                                            </ul>
-                                                            <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-4 row-cols-xl-3 g-3">
-                                                                <div class="col">
-                                                                    <div class="media-thumb video-thumb">
-                                                                        <img src="assets/images/allmedia/01.jpg" alt="dating thumb">
-                                                                        <a href="#groupmodalvideo" data-rel="lightcase" class="icon">
-                                                                            <i class="fa-solid fa-circle-play"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col">
-                                                                    <div class="media-thumb albam-thumb">
-                                                                        <img src="assets/images/allmedia/02.jpg" alt="dating thumb">
-                                                                        <a href="#groupmodal" data-rel="lightcase:collection" class="icon">
-                                                                            <i class="fa-solid fa-camera"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col">
-                                                                    <div class="media-thumb">
-                                                                        <img src="assets/images/allmedia/03.jpg" alt="dating thumb">
-                                                                        <a href="#groupmodal" data-rel="lightcase" class="icon">
-                                                                            <i class="fa-solid fa-image"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col">
-                                                                    <div class="media-thumb">
-                                                                        <img src="assets/images/allmedia/04.jpg" alt="dating thumb">
-                                                                        <a href="#groupmodal" data-rel="lightcase" class="icon">
-                                                                            <i class="fa-solid fa-image"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col">
-                                                                    <div class="media-thumb video-thumb">
-                                                                        <img src="assets/images/allmedia/05.jpg" alt="dating thumb">
-                                                                        <a href="#groupmodalvideo" data-rel="lightcase" class="icon">
-                                                                            <i class="fa-solid fa-circle-play"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col">
-                                                                    <div class="media-thumb albam-thumb">
-                                                                        <img src="assets/images/allmedia/06.jpg" alt="dating thumb">
-                                                                        <a href="#groupmodal" data-rel="lightcase:collection" class="icon">
-                                                                            <i class="fa-solid fa-camera"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col">
-                                                                    <div class="media-thumb video-thumb">
-                                                                        <img src="assets/images/allmedia/07.jpg" alt="dating thumb">
-                                                                        <a href="#groupmodalvideo" data-rel="lightcase" class="icon">
-                                                                            <i class="fa-solid fa-circle-play"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col">
-                                                                    <div class="media-thumb">
-                                                                        <img src="assets/images/allmedia/08.jpg" alt="dating thumb">
-                                                                        <a href="#groupmodal" data-rel="lightcase" class="icon">
-                                                                            <i class="fa-solid fa-image"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col">
-                                                                    <div class="media-thumb">
-                                                                        <img src="assets/images/allmedia/09.jpg" alt="dating thumb">
-                                                                        <a href="#groupmodal" data-rel="lightcase" class="icon">
-                                                                            <i class="fa-solid fa-image"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col">
-                                                                    <div class="media-thumb albam-thumb">
-                                                                        <img src="assets/images/allmedia/10.jpg" alt="dating thumb">
-                                                                        <a href="#groupmodal" data-rel="lightcase:collection" class="icon">
-                                                                            <i class="fa-solid fa-camera"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col">
-                                                                    <div class="media-thumb video-thumb">
-                                                                        <img src="assets/images/allmedia/11.jpg" alt="dating thumb">
-                                                                        <a href="#groupmodalvideo" data-rel="lightcase" class="icon">
-                                                                            <i class="fa-solid fa-circle-play"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col">
-                                                                    <div class="media-thumb albam-thumb">
-                                                                        <img src="assets/images/allmedia/12.jpg" alt="dating thumb">
-                                                                        <a href="#groupmodal" data-rel="lightcase:collection" class="icon">
-                                                                            <i class="fa-solid fa-camera"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="text-center mt-5">
-                                                                <a href="#" class="default-btn"><i class="fa-solid fa-spinner"></i> Load More</a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="tab-pane fade" id="album" role="tabpanel" aria-labelledby="album-tab">
-                                                        <div class="media-content">
-                                                            <ul class="media-upload">
-                                                                <li class="upload-now">
-                                                                    <div class="custom-upload">
-                                                                        <div class="file-btn"><i class="fa-solid fa-upload"></i> Upload</div>
-                                                                        <input type="file">
-                                                                    </div>
-                                                                </li>
-                                                            </ul>
-                                                            <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-4 row-cols-xl-3 g-3">
-                                                                <div class="col">
-                                                                    <div class="media-thumb albam-thumb">
-                                                                        <img src="assets/images/allmedia/02.jpg" alt="dating thumb">
-                                                                        <a href="#groupmodal" data-rel="lightcase:collection" class="icon">
-                                                                            <i class="fa-solid fa-camera"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col">
-                                                                    <div class="media-thumb albam-thumb">
-                                                                        <img src="assets/images/allmedia/06.jpg" alt="dating thumb">
-                                                                        <a href="#groupmodal" data-rel="lightcase:collection" class="icon">
-                                                                            <i class="fa-solid fa-camera"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col">
-                                                                    <div class="media-thumb albam-thumb">
-                                                                        <img src="assets/images/allmedia/10.jpg" alt="dating thumb">
-                                                                        <a href="#groupmodal" data-rel="lightcase:collection" class="icon">
-                                                                            <i class="fa-solid fa-camera"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col">
-                                                                    <div class="media-thumb albam-thumb">
-                                                                        <img src="assets/images/allmedia/12.jpg" alt="dating thumb">
-                                                                        <a href="#groupmodal" data-rel="lightcase:collection" class="icon">
-                                                                            <i class="fa-solid fa-camera"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="text-center mt-5">
-                                                                <a href="#" class="default-btn"><i class="fa-solid fa-spinner"></i> Load More</a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="tab-pane fade" id="photos-media" role="tabpanel" aria-labelledby="photos-media-tab">
-                                                        <div class="media-content">
-                                                            <ul class="media-upload">
-                                                                <li class="upload-now">
-                                                                    <div class="custom-upload">
-                                                                        <div class="file-btn"><i class="fa-solid fa-upload"></i> Upload</div>
-                                                                        <input type="file">
-                                                                    </div>
-                                                                </li>
-                                                            </ul>
-                                                            <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-4 row-cols-xl-3 g-3">
-                                                                <div class="col">
-                                                                    <div class="media-thumb">
-                                                                        <img src="assets/images/allmedia/03.jpg" alt="dating thumb">
-                                                                        <a href="#groupmodal" data-rel="lightcase" class="icon">
-                                                                            <i class="fa-solid fa-image"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col">
-                                                                    <div class="media-thumb">
-                                                                        <img src="assets/images/allmedia/04.jpg" alt="dating thumb">
-                                                                        <a href="#groupmodal" data-rel="lightcase" class="icon">
-                                                                            <i class="fa-solid fa-image"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col">
-                                                                    <div class="media-thumb">
-                                                                        <img src="assets/images/allmedia/08.jpg" alt="dating thumb">
-                                                                        <a href="#groupmodal" data-rel="lightcase" class="icon">
-                                                                            <i class="fa-solid fa-image"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col">
-                                                                    <div class="media-thumb">
-                                                                        <img src="assets/images/allmedia/09.jpg" alt="dating thumb">
-                                                                        <a href="#groupmodal" data-rel="lightcase" class="icon">
-                                                                            <i class="fa-solid fa-image"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="text-center mt-5">
-                                                                <a href="#" class="default-btn"><i class="fa-solid fa-spinner"></i> Load More</a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="tab-pane fade" id="video" role="tabpanel" aria-labelledby="video-tab">
-                                                        <div class="media-content">
-                                                            <ul class="media-upload">
-                                                                <li class="upload-now">
-                                                                    <div class="custom-upload">
-                                                                        <div class="file-btn"><i class="fa-solid fa-upload"></i> Upload</div>
-                                                                        <input type="file">
-                                                                    </div>
-                                                                </li>
-                                                            </ul>
-                                                            <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-4 row-cols-xl-3 g-3">
-                                                                <div class="col">
-                                                                    <div class="media-thumb video-thumb">
-                                                                        <img src="assets/images/allmedia/01.jpg" alt="dating thumb">
-                                                                        <a href="#groupmodalvideo" data-rel="lightcase" class="icon">
-                                                                            <i class="fa-solid fa-circle-play"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col">
-                                                                    <div class="media-thumb video-thumb">
-                                                                        <img src="assets/images/allmedia/05.jpg" alt="dating thumb">
-                                                                        <a href="#groupmodalvideo" data-rel="lightcase" class="icon">
-                                                                            <i class="fa-solid fa-circle-play"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col">
-                                                                    <div class="media-thumb video-thumb">
-                                                                        <img src="assets/images/allmedia/07.jpg" alt="dating thumb">
-                                                                        <a href="#groupmodalvideo" data-rel="lightcase" class="icon">
-                                                                            <i class="fa-solid fa-circle-play"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col">
-                                                                    <div class="media-thumb video-thumb">
-                                                                        <img src="assets/images/allmedia/11.jpg" alt="dating thumb">
-                                                                        <a href="#groupmodalvideo" data-rel="lightcase" class="icon">
-                                                                            <i class="fa-solid fa-circle-play"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="text-center mt-5">
-                                                                <a href="#" class="default-btn"><i class="fa-solid fa-spinner"></i> Load More</a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="tab-pane fade" id="music" role="tabpanel" aria-labelledby="music-tab">
-                                                        <div class="media-content">
-                                                            <ul class="media-upload">
-                                                                <li class="upload-now">
-                                                                    <div class="custom-upload">
-                                                                        <div class="file-btn"><i class="fa-solid fa-upload"></i> Upload</div>
-                                                                        <input type="file">
-                                                                    </div>
-                                                                </li>
-                                                            </ul>
-                                                            <div class="row">
-                                                                <div class="col">
-                                                                    <p>
-                                                                        <i class="icofont-worried"></i> Sorry !!
-                                                                        There's no media found for the
-                                                                        request !!
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -1834,6 +1601,12 @@
         </div>
     </div>
 
+
+   
+</body>
+
+@section Scripts
+{
     <!-- All Needed JS -->
     <script src="assets/js/vendor/jquery-3.6.0.min.js"></script>
     <script src="assets/js/vendor/modernizr-3.11.2.min.js"></script>
@@ -1848,108 +1621,119 @@
     <script src="assets/js/vendor/bootstrap.bundle.min.js"></script>
     <script src="assets/js/plugins.js"></script>
     <script src="assets/js/main.js"></script>
-</body>
-
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nickname)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Location)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Birthday)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Occupation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Interests)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Introduction)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nickname)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Location)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Birthday)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Occupation)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Interests)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Introduction)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.MemberProfileId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.MemberProfileId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.MemberProfileId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
-
-@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.4.27"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
-        var imageData = null;
-        $("#imgFile").on("change", function () {
-            //alert("change");
-            var allowType = "image.*";
-            var file = this.files[0];
-            if (file.type.match(allowType)) {
-                $("#btnAnalyze").prop("disabled", false);
-                var reader = new FileReader();
-                reader.onload = function () {
-                    imageData = this.result;  //變成二進位
-                    var blob = new Blob([imageData], { type: "image/jpeg" });
-
-                    var formData = new FormData();
-                    formData.append('image', blob);
-
-                    // 發送 AJAX 請求到伺服器
-                    $.ajax({
-                        url: '您的伺服器端點', // 替換成您的後端處理圖片上傳的 URL
-                        type: 'POST',
-                        data: formData,
-                        processData: false, // 告訴 jQuery 不要處理發送的數據
-                        contentType: false, // 告訴 jQuery 不要設置內容類型
-                        success: function (response) {
-                            console.log('圖片上傳成功', response);
-                        },
-                        error: function (xhr, status, error) {
-                            console.error('上傳失敗', status, error);
-                        }
-                    });
-
-                    var uriCreator = window.URL || window.webkitURL;
-                    var imgUrl = uriCreator.createObjectURL(blob);
-                    $("#imgPreview").attr("src", imgUrl);
+        var vueapp = Vue.createApp({
+            data() {
+                return {
+                    filter: "",
+                    memberprofile: [],
+                    baseAddress: "https://localhost:7152",
+                    nickname: "",
+                    location: "",
+                    birthday: "",
+                    occupation: "",
+                    interests: "",
+                    introduction: "",
+                    originalNickname:"",
+                    originalLocation:"",
+                    originalBirthday:"",
+                    originalOccupation:"",
+                    originalInterests:"",
+                    originalIntroduction:"",
                 };
-                reader.readAsArrayBuffer(file);
-            }
-            else {
-                alert("不支援的上傳格式!");
-                $("#btnAnalyze").prop("disabled", true);
-            }
-        });
+            },
+            methods: {
+                showModal: function () {
+                    //alert("show");
+                    $("#insertModal").modal("show");
+                },
+                filterMemberProfile: function () {
+                    //alert("filter");
+                    let _this = this;
+                    var request = {};
+                    request.memberProfileId.isNaN(Number(_this.filter)) ? -1 : Number(_this.filter);
+                    request.nickname = request.interests = _this.filter;
+                    request.image = null;
+                    axios.post(`${_this.baseAddress}/api/MemberProfile/Filter`, request).then(response => {
+                        //alert(JSON.stringify(response));
+                        _this.memberprofile = response.data;
+                    }).catch(err => {
+                        alert(err);
+                    });
+                },
+                edit: function (memberProfileId) {
+                    //alert(`Edit:${memberProfileId}`);
+                    let _this = this;
+                    for (var i = 0; i < _this.memberprofile.length; i++) {
+                        var item = _this.memberprofile[i];
+                        if (memberProfileId == item.memberProfileId) {
+                            item.Edit = true;
+                            _this.originalNickname = item.nickname;
+                            _this.originalLocation = item.location;
+                            _this.originalBirthday = item.birthday;
+                            _this.originalOccupation = item.occupation;
+                            _this.originalInterests = item.interests;
+                            _this.originalIntroduction = item.introduction;
+                        }
+                    }
+                },
+                deleteMemberProfile: function (memberProfileId) {
+                    alert(`delete:${memberProfileId}`);
+                },
+                editFileChange: function (file) {
+                    alert(file.name);
+                },
+                insertFileChange: function (file) {
+                    alert(file.name);
+                },
+                update: function (item) {
+                    //alert(item.nickname);
+                    let _this = this;
+                    var form = new FormData();
+                    formData.append("MemberProfileId", item.memberProfileId);
+                    formData.append("Nickname", item.nickname);
+                    formData.append("Location", item.location);
+                    formData.append("Birthday", item.birthday);
+                    formData.append("Occupation", item.occupation);
+                    formData.append("Interests", item.interests);
+                    formData.append("Introduction", item.introduction);
+                    formData.append("Image", document.querySelector("#editFile").files[0]);
+                    axios.put(`${_this.baseAddress}/api/MemberProfiles/${item.memberProfileId}`, FormData).then(response => {
+                        alert(response.data);
+                        _this.filterMemberProfile();
+                    }).catch(err => {
+                        alert(err);
+                    });
+                },
+                cancel: function() {
+                    //alert("cancel");
+                    let _this = this;
+                    for (var i = 0; i < _this.memberprofile.length; i++) {
+                        var item = _this.memberprofile[i];
+                        if(item.Edit == true){
+                            item.Edit = false;
+                            item.nickname = _this.originalNickname;
+                            item.location = _this.originalLocation;
+                            item.birthday = _this.originalBirthday;
+                            item.occupation = _this.originalOccupation;
+                            item.interests = _this.originalInterests;
+                            item.introduction = _this.originalIntroduction;
+
+                        }
+                    }
+                },
+                insert: function(){
+                    alert("insert");
+                },
+                
+            },
+            mounted: function () {
+                let _this = this;
+                _this.filterMemberProfile();
+            },
+        }).mount("#app2");
 
     </script>
 }
-

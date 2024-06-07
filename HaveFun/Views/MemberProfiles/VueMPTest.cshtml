@@ -1,0 +1,61 @@
+﻿@section Styles
+{
+	<style>
+
+
+	</style>
+}
+<div id="app">
+@* 篩選使用者介面 *@
+
+<div class="container">
+		@* 新增紀錄按鍵 *@
+		<div class="mb-3">
+			<button type="button" class="btn btn-primary" @@click="showModal">新增</button>
+		</div>
+
+		@* bootstrapCard使用者介面 *@
+		<div class="mb-3">
+			<div class="row">
+				<div class="col-md-3" v-for="item in memberprofile">
+					<template v-if="item.Edit==true">
+
+
+					</template>
+					<template v-else>
+
+
+					</template>
+
+				</div>
+			</div>
+		</div>
+		
+</div>
+
+@* 新增紀錄bootstrap Modal畫面 *@
+
+</div>
+@section Scripts
+{
+	<script src="https://cdn.jsdelivr.net/npm/vue@3.4.27"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script>
+		var vueApp = {
+			data() {
+				return {
+					memberprofile:[],
+				};
+			},
+			methods: {
+				showModal: function () {
+					alert("show")
+				},
+
+			},
+		};
+		var app = Vue.createApp(vueApp).mount("#app");
+
+	</script>
+
+}

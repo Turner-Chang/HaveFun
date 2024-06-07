@@ -1,4 +1,5 @@
 using HaveFun.Models;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +7,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<NorthwindContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Northwind"));
+});
+
+string MyCorsPolicy = "MyCorsPolicy";
+builder.Services.AddCors(options => {
+    options.AddPolicy(name: MyCorsPolicy, policy =>
+    {
+        policy.WithOrigins("*").WithMethods("*").WithHeaders("*");
+    });
+});
+
 
 
 var connHaveFunStr = builder.Configuration.GetConnectionString("HaveFunDbContext");
@@ -28,6 +43,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseCors();
+
 app.UseAuthorization();
 
 app.MapControllerRoute(
@@ -38,5 +55,6 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 
 app.Run();

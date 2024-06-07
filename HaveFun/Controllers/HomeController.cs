@@ -23,6 +23,8 @@ namespace HaveFun.Controllers
         {
             return View();
         }
+
+        
         //public IActionResult SendMail(string content)
         //{
         //    try
@@ -32,7 +34,7 @@ namespace HaveFun.Controllers
         //        "winny14752@gmail.com",
         //        "ang498751@gmail.com"
         //        };
-            
+
 
         //        MailMessage msg = new MailMessage();
         //        //收件者，以逗號分隔不同收件者 ex "test@gmail.com,test2@gmail.com"
