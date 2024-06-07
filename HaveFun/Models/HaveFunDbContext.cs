@@ -45,6 +45,8 @@ namespace HaveFun.Models
 
 		public DbSet<Transaction> Transactions { get; set; }
 
+		public DbSet<UserPicture> UserPictures { get; set; }
+
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			base.OnModelCreating(modelBuilder);
