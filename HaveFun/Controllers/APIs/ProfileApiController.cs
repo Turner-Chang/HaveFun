@@ -1,6 +1,8 @@
-﻿using HaveFun.Models;
+﻿using HaveFun.DTOs;
+using HaveFun.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
 namespace HaveFun.Controllers.APIs
@@ -18,39 +20,53 @@ namespace HaveFun.Controllers.APIs
 
         // GET: api/Profile/GetWhoLikeList
         [HttpGet]
-        public async Task<IEnumerable<FriendList>> GetWhoLikeList()
+        public async Task<IEnumerable<GetWhoLikeListDTO>> GetWhoLikeList()
         {
-            return _context.FriendLists.Where(c => c.state == 0);
+            var whoLikeList = await _context.FriendLists
+                .Where(fl => fl.state == 0)
+                .Include(fl => fl.User1)
+                .Select(fl => new GetWhoLikeListDTO
+                {
+                    Name = fl.User1.Name,
+                    Age = CalculateAge(fl.User1.BirthDay),
+                    Gender = fl.User1.Gender == 1 ? "male" : "female",
+                    ProfilePicture = fl.User1.ProfilePicture
+                })
+                .ToListAsync();
 
+            return whoLikeList;
         }
 
-        public class Member
+        private static int CalculateAge(DateTime birthDate)
         {
-            public string Name { get; set; }
-            public int Age { get; set; }
-            public string Gender { get; set; }
-            public string Image { get; set; }
-            public bool Online { get; set; }
+            var today = DateTime.Today;
+            var age = today.Year - birthDate.Year;
+            if (birthDate.Date > today.AddYears(-age)) age--;
+            return age;
         }
-
 
         [HttpGet]
         // GET: api/Profile/GetWhoLike
-        public async Task<string> GetWhoLike()
+        public async Task<object[]> GetWhoLike()
         {
-            var members = new List<Member>{
-            new Member
-            {
-                Name = "Michele Storm",
-                Age = 32,
-                Gender = "male",
-                Image = "assets/images/member/profile/profile.jpg",
-                Online = true
-            },
-        };
-            //return "GetWhoLike呼叫成功";
-            var json = JsonSerializer.Serialize(members);
-            return json;
+            var WhoLikeList = new[]{
+            new {
+                    Name = "Michele Storm_TEST1",
+                    Age = 18,
+                    Gender = "male",
+                    ProfilePicture = "assets/images/member/profile/profile.jpg"
+                },
+
+            new {
+                    Name = "Michele Storm_TEST2",
+                    Age = 20,
+                    Gender = "male",
+                    ProfilePicture = "assets/images/member/profile/profile.jpg"
+                }
+            };
+            return WhoLikeList;
         }
+
+
     }
 }
