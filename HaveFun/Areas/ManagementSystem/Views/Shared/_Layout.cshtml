@@ -41,7 +41,7 @@
 		<span class=" navbar-brand"></span>
 		<div id="app">
 			<a v-if="!loginState" class="btn nav-link navbar-brand" asp-area="ManagementSystem" asp-controller="Home" asp-action="login">登入</a>
-			<a v-else class=" nav-link " asp-area="ManagementSystem" asp-controller="Home" asp-action="Index">Admin</a>
+			<a v-else class=" nav-link " asp-area="ManagementSystem" asp-controller="Home" asp-action="Management">Admin</a>
 
 		</div>
 	</nav>
@@ -98,8 +98,8 @@
 			computed: {
 				islogin() { 
 					if (false) 
-					{ loginState = true; }
-					else { loginState = false; }
+					{ this.loginState = true; }
+					else { this.loginState = false; }
 				}
 
 			},
