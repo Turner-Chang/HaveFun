@@ -1,4 +1,6 @@
-﻿namespace HaveFun.DTOs
+﻿using HaveFun.Models;
+
+namespace HaveFun.DTOs
 {
 	public class MatchUserInfoDTO
 	{
@@ -10,6 +12,7 @@
 		public string ProfilePicture { get; set; }
 		public string Introduction { get; set; }
 		public int Level { get; set; }
-		public List<MatchLabelDTO> Labels { get; set; }
+		public ICollection<MatchLabelDTO> Labels { get; set; }
+		public ICollection<UserPicture> Pictures { get; set; }
 	}
 }

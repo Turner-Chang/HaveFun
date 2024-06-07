@@ -53,7 +53,7 @@
                             <ul>
                                 <li>
 
-                                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">首頁</a>
+                                    <a class="nav-link"  asp-area="" asp-controller="Home" asp-action="Index">首頁</a>
                                 </li>
                                 <li>
                                     <a class="nav-link" asp-area="" asp-controller="Match" asp-action="Index">配對</a>
@@ -179,6 +179,7 @@
         </div>
     </footer>
     <!-- ================> Footer section end here <================== -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
     <script>
         const app_Layout = Vue.createApp({
@@ -194,8 +195,19 @@
             watch: {
             },
         }).mount("#app_Layout");
+
+       
+        $('.navbar-nav>ul>li a ').hover(function () {
+            // 移除其他 <a> 的 hover 效果
+            $('.navbar-nav>ul>li a ').not(this).css("color", "black");
+            // 添加當前懸停的 <a> 的 hover 效果
+            $(this).css("color", "red");
+        }, function () {
+            // 移開时移除 hover 效果
+            $(this).css("color", "black");
+        });
     </script>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <!-- All Needed JS -->
     <script src="assets/js/vendor/modernizr-3.11.2.min.js"></script>

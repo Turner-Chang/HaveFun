@@ -7,7 +7,6 @@
 			outline: 2px solid red;
 			display: flex;
 			justify-content: center;
-			
 			height: 100%;
 			margin: 0 auto;
 			position: relative;
@@ -20,8 +19,8 @@
 		#card-container {
 			outline: 2px solid green;
 			position: relative;
-			width: 23rem;
-			height: 500px;
+			width: 25rem; /* 23rem */
+			height: 600px; /* 500px */
 		}
 
 		.collapseCard {
@@ -107,11 +106,11 @@
 <div id="matchApp">
 	<div class="banner p-3 bg_img" style="background-image: url(assets/images/banner/bg.jpg); outline: 2px solid yellow;">
 		<div class="container" style="outline:2px solid blue;">
-			<div class="row justify-content-center" style="outline:2px solid red;">
-				<div class="col-lg-4 col-12">
+			<div class="row">
+				<div class="col-lg-5 col-12">
 					<div class="banner__content wow fadeInUp" data-wow-duration="1.5s" data-wow-delay=".5s">
 						<div class="banner__title">
-							<h2>Find your ture love</h2>
+							<h2>Find your true love</h2>
 							<p>Serious dating with your perfect match is just a click away.</p>
 						</div>
 						<div class="banner__form">
@@ -172,27 +171,32 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-lg-8 col-12">
+				<div class="col-lg-7 col-12">
 					<div id="out" class="wow fadeInUp" data-wow-duration="1.5s" data-wow-delay="1s">
 						<div id="card-container">
 							<div v-for="(user, index) in notMatchUsers" class="card cards" :style="{'z-index': index}" @@mousedown="startDrag($event, index)"
-							@@touchstart="startDrag($event, index)">
+								 @@touchstart="startDrag($event, index)">
 								<div :id="`carouselExampleIndicators${index}`" class="carousel slide">
-									<div class="carousel-indicators">
-										<button type="button" :data-bs-target="`#carouselExampleIndicators${index}`" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+									<div class="carousel-indicators">	
+										<button v-for="(btn,btnIndex) in user.pictures" type="button" :data-bs-target="`#carouselExampleIndicators${index}`" :data-bs-slide-to="btnIndex" :class="{'active': btnIndex == 0 }" aria-current="true" :aria-label="`Slide ${btnIndex + 1}`"></button>
+										@* <button type="button" :data-bs-target="`#carouselExampleIndicators${index}`" class="active" data-bs-slide-to="0" aria-label="Slide 1"></button>
 										<button type="button" :data-bs-target="`#carouselExampleIndicators${index}`" data-bs-slide-to="1" aria-label="Slide 2"></button>
-										<button type="button" :data-bs-target="`#carouselExampleIndicators${index}`" data-bs-slide-to="2" aria-label="Slide 3"></button>
+										<button type="button" :data-bs-target="`#carouselExampleIndicators${index}`" data-bs-slide-to="2" aria-label="Slide 3"></button> *@
 									</div>
 									<div class="carousel-inner">
-										<div class="carousel-item active">
-											<img src="@Url.Content(ViewBag.ImageUrlArr[0])" class="d-block w-100" alt="...">
+										<div v-for="(pic,picIndex) in user.pictures" class="carousel-item" :class="{'active': picIndex == 0 }">
+											<img :src="pic.picture.replace('~', '')" class="d-block w-100" alt="..." draggable="false">
+										</div>
+
+										@* <div class="carousel-item active">
+										<img src="@Url.Content(ViewBag.ImageUrlArr[0])" class="d-block w-100" alt="..." draggable="false">
+										</div>										
+										<div class="carousel-item">
+											<img src="@Url.Content(ViewBag.ImageUrlArr[1])" class="d-block w-100" alt="..." draggable="false">
 										</div>
 										<div class="carousel-item">
-											<img src="@Url.Content(ViewBag.ImageUrlArr[1])" class="d-block w-100" alt="...">
-										</div>
-										<div class="carousel-item">
-											<img src="@Url.Content(ViewBag.ImageUrlArr[2])" class="d-block w-100" alt="...">
-										</div>
+											<img src="@Url.Content(ViewBag.ImageUrlArr[2])" class="d-block w-100" alt="..." draggable="false">
+										</div> *@
 									</div>
 									<button class="carousel-control-prev" type="button" :data-bs-target="`#carouselExampleIndicators${index}`" data-bs-slide="prev">
 										<span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -216,99 +220,13 @@
 								</div>
 							</div>
 
-							<div class="card cards card3">
-								<div id="carouselExampleIndicators3" class="carousel slide">
-									<div class="carousel-indicators">
-										<button type="button" data-bs-target="#carouselExampleIndicators3" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-										<button type="button" data-bs-target="#carouselExampleIndicators3" data-bs-slide-to="1" aria-label="Slide 2"></button>
-										<button type="button" data-bs-target="#carouselExampleIndicators3" data-bs-slide-to="2" aria-label="Slide 3"></button>
-									</div>
-									<div class="carousel-inner">
-										<div class="carousel-item active">
-											<img src="@Url.Content(ViewBag.ImageUrlArr[0])" class="d-block w-100" alt="...">
-										</div>
-										<div class="carousel-item">
-											<img src="@Url.Content(ViewBag.ImageUrlArr[1])" class="d-block w-100" alt="...">
-										</div>
-										<div class="carousel-item">
-											<img src="@Url.Content(ViewBag.ImageUrlArr[2])" class="d-block w-100" alt="...">
-										</div>
-									</div>
-									<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators3" data-bs-slide="prev">
-										<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-										<span class="visually-hidden">Previous</span>
-									</button>
-									<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators3" data-bs-slide="next">
-										<span class="carousel-control-next-icon" aria-hidden="true"></span>
-										<span class="visually-hidden">Next</span>
-									</button>
-								</div>
-								<div class="card-body">
-									<h5 class="card-title">Card title2</h5>
-									<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-									<button id="btnCollapse1" data-bs-target="#collapseExample3" class="btn btn-primary detail" type="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseExample3">Detail <i class="fa-solid fa-angle-down"></i></button>
-									<div class="collapse collapsing" id="collapseExample3" style="width: 20rem; ">
-										<div class="card card-body collapseCard">
-											Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<div class="card cards card4">
-								<div id="carouselExampleIndicators4" class="carousel slide">
-									<div class="carousel-indicators">
-										<button type="button" data-bs-target="#carouselExampleIndicators4" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-										<button type="button" data-bs-target="#carouselExampleIndicators4" data-bs-slide-to="1" aria-label="Slide 2"></button>
-										<button type="button" data-bs-target="#carouselExampleIndicators4" data-bs-slide-to="2" aria-label="Slide 3"></button>
-									</div>
-									<div class="carousel-inner">
-										<div class="carousel-item active">
-											<img src="@Url.Content(ViewBag.ImageUrlArr[0])" class="d-block w-100" alt="...">
-										</div>
-										<div class="carousel-item">
-											<img src="@Url.Content(ViewBag.ImageUrlArr[1])" class="d-block w-100" alt="...">
-										</div>
-										<div class="carousel-item">
-											<img src="@Url.Content(ViewBag.ImageUrlArr[2])" class="d-block w-100" alt="...">
-										</div>
-									</div>
-									<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators4" data-bs-slide="prev">
-										<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-										<span class="visually-hidden">Previous</span>
-									</button>
-									<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators4" data-bs-slide="next">
-										<span class="carousel-control-next-icon" aria-hidden="true"></span>
-										<span class="visually-hidden">Next</span>
-									</button>
-								</div>
-								<div class="card-body">
-									<h5 class="card-title">@Model.Name</h5>
-
-									@*使用前記得塞資料*@
-
-									<p class="card-text">
-										Some quick example text to build on the card title and make up the bulk of the card's content.
-										Some quick example text to build on the card title and make up the bulk of the card's content.
-										Some quick example text to build on the card title and make up the bulk of the card's content.
-										Some quick example text to build on the card title and make up the bulk of the card's content.
-									</p>
-									<button id="btnCollapse4" data-bs-target="#collapseExample4" class="btn btn-primary detail" type="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseExample4">Detail <i class="fa-solid fa-angle-down"></i></button>
-									<div class="collapse collapsing" id="collapseExample4" style="width: 20rem; ">
-										<div class="card card-body collapseCard">
-											Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
-										</div>
-									</div>
-								</div>
-							</div>
-
 						</div>
 						<div class="d-flex justify-content-around buttons" style="width: 500px;">
 							<button id="dislike-button" class="btn btn-secondary"><i class="fa-solid fa-xmark fa-shake"></i></button>
 							<button class="btn btn-light"><i class="fa-regular fa-star fa-bounce"></i></button>
 							<button id="like-button" class="btn btn-danger"><i class="fa-regular fa-heart fa-beat"></i></button>
 						</div>
-					</div>					
+					</div>
 				</div>
 			</div>
 		</div>
@@ -323,9 +241,9 @@
 			data() {
 				return {
 					notMatchUsers: [],
-					startX:0,
-					startY:0,
-					currentCard:null,
+					startX: 0,
+					startY: 0,
+					currentCard: null,
 				}
 			},
 			computed: {
@@ -336,8 +254,8 @@
 						.then(res => res.json())
 						.then(u => this.notMatchUsers = u)
 				},
-				startDrag(event,index) {
-					this.currentCard = event.target;
+				startDrag(event, index) {
+					this.currentCard = event.target.closest('.cards');
 					this.startX = event.touches ? event.touches[0].clientX : event.clientX;
 					this.startY = event.touches ? event.touches[0].clientY : event.clientY;
 					this.currentCard.classList.add('dragging');
@@ -397,9 +315,10 @@
 		}).mount("#matchApp");
 	</script>
 
-	<script>
+	@* <script>
 		// 選取所有卡片元素
 		const cards = document.querySelectorAll('.cards');
+		console.log(cards);
 		let startX, startY, currentCard;
 
 		// 為每張卡片添加事件監聽器
@@ -466,8 +385,7 @@
 			}
 		});
 
-		function showDetail() 
-		{
+		function showDetail() {
 			var div = $(".buttons");
 			var currentPosition = div.css('position');
 			if (currentPosition === 'absolute') {
@@ -502,5 +420,5 @@
 			var div = $(".buttons");
 			div.css('position', 'absolute');
 		});
-	</script>
+	</script> *@
 }
