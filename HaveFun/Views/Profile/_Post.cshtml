@@ -26,6 +26,7 @@
                     <div class="tab-content" id="myTabContent2">
                         <div class="tab-pane fade show active" id="Personal"
                              role="tabpanel" aria-labelledby="Personal-tab">
+
                             <div class="create-post mb-4">
                                 <div class="lab-inner">
                                     <div class="lab-thumb">
@@ -47,7 +48,7 @@
                                     </div>
                                     <div class="lab-content">
                                         <form action="#" class="post-form">
-                                            <input type="text" placeholder="Whats on your mind. William?">
+                                            <input id="post-input" type="text" placeholder="Whats on your mind. William?">
                                             <div class="content-type">
                                                 <ul class="content-list">
                                                     <li class="text"><a href="#"><i class="fa-solid fa-pen-to-square"></i>Text </a></li>
@@ -77,7 +78,7 @@
                                                 <img src="assets/images/member/profile/profile.jpg" alt="datting thumb">
                                             </div>
                                             <div class="author-details">
-                                                <h6><a href="#">William Smith</a></h6>
+                                                <h6><a href="#">TIM101_POST</a></h6>
                                                 <ul class="post-status">
                                                     <li class="post-privacy"><i class="icofont-world"></i> Public</li>
                                                     <li class="post-time">6 Mintues Ago</li>
@@ -86,15 +87,27 @@
                                         </div>
                                     </div>
 
+                                    <!-- 貼文內容 -->
                                     <div class="post-description">
-                                        <p>Hello TIM101</p>
+                                        <p>TIM101_TEST</p>
+                                        <div class="post-desc-img">
+                                            <img src="assets/images/group/single/01.jpg" alt="dating thumb">
+                                        </div>
                                     </div>
                                 </div>
 
+                                <!-- 貼文按鈕 -->
                                 <div class="post-meta">
                                     <div class="post-meta-top">
-                                        <p><a href="#"><i class="fa-solid fa-thumbs-up"></i> <i class="fa-solid fa-heart"></i> <i class="fa-solid fa-face-laugh"></i> <span>Julia, Petrova and 306 like this</span></a></p>
-                                        <p><a href="#">136 Comments</a></p>
+                                        <p>
+                                            <a href="#" class="comment-link">
+                                                <i class="fa-solid fa-thumbs-up"></i> <i class="fa-solid fa-heart"></i> <i class="fa-solid fa-face-laugh"></i> <span>
+                                                    Julia, Petrova
+                                                    and 306 like this
+                                                </span>
+                                            </a>
+                                        </p>
+                                        <p><a href="#" class="comment-link">Show Comments</a></p>
                                     </div>
                                     <div class="post-meta-bottom">
                                         <ul class="react-list">
@@ -103,6 +116,46 @@
                                             <li class="react"><a href="#"><i class="fa-solid fa-share-nodes"></i>Share</a></li>
                                         </ul>
                                     </div>
+                                </div>
+
+                                <!-- 回覆貼文區域 -->
+                                <div class="post-replies" style="display: none;">
+                                    <!-- 回覆貼文內容 -->
+                                    <div class="post-replies-in">
+                                        <div class="reply-item">
+                                            <div class="reply-author">
+                                                <img src="assets/images/member/profile/profile.jpg" alt="datting thumb">
+                                                <span>Reply User1</span>
+                                            </div>
+                                            <div class="reply-content">
+                                                <p>Reply Post1</p>
+                                            </div>
+                                            <button class="nested-reply-button btn btn-link">回覆的回覆</button>
+                                            <div class="nested-reply-form" style="display: none;">
+                                                <div class="reply-form">
+                                                    <input type="text" class="nested-reply-input" placeholder="Write a reply...">
+                                                    <button class="nested-reply-submit-button">回覆的回覆</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="reply-item_1">
+                                            <div class="reply-author">
+                                                <img src="assets/images/member/profile/profile.jpg" alt="datting thumb">
+                                                <span>Reply Author</span>
+                                            </div>
+                                            <div class="reply-content">
+                                                <p>123</p>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <!-- 回覆input & post -->
+                                <div class="reply-form">
+                                    <input type="text" class="reply-input" placeholder="Write a reply...">
+                                    <button class="reply-button">貼文回覆</button>
                                 </div>
                             </div>
 
@@ -133,16 +186,36 @@
 
                                 <div class="post-meta">
                                     <div class="post-meta-top">
-                                        <p><a href="#"><i class="fa-solid fa-thumbs-up"></i> <i class="fa-solid fa-heart"></i> <i class="fa-solid fa-face-laugh"></i><span>Julia, Petrova and 306 like this</span></a></p>
+                                        <p><a href="#"><i class="fa-solid fa-thumbs-up"></i> <i class="fa-solid fa-heart"></i> <i class="fa-solid fa-face-laugh"></i> <span>Julia, Petrova and 306 like this</span></a></p>
                                         <p><a href="#">136 Comments</a></p>
                                     </div>
                                     <div class="post-meta-bottom">
                                         <ul class="react-list">
                                             <li class="react"><a href="#"><i class="fa-solid fa-thumbs-up"></i>Like</a> </li>
                                             <li class="react"><a href="#"><i class="fa-solid fa-comment"></i>Comment</a></li>
-                                            <li class="react"><a href="#"><i class="fa-solid fa-share-nodes"></i> Share </a></li>
+                                            <li class="react"><a href="#"><i class="fa-solid fa-share-nodes"></i>Share</a></li>
                                         </ul>
                                     </div>
+                                </div>
+
+                                <!-- 回复贴文的区域 -->
+                                <div class="post-replies" style="display: none;">
+                                    <!-- 这里是回复的内容，可以是一条或多条回复 -->
+                                    <div class="reply-item">
+                                        <div class="reply-author">
+                                            <img src="assets/images/member/profile/profile.jpg" alt="datting thumb">
+                                            <span>Reply Author</span>
+                                        </div>
+                                        <div class="reply-content">
+                                            <p>This is a reply to the post.</p>
+                                        </div>
+                                    </div>
+                                    <!-- 可以添加更多回复 -->
+                                </div>
+
+                                <!-- 展开/收起按钮 -->
+                                <div class="toggle-replies">
+                                    <a href="#" class="toggle-btn">Show Replies</a>
                                 </div>
                             </div>
 
@@ -166,14 +239,7 @@
                                     <div class="post-description">
                                         <p>Quickly deliver going forward methods info create empowerment before with client centered bandwdth Credibly pontficate interoperable leadership skills ands B2B data awesome Continually whiteboard ands B2B data awesome Continually whiteboard</p>
                                         <div class="post-desc-img">
-                                            <div class="row g-3">
-                                                <div class="col-md-6">
-                                                    <img src="assets/images/group/single/01.jpg" alt="dating thumb">
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <img src="assets/images/group/single/02.jpg" alt="dating thumb">
-                                                </div>
-                                            </div>
+                                            <img src="assets/images/group/single/01.jpg" alt="dating thumb">
                                         </div>
                                     </div>
                                 </div>
