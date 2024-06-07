@@ -1,14 +1,105 @@
-﻿<div class="container row">
-	<h1 class="col-6">被檢舉人:</h1>
-	<label class="col-6">user111</label>
-	<h1 class="col-6">被檢舉理由:</h1>
-	<label class="col-6">XXXX</label>
-	<h1 class="col-6">被檢舉人貼文:</h1>
-	<label class="col-6">lorem</label>
-	<h1 class="col-6">被檢舉人圖片:</h1>
-	<img />
+﻿<div id="PostCheckApp" class="container row  p-5 pt-5 text-center border-2">
+	<div class="table-responsive-md">
+		<button class="btn btn-info" @@click="doneReport()">是否處理過切換按鈕</button>
+		<table class="table table-secondary">
+			<thead class="table-active">
+				<tr>
+					<th scope="col">被檢舉貼文ID</th>
+					<th scope="col">被檢舉人ID</th>
+					<th scope="col">被檢舉理由</th>
+					<th scope="col">被檢舉時間</th>
+					<th scope="col">處理</th>
 
-
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-for="r in reports" class="">
+					<td scope="row">{{r.postId}}</td>
+					<td>{{r.userId}}</td>
+					<td>{{r.reason}}</td>
+					<td>{{r.reportTime}}</td>
+					<td>
+						<button id="r.postID" class="btn btn-warning"
+								@@click="check(r)">
+							處理
+						</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 
 
 </div>
+
+
+<div class="modal fade"
+	 id="PostModal"
+	 tabindex="-1"
+	 data-bs-backdrop="static"
+	 data-bs-keyboard="false"
+	 role="dialog"
+	 aria-labelledby="modalTitleId"
+	 aria-hidden="true">
+	<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
+		 role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="modalTitleId">
+					檢舉貼文
+				</h5>
+				<button type="button"
+						class="btn-close"
+						data-bs-dismiss="modal"
+						aria-label="Close">
+				</button>
+			</div>
+			<div class="modal-body">
+				<div>被檢舉者:</div>
+				<div>被檢舉原因:</div>
+				<div>被檢舉貼文:</div>
+				<div>被檢舉圖片:</div>
+				<div>檢舉者:</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button"
+						class="btn btn-secondary"
+						data-bs-dismiss="modal">
+					駁回檢舉
+				</button>
+				<button type="button" class="btn btn-primary">刪除貼文</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	
+	<script>
+		var App = Vue.createApp({
+			data() {
+				return {
+					reports: []
+				}
+			},
+			methods: {
+				check() { $("#PostModal").modal("show"); },
+				done() { this.reports = this.reports.where(r => r.processingStstus != 1); }
+			},
+			mounted: async() => {
+				
+				baseAdress = "https://localhost:7152/api/PostReview/GetPostReviews";
+				
+				const resp = await fetch(
+					baseAdress, {
+					method: "GET"
+				});
+				const data = await resp.json();
+				App.reports = data;
+				console.log(App.reports);
+				
+			}
+		}).mount("#PostCheckApp");
+
+	</script>
+}
