@@ -23,6 +23,6 @@ namespace HaveFun.Models
         [Required]
         [Range(0, 1)]
         public int Status { get; set; } = 0;
-
+        public virtual ICollection<Comment> Comments { get; set; }
     }
 }
