@@ -9,10 +9,6 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<NorthwindContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Northwind"));
-});
 
 string MyCorsPolicy = "MyCorsPolicy";
 builder.Services.AddCors(options => {
