@@ -60,7 +60,7 @@ namespace HaveFun.Controllers.APIs
 
 
 		[HttpPost("Like")]
-		public string Like(MatchRequestDTO request) 
+		public string Like(MatchRequestDTO request)
 		{
 			FriendList fl = null;
 			var interacted = _context.FriendLists.FirstOrDefault(u => u.Clicked == request.BeenClicked && u.BeenClicked == request.Clicked);
@@ -79,10 +79,11 @@ namespace HaveFun.Controllers.APIs
 					_context.FriendLists.Add(fl);
 					_context.SaveChanges();
 					return "配對成功!";
-				}	
+				}
 			}
-			
-			fl = new FriendList{
+
+			fl = new FriendList
+			{
 				Clicked = request.Clicked,
 				BeenClicked = request.BeenClicked,
 				state = 0
@@ -96,7 +97,7 @@ namespace HaveFun.Controllers.APIs
 		[HttpPost("Dislike")]
 		public string Dislike(MatchRequestDTO request)
 		{
-			FriendList fl = new FriendList 
+			FriendList fl = new FriendList
 			{
 				Clicked = request.Clicked,
 				BeenClicked = request.BeenClicked,
