@@ -1,8 +1,9 @@
-﻿@model UserInfo;
-
-@section Styles
+﻿@section Styles
 {
+
 	<style>
+		
+
 		#out {
 			outline: 2px solid red;
 			display: flex;
@@ -22,7 +23,6 @@
 		}
 
 		.collapseCard {
-			width: 105%;
 			margin-top: 25px;
 		}
 
@@ -71,18 +71,9 @@
 			z-index: 999;
 		}
 
-
 		.card img {
 			width: 100%;
 			height: auto;
-		}
-
-		.card3 {
-			z-index: 3;
-		}
-
-		.card4 {
-			z-index: 4;
 		}
 
 		.carousel-indicators {
@@ -97,6 +88,24 @@
 			width: 60px;
 			border-radius: 50%;
 		}
+
+		.label{
+			display: inline-block;
+			background-color: #007bff; 
+			color: white; 
+			padding: 5px 10px; 
+			margin: 5px; 
+			border-radius: 15px; 
+			font-size: 14px; 
+			font-weight: 500; 
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); 
+			transition: background-color 0.3s ease;
+		}
+
+		.label:hover{
+				background-color: #0056b3;
+		}
+
 	</style>
 }
 
@@ -172,7 +181,7 @@
 				<div class="col-lg-7 col-12">
 					<div id="out" class="wow fadeInUp" data-wow-duration="1.5s" data-wow-delay="1s">
 						<div id="card-container">
-							<div v-for="(user, index) in filterGender" :id="user.id" class="card cards" :style="{'z-index': index}" @@mousedown="startDrag($event, index)"
+							<div v-for="(user, index) in filterAge" :id="user.id" class="card cards" :style="{'z-index': index}" @@mousedown="startDrag($event, index)"
 								 @@touchstart="startDrag($event, index)">
 								<div :id="`carouselExampleIndicators${index}`" class="carousel slide">
 									<div class="carousel-indicators">	
@@ -206,24 +215,28 @@
 									</button>
 								</div>
 								<div class="card-body">
-									<h5 class="card-title">{{user.name}}</h5>
-									<h5> {{user.age}}</h5>
+									<h5 class="card-title">{{user.name}} {{user.age}}</h5>
 									<p class="card-text">{{user.introduction}}</p>
-									<button :id="`btnCollapse${index}`" :data-bs-target="`#collapseExample${index}`" class="btn btn-primary detail" type="button" data-bs-toggle="collapse" aria-expanded="false" :aria-controls="`collapseExample${index}`" @@click="showDetail">Detail<i class="fa-solid fa-angle-down"></i></button>
-									<div class="collapse collapsing" :id="`collapseExample${index}`" style="width: 20rem; ">
-										<div class="card card-body collapseCard">
-											Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+									<button :id="`btnCollapse${index}`" :data-bs-target="`#collapseExample${index}`" class="btn btn-primary detail" type="button" data-bs-toggle="collapse" aria-expanded="false" :aria-controls="`collapseExample${index}`">Detail<i class="fa-solid fa-angle-down"></i></button>
+									<div class="collapse collapsing" :id="`collapseExample${index}`">
+										<div class="card card-body collapseCard">									      <h6>我的標籤</h6>
+											<div v-for="(labels,category) in uniqueLabel(user)">
+												<h6>{{category}}</h6>			
+												<span v-for="label in labels" class="label">#{{ label }}</span>
+											</div>											
 										</div>
+										
 									</div>
 								</div>
 							</div>
 
 						</div>
-						<div class="d-flex justify-content-around buttons" style="width: 500px;">
+						@* <div class="d-flex justify-content-around buttons" style="width: 500px;">
 							<button id="dislike-button" class="btn btn-secondary"><i class="fa-solid fa-xmark fa-shake" @@click="dislike"></i></button>
 							<button class="btn btn-light"><i class="fa-regular fa-star fa-bounce"></i></button>
 							<button id="like-button" class="btn btn-danger"><i class="fa-regular fa-heart fa-beat" @@click="like"></i></button>
-						</div>
+						</div> *@
+						
 					</div>
 				</div>
 			</div>
@@ -234,6 +247,8 @@
 
 @section Scripts
 {
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer" asp-append-version="true"></script>
+
 	<script>
 		const today = new Date();
 		const matchApp = Vue.createApp({
@@ -252,6 +267,7 @@
 						},
 					},
 					today: new Date(),
+					labels:[],
 				}
 			},
 			computed: {
@@ -261,14 +277,21 @@
 					}
 					return this.notMatchUsers;
 				},
-
 				filterAge() { 
-					
-				}
+					let temp = this.filterGender;
+					if (this.filter.age.min != "") { 
+						temp = temp.filter(u => u.age >= Number(this.filter.age.min));
+					}
+					if (this.filter.age.max != "") {
+						temp = temp.filter(u => u.age <= Number(this.filter.age.max));
+					}
+					return temp;
+				},
+				
 			},
 			methods: {
 				getNotMatchUsers() {
-					fetch("https://localhost:7152/api/MatchApi/1")
+					fetch(`${this.baseAddress}/api/MatchApi/@ViewBag.UserId`)
 						.then(res => res.json())
 						.then(u => this.notMatchUsers = u)
 				},
@@ -307,14 +330,16 @@
 					if (dx > 100) {
 						this.currentCard.style.transform = `translate(100vw, 0)`;
 						setTimeout(() => {
-							console.log(this.currentCard.id);
+							//console.log(this.currentCard.id);
+							this.likeRequest(@ViewBag.UserId, this.currentCard.id);
 							this.notMatchUsers = this.notMatchUsers.filter(u => u.id != this.currentCard.id);
 							this.currentCard = null;
 						}, 500);
 					} else if (dx < -100) {
 						this.currentCard.style.transform = `translate(-100vw, 0)`;
 						setTimeout(() => {
-							console.log(this.currentCard.id);
+							//console.log(this.currentCard.id);
+							this.dislikeRequest(@ViewBag.UserId, this.currentCard.id);
 							this.notMatchUsers = this.notMatchUsers.filter(u => u.id != this.currentCard.id);
 							this.currentCard = null;
 						}, 500);
@@ -332,51 +357,76 @@
 						div.css('position', 'absolute');
 					}
 				},
-				like() {
-					const currentCard = document.querySelectorAll('.cards:not(.liked):not(.disliked)');
-					if (currentCard.length) {
-						currentCard[currentCard.length - 1].style.transform = `translate(100vw, 0)`;
-						currentCard[currentCard.length - 1].classList.add('liked');
+				// like() {
+				// 	const currentCard = document.querySelectorAll('.cards:not(.liked):not(.disliked)');
+				// 	if (currentCard.length) {
+				// 		currentCard[currentCard.length - 1].style.transform = `translate(100vw, 0)`;
+				// 		currentCard[currentCard.length - 1].classList.add('liked');
 
-						setTimeout(() => {
-							this.notMatchUsers.pop();
-						}, 500);
+				// 		setTimeout(() => {
+				// 			this.notMatchUsers.pop();
+				// 		}, 300);
 
-					}
-					var div = $(".buttons");
-					div.css('position', 'absolute');
-				},
-				dislike() {
-					const currentCard = document.querySelectorAll('.cards:not(.liked):not(.disliked)');
-					if (currentCard.length) {
-						currentCard[currentCard.length - 1].style.transform = `translate(-100vw, 0)`;
-						currentCard[currentCard.length - 1].classList.add('disliked');
-
-						setTimeout(() => {
-							this.notMatchUsers.pop();
-						}, 500);
-					}
-					var div = $(".buttons");
-					div.css('position', 'absolute');
-				},
-				// calculateAge(birthDate, today) {
-				// 	let age = today.getFullYear() - birthDate.getFullYear();
-				// 	return age;
+				// 	}
+				// 	var div = $(".buttons");
+				// 	div.css('position', 'absolute');
 				// },
+				// dislike() {
+				// 	const currentCard = document.querySelectorAll('.cards:not(.liked):not(.disliked)');
+				// 	if (currentCard.length) {
+				// 		currentCard[currentCard.length - 1].style.transform = `translate(-100vw, 0)`;
+				// 		currentCard[currentCard.length - 1].classList.add('disliked');
+
+				// 		setTimeout(() => {
+				// 			this.notMatchUsers.pop();
+				// 		}, 300);
+				// 	}
+				// 	var div = $(".buttons");
+				// 	div.css('position', 'absolute');
+				// },
+				uniqueLabel(user) { 
+					const labelMap = new Map();
+					user.labels.forEach(label => { 
+						if (!labelMap.has(label.category.name)) { 
+							labelMap.set(label.category.name, []);
+						}
+						labelMap.get(label.category.name).push(label.name);
+					});
+					//console.log(labelMap);
+					return Object.fromEntries(labelMap);
+				},
+				likeRequest(clickedId, beenClickedId) 
+				{
+					let request = {};
+					request.clicked = clickedId;
+					request.beenClicked = beenClickedId;
+					axios.post(`${this.baseAddress}/api/MatchApi/Like`, request)
+						.then(response => { 
+							if (response.data != "") 
+							{
+								alert("配對成功!");
+							}						
+						})
+						.catch(err => { 
+							alert(err);
+						});
+				},
+				dislikeRequest(clickedId, beenClickedId) {
+					let request = {};
+					request.clicked = clickedId;
+					request.beenClicked = beenClickedId;
+					axios.post(`${this.baseAddress}/api/MatchApi/Dislike`, request)
+						.then(response => {
+						})
+						.catch(err => {
+							alert(err);
+						});
+				},
 			},
 			watch: {
 			},
 			mounted() {
 				this.getNotMatchUsers();
-				// let result = this.notMatchUsers.map(user => { 
-				// 	const birthDate = new Date(user.birthDay);
-				// 	const userAge = this.calculateAge(birthDate, this.today);
-				// 	return {
-				// 		...user,
-				// 		age: userAge,
-				// 	};
-				// });
-				// this.notMatchUsers = result;
 			},
 		}).mount("#matchApp");
 	</script>
