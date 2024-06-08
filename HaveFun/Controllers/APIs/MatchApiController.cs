@@ -89,8 +89,8 @@ namespace HaveFun.Controllers.APIs
 			};
 
 			_context.FriendLists.Add(fl);
-			_context.SaveChanges() ;
-			return null;
+			_context.SaveChanges();
+			return "";
 		}
 
 		[HttpPost("Dislike")]
@@ -104,7 +104,7 @@ namespace HaveFun.Controllers.APIs
 			};
 			_context.FriendLists.Add(fl);
 			_context.SaveChanges();
-			return null;
+			return "";
 		}
 	}
 }
