@@ -19,6 +19,8 @@ namespace HaveFun.Controllers.APIs
 		[HttpGet("{userId}")]
 		public IEnumerable<MatchUserInfoDTO> GetNotMatchUser(int userId) 
 		{
+			DateTime today = DateTime.Today;
+
 			var interactedUser = _context.FriendLists
 				.Where(f1 => f1.Clicked == userId)
 				.Select(f1 => f1.BeenClicked);
@@ -35,6 +37,7 @@ namespace HaveFun.Controllers.APIs
 					ProfilePicture = u.ProfilePicture,
 					Introduction = u.Introduction,
 					Level = u.Level,
+					Age = today.Year - u.BirthDay.Year,
 					Pictures = u.Pictures.Select(p => new UserPicture{ 
 						Id = p.Id,
 						UserId = p.UserId,
@@ -53,6 +56,56 @@ namespace HaveFun.Controllers.APIs
 				}).ToList() ;
 
 			return usersNotInteractedWith;
+		}
+
+
+		[HttpPost("Like")]
+		public string Like(MatchRequestDTO request)
+		{
+			FriendList fl = null;
+			var interacted = _context.FriendLists.FirstOrDefault(u => u.Clicked == request.BeenClicked && u.BeenClicked == request.Clicked);
+			if (interacted != null)
+			{
+				if (interacted.state == 0)
+				{
+					interacted.state = 1;
+					_context.FriendLists.Update(interacted);
+					fl = new FriendList
+					{
+						Clicked = request.Clicked,
+						BeenClicked = request.BeenClicked,
+						state = 1
+					};
+					_context.FriendLists.Add(fl);
+					_context.SaveChanges();
+					return "配對成功!";
+				}
+			}
+
+			fl = new FriendList
+			{
+				Clicked = request.Clicked,
+				BeenClicked = request.BeenClicked,
+				state = 0
+			};
+
+			_context.FriendLists.Add(fl);
+			_context.SaveChanges();
+			return "";
+		}
+
+		[HttpPost("Dislike")]
+		public string Dislike(MatchRequestDTO request)
+		{
+			FriendList fl = new FriendList
+			{
+				Clicked = request.Clicked,
+				BeenClicked = request.BeenClicked,
+				state = 2
+			};
+			_context.FriendLists.Add(fl);
+			_context.SaveChanges();
+			return "";
 		}
 	}
 }
