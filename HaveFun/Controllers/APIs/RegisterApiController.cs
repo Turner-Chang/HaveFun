@@ -145,4 +145,11 @@ namespace HaveFun.Controllers.APIs
             );
         }
     }
+
+    // 傳送Email的Api
+    [HttpGet("{id}")]
+    public void SendCheckEmail(int id)
+    {
+
+    }
 }

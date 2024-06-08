@@ -159,6 +159,12 @@
                     formData.append('ProfilePicture', this.ProfilePicture);
                     return formData;
                 },
+                sendEmail(int id){
+                    fetch(`api//Register/SendCheckEmail/${id}`)
+                        .then()
+                        .then()
+                        .catch()
+                }
                 submit(){
                     if (!this.isFormValid) {
                         alert('請填好資料才能送出');
@@ -187,7 +193,9 @@
                                 this.phoneNumberError = result.errors.PhoneNumber.toString();
                                 this.addressError = result.errors.Address.toString();
                             }else{
+                                if (result.success == ture) {
 
+                                }
                             }
                         })
                         .catch(err => alert(err));
