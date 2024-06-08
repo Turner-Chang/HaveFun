@@ -38,6 +38,7 @@ namespace HaveFun.Controllers.APIs
                 .OrderByDescending(p => p.Time)
                 .Select(r => new 
                 { UserName = r.User.Name,
+                  PostId = r.Id,
                   ProfilePicture = r.User.ProfilePicture,
                   Contents = r.Contents,
                   Time = r.Time.ToString("yyyy-MM-dd HH:mm:ss"),
@@ -92,15 +93,42 @@ namespace HaveFun.Controllers.APIs
         }
         //檢舉貼文
         // POST: api/Post/RatPostReview
-        //[HttpPost]
-        //public async Task<string> RatPostReview(PostReview ratPost)
-        //{
-            //PostReview ratPost = new PostReview
-            //{
-      
-
-            //};
-            //return "新增檢舉貼文成功";
-        //}
+        [HttpPost]
+        public async Task<string> RatPostReview(PostReview ratPost)
+        {
+            PostReview Post = new PostReview
+            {
+                PostId = ratPost.PostId,
+                UserId = ratPost.UserId,
+                ReportItems = ratPost.ReportItems,
+                Reason = ratPost.Reason,
+                ReportTime = ratPost.ReportTime,
+                ProcessingStstus = ratPost.ProcessingStstus
+            };
+            _context.PostReviews.Add(Post);
+            await _context.SaveChangesAsync();
+            return "新增檢舉貼文成功";
+        }
+        //刪除貼文
+        // DELETE: api/Post/DeletePost/5
+        [HttpDelete("{id}")]
+        public async Task<string> DeletePost(int id)
+        {
+            var post = await _context.Posts.FindAsync(id);
+            if (post == null)
+            {
+                return "刪除貼文失敗";
+            }
+            try
+            {
+                _context.Posts.Remove(post);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return "刪除貼文失敗";
+            }
+            return "刪除貼文成功";
+        }
     }
 }
