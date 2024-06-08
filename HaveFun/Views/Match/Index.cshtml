@@ -97,6 +97,24 @@
 			width: 60px;
 			border-radius: 50%;
 		}
+
+		.label{
+			display: inline-block;
+			background-color: #007bff; 
+			color: white; 
+			padding: 5px 10px; 
+			margin: 5px; 
+			border-radius: 15px; 
+			font-size: 14px; 
+			font-weight: 500; 
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); 
+			transition: background-color 0.3s ease;
+		}
+
+		.label:hover{
+				background-color: #0056b3;
+		}
+
 	</style>
 }
 
@@ -206,13 +224,16 @@
 									</button>
 								</div>
 								<div class="card-body">
-									<h5 class="card-title">{{user.name}}</h5>
-									<h5> {{user.age}}</h5>
+									<h5 class="card-title">{{user.name}} {{user.age}}</h5>
 									<p class="card-text">{{user.introduction}}</p>
 									<button :id="`btnCollapse${index}`" :data-bs-target="`#collapseExample${index}`" class="btn btn-primary detail" type="button" data-bs-toggle="collapse" aria-expanded="false" :aria-controls="`collapseExample${index}`" @@click="showDetail">Detail<i class="fa-solid fa-angle-down"></i></button>
 									<div class="collapse collapsing" :id="`collapseExample${index}`" style="width: 20rem; ">
 										<div class="card card-body collapseCard">
-											Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+											<h6>我的標籤</h6>
+											<div v-for="(labels,category) in uniqueLabel(user)">
+												<h6>{{category}}</h6>			
+												<span v-for="label in labels" class="label">#{{ label }}</span>
+											</div>											
 										</div>
 									</div>
 								</div>
@@ -252,6 +273,7 @@
 						},
 					},
 					today: new Date(),
+					labels:[],
 				}
 			},
 			computed: {
@@ -261,10 +283,10 @@
 					}
 					return this.notMatchUsers;
 				},
-
 				filterAge() { 
 					
-				}
+				},
+				
 			},
 			methods: {
 				getNotMatchUsers() {
@@ -359,10 +381,17 @@
 					var div = $(".buttons");
 					div.css('position', 'absolute');
 				},
-				// calculateAge(birthDate, today) {
-				// 	let age = today.getFullYear() - birthDate.getFullYear();
-				// 	return age;
-				// },
+				uniqueLabel(user) { 
+					const labelMap = new Map();
+					user.labels.forEach(label => { 
+						if (!labelMap.has(label.category.name)) { 
+							labelMap.set(label.category.name, []);
+						}
+						labelMap.get(label.category.name).push(label.name);
+					});
+					//console.log(labelMap);
+					return Object.fromEntries(labelMap);
+				},
 			},
 			watch: {
 			},
