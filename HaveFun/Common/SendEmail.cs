@@ -6,11 +6,11 @@ namespace HaveFun.Common
     public class SendEmail
     {
         // 收信人的email
-        string emailTo = string.Empty;
+        public string emailTo { get; set; }
         // 主旨
-        string subject = string.Empty;
+        public string subject { get; set; }
         //內容
-        string body = string.Empty;
+        public string body { get; set; }
 
         public SendEmail() { }
         public SendEmail(string emailTo, string subject, string body)
@@ -36,7 +36,7 @@ namespace HaveFun.Common
                 using (MailMessage message = new MailMessage())
                 {
                     // 設定寄信的內容
-                    message.From = new MailAddress(smtpAddress);
+                    message.From = new MailAddress(emailForm);
                     message.To.Add(emailTo);
                     message.Subject = subject;
                     message.Body = body;

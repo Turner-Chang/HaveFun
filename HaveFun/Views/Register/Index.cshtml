@@ -126,7 +126,7 @@
                     addressError:'',
                     profilePictureError:'',
                     profilePicture: null,
-                    
+                    id:''
                 }
             },
             methods: {
@@ -159,12 +159,24 @@
                     formData.append('ProfilePicture', this.ProfilePicture);
                     return formData;
                 },
-                sendEmail(int id){
-                    fetch(`/api//Register/SendCheckEmail/${id}`)
-                        .then()
-                        .then()
-                        .catch()
-                }
+                sendEmail(id){
+                    fetch(`/api/Register/SendCheckEmail/${id}`)
+                        .then(resp => {
+                            if (!resp.ok) {
+                                throw '傳送信件失敗，請聯繫管理員';
+                            } else {
+                                return resp.json();
+                            }
+                        })
+                        .then(result => {
+                            if (result.success == true) {
+                               
+                            } else {
+                                throw '傳送信件失敗，請聯繫管理員';
+                            }
+                        })
+                        .catch(err => console.log(err))
+                },
                 submit(){
                     if (!this.isFormValid) {
                         alert('請填好資料才能送出');
@@ -193,8 +205,10 @@
                                 this.phoneNumberError = result.errors.PhoneNumber.toString();
                                 this.addressError = result.errors.Address.toString();
                             }else{
-                                if (result.success == ture) {
-
+                                    if (result.success === true) {
+                                    this.sendEmail(result.id);
+                                    let path = '@Url.Action("SendMail", "Register")' + `?id=${result.id}`;
+                                    window.location.href = path;
                                 }
                             }
                         })

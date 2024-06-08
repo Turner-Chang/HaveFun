@@ -103,9 +103,9 @@ namespace HaveFun.Controllers.APIs
             }
 
             // 把資料放到資料庫中
+            int userId = 0;
             try
-            {
-                
+            { 
                 UserInfo userInfo = new UserInfo();
                 userInfo.Account = userRegisterDTO.Account;
                 userInfo.Password = hashPassword;
@@ -119,6 +119,7 @@ namespace HaveFun.Controllers.APIs
 
                 _dbContext.UserInfos.Add(userInfo);
                 await _dbContext.SaveChangesAsync();
+                userId = userInfo.Id;
             }
             catch (DbException)
             {
@@ -142,21 +143,76 @@ namespace HaveFun.Controllers.APIs
             return new JsonResult(
                 new
                 {
-                    success = true
+                    success = true,
+                    id = userId,
                 }
             );
         }
 
         // 傳送Email的Api
         [HttpGet("{id}")]
-        public JsonResult SendCheckEmail(int id)
+        public async Task<JsonResult> SendCheckEmail(int id)
         {
+            // 寄信的內容
+            string mailBody = @$"<!DOCTYPE html>
+                                <html lang=""en"">
+                                <head>
+                                    <meta charset=""UTF-8"">
+                                    <meta http-equiv=""X-UA-Compatible"" content=""IE=edge"">
+                                    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+                                    <title>確認您的電子郵件</title>
+                                </head>
+                                <body>
+                                    <div style=""font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;"">
+                                        <h2 style=""text-align: center; color: #007bff;"">確認您的電子郵件</h2>
+                                        <p>親愛的用戶，</p>
+                                        <p>感謝您註冊我們的服務！為了完成您的註冊，請點擊下方的鏈接進行確認：</p>
+                                        <p style=""text-align: center;"">
+                                            <a href=""https://localhost:7152/Register/Verification?id={id}"" style=""display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none;"">確認郵件</a>
+                                        </p>
+                                        <p>如果上面的鏈接無法點擊，請將以下地址複製到您的瀏覽器地址欄中進行訪問：</p>
+                                        <p style=""text-align: center;"">https://localhost:7152/Register/Verification/id</p>
+                                        <p>如果您並未註冊，請忽略此郵件。</p>
+                                        <p>祝您使用愉快！</p>
+                                        <p>此致，敬禮</p>
+                                        <p>您的服務團隊</p>
+                                    </div>
+                                </body>
+                                </html>
+                                ";
 
-
-            return new JsonResult(new
+            try
             {
-                success = true
-            });
+                // 獲取寄信的人的email
+                UserInfo? user = await _dbContext.UserInfos.FindAsync(id);
+                if (user == null)
+                {
+                    return new JsonResult(new
+                    {
+                        success = false
+                    });
+                }
+
+                // 寄信
+                string emailTo = user.Account;
+                _sendEmail.emailTo = emailTo;
+                _sendEmail.body = mailBody;
+                _sendEmail.subject = "HaveFun:完成註冊的確認郵件";
+                _sendEmail.Send();
+
+                return new JsonResult(new
+                {
+                    success = true
+                });
+            }
+            catch (Exception)
+            {
+
+                return new JsonResult(new
+                {
+                    success = false
+                });
+            }
         }
     }
 }

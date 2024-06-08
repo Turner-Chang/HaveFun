@@ -18,7 +18,7 @@ namespace HaveFun.Controllers
 			return View();
 		}
 
-        //Register/Verification
+        // Register/Verification
         // 驗證信箱完成頁面
         public IActionResult Verification()
 		{
