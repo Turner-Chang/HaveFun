@@ -19,6 +19,8 @@ namespace HaveFun.Controllers.APIs
 		[HttpGet("{userId}")]
 		public IEnumerable<MatchUserInfoDTO> GetNotMatchUser(int userId) 
 		{
+			DateTime today = DateTime.Today;
+
 			var interactedUser = _context.FriendLists
 				.Where(f1 => f1.Clicked == userId)
 				.Select(f1 => f1.BeenClicked);
@@ -35,6 +37,7 @@ namespace HaveFun.Controllers.APIs
 					ProfilePicture = u.ProfilePicture,
 					Introduction = u.Introduction,
 					Level = u.Level,
+					Age = today.Year - u.BirthDay.Year,
 					Pictures = u.Pictures.Select(p => new UserPicture{ 
 						Id = p.Id,
 						UserId = p.UserId,
