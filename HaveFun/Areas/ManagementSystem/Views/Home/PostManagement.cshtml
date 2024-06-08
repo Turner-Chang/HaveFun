@@ -1,6 +1,6 @@
 ﻿<div id="PostCheckApp" class="container row  p-5 pt-5 text-center border-2">
 	<div class="table-responsive-md">
-		<button class="btn btn-info" @@click="doneReport()">是否處理過切換按鈕</button>
+		
 		<table class="table table-secondary">
 			<thead class="table-active">
 				<tr>
@@ -84,14 +84,14 @@
 			},
 			methods: {
 				check() { $("#PostModal").modal("show"); },
-				done() { this.reports = this.reports.where(r => r.processingStstus != 1); }
+				
 			},
 			mounted: async() => {
 				
-				baseAdress = "https://localhost:7152/api/PostReview/GetPostReviews";
+				baseAdress = "https://localhost:7152/";
 				
 				const resp = await fetch(
-					baseAdress, {
+					`${baseAdress}api/PostReview/GetAll`, {
 					method: "GET"
 				});
 				const data = await resp.json();
