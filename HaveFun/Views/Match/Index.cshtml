@@ -427,15 +427,6 @@
 			},
 			mounted() {
 				this.getNotMatchUsers();
-				// let result = this.notMatchUsers.map(user => { 
-				// 	const birthDate = new Date(user.birthDay);
-				// 	const userAge = this.calculateAge(birthDate, this.today);
-				// 	return {
-				// 		...user,
-				// 		age: userAge,
-				// 	};
-				// });
-				// this.notMatchUsers = result;
 			},
 		}).mount("#matchApp");
 	</script>
