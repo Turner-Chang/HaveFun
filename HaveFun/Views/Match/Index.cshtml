@@ -38,7 +38,7 @@
 			margin: auto;
 			position: absolute;
 			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-			transition: transform 0.5s ease, opacity 0.3s ease;
+			transition: transform 0.3s ease, opacity 0.3s ease;
 			user-select: none;
 		}
 
@@ -190,7 +190,7 @@
 				<div class="col-lg-7 col-12">
 					<div id="out" class="wow fadeInUp" data-wow-duration="1.5s" data-wow-delay="1s">
 						<div id="card-container">
-							<div v-for="(user, index) in filterGender" :id="user.id" class="card cards" :style="{'z-index': index}" @@mousedown="startDrag($event, index)"
+							<div v-for="(user, index) in filterAge" :id="user.id" class="card cards" :style="{'z-index': index}" @@mousedown="startDrag($event, index)"
 								 @@touchstart="startDrag($event, index)">
 								<div :id="`carouselExampleIndicators${index}`" class="carousel slide">
 									<div class="carousel-indicators">	
@@ -284,7 +284,14 @@
 					return this.notMatchUsers;
 				},
 				filterAge() { 
-					
+					let temp = this.filterGender;
+					if (this.filter.age.min != "") { 
+						temp = temp.filter(u => u.age >= Number(this.filter.age.min));
+					}
+					if (this.filter.age.max != "") {
+						temp = temp.filter(u => u.age <= Number(this.filter.age.max));
+					}
+					return temp;
 				},
 				
 			},
@@ -332,14 +339,14 @@
 							console.log(this.currentCard.id);
 							this.notMatchUsers = this.notMatchUsers.filter(u => u.id != this.currentCard.id);
 							this.currentCard = null;
-						}, 500);
+						}, 300);
 					} else if (dx < -100) {
 						this.currentCard.style.transform = `translate(-100vw, 0)`;
 						setTimeout(() => {
 							console.log(this.currentCard.id);
 							this.notMatchUsers = this.notMatchUsers.filter(u => u.id != this.currentCard.id);
 							this.currentCard = null;
-						}, 500);
+						}, 300);
 					} else {
 						this.currentCard.style.transform = '';
 					}			
@@ -362,7 +369,7 @@
 
 						setTimeout(() => {
 							this.notMatchUsers.pop();
-						}, 500);
+						}, 300);
 
 					}
 					var div = $(".buttons");
@@ -376,7 +383,7 @@
 
 						setTimeout(() => {
 							this.notMatchUsers.pop();
-						}, 500);
+						}, 300);
 					}
 					var div = $(".buttons");
 					div.css('position', 'absolute');
