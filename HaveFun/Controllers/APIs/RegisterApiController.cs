@@ -11,6 +11,7 @@ namespace HaveFun.Controllers.APIs
     [ApiController]
     public class RegisterApiController : ControllerBase
     {
+        // 注入
         HaveFunDbContext _dbContext;
         SaveImage _saveImage;
         PasswordSecure _passwordSecure;
@@ -45,17 +46,8 @@ namespace HaveFun.Controllers.APIs
 
         // 把前端資料處理並傳到資料庫
         [HttpPost]
-        public JsonResult AddUser(UserRegisterDTO userRegisterDTO)
+        public async Task<JsonResult> AddUser(UserRegisterDTO userRegisterDTO)
         {
-            //測試用
-            //Console.WriteLine(userRegisterDTO.Account);
-            //Console.WriteLine(userRegisterDTO.Password);
-            //Console.WriteLine(userRegisterDTO.Name);
-            //Console.WriteLine(userRegisterDTO.Address);
-            //Console.WriteLine(userRegisterDTO.Gender);
-            //Console.WriteLine(userRegisterDTO.BirthDay);
-            //Console.WriteLine(userRegisterDTO.PhoneNumber);
-            //Console.WriteLine(userRegisterDTO.ProfilePicture == null);
 
             // 資料驗證沒過處理
             if (!ModelState.IsValid)
@@ -75,13 +67,15 @@ namespace HaveFun.Controllers.APIs
 
             // 密碼加密
             byte[] salt = _passwordSecure.CreateSalt();
-            Console.WriteLine(Convert.ToBase64String(salt));
+            string strSalt = Convert.ToBase64String(salt);
             string password = userRegisterDTO.Password;
-            byte[] hashPassword = _passwordSecure.HashPassword(password, salt);
-            Console.WriteLine(Convert.ToBase64String(hashPassword));
-            
+            string hashPassword = _passwordSecure.HashPassword(password, salt);
+            Console.WriteLine(strSalt);
+            Console.WriteLine(hashPassword);
 
             //圖片處理
+
+            string fullPath = string.Empty;
             if (userRegisterDTO.ProfilePicture != null)
             {
                 // 把大頭照丟到wwwtoot的images的headshots資料夾內
@@ -93,7 +87,6 @@ namespace HaveFun.Controllers.APIs
                 _saveImage.Path = imgPath;
                 _saveImage.Name = imgName;
                 _saveImage.Picture = userRegisterDTO.ProfilePicture;
-                string fullPath = string.Empty;
                 bool isSave = _saveImage.Save(out fullPath);
                 if (isSave == false)
                 {
@@ -106,7 +99,43 @@ namespace HaveFun.Controllers.APIs
                     );
                 }
             }
-           
+
+            // 把資料放到資料庫中
+            try
+            {
+                
+                UserInfo userInfo = new UserInfo();
+                userInfo.Account = userRegisterDTO.Account;
+                userInfo.Password = hashPassword;
+                userInfo.Name = userRegisterDTO.Name;
+                userInfo.Address = userRegisterDTO.Address;
+                userInfo.PhoneNumber = userRegisterDTO.PhoneNumber;
+                userInfo.Gender = (int)userRegisterDTO.Gender;
+                userInfo.BirthDay = (DateTime)userRegisterDTO.BirthDay;
+                userInfo.ProfilePicture = fullPath;
+                userInfo.PasswordSalt = strSalt;
+
+                _dbContext.UserInfos.Add(userInfo);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbException)
+            {
+                return new JsonResult(
+                    new
+                    {
+                        success = false
+                    }
+                );
+            }
+            catch (Exception)
+            {
+                return new JsonResult(
+                    new
+                    {
+                        success = false
+                    }
+                );
+            }
 
             return new JsonResult(
                 new
