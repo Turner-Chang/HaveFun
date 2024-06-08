@@ -57,5 +57,54 @@ namespace HaveFun.Controllers.APIs
 
 			return usersNotInteractedWith;
 		}
+
+
+		[HttpPost("Like")]
+		public string Like(MatchRequestDTO request) 
+		{
+			FriendList fl = null;
+			var interacted = _context.FriendLists.FirstOrDefault(u => u.Clicked == request.BeenClicked && u.BeenClicked == request.Clicked);
+			if (interacted != null)
+			{
+				if (interacted.state == 0)
+				{
+					interacted.state = 1;
+					_context.FriendLists.Update(interacted);
+					fl = new FriendList
+					{
+						Clicked = request.Clicked,
+						BeenClicked = request.BeenClicked,
+						state = 1
+					};
+					_context.FriendLists.Add(fl);
+					_context.SaveChanges();
+					return "配對成功!";
+				}	
+			}
+			
+			fl = new FriendList{
+				Clicked = request.Clicked,
+				BeenClicked = request.BeenClicked,
+				state = 0
+			};
+
+			_context.FriendLists.Add(fl);
+			_context.SaveChanges() ;
+			return null;
+		}
+
+		[HttpPost("Dislike")]
+		public string Dislike(MatchRequestDTO request)
+		{
+			FriendList fl = new FriendList 
+			{
+				Clicked = request.Clicked,
+				BeenClicked = request.BeenClicked,
+				state = 2
+			};
+			_context.FriendLists.Add(fl);
+			_context.SaveChanges();
+			return null;
+		}
 	}
 }
