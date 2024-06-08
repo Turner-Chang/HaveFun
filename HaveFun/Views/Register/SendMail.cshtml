@@ -8,17 +8,23 @@
 @section Scripts{
     <script>
         const searchParams = new URLSearchParams(window.location.search);
-        int id = searchParams.get('id');
+        const id = searchParams.get('id');
         const ResendConfirmationEmail = function (int id) {
-            fetch(`api//Register/SendCheckEmail/${id}`)
-                .then(resp = {
+            fetch(`/api/Register/SendCheckEmail/${id}`)
+                .then(resp => {
                     if(!resp.ok){
-                        throw '傳送信件失敗，請聯繫管理員'
+                        throw '傳送信件失敗，請聯繫管理員';
                 }else {
                     return resp.json();
                 }
                 })
-                .then()
+                .then(result => {
+                    if (result.success == true) {
+
+                    } else {
+                        throw '傳送信件失敗，請聯繫管理員';
+                    }
+                })
                 .catch(err => alert(err))
         }
     </script>

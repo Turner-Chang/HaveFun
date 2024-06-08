@@ -15,12 +15,14 @@ namespace HaveFun.Controllers.APIs
         HaveFunDbContext _dbContext;
         SaveImage _saveImage;
         PasswordSecure _passwordSecure;
+        SendEmail _sendEmail;
 
-        public RegisterApiController(HaveFunDbContext dbContext, SaveImage saveImage, PasswordSecure passwordSecure)
+        public RegisterApiController(HaveFunDbContext dbContext, SaveImage saveImage, PasswordSecure passwordSecure, SendEmail sendEmail)
         {
             _dbContext = dbContext;
             _saveImage = saveImage;
             _passwordSecure = passwordSecure;
+            _sendEmail = sendEmail;
         }
 
         // 驗證帳號是否重複
@@ -144,12 +146,17 @@ namespace HaveFun.Controllers.APIs
                 }
             );
         }
-    }
 
-    // 傳送Email的Api
-    [HttpGet("{id}")]
-    public void SendCheckEmail(int id)
-    {
+        // 傳送Email的Api
+        [HttpGet("{id}")]
+        public JsonResult SendCheckEmail(int id)
+        {
 
+
+            return new JsonResult(new
+            {
+                success = true
+            });
+        }
     }
 }
