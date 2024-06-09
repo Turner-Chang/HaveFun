@@ -1,0 +1,148 @@
+﻿<!-- index.cshtml -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue Post App</title>
+    <style>
+        .post-item {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="tab-pane fade show active" id="gt1" role="tabpanel" aria-labelledby="gt1-tab">
+            <div class="group__bottom--area group__bottom--memberactivity">
+                <div class="group__bottom--body">
+                    <div class="group__bottom--allmedia">
+                        <div class="media-wrapper">
+                            <div class="tab-content" id="myTabContent2">
+                                <div class="tab-pane fade show active" id="Personal" role="tabpanel" aria-labelledby="Personal-tab">
+                                    <div class="create-post mb-4">
+                                        <div class="lab-inner">
+                                            <div class="lab-thumb">
+                                                <div class="thumb-inner">
+                                                    <div class="thumb-img">
+                                                        <img src="assets/images/member/profile/profile.jpg" alt="datting thumb">
+                                                    </div>
+                                                    <div class="thumb-content">
+                                                        <h6><a href="#"> William Smith</a></h6>
+                                                        <div class="custom-select">
+                                                            <select v-model="postPrivacy">
+                                                                <option value="Public"> Public</option>
+                                                                <option value="Private"> Private</option>
+                                                                <option value="Friends"> Friends</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="lab-content">
+                                                <div>
+                                                    <input v-model="postContent" type="text" placeholder="Whats on your mind. William?">
+                                                    <div class="content-type">
+                                                        <ul class="content-list">
+                                                            <li class="text"><a href="#"><i class="fa-solid fa-pen-to-square"></i>Text </a></li>
+                                                            <li class="image-video">
+                                                                <div class="file-btn"><i class="fa-solid fa-camera"></i>Photo/Videos</div>
+                                                                <input type="file" @@change="handleFileUpload">
+                                                            </li>
+                                                            <li class="attach-file">
+                                                                <div class="file-btn"><i class="fa-solid fa-link"></i>Attach File</div>
+                                                                <input type="file" @@change="handleFileUpload">
+                                                            </li>
+                                                            <li class="post-submit">
+                                                                <button @@click="addPost" class="default-btn">Post</button>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div v-for="post in posts" :key="post.id" class="post-item mb-4">
+                                        <div class="post-content">
+                                            <div class="post-author">
+                                                <div class="post-author-inner">
+                                                    <div class="author-thumb">
+                                                        <img src="assets/images/member/profile/Member1.jpg" alt="datting thumb">
+                                                    </div>
+                                                    <div class="author-details">
+                                                        <h6><a href="#">William Smith</a></h6>
+                                                        <ul class="post-status">
+                                                            <li class="post-privacy"><i class="icofont-world"></i> {{ post.privacy }}</li>
+                                                            <li class="post-time">Just Now</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="post-description">
+                                                <p>{{ post.content }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="post-meta">
+                                            <div class="post-meta-top">
+                                                <p><a href="#"><i class="fa-solid fa-thumbs-up"></i> <i class="fa-solid fa-heart"></i> <i class="fa-solid fa-face-laugh"></i> <span>0 likes</span></a></p>
+                                                <p><a href="#">0 Comments</a></p>
+                                            </div>
+                                            <div class="post-meta-bottom">
+                                                <ul class="react-list">
+                                                    <li class="react"><a href="#"><i class="fa-solid fa-thumbs-up"></i>Like</a></li>
+                                                    <li class="react"><a href="#"><i class="fa-solid fa-comment"></i>Comment</a></li>
+                                                    <li class="react"><a href="#"><i class="fa-solid fa-share-nodes"></i>Share</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vue.js script -->
+    <script src="https://unpkg.com/vue@3.2.47/dist/vue.global.prod.js"></script>
+    <script>
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    postContent: '',
+                    postPrivacy: 'Public',
+                    posts: [],
+                    postIdCounter: 1
+                };
+            },
+            methods: {
+                addPost() {
+                    if (this.postContent.trim() === '') {
+                        alert('貼文不可空白');
+                        return;
+                    }
+
+                    const newPost = {
+                        id: this.postIdCounter++,
+                        content: this.postContent,
+                        privacy: this.postPrivacy
+                    };
+
+                    this.posts.push(newPost);
+                    this.postContent = ''; // Clear input field
+                },
+                handleFileUpload(event) {
+                    // Handle file upload logic here
+                    console.log(event.target.files);
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

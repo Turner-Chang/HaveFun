@@ -1,0 +1,121 @@
+﻿<div class="tab-pane fade show active" id="gt1" role="tabpanel" aria-labelledby="gt1-tab">
+    <div class="group__bottom--area group__bottom--memberactivity">
+        <div class="group__bottom--body">
+            <div class="group__bottom--allmedia">
+                <div class="media-wrapper">
+                    <div class="tab-content" id="myTabContent2">
+                        <div class="tab-pane fade show active" id="Personal"
+                             role="tabpanel" aria-labelledby="Personal-tab">
+
+                            <div class="create-post mb-4">
+                                <div class="lab-inner">
+                                    <div class="lab-thumb">
+                                        <div class="thumb-inner">
+                                            <div class="thumb-img">
+                                                <img src="assets/images/member/profile/profile.jpg" alt="datting thumb">
+                                            </div>
+                                            <div class="thumb-content">
+                                                <h6><a href="#"> William Smith</a></h6>
+                                                <div class="custom-select">
+                                                    <select>
+                                                        <option value="1"> Public</option>
+                                                        <option value="2"> Private</option>
+                                                        <option value="3"> Friends</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="lab-content">
+                                        <form action="#" class="post-form">
+                                            <input id="post-input" type="text" placeholder="Whats on your mind. William?">
+                                            <div class="content-type">
+                                                <ul class="content-list">
+                                                    <li class="text"><a href="#"><i class="fa-solid fa-pen-to-square"></i>Text </a></li>
+                                                    <li class="image-video">
+                                                        <div class="file-btn"><i class="fa-solid fa-camera"></i>Photo/Videos</div>
+                                                        <input type="file">
+                                                    </li>
+                                                    <li class="attach-file">
+                                                        <div class="file-btn"><i class="fa-solid fa-link"></i>Attach File</div>
+                                                        <input type="file">
+                                                    </li>
+                                                    <li class="post-submit">
+                                                        <input type="submit" value="Post" class="default-btn">
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelector('.post-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            var postContent = document.getElementById('post-input').value;
+            if (postContent.trim() === '') {
+                alert('貼文不可空白');
+                return;
+            }
+
+            // 新增貼文HTML
+            var newPost = document.createElement('div');
+            newPost.className = 'post-item mb-4';
+            newPost.innerHTML = `
+                                    <div class="post-content">
+                                        <div class="post-author">
+                                            <div class="post-author-inner">
+                                                <div class="author-thumb">
+                                                    <img src="assets/images/member/profile/Member1.jpg" alt="datting thumb">
+                                                </div>
+                                                <div class="author-details">
+                                                    <h6><a href="#">William Smith</a></h6>
+                                                    <ul class="post-status">
+                                                        <li class="post-privacy"><i class="icofont-world"></i> Public</li>
+                                                        <li class="post-time">Just Now</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="post-description">
+                                            <p>${postContent}</p>
+                                        </div>
+                                    </div>
+                                    <div class="post-meta">
+                                        <div class="post-meta-top">
+                                            <p><a href="#"><i class="fa-solid fa-thumbs-up"></i> <i class="fa-solid fa-heart"></i> <i class="fa-solid fa-face-laugh"></i> <span>0 likes</span></a></p>
+                                            <p><a href="#">0 Comments</a></p>
+                                        </div>
+                                        <div class="post-meta-bottom">
+                                            <ul class="react-list">
+                                                <li class="react"><a href="#"><i class="fa-solid fa-thumbs-up"></i>Like</a></li>
+                                                <li class="react"><a href="#"><i class="fa-solid fa-comment"></i>Comment</a></li>
+                                                <li class="react"><a href="#"><i class="fa-solid fa-share-nodes"></i>Share</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                `;
+
+            // insertAdjacentElement
+            var createPostElement = document.querySelector('.create-post.mb-4');
+            if (createPostElement) {
+
+                createPostElement.insertAdjacentElement('afterend', newPost);
+            }
+
+            // 清空
+            document.getElementById('post-input').value = '';
+        });
+    });
+</script>
