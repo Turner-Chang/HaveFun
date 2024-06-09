@@ -22,7 +22,8 @@
     <script src="~/assets/js/vendor/modernizr-3.11.2.min.js"></script>
     <script src="~/assets/js/isotope.pkgd.min.js"></script>
     <script src="~/assets/js/swiper.min.js"></script>
-    <!-- <script src="assets/js/all.min.js"></script> -->
+    <!-- <script src="~/assets/js/all.min.js"></script> -->
+   @* 一般razor跟html不同之處 ~/ *@
     <script src="~/assets/js/wow.js"></script>
     <script src="~/assets/js/lightcase.js"></script>
     <script src="~/assets/js/jquery.countdown.min.js"></script>
@@ -124,7 +125,8 @@
 
     <!-- ================> Footer section start here <================== -->
     <footer class="footer overflow-hidden">
-        <div class="footer__top bg_img" style="background-image: url(assets/images/footer/bg-3.jpg)">
+        <div class="footer__top bg_img" style="background-image: url(https://localhost:7152/assets/images/footer/bg-3.jpg)">
+            @* img改路徑 url要給絕對的，空白沒model的不影響*@
             <div class="footer__newsletter wow fadeInUp" data-wow-duration="1.5s">
                 <div class="container">
                     <div class="row  justify-content-center">
@@ -224,8 +226,9 @@
     </script>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+<<<<<<< HEAD
+
 =======
-    
 >>>>>>> main
     <!-- All Needed JS -->
     <script src="~/assets/js/vendor/modernizr-3.11.2.min.js"></script>

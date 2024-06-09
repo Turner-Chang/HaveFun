@@ -15,6 +15,7 @@ builder.Services.AddSqlServer<HaveFunDbContext>(connHaveFunStr);
 builder.Services.AddSignalR();
 builder.Services.AddScoped<SaveImage>();
 builder.Services.AddSingleton<PasswordSecure>();
+builder.Services.AddScoped<SendEmail>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
