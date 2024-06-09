@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using HaveFun.DTOs;
+using Microsoft.EntityFrameworkCore;
 
 namespace HaveFun.Models
 {
@@ -116,6 +117,6 @@ namespace HaveFun.Models
 				.WithMany(u => u.PostReviews)
 				.HasForeignKey(m => m.UserId)
 				.OnDelete(DeleteBehavior.Restrict);
-		}
+        }
 	}
 }
