@@ -28,7 +28,8 @@ namespace HaveFun.Controllers
 
 		// Register/Verification/id
 		// 驗證信箱完成頁面
-		[HttpGet("{id}")]
+		[HttpGet]
+		[Route("Register/Verification/{id}")]
         public async Task<IActionResult> Verification(int id)
 		{
 			try
@@ -38,7 +39,7 @@ namespace HaveFun.Controllers
 				{
 					user.AccountStatus = 1;
 					await _dbContext.SaveChangesAsync();
-                    return View("VerificationSuccess");
+                    return View();
                 }else
 				{
                     return View("VerificationFailed");
@@ -51,5 +52,15 @@ namespace HaveFun.Controllers
                 return View("VerificationFailed");
             }
 		}
-	}
+
+		public IActionResult VerificationSuccess()
+		{
+			return View();
+		}
+
+        public IActionResult VerificationFailed()
+        {
+            return View();
+        }
+    }
 }
