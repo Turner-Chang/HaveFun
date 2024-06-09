@@ -1,82 +1,147 @@
 ﻿<div class="tab-pane fade" id="gt2" role="tabpanel" aria-labelledby="gt2-tab">
-    <div class="info">
-        <div class="info-card">
-            <div class="info-card-title">
-                <h6>大頭貼預計放這</h6>
-            </div>
-            <div class="info-card-content">
-                <img style="width:400px;height:400px;" />
+	<div class="info">
+		<div class="info-card">					@* 大頭貼 *@
+			<div class="info-card-title">
+				<h6>大頭貼預計放這</h6>
+			</div>
+			<div class="info-card-content">
+				<h5>預計放大頭貼</h5>
+			</div>
+		</div> 
 
-            </div>
-        </div>
-        <div class="info-card mb-4">
-            <div class="info-card-title">
-                <h6>基本資料</h6>
-            </div>
-            <div class="info-card-content">
-                <ul class="info-list">
-                    <li>
-                        <p class="info-name">暱稱:</p>
-                        <p class="info-details">William Smith</p>
-                    </li>
-                    <li>
-                        <p class="info-name">性別:</p>
-                        <p class="info-details">Woman</p>
-                    </li>
-                    <li>
-                        <p class="info-name">正在找尋:</p>
-                        <p class="info-details">Men</p>
-                    </li>
-                    <li>
-                        <p class="info-name">婚姻狀況:</p>
-                        <p class="info-details">Single</p>
-                    </li>
-                    <li>
-                        <p class="info-name">年齡:</p>
-                        <p class="info-details">36</p>
-                    </li>
-                    <li>
-                        <p class="info-name">生日:</p>
-                        <p class="info-details">27-02-1996</p>
-                    </li>
-                    <li>
-                        <p class="info-name">所在地:</p>
-                        <p class="info-details">
-                            Streop Rd, Peosur, Inphodux,
-                            USA.
-                        </p>
-                    </li>
-                </ul>
+		<button type="button" class="default-btn">上傳</button>
 
-            </div>
-        </div>
-        <div class="info-card mb-4">
-            <div class="info-card-title">
-                <h6>了解更多:</h6>
-            </div>
-            <div class="info-card-content">
-                <p>做一頁就快讓我爆掉了 我愛大家</p>
-            </div>
-        </div>
+		<div id="app_UserInfo">
+			<div class="info-card mb-4">		@* 基本資料 *@
+				<div class="info-card-title">
+					<h6>基本資料</h6>
+				</div>
+				<div class="info-card-content">
+					<ul class="info-list">
+						<li>
+							<p class="info-name">姓名:</p>
+							<p class="info-details">{{ material.name }}</p>
+						</li>
+						<li>
+							<p class="info-name">性別:</p>
+							<p class="info-details">{{ material.gender }}</p>
+						</li>
+						<li>
+							<p class="info-name">生日:</p>
+							<p class="info-details">{{ material.birthDay }}</p>
+						</li>
+						<li>
+							<p class="info-name">興趣:</p>
+							<p class="info-details">{{ material.interest }}</p>
+						</li>
 
-        <div class="info-card mb-4">
-            <div class="info-card-title">
-                <h6>理想中的對象/朋友</h6>
-            </div>
-            <div class="info-card-content">
-                <ul class="info-list">
-                    <li>
-                        <p class="info-name">希望你是..:</p>
-                        <p class="info-details">I want a funny person</p>
-                    </li>
-                    <li>
-                        <p class="info-name">興趣:</p>
-                        <p class="info-details">I like to travel a lot</p>
-                    </li>
-                </ul>
+					</ul>
+				</div>
+			</div>
 
-            </div>
-        </div>
+			<div class="info-card mb-4">		@* 自我介紹 *@
+				<div class="info-card-title">
+					<h6>了解更多:</h6>
+				</div>
+				<div class="info-card-content">
+					<span>{{ material.selfIntroduction }}</span>
+				</div>
+			</div>
 
-    </div>
+			<div class="info-card mb-4">		@* 找朋友 *@
+				<div class="info-card-title">
+					<h6>理想中的對象/朋友</h6>
+				</div>
+				<div class="info-card-content">
+					<ul class="info-list">
+						<li>
+							<p class="info-name">電話:</p>
+							<p class="info-details">{{ material.phoneNumber }}</p>
+						</li>
+						<li>
+							<p class="info-name">所在地:</p>
+							<p class="info-details">{{ material.address }}</p>
+						</li>
+					</ul>
+				</div>
+
+			</div>
+
+			<button type="button" class="default-btn" v-on:click="showModel">編輯個人資料</button>  @* 編輯基本資料.自我介紹.找朋友的按鈕 *@
+
+			
+			<div class="modal fade" id="saveModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+				 role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="modalTitleId">編輯個人資料</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<label form-label>姓名:</label>
+							<input v-model="material.name" placeholder="請輸入姓名" />
+							<label form-label>性別:</label>
+							<input v-model="material.gender" placeholder="請輸入性別" />
+							<label form-label>生日:</label>
+							<input v-model="material.birthDay" placeholder="請輸入生日" />
+							<label form-label>居住地:</label>
+							<input v-model="material.address" placeholder="請輸入居住地" />
+							<label form-label>自我介紹:</label>
+							<textarea v-model="material.selfIntroduction" placeholder="請開始介紹自己"></textarea>
+							<label form-label>電話:</label>
+							<input v-model="material.phoneNumber" placeholder="請輸入您的電話號碼" />
+							<label form-label>興趣:</label>
+							<input v-model="material.interest" placeholder="請輸入您的興趣" />
+						</div>
+						<div class="modal-footer">
+							<button id="btnInsert" type="button" class="btn btn-primary" @@click="saveData">確定</button>
+							<button type="button" class="btn btn-primary" data-bs-dismiss="modal">取消</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+		</div>					
+
+		<div class="info-card mb-4">			 @* 標籤 *@
+			<div class="info-card-title">
+				<h6>您的標籤:</h6>
+			</div>
+			<div class="info-card-content">
+				<p>標籤</p>
+				<p>標籤</p>
+				<p>標籤</p>
+			</div>
+
+		</div>
+	</div>
 </div>
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script>
+    var app_UserInfo = Vue.createApp({
+        data() {
+            return {
+				material: {
+				"name": "您的姓名",
+				"gender": "您的性別",
+				"birthDay": "您的生日",
+				"address": "您的居住地",
+				"selfIntroduction": "我愛大家",
+				"phoneNumber": "您的電話號碼",
+				"interest": "您的興趣",
+				},
+                
+            }
+        },
+        methods: {
+			showModel() {										/* 顯示修改的表單 */
+				$("#saveModal").modal("show");
+			},
+			saveData() {										/* 保存按鈕的函式 */
+				alert("可以保存了")
+			},
+			
+        },
+    }).mount("#app_UserInfo");
+</script>
