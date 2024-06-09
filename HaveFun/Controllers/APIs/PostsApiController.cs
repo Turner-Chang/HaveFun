@@ -94,9 +94,9 @@ namespace HaveFun.Controllers.APIs
         //檢舉貼文
         // POST: api/Post/RatPostReview
         [HttpPost]
-        public async Task<string> RatPostReview(PostReview ratPost)
+        public async Task<ActionResult<string>> RatPostReview(PostReview ratPost)
         {
-            PostReview Post = new PostReview
+            PostReview post = new PostReview
             {
                 PostId = ratPost.PostId,
                 UserId = ratPost.UserId,
@@ -105,19 +105,19 @@ namespace HaveFun.Controllers.APIs
                 ReportTime = ratPost.ReportTime,
                 ProcessingStstus = ratPost.ProcessingStstus
             };
-            _context.PostReviews.Add(Post);
+            _context.PostReviews.Add(post);
             await _context.SaveChangesAsync();
             return "新增檢舉貼文成功";
         }
-        //刪除貼文
+        //刪除貼文(從資料庫刪掉)
         // DELETE: api/Post/DeletePost/5
         [HttpDelete("{id}")]
-        public async Task<string> DeletePost(int id)
+        public async Task<ActionResult> DeletePost(int id)
         {
             var post = await _context.Posts.FindAsync(id);
             if (post == null)
             {
-                return "刪除貼文失敗";
+                return NotFound("查無此貼文");
             }
             try
             {
@@ -126,9 +126,23 @@ namespace HaveFun.Controllers.APIs
             }
             catch
             {
-                return "刪除貼文失敗";
+                return StatusCode(500,"刪除貼文失敗");
             }
-            return "刪除貼文成功";
+            return NoContent();
+        }
+        //刪除貼文 狀態改成下架
+        // PUT: api/Post/Unpost/5
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Unpost(int id)
+        {
+            var post = await _context.Posts.FindAsync(id);
+            if (post == null)
+            {
+                return NotFound("查無此貼文");
+            }
+            post.Status = 1;
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
     }
 }
