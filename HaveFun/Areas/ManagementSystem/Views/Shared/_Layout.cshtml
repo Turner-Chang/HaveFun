@@ -40,20 +40,22 @@
 		<span class=" navbar-brand"></span>
 		<span class=" navbar-brand"></span>
 		<div id="app">
-			<a v-if="!islogin" class="btn nav-link navbar-brand" asp-area="ManagementSystem" asp-controller="Home" asp-action="login">登入</a>
-			<a v-else class=" nav-link " asp-area="ManagementSystem" asp-controller="Home" asp-action="Index">Admin</a>
+			<a v-if="!loginState" class="btn nav-link navbar-brand" asp-area="ManagementSystem" asp-controller="Home" asp-action="login">登入</a>
+			<a v-else class=" nav-link " asp-area="ManagementSystem" asp-controller="Home" asp-action="Management">Admin</a>
 
 		</div>
 	</nav>
 	<div id="layoutSidenav">
 		<div id="layoutSidenav_nav">
 			<nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-				<div class="sb-sidenav-menu" style="height:500px">
+				<div class="sb-sidenav-menu" >
 					<div class="nav">
 						<div class="sb-sidenav-menu-heading">管理選項</div>
-						<a class="btn nav-link" asp-area="ManagementSystem" asp-controller="Home" asp-action="Index">首頁	</a>
-						<a class="btn nav-link" asp-area="ManagementSystem" asp-controller="Home" asp-action="Index">個人貼文管理	</a>
-						<a class="btn nav-link" asp-area="ManagementSystem" asp-controller="Home" asp-action="Index">個人資料管理	</a>
+						<a class="btn nav-link">首頁</a><a v-if="!loginState" class="btn nav-link navbar-brand" asp-area="ManagementSystem" asp-controller="Home" asp-action="PostManagement">個人貼文管理</a>
+						
+						<a class="btn nav-link" >個人資料管理</a>
+						<a class="btn nav-link">標籤管理</a>
+						<a class="btn nav-link">心理測驗管理</a>
 					</div>
 				</div>
 
@@ -90,10 +92,15 @@
 		const app = Vue.createApp({
 			data() {
 				return {
-					islogin: false,
+					loginState: false,
 				}
 			},
 			computed: {
+				islogin() { 
+					if (false) 
+					{ this.loginState = true; }
+					else { this.loginState = false; }
+				}
 
 			},
 			methods: {
