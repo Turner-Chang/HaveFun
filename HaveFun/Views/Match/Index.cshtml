@@ -1,5 +1,6 @@
 ﻿@section Styles
 {
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 	<style>
 		
@@ -404,7 +405,11 @@
 						.then(response => { 
 							if (response.data != "") 
 							{
-								alert("配對成功!");
+								Swal.fire({
+									title:'恭喜!',
+									text: '配對成功!',
+									icon:'success',
+								});
 							}						
 						})
 						.catch(err => { 
