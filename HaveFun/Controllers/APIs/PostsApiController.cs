@@ -4,6 +4,7 @@ using HaveFun.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using System.Data.Common;
 using System.Text.Json.Nodes;
 
@@ -187,6 +188,30 @@ namespace HaveFun.Controllers.APIs
             post.Status = 1;
             await _context.SaveChangesAsync();
             return NoContent();
+        }
+        //新增貼文按讚
+        // POST: api/Post/AddLike
+        [HttpPost]
+        public async Task<ActionResult> AddLike(Like like)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                _context.Likes.Add(like);
+                await _context.SaveChangesAsync();
+                return Content("Like成立");
+            }
+            catch (DbException ex)
+            {
+                return Content($"資料庫錯誤：{ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return Content($"伺服器錯誤：{ex.Message}");
+            }
         }
     }
 }

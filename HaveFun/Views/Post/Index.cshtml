@@ -188,7 +188,7 @@
                                         <div class="userAction">
                                             {{post.like.length}}
                                             <a href="#" id="btnLike">
-                                                <i id="heart" @@click="clickLike" class="fa-regular fa-heart"></i>
+                                              <i id="heart" class="fa-regular fa-heart" @@click="clickLike(post)"></i>
                                             </a>
                                             <div class="btn-group">
                                               <button type="button" id="btnMore" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" @@click="showDropDown">
@@ -347,10 +347,26 @@
                         .then(data => { this.ratItems = data })
                         .catch(error => { console.log('fetch ratItems failed!') });
                 },
-                //按LIke變實心 尚未送回資料庫
-                clickLike() {
+                //按讚請求 目前失敗QQ
+                clickLike(post) {
                     event.preventDefault();
-                    event.target.classList.toggle('fa-solid');
+                    const userId = 1000;
+                    let like = {
+                        "PostId": post.postId,
+                        "UserId": userId
+                    };
+                    fetch(`/api/Post/AddLike`, {
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(like)
+                    })
+                    .then(data => { 
+                        console.log(data);
+                        event.target.classList.toggle('fa-solid');
+                    })
+                    .catch(error => {console.log('fetch add like failed!')});
                 },
                 //按貼文點點按鈕出現刪除貼文&檢舉貼文選項
                 showDropDown() {
