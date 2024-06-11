@@ -59,7 +59,7 @@
             };
         },
         methods: {
-            fetchMembers() {
+            getMembers() {
                 axios.get('https://localhost:7152/api/Profile/GetWhoLikeList')
                     .then(response => {
                         this.members = response.data;
@@ -73,7 +73,7 @@
             }
         },
         mounted() {
-            this.fetchMembers();
+            this.getMembers();
         }
     }).mount("#whoLikesApp");
 </script>

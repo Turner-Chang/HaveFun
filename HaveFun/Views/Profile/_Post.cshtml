@@ -1,4 +1,5 @@
-﻿<div class="tab-pane fade show active" id="gt1" role="tabpanel" aria-labelledby="gt1-tab">
+﻿<link href="~/assets/css/profile_poststyle.css" rel="stylesheet" />
+<div class="tab-pane fade show active" id="gt1" role="tabpanel" aria-labelledby="gt1-tab">
     <div id="post">
         <div class="group__bottom--area group__bottom--memberactivity">
             <div class="group__bottom--body">
@@ -6,6 +7,7 @@
                     <div class="media-wrapper">
                         <div class="tab-content" id="myTabContent2">
                             <div class="tab-pane fade show active" id="Personal" role="tabpanel" aria-labelledby="Personal-tab">
+                                @* 發送貼文 *@
                                 <div class="create-post mb-4">
                                     <div class="lab-inner">
                                         <div class="lab-thumb">
@@ -14,7 +16,7 @@
                                                     <img src="assets/images/member/profile/profile.jpg" alt="datting thumb">
                                                 </div>
                                                 <div class="thumb-content">
-                                                    <h6><a href="#"> William Smith</a></h6>
+                                                    <h6><a href="#">William Smith</a></h6>
                                                     <div class="custom-select">
                                                         <select v-model="postPrivacy">
                                                             <option value="Public"> Public</option>
@@ -27,20 +29,20 @@
                                         </div>
                                         <div class="lab-content">
                                             <form class="post-form">
-                                                <input v-model="postContent" type="text" placeholder="Whats on your mind. William?">
+                                                <input v-model="postContent" type="text" placeholder="Whats on your mind, William?">
                                                 <div class="content-type">
                                                     <ul class="content-list">
-                                                        <li class="text"><a href="#"><i class="fa-solid fa-pen-to-square"></i>Text </a></li>
+                                                        <li class="text"><a href="#"><i class="fa-solid fa-pen-to-square"></i>Text</a></li>
                                                         <li class="image-video">
                                                             <div class="file-btn"><i class="fa-solid fa-camera"></i>Photo/Videos</div>
-                                                            <input type="file" @@change="handleFileUpload">
+                                                            <input type="file" @@change.prevent="handleFileUpload">
                                                         </li>
                                                         <li class="attach-file">
                                                             <div class="file-btn"><i class="fa-solid fa-link"></i>Attach File</div>
-                                                            <input type="file" @@change="handleFileUpload">
+                                                            <input type="file" @@change.prevent="handleFileUpload">
                                                         </li>
                                                         <li class="post-submit">
-                                                            <button @@click.prevent ="addPost" class="default-btn">Post</button>
+                                                            <button @@click.prevent="addPost" class="default-btn">Post</button>
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -48,12 +50,14 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                @* 顯示貼文 *@
                                 <div v-for="post in posts" :key="post.id" class="post-item mb-4">
                                     <div class="post-content">
                                         <div class="post-author">
                                             <div class="post-author-inner">
                                                 <div class="author-thumb">
-                                                    <img src="assets/images/member/profile/Member1.jpg" alt="datting thumb">
+                                                    <img src="assets/images/member/profile/member1.jpg" alt="datting thumb">
                                                 </div>
                                                 <div class="author-details">
                                                     <h6><a href="#">William Smith</a></h6>
@@ -65,20 +69,67 @@
                                             </div>
                                         </div>
                                         <div class="post-description">
-                                            <p>{{ post.content }}</p>
+                                            <p>{{ post.contents }}</p>
                                         </div>
                                     </div>
                                     <div class="post-meta">
                                         <div class="post-meta-top">
-                                            <p><a href="#"><i class="fa-solid fa-thumbs-up"></i> <i class="fa-solid fa-heart"></i> <i class="fa-solid fa-face-laugh"></i> <span>0 likes</span></a></p>
-                                            <p><a href="#">0 Comments</a></p>
+                                            <p><a href="#"><i class="fa-solid fa-thumbs-up"></i> <i class="fa-solid fa-heart"></i> <i class="fa-solid fa-face-laugh"></i> <span>Julia, Petrova and 306 like this</span></a></p>
+                                            <p><a href="#" @@click.prevent="showCommentsAlert">Show Comments</a></p>
                                         </div>
                                         <div class="post-meta-bottom">
                                             <ul class="react-list">
-                                                <li class="react"><a href="#"><i class="fa-solid fa-thumbs-up"></i>Like</a></li>
-                                                <li class="react"><a href="#"><i class="fa-solid fa-comment"></i>Comment</a></li>
+                                                <li class="react"><a href="#" @@click.prevent="likePost"><i class="fa-solid fa-thumbs-up"></i>Like</a></li>
+                                                <li class="react"><a href="#" @@click.prevent="commentOnPost(post)"><i class="fa-solid fa-comment"></i>Comment</a></li>
                                                 <li class="react"><a href="#"><i class="fa-solid fa-share-nodes"></i>Share</a></li>
                                             </ul>
+                                        </div>
+                                    </div>
+                                    <div v-show="post.showComments" class="comments">
+                                        <ul class="lab-ul comment-list">
+                                            <li class="comment" v-for="reply in post.replies" :key="reply.id">
+                                                <div class="com-item">
+                                                    <div class="com-thumb">
+                                                        <img alt="" src="assets/images/member/profile/member1.jpg">
+                                                    </div>
+                                                    <div class="com-content">
+                                                        <div class="com-title">
+                                                            <div class="com-title-meta">
+                                                                <a href="#">{{ reply.author }}</a>
+                                                                <span> Just Now </span>
+                                                            </div>
+                                                            <span class="reply">
+                                                                <a class="comment-reply-link" href="#" @@click.prevent="toggleNestedReplyForm(post.id, reply.id)"><i class="icofont-reply-all"></i>Reply</a>
+                                                            </span>
+                                                        </div>
+                                                        <p>{{ reply.content}}</p>
+                                                    </div>
+                                                </div>
+                                                <ul class="lab-ul comment-list">
+                                                    <li class="comment" v-for="nestedReply in reply.nestedReplies" :key="nestedReply.id">
+                                                        <div class="com-thumb">
+                                                            <img alt="" src="assets/images/blog/author/03.jpg">
+                                                        </div>
+                                                        <div class="com-content">
+                                                            <div class="com-title">
+                                                                <div class="com-title-meta">
+                                                                    <a href="#">{{ nestedReply.author }}</a>
+                                                                    <span> Just Now </span>
+                                                                </div>
+                                                            </div>
+                                                            <p>{{ nestedReply.content}}</p>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                                <div v-if="reply.showNestedForm" class="nested-reply-form">
+                                                    <input type="text" v-model="reply.nestedReplyContent" class="nested-reply-input" placeholder="Write a reply...">
+                                                    <button class="nested-reply-submit-button" @@click.prevent="addNestedReply(post.id, reply.id)">Reply</button>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                        <div v-if="post.showReplyForm" class="reply-form">
+                                            <input type="text" v-model="post.newReply" class="reply-input" placeholder="Write a reply...">
+                                            <button class="btn-reply" @@click.prevent="addReply(post.id)">Post Reply</button>
                                         </div>
                                     </div>
                                 </div>
@@ -91,40 +142,154 @@
     </div>
 </div>
 
-<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-<script>
-    const { createApp } = Vue;
 
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
     const post = Vue.createApp({
         data() {
             return {
                 postContent: '',
                 postPrivacy: 'Public',
                 posts: [],
-                postIdCounter: 1
+                postIdCounter: 1,
+                userId: 1 // 假設使用者ID為1，實際上應從用戶登入資訊獲取
             };
         },
+        created() {
+            this.getPosts();
+        },
         methods: {
-            addPost() {
+            async getPosts() {
+                try {
+                    const response = await axios.get('/api/Profile/GetPostsList');
+                    this.posts = response.data.map(post => ({
+                        ...post,
+                        showComments: false,
+                        showReplyForm: false,
+                        newReply: '',
+                        replies: post.replies.map(reply => ({
+                            ...reply,
+                            showNestedForm: false,
+                            nestedReplyContent: '',
+                            nestedReplies: reply.nestedReplies.map(nestedReply => ({
+                                ...nestedReply
+                            }))
+                        }))
+                    }));
+                } catch (error) {
+                    console.error('Error getPosts:', error);
+                }
+            },
+            async addPost() {
                 if (this.postContent.trim() === '') {
                     alert('貼文不可空白');
                     return;
                 }
 
                 const newPost = {
-                    id: this.postIdCounter++,
-                    content: this.postContent,
-                    privacy: this.postPrivacy
+                    userId: this.userId,
+                    contents: this.postContent,
+                    pictures: '',
                 };
 
-                this.posts.push(newPost);
-                this.postContent = ''; // Clear input field
+                try {
+                    const response = await axios.post('/api/Profile/AddPost', newPost);
+                    const createdPost = response.data;
+                    this.posts.unshift({
+                        ...createdPost,
+                        showComments: false,
+                        showReplyForm: false,
+                        newReply: '',
+                        replies: []
+                    });
+
+                    this.postContent = '';
+                } catch (error) {
+                    console.error('Error addPost:', error);
+                }
+            },
+            async addReply(postId) {
+                const post = this.posts.find(p => p.id === postId);
+                if (post && post.newReply.trim()) {
+                    const newReply = {
+                        userId: this.userId,
+                        postId: postId,
+                        content: post.newReply,
+                        parentCommentId: null // 父貼文ID
+                    };
+
+                    try {
+                        const response = await axios.post('/api/Profile/AddComment', newReply);
+                        const createdReply = response.data;
+
+                        post.replies.push({
+                            ...createdReply,
+                            showNestedForm: false,
+                            nestedReplyContent: '',
+                            nestedReplies: []
+                        });
+                        post.newReply = '';
+                        post.showComments = true;
+                    } catch (error) {
+                        console.error('Error addReply:', error);
+                    }
+                }
+            },
+            async addNestedReply(postId, replyId) {
+                const post = this.posts.find(p => p.id === postId);
+                if (post) {
+                    const reply = post.replies.find(r => r.id === replyId);
+                    if (reply && reply.nestedReplyContent.trim()) {
+                        const newNestedReply = {
+                            userId: this.userId,
+                            postId: postId,
+                            content: reply.nestedReplyContent,
+                            parentCommentId: replyId // 父貼文ID
+                        };
+
+                        try {
+                            const response = await axios.post('/api/Profile/AddComment', newNestedReply);
+                            const createdNestedReply = response.data;
+
+                            reply.nestedReplies.push({
+                                ...createdNestedReply,
+                                showNestedForm: false,
+                                nestedReplyContent: ''
+                            });
+                            reply.nestedReplyContent = '';
+                            reply.showNestedForm = false;
+                        } catch (error) {
+                            console.error('Error addNestedReply:', error);
+                        }
+                    }
+                }
             },
             handleFileUpload(event) {
-                // Handle file upload logic here
-                console.log(event.target.files);
+                const files = event.target.files;
+                // Implement file upload logic here
+                console.log(files);
+            },
+            showCommentsAlert(post) {
+                alert("Show Comments");
+            },
+            commentOnPost(post) {
+                post.showReplyForm = !post.showReplyForm;
+                post.showComments = post.showReplyForm;
+            },
+            likePost(post) {
+                alert('Liked!');
+                // Implement like functionality here
+            },
+            toggleNestedReplyForm(postId, replyId) {
+                const post = this.posts.find(p => p.id === postId);
+                if (post) {
+                    const reply = post.replies.find(r => r.id === replyId);
+                    if (reply) {
+                        reply.showNestedForm = !reply.showNestedForm;
+                    }
+                }
             }
         }
     }).mount('#post');
 </script>
-

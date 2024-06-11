@@ -1,0 +1,145 @@
+﻿.post-meta-bottom {
+    padding-bottom: 0px !important;
+}
+
+.comments {
+    padding-right: 20px; /* 設定右邊內距 */
+    margin-right: 20px; /* 設定右邊外距 */
+}
+
+.lab-ul.comment-list {
+    border: 0px !important;
+    padding-bottom: 0px; /* 設定下邊內距 */
+    margin-bottom: 0px; /* 設定下邊外距 */
+}
+
+.comment-list .comment {
+    /*border: 1px solid #ddd;*/
+    padding-right: 10px; /* .comment 設定右邊內距 */
+    margin-right: 10px; /* .comment 設定右邊外距 */
+}
+
+    .comment-list .comment .com-item {
+        border-top: 1px solid #ddd;
+        padding-top: 10px; /* 設定上邊內距 */
+        padding-right: 15px; /* 設定右邊內距 */
+        margin-right: 15px; /* 設定右邊外距 */
+    }
+
+    .comment-list .comment .com-thumb img {
+        width: 50px; /* 設定圖片寬度 */
+        height: 50px; /* 設定圖片高度 */
+        border-radius: 50%; /* 設定圖片為圓形 */
+    }
+
+    .comment-list .comment .com-content {
+        font-size: 14px; /* 設定字體大小 */
+    }
+
+        .comment-list .comment .com-content .com-title-meta a {
+            font-size: 12px !important; /* 設定作者名稱的字體大小 */
+            font-weight: bold !important; /* 設定作者名稱的字體粗細 */
+        }
+
+        .comment-list .comment .com-content .com-title-meta span {
+            font-size: 12px; /* 設定時間標記的字體大小 */
+            color: gray; /* 設定時間戳的字體顏色 */
+        }
+
+        .comment-list .comment .com-content .com-title-meta .reply a {
+            font-size: 12px; /* 設定回覆連結的字體大小 */
+            color: blue; /* 設定回覆連結的字體顏色 */
+        }
+
+        .comment-list .comment .com-content p {
+            font-size: 14px; /* 設定回覆內容的字體大小 */
+        }
+
+.nested-reply-form .nested-reply-input {
+    font-size: 14px; /* 設定巢狀回覆輸入框的字體大小 */
+}
+
+.nested-reply-form .nested-reply-submit-button {
+    font-size: 14px; /* 設定巢狀回覆提交按鈕的字體大小 */
+}
+
+
+.nested-reply-form {
+    display: flex;
+    align-items: center;
+}
+
+    .nested-reply-form .nested-reply-input {
+        flex: 1;
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        margin-left: 10px;
+    }
+
+    .nested-reply-form .nested-reply-submit-button {
+        background-color: #f24570;
+        color: #fff;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-right: 10px;
+    }
+
+/* Input樣式 */
+.reply-form {
+    display: flex;
+    align-items: center;
+}
+
+    .reply-form .reply-input {
+        flex: 1;
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+
+    .reply-form .btn-reply {
+        background-color: #f24570;
+        color: #fff;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-right: 0px;
+        margin-bottom: 10px;
+    }
+
+.post-meta-bottom {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-top: 1px solid #e0e0e0;
+    margin-top: 10px;
+}
+
+    .post-meta-bottom .react-list {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+        .post-meta-bottom .react-list li {
+            margin-right: 15px;
+        }
+
+            .post-meta-bottom .react-list li a {
+                text-decoration: none;
+                color: #555;
+                font-size: 14px;
+            }
+
+                .post-meta-bottom .react-list li a:hover {
+                    color: #000;
+                }
