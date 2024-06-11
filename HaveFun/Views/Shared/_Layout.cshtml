@@ -15,14 +15,12 @@
     <link rel="stylesheet" href="~/assets/css/swiper.min.css">
     <link rel="stylesheet" href="~/assets/css/lightcase.css">
     <link rel="stylesheet" href="~/assets/css/style.css">
-
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <!-- All Needed JS -->
     <script src="~/assets/js/vendor/modernizr-3.11.2.min.js"></script>
     <script src="~/assets/js/isotope.pkgd.min.js"></script>
     <script src="~/assets/js/swiper.min.js"></script>
-    <!-- <script src="~/assets/js/all.min.js"></script> -->
    @* 一般razor跟html不同之處 ~/ *@
     <script src="~/assets/js/wow.js"></script>
     <script src="~/assets/js/lightcase.js"></script>
@@ -69,7 +67,7 @@
                             <ul>
                                 <li>
 
-                                    <a class="nav-link"  asp-area="" asp-controller="Home" asp-action="Index">首頁</a>
+                                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">首頁</a>
                                 </li>
                                 <li>
                                     <a class="nav-link" asp-area="" asp-controller="Match" asp-action="Index">配對</a>
@@ -91,8 +89,8 @@
                                 </li>
                                 <teplate v-if="isLogin">
                                     <li>
-                                        <a >
-                                        <img  src="~/assets/images/member/profile/01.jpg" />
+                                        <a>
+                                            <img src="~/assets/images/member/profile/01.jpg" />
                                         </a>
                                     </li>
                                 </teplate>
@@ -213,7 +211,7 @@
             },
         }).mount("#app_Layout");
 
-       
+
         $('.navbar-nav>ul>li a ').hover(function () {
             // 移除其他 <a> 的 hover 效果
             $('.navbar-nav>ul>li a ').not(this).css("color", "black");
@@ -224,26 +222,7 @@
             $(this).css("color", "black");
         });
     </script>
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-<<<<<<< HEAD
-
-=======
->>>>>>> main
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- All Needed JS -->
-    <script src="~/assets/js/vendor/modernizr-3.11.2.min.js"></script>
-    <script src="~/assets/js/isotope.pkgd.min.js"></script>
-    <script src="~/assets/js/swiper.min.js"></script>
-    <!-- <script src="assets/js/all.min.js"></script> -->
-    <script src="~/assets/js/wow.js"></script>
-    <script src="~/assets/js/lightcase.js"></script>
-    <script src="~/assets/js/jquery.countdown.min.js"></script>
-    <script src="~/assets/js/waypoints.min.js"></script>
-    <script src="~/assets/js/plugins.js"></script>
-    <script src="~/assets/js/main.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script> 
     @await RenderSectionAsync("Scripts", required: false)
-    
+
 </body>
 </html>
