@@ -15,7 +15,7 @@ namespace HaveFun.Controllers.APIs
     [ApiController]
     public class PostsApiController : ControllerBase
     {
-        private readonly HaveFunDbContext _context;
+        HaveFunDbContext _context;
         SaveImage _saveImage;
 
         public PostsApiController(HaveFunDbContext context, SaveImage saveImage)
@@ -39,6 +39,7 @@ namespace HaveFun.Controllers.APIs
                 .Where(p => p.Status == 0)
                 .Include(p => p.User)
                 .Include(p => p.Comments)
+                .Include(p => p.Like)
                 .OrderByDescending(p => p.Time)
                 .Select(r => new 
                 { UserName = r.User.Name,
@@ -48,6 +49,7 @@ namespace HaveFun.Controllers.APIs
                   Time = r.Time.ToString("yyyy-MM-dd HH:mm:ss"),
                   Picture = r.Pictures,
                   Status = r.Status,
+                  Like = r.Like,
                   Comment = r.Comments.OrderBy(c => c.Time).Select(c => new
                   {
                       CommentId = c.Id,
@@ -62,7 +64,7 @@ namespace HaveFun.Controllers.APIs
                 }).ToListAsync();
             return new JsonResult(result);
         }
-        //新增貼文 //未完成
+        //新增貼文
         //POST: api/Post/CreatePost
        [HttpPost]
         public async Task<ActionResult> CreatePost(PostDTO postDTO)
@@ -118,23 +120,38 @@ namespace HaveFun.Controllers.APIs
             var result = await _context.ComplaintCategories.ToListAsync();
             return new JsonResult(result);
         }
-        //檢舉貼文
+        //檢舉貼文 //目前未過 未進到Server端
         // POST: api/Post/RatPostReview
         [HttpPost]
-        public async Task<ActionResult<string>> RatPostReview(PostReview ratPost)
+        public async Task<ActionResult> RatPostReview(PostReview ratPost)
         {
-            PostReview post = new PostReview
+            if (!ModelState.IsValid)
             {
-                PostId = ratPost.PostId,
-                UserId = ratPost.UserId,
-                ReportItems = ratPost.ReportItems,
-                Reason = ratPost.Reason,
-                ReportTime = ratPost.ReportTime,
-                ProcessingStstus = ratPost.ProcessingStstus
-            };
-            _context.PostReviews.Add(post);
-            await _context.SaveChangesAsync();
-            return "新增檢舉貼文成功";
+                return BadRequest(ModelState);
+            }
+            try 
+            {
+                PostReview post = new PostReview
+                {
+                    PostId = ratPost.PostId,
+                    UserId = ratPost.UserId,
+                    ReportItems = ratPost.ReportItems,
+                    Reason = ratPost.Reason,
+                    ReportTime = ratPost.ReportTime,
+                    ProcessingStstus = ratPost.ProcessingStstus
+                };
+                _context.PostReviews.Add(post);
+                await _context.SaveChangesAsync();
+                return Content("新增檢舉貼文成功");
+            }
+            catch (DbException ex)
+            {
+                return Content($"資料庫錯誤：{ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return Content($"伺服器錯誤：{ex.Message}");
+            }
         }
         //刪除貼文(目前未使用，從資料庫整筆貼文刪掉)
         // DELETE: api/Post/DeletePost/5

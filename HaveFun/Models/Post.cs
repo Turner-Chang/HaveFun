@@ -24,5 +24,6 @@ namespace HaveFun.Models
         [Range(0, 1)]
         public int Status { get; set; } = 0;
         public virtual ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<Like> Like { get; set; }
     }
 }

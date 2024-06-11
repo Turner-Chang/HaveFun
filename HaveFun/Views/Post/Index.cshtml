@@ -186,12 +186,12 @@
                                     <div class="author-details">
                                         <h6><a href="#">{{post.userName}}</a></h6>
                                         <div class="userAction">
-                                            18
+                                            {{post.like.length}}
                                             <a href="#" id="btnLike">
                                                 <i id="heart" @@click="clickLike" class="fa-regular fa-heart"></i>
                                             </a>
                                             <div class="btn-group">
-                                                                            <button type="button" id="btnMore" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" @@click="showDropDown">
+                                              <button type="button" id="btnMore" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" @@click="showDropDown">
                                               <i class="fa-solid fa-ellipsis"></i>
                                               </button>
                                               <ul class="dropdown-menu">
@@ -349,6 +349,7 @@
                 },
                 //按LIke變實心 尚未送回資料庫
                 clickLike() {
+                    event.preventDefault();
                     event.target.classList.toggle('fa-solid');
                 },
                 //按貼文點點按鈕出現刪除貼文&檢舉貼文選項
