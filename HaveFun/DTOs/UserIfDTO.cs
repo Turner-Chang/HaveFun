@@ -34,6 +34,7 @@ namespace HaveFun.DTOs
 
         [Required]
         public string? Introduction { get; set; }
+       
 
     }
 }
