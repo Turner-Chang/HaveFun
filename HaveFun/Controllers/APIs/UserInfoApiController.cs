@@ -101,6 +101,64 @@ namespace HaveFun.Controllers.APIs
             return CreatedAtAction("GetUserInfo", new { id = userInfo.Id }, userInfo);
         }
 
+        //POST: api/UserInfoApi/SaveData        
+        [HttpPost]
+        [ActionName("SaveData")]
+        public async Task<IActionResult> SaveData([FromBody]UserIfDTO userInfoDTO)
+        {
+            if (!ModelState.IsValid)  /*檢查狀態*/
+            {
+                return BadRequest(ModelState);
+            }
+            var userInfo = new UserInfo
+            {
+                Name = userInfoDTO.Name,
+                Address = userInfoDTO.Address,
+                PhoneNumber = userInfoDTO.PhoneNumber,
+                Gender = userInfoDTO.Gender.Value,
+                BirthDay = userInfoDTO.BirthDay.Value,
+                Introduction = userInfoDTO.Introduction,
+
+            };
+            if (userInfoDTO.ProfilePicture != null)
+            {
+                // 把大頭照丟到wwwtoot的images的headshots資料夾內
+                string imgPath = "../HaveFun/wwwroot/images/headshots";
+
+                // 檔案名為帳號+檔案名
+                string imgName = userInfoDTO.Name + userInfoDTO.ProfilePicture.FileName;
+
+                _saveImage.Path = imgPath;
+                _saveImage.Name = imgName;
+                _saveImage.Picture = userInfoDTO.ProfilePicture;
+                string fullPath = string.Empty;
+                bool isSave = _saveImage.Save(out fullPath);
+                if (isSave == false)
+                {
+                    return new JsonResult(
+                        new
+                        {
+                            success = false,
+                            profilePictureError = "圖片存取失敗"
+                        }
+                    );
+                }
+            }
+
+
+            return new JsonResult(
+                new
+                {
+                    success = true
+                }
+            );
+
+            _context.UserInfos.Add(userInfo);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "用戶資料以保存成功" });
+        }
+
         // DELETE: api/UserInfoApi/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserInfo(int id)
