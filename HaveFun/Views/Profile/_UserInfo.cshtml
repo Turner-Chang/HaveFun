@@ -96,17 +96,15 @@
 			
 		</div>					
 
-		<div class="info-card mb-4">			 @* 標籤 *@
-			<div class="info-card-title">
-				<h6>您的標籤:</h6>
+		<template>
+			<div id="app_MemberLable">
+				<div v-for="label in availableLabels" :key="label.id" >					
+					<input type="checkbox" :value="label.id" v-model="selectedLabels" />
+					{{ label.name }}
+				</div>
+				<button @@click="submitLabels">提交選擇</button>
 			</div>
-			<div class="info-card-content">
-				<p>標籤</p>
-				<p>標籤</p>
-				<p>標籤</p>
-			</div>
-
-		</div>
+		</template>
 	</div>
 </div>
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -180,4 +178,32 @@
 			this.fetchData();
 		},
     }).mount("#app_UserInfo");
+	var app_MemberLable = Vue.createApp({
+		data() {
+			return {
+				userId: 1,
+				availableLabels:[], /* 從後端獲取所有可用標籤 */
+				selectedLabels:[], /* 用戶選擇的標籤ID */
+			}
+		},
+		methods() {
+			fetchAvailableLabels(){
+				axios.get("")
+					.then(response => { this.availableLabels = response.data; })
+					.catch(error => { console.error(error); });
+			},
+			submitLabels(){
+				const memberLabelDto = {
+					UserId: this.userId,
+					LabelIds: this.selectedLabels
+				};
+				axios.post("", memberLabelDto)
+					.then(response => {/* 處裡 */ })
+					.catch(error => { console.error(error); });
+			},
+		},
+		mounted() {
+			this.fetchAvailableLabels();
+		},
+	}).mount("#app_MemberLable");
 </script>
