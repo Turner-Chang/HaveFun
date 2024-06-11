@@ -18,8 +18,7 @@ namespace HaveFun.Controllers
         {
             _context = context;
         }
-
-
+        
         public async Task<IActionResult> Main()
         {
             var haveFunDbContext = _context.ChatRooms.Include(c => c.Receiver).Include(c => c.Sender);
@@ -110,7 +109,7 @@ namespace HaveFun.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 try
                 {
