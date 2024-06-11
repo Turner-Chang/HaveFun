@@ -45,20 +45,21 @@ namespace HaveFun.Areas.ManagementSystem.Controllers
 			catch (Exception e) { return "更新失敗"; }
 			return "更新成功";
 		}
-		//public async Task<string> Delete(int Id)
-		//{
-		//	PostReview review = await _context.PostReviews.FindAsync(Id);
-		//	if (review != null)
-		//	{
-		//		_context.PostReviews.Remove(review);
-		//	}
-		//	try
-		//	{
-		//		await _context.SaveChangesAsync();
-		//	}
-		//	catch (Exception e) { return "刪除失敗"; }
-		//	return "刪除成功";
-		//}
+		[HttpDelete]
+		public async Task<string> Delete(int Id)
+		{
+			PostReview review = await _context.PostReviews.FindAsync(Id);
+			if (review != null)
+			{
+				_context.PostReviews.Remove(review);
+			}
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (Exception e) { return "刪除失敗"; }
+			return "刪除成功";
+		}
 
 		[HttpPost]
 		public async Task<string> Create(PostReviewDTO reviewDTO)

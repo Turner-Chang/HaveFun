@@ -6,11 +6,13 @@
 			<table class="table table-secondary">
 				<thead class="table-active">
 					<tr>
+						<th scope="col">被檢舉流水ID</th>
 						<th scope="col">被檢舉貼文ID</th>
 						<th scope="col">被檢舉人ID</th>
 						<th scope="col">被檢舉理由</th>
 						<th scope="col">被檢舉時間</th>
 						<th scope="col">處理</th>
+						<th scope="col">貼文狀態</th>
 						
 
 
@@ -18,23 +20,23 @@
 				</thead>
 				<tbody>
 					<tr v-for="r in reports" class="">
-						<td scope="row">{{r.postId}}</td>
+						<td >{{r.postReviewId}}</td>
+						<td >{{r.postId}}</td>
 						<td>{{r.userId}}</td>
 						<td>{{r.reason}}</td>
 						<td>{{r.reportTime}}</td>
 						<td>
 							<button :id="r.postReviewId" class="btn btn-warning"
-									@@click="check(r.postReviewId)">
+									@@click="check(r.postId,r.postReviewId)">
 								處理
 							</button>
 						</td>
+						<td>{{r.processingStstus}}</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 	</div>
-
-
 
 
 	<div class="modal fade"
@@ -59,8 +61,8 @@
 					</button>
 				</div>
 				<div class="modal-body">
-					<div>被檢舉者:{{Post.id}} </div>
-					<div>被檢舉貼文:{{Post.contents}}</div>
+					<div>被檢舉貼文Id:{{Post.id}} </div>
+					<div>被檢舉貼文內容:{{Post.contents}}</div>
 					<div>
 						被檢舉圖片:<img :src="imgSrc(Post.pictures)" style="width:200px;height:150px; "/>
 						</div>
@@ -68,17 +70,18 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button"
+							@@click="PostStateChange(PostId,0); "
 							class="btn btn-secondary"
 							data-bs-dismiss="modal">
 						駁回檢舉
 					</button>
-					<button type="button" class="btn btn-primary">刪除貼文</button>
+					<button type="button" @@click="PostStateChange(PostId,2); " class="btn btn-primary">刪除貼文</button>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
-<img src="~/images/NOimg.jpg" />
+@* // *@
 @section Scripts {
 
 	<script>
@@ -86,10 +89,29 @@
 			data() {
 				return {
 					reports: [],
-					Post: {id:1,},
+					Post: {},
+					PostReviewId:0,
+					PostId:0,
+					
 				}
 			},
 			methods: {
+				GetAll() {
+					baseAdress = "https://localhost:7152/";
+					var data = fetch(`${baseAdress}api/PostReview/GetAll`, { method: "GET" })
+						.then(response => response.json())
+						.then(data =>
+							JSON.stringify(data))
+						.then(d => {
+							App.reports = JSON.parse(d);
+							
+						})
+						.catch(error => {
+							console.error('發生錯誤:', error);
+							alert("錯誤");
+						});
+				}
+				,
 				imgSrc(src) {
 					if(src==null)
 						return "/images/NOimg.jpg"
@@ -97,14 +119,21 @@
 					return `/images/${src}`;
 				}
 				 ,
-				check(postId) {
+				check(postId, postReviewId) {
 					this.showModal();
 					this.GetPost(postId);
+					this.PostReviewId = postReviewId;
+					this.PostId = postId;
 					//alert(postReviewId)
 				},
 				showModal() {
 					$("#PostModal").modal("show");
-				},
+				}, hideModal() { 
+					this.Post = {};
+					$("#PostModal").modal("hide");
+
+				}
+				,
 				GetPost(PostId) {
 					baseAdress = "https://localhost:7152/";
 					var ResStr = {} ;
@@ -114,7 +143,7 @@
 							JSON.stringify(data)	)
 						.then(d => {
 							App.Post = JSON.parse( d);
-							alert(d);
+							//alert(d);
 						}
 						)
 						.catch(error => {
@@ -122,12 +151,51 @@
 							alert("錯誤");
 						});
 
-					
-
-					
 				//	alert(this.Post)
 
 				},
+				PostReviewStateChange(postReviewId,state) {
+					var body = {
+						"postReviewId": postReviewId,
+						"userId": 0,
+						"postId": 0,
+						"reportItems": 0,
+						"reason": "string",
+						"reportTime": "2024-06-11T09:48:38.026Z",
+						"processingStstus": state
+					};
+					fetch(
+						`https://localhost:7152/api/PostReview/Put/${postReviewId}`,
+						{
+							method:"PUT",
+							body:JSON.stringify(body),
+							headers: {'Content-Type':'application/json'}
+						}
+					).then(res=>res.text())
+					.then(data=>console.log(data))
+					.catch(err=>alert("err"));
+					this.hideModal();
+					this.GetAll();
+
+				},
+				PostStateChange(PostId, state) {
+					var body = {
+						"id": PostId,
+						"status": state
+					};
+					fetch(
+						`https://localhost:7152/api/Post/PutState?id=${PostId}`,
+						{
+							method: "PUT",
+							body: JSON.stringify(body),
+							headers: { 'Content-Type': 'application/json' }
+						}
+					).then(res => res.text())
+						.then(data => console.log(data))
+						.catch(err => alert("err"));
+					this.PostReviewStateChange(this.PostReviewId, state);
+					
+				}
 			},
 			mounted: async () => {
 
@@ -141,7 +209,9 @@
 				App.reports = data;
 				//alert(JSON.stringify(data));
 
-			}
+			}, computed() { 
+				this.reports;
+			},
 		}).mount("#PostCheckApp");
 
 	</script>
