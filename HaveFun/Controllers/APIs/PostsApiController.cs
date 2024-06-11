@@ -1,8 +1,10 @@
-﻿using HaveFun.DTOs;
+﻿using HaveFun.Common;
+using HaveFun.DTOs;
 using HaveFun.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Data.Common;
 using System.Text.Json.Nodes;
 
 namespace HaveFun.Controllers.APIs
@@ -14,10 +16,12 @@ namespace HaveFun.Controllers.APIs
     public class PostsApiController : ControllerBase
     {
         private readonly HaveFunDbContext _context;
+        SaveImage _saveImage;
 
-        public PostsApiController(HaveFunDbContext context)
+        public PostsApiController(HaveFunDbContext context, SaveImage saveImage)
         {
             _context = context;
+            _saveImage = saveImage;
         }
         //顯示貼文
         // GET : api/Post/GetPosts
@@ -59,28 +63,51 @@ namespace HaveFun.Controllers.APIs
             return new JsonResult(result);
         }
         //新增貼文 //未完成
-        // POST: api/Post/CreatePost
-        [HttpPost]
-        public async Task<string> CreatePost(PostDTO postDTO)
+        //POST: api/Post/CreatePost
+       [HttpPost]
+        public async Task<ActionResult> CreatePost(PostDTO postDTO)
         {
-            Post p = new Post
+            if (!ModelState.IsValid)
             {
-                UserId = postDTO.UserId,
-                Contents = postDTO.Contents,
-                Time = DateTime.UtcNow,
-                Status = 0
-            };
-            if (postDTO.Pictures != null)
+                return BadRequest(ModelState);
+            }
+            string FullPath = string.Empty;
+            if(postDTO.Pictures != null)
             {
-                using (BinaryReader br = new BinaryReader(postDTO.Pictures.OpenReadStream()))
+                string Current = DateTime.Now.ToString("yyyyMMddHHmmss");
+                string imgPath = "../HaveFun/wwwroot/images/postImgs";
+                string imgName = postDTO.UserId + Current + postDTO.Pictures.FileName;
+                _saveImage.Path = imgPath;
+                _saveImage.Name = imgName;
+                _saveImage.Picture = postDTO.Pictures;
+                bool isSave = _saveImage.Save(out FullPath);
+                if (isSave == false)
                 {
-                    // p.Pictures = br.ReadBytes((int)postDTO.Pictures.Length);
-                    //byte[]最後要轉成存放位置的string @@
+                    return Content("圖片存取失敗");
                 }
             }
-            _context.Posts.Add(p);
-            await _context.SaveChangesAsync();
-            return "新增貼文成功";
+            try
+            {
+                Post post = new Post
+                {
+                    UserId = postDTO.UserId,
+                    Contents = postDTO.Contents,
+                    Time = DateTime.Now,
+                    Pictures = FullPath,
+                    Status = 0
+                };
+                _context.Posts.Add(post);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbException ex)
+            {
+                return Content($"資料庫錯誤：{ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return Content($"伺服器錯誤：{ex.Message}");
+            }
+            return Content("新增貼文成功");
         }
 
         //查詢檢舉項目
@@ -109,7 +136,7 @@ namespace HaveFun.Controllers.APIs
             await _context.SaveChangesAsync();
             return "新增檢舉貼文成功";
         }
-        //刪除貼文(從資料庫刪掉)
+        //刪除貼文(目前未使用，從資料庫整筆貼文刪掉)
         // DELETE: api/Post/DeletePost/5
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeletePost(int id)

@@ -159,7 +159,7 @@
                     <div class="deleteBox">
                         <span>確定要刪除貼文嗎？</span><br><br>
                         <button class="btn btn-danger" @@click="deletePost">確定</button>
-                        <button class="btn btn-outline-secondary" @@click="displayDeleteBox">取消</button>
+                        <button class="btn btn-outline-secondary" @@click="displayDeleteBox" @@keyup.esc="cancleDeleteBox()">取消</button>
                     </div>
                      <!-- 檢舉貼文視窗 -->
                     <div class="ratBox">
@@ -170,7 +170,7 @@
                         </select>
                         <input type="text" class="form-control" v-model="ratContent" />
                         <button class="btn btn-danger" @@click="ratPost">確定</button>
-                        <button class="btn btn-outline-secondary" @@click="displayRatBox">取消</button>
+                        <button class="btn btn-outline-secondary" @@click="displayRatBox" @@keyup.esc="cancleRatBox()">取消</button>
                     </div>
 
                     <!-- 貼文+留言 -->
@@ -191,7 +191,7 @@
                                                 <i id="heart" @@click="clickLike" class="fa-regular fa-heart"></i>
                                             </a>
                                             <div class="btn-group">
-                                              <button type="button" id="btnMore" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                            <button type="button" id="btnMore" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" @@click="showDropDown">
                                               <i class="fa-solid fa-ellipsis"></i>
                                               </button>
                                               <ul class="dropdown-menu">
@@ -335,14 +335,14 @@
             methods: {
                 //請求所有貼文資訊
                 getPostsList() {
-                    fetch(`${this.baseAddress}/api/Post/GetPostsRel`)
+                    fetch(`/api/Post/GetPostsRel`)
                         .then(res => res.json())
                         .then(data => { this.posts = data.map(post => ({ ...post, expandState: false })); })
                         .catch(error => {console.log('fetch posts failed!')});
                 },
                 //請求檢舉項目
                 getRatItemsList() {
-                    fetch(`${this.baseAddress}/api/Post/GetComplaintCategory`)
+                    fetch(`/api/Post/GetComplaintCategory`)
                         .then(res => res.json())
                         .then(data => { this.ratItems = data })
                         .catch(error => { console.log('fetch ratItems failed!') });
@@ -352,15 +352,15 @@
                     event.target.classList.toggle('fa-solid');
                 },
                 //按貼文點點按鈕出現刪除貼文&檢舉貼文選項
-                // showDropDown() {
-                //     let target = null;
-                //     if (event.target.tagName.toLowerCase() != "button") {
-                //         target = event.target.parentElement;
-                //     } else {
-                //         target = event.target;
-                //     }
-                //     target.classList.toggle('show');
-                // },
+                showDropDown() {
+                    let target = null;
+                    if (event.target.tagName.toLowerCase() != "button") {
+                        target = event.target.parentElement;
+                    } else {
+                        target = event.target;
+                    }
+                    target.classList.toggle('show');
+                },
                 //顯示刪除貼文視窗
                 showDelete(post) {
                     event.preventDefault();
@@ -373,9 +373,16 @@
                     $('.deleteBox').css("display", "none");
                     this.wannaDeletePost = 0;
                 },
+                cancleDeleteBox(event) {
+                    // if (event.key === "Escape") {
+                    // event.preventDefault();
+                    $('.deleteBox').css("display", "none");
+                    this.wannaDeletePost = 0;
+                    // }
+                },
                 //刪除貼文
                 deletePost(wannnaDeletePost) {
-                    fetch(`${this.baseAddress}/api/Post/Unpost/${this.wannaDeletePost}`, {
+                    fetch(`/api/Post/Unpost/${this.wannaDeletePost}`, {
                         method: 'PUT',
                         headers: {
                             "content-Type": "application/json"
@@ -398,12 +405,21 @@
                     this.watingToRatPost.push(post.postId, reporter);
                 },
                 //取消檢舉貼文視窗
-                displayRatBox() {
+                displayRatBox(event) {
                     event.preventDefault();
                     $('.ratBox').css("display", "none");
                     this.watingToRatPost = [];
                     this.ratContent = '';
                     this.ratReason = '';
+                },
+                cancleRatbox() {
+                    // if (event.key === "Escape") {
+                    // event.preventDefault();
+                    $('.ratBox').css("display", "none");
+                    this.watingToRatPost = [];
+                    this.ratContent = '';
+                    this.ratReason = '';
+                    // }
                 },
                 //檢舉貼文 //目前請求不過
                 ratPost() {
@@ -415,7 +431,7 @@
                         "ReportTime": Date.now(),
                         "ProcessingStstus": 0
                     };
-                    fetch(`${this.baseAddress}/api/Post/RatPostReview`, {
+                    fetch('/api/Post/RatPostReview', {
                         method: "POST",
                         headers: {
                           "content-Type":"application/json"

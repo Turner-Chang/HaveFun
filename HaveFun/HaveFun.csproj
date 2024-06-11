@@ -32,6 +32,7 @@
     <Folder Include="Areas\ManagementSystem\DTOs\" />
     <Folder Include="Areas\ManagementSystem\Models\" />
     <Folder Include="wwwroot\images\headshots\" />
+    <Folder Include="wwwroot\images\postImgs\" />
   </ItemGroup>
 
 </Project>
