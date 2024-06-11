@@ -38,6 +38,7 @@ namespace HaveFun.Controllers.APIs
                 .OrderByDescending(p => p.Time)
                 .Select(r => new 
                 { UserName = r.User.Name,
+                  PostId = r.Id,
                   ProfilePicture = r.User.ProfilePicture,
                   Contents = r.Contents,
                   Time = r.Time.ToString("yyyy-MM-dd HH:mm:ss"),
@@ -92,15 +93,56 @@ namespace HaveFun.Controllers.APIs
         }
         //檢舉貼文
         // POST: api/Post/RatPostReview
-        //[HttpPost]
-        //public async Task<string> RatPostReview(PostReview ratPost)
-        //{
-            //PostReview ratPost = new PostReview
-            //{
-      
-
-            //};
-            //return "新增檢舉貼文成功";
-        //}
+        [HttpPost]
+        public async Task<ActionResult<string>> RatPostReview(PostReview ratPost)
+        {
+            PostReview post = new PostReview
+            {
+                PostId = ratPost.PostId,
+                UserId = ratPost.UserId,
+                ReportItems = ratPost.ReportItems,
+                Reason = ratPost.Reason,
+                ReportTime = ratPost.ReportTime,
+                ProcessingStstus = ratPost.ProcessingStstus
+            };
+            _context.PostReviews.Add(post);
+            await _context.SaveChangesAsync();
+            return "新增檢舉貼文成功";
+        }
+        //刪除貼文(從資料庫刪掉)
+        // DELETE: api/Post/DeletePost/5
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeletePost(int id)
+        {
+            var post = await _context.Posts.FindAsync(id);
+            if (post == null)
+            {
+                return NotFound("查無此貼文");
+            }
+            try
+            {
+                _context.Posts.Remove(post);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return StatusCode(500,"刪除貼文失敗");
+            }
+            return NoContent();
+        }
+        //刪除貼文 狀態改成下架
+        // PUT: api/Post/Unpost/5
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Unpost(int id)
+        {
+            var post = await _context.Posts.FindAsync(id);
+            if (post == null)
+            {
+                return NotFound("查無此貼文");
+            }
+            post.Status = 1;
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿@section Styles
 {
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
 
 	<style>
 		
@@ -216,7 +217,7 @@
 									</button>
 								</div>
 								<div class="card-body">
-									<h5 class="card-title">{{user.name}} {{user.age}}</h5>
+									<h5 class="card-title">{{user.name}} {{user.age}} <i class="fa-brands fa-web-awesome" style="color: #FFD43B;" v-if="user.level==1"></i></h5>
 									<p class="card-text">{{user.introduction}}</p>
 									<button :id="`btnCollapse${index}`" :data-bs-target="`#collapseExample${index}`" class="btn btn-primary detail" type="button" data-bs-toggle="collapse" aria-expanded="false" :aria-controls="`collapseExample${index}`">Detail<i class="fa-solid fa-angle-down"></i></button>
 									<div class="collapse collapsing" :id="`collapseExample${index}`">
