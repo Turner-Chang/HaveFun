@@ -10,7 +10,7 @@ namespace HaveFun.Areas.ManagementSystem.Controllers
 	[ApiController]
 	public class PostReviewApiController : ControllerBase
 	{
-		private readonly HaveFunDbContext _context;
+		private  HaveFunDbContext _context;
 
 		public PostReviewApiController(HaveFunDbContext context)
 		{

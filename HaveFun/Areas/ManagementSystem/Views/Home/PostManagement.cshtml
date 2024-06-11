@@ -1,103 +1,146 @@
-﻿<div id="PostCheckApp" class="container row  p-5 pt-5 text-center border-2">
-	<div class="table-responsive-md">
+﻿<div id="PostCheckApp">
+	
+	<div class="container row  p-5 pt-5 text-center border-2">
 		
-		<table class="table table-secondary">
-			<thead class="table-active">
-				<tr>
-					<th scope="col">被檢舉貼文ID</th>
-					<th scope="col">被檢舉人ID</th>
-					<th scope="col">被檢舉理由</th>
-					<th scope="col">被檢舉時間</th>
-					<th scope="col">處理</th>
+		<div class="table-responsive-md">
+			<table class="table table-secondary">
+				<thead class="table-active">
+					<tr>
+						<th scope="col">被檢舉貼文ID</th>
+						<th scope="col">被檢舉人ID</th>
+						<th scope="col">被檢舉理由</th>
+						<th scope="col">被檢舉時間</th>
+						<th scope="col">處理</th>
+						
 
-				</tr>
-			</thead>
-			<tbody>
-				<tr v-for="r in reports" class="">
-					<td scope="row">{{r.postId}}</td>
-					<td>{{r.userId}}</td>
-					<td>{{r.reason}}</td>
-					<td>{{r.reportTime}}</td>
-					<td>
-						<button id="r.postID" class="btn btn-warning"
-								@@click="check(r)">
-							處理
-						</button>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="r in reports" class="">
+						<td scope="row">{{r.postId}}</td>
+						<td>{{r.userId}}</td>
+						<td>{{r.reason}}</td>
+						<td>{{r.reportTime}}</td>
+						<td>
+							<button :id="r.postReviewId" class="btn btn-warning"
+									@@click="check(r.postReviewId)">
+								處理
+							</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
 
 
-</div>
 
 
-<div class="modal fade"
-	 id="PostModal"
-	 tabindex="-1"
-	 data-bs-backdrop="static"
-	 data-bs-keyboard="false"
-	 role="dialog"
-	 aria-labelledby="modalTitleId"
-	 aria-hidden="true">
-	<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
-		 role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="modalTitleId">
-					檢舉貼文
-				</h5>
-				<button type="button"
-						class="btn-close"
-						data-bs-dismiss="modal"
-						aria-label="Close">
-				</button>
-			</div>
-			<div class="modal-body">
-				<div>被檢舉者:</div>
-				<div>被檢舉原因:</div>
-				<div>被檢舉貼文:</div>
-				<div>被檢舉圖片:</div>
-				<div>檢舉者:</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button"
-						class="btn btn-secondary"
-						data-bs-dismiss="modal">
-					駁回檢舉
-				</button>
-				<button type="button" class="btn btn-primary">刪除貼文</button>
+	<div class="modal fade"
+		 id="PostModal"
+		 tabindex="-1"
+		 data-bs-backdrop="static"
+		 data-bs-keyboard="false"
+		 role="dialog"
+		 aria-labelledby="modalTitleId"
+		 aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
+			 role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalTitleId">
+						檢舉貼文
+					</h5>
+					<button type="button"
+							class="btn-close"
+							data-bs-dismiss="modal"
+							aria-label="Close">
+					</button>
+				</div>
+				<div class="modal-body">
+					<div>被檢舉者:{{Post.id}} </div>
+					<div>被檢舉貼文:{{Post.contents}}</div>
+					<div>
+						被檢舉圖片:<img :src="imgSrc(Post.pictures)" style="width:200px;height:150px; "/>
+						</div>
+					<div>檢舉狀態:{{Post.status}}</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button"
+							class="btn btn-secondary"
+							data-bs-dismiss="modal">
+						駁回檢舉
+					</button>
+					<button type="button" class="btn btn-primary">刪除貼文</button>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
-
+<img src="~/images/NOimg.jpg" />
 @section Scripts {
-	
+
 	<script>
 		var App = Vue.createApp({
 			data() {
 				return {
-					reports: []
+					reports: [],
+					Post: {id:1,},
 				}
 			},
 			methods: {
-				check() { $("#PostModal").modal("show"); },
-				
+				imgSrc(src) {
+					if(src==null)
+						return "/images/NOimg.jpg"
+					else
+					return `/images/${src}`;
+				}
+				 ,
+				check(postId) {
+					this.showModal();
+					this.GetPost(postId);
+					//alert(postReviewId)
+				},
+				showModal() {
+					$("#PostModal").modal("show");
+				},
+				GetPost(PostId) {
+					baseAdress = "https://localhost:7152/";
+					var ResStr = {} ;
+					var data = fetch(`${baseAdress}api/Post/GetById/${PostId}`, { method: "GET" })
+						.then(response => response.json())
+						.then(data =>
+							JSON.stringify(data)	)
+						.then(d => {
+							App.Post = JSON.parse( d);
+							alert(d);
+						}
+						)
+						.catch(error => {
+							console.error('發生錯誤:', error);
+							alert("錯誤");
+						});
+
+					
+
+					
+				//	alert(this.Post)
+
+				},
 			},
-			mounted: async() => {
-				
+			mounted: async () => {
+
 				baseAdress = "https://localhost:7152/";
-				
-				const resp = await fetch(
+
+				var resp = await fetch(
 					`${baseAdress}api/PostReview/GetAll`, {
 					method: "GET"
 				});
-				const data = await resp.json();
+				var data = await resp.json();
 				App.reports = data;
-				console.log(App.reports);
-				
+				//alert(JSON.stringify(data));
+
 			}
 		}).mount("#PostCheckApp");
 
