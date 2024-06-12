@@ -1,12 +1,17 @@
 ﻿user ManageMent
+<div id="UserManagementApp">
 
 <div class="table-responsive">
     <table class="table table-primary">
         <thead>
             <tr>
-                <th scope="col">Column 1</th>
-                <th scope="col">Column 2</th>
-                <th scope="col">Column 3</th>
+                <th scope="col">被檢舉使用者Id</th>
+                <th scope="col">檢舉使用者Id</th>
+                <th scope="col">檢舉時間</th>
+                <th scope="col">檢舉項目Id</th>
+                <th scope="col">處理按鈕</th>
+
+
             </tr>
         </thead>
         <tbody>
@@ -23,3 +28,11 @@
         </tbody>
     </table>
 </div>
+</div>
+
+@section Scripts{
+<script>
+    var App = Vue.CreateApp().mount("#");
+</script>
+
+}

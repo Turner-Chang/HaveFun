@@ -34,7 +34,7 @@ namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
         public async Task<string> ChangeUserState(int id,UserInfoDTO userInfoDTO)
         {
 			UserInfo user1 = await _context.UserInfos.FindAsync(id);
-			if (user1 == null) { return "貼文狀態修改失敗"; }
+			if (user1 == null) { return "用戶狀態修改失敗"; }
 			if (userInfoDTO.Id == user1.Id)
 			{
 				user1.Status = userInfoDTO.Status;
@@ -46,10 +46,10 @@ namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
 			}
 			catch (Exception ex)
 			{
-				return "貼文狀態修改失敗";
+				return "用戶狀態修改失敗";
 			}
 
-			return "貼文狀態修改成功";
+			return "用戶狀態修改成功";
 		}
     }
 }
