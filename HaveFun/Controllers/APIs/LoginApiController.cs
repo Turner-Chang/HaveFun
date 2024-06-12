@@ -39,8 +39,8 @@ namespace HaveFun.Controllers.APIs
             }
             else
             {
-                string salt = user.PasswordSalt;
-                string password = _passwordSecure.HashPassword(userDTO.Password, Convert.FromBase64String(salt));
+                byte[] salt = user.PasswordSalt;
+                string password = _passwordSecure.HashPassword(userDTO.Password, salt);
                 if (password == user.Password)
                 {
                     string jwtToken = _jwt.GenerateJWTToken(user);

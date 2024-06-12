@@ -594,9 +594,9 @@ namespace HaveFun.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("Password");
 
-                    b.Property<string>("PasswordSalt")
+                    b.Property<byte[]>("PasswordSalt")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(20)

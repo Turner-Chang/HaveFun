@@ -12,8 +12,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HaveFun.Migrations
 {
     [DbContext(typeof(HaveFunDbContext))]
+<<<<<<<< HEAD:HaveFun/Migrations/20240612080855_init.Designer.cs
     [Migration("20240612080855_init")]
     partial class init
+========
+    [Migration("20240612081433_edit table")]
+    partial class edittable
+>>>>>>>> main:HaveFun/Migrations/20240612081433_edit table.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -597,9 +602,9 @@ namespace HaveFun.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("Password");
 
-                    b.Property<string>("PasswordSalt")
+                    b.Property<byte[]>("PasswordSalt")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(20)
