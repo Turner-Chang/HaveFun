@@ -1,30 +1,30 @@
-﻿using HaveFun.Models;
+﻿using HaveFun.DTOs;
 
 namespace HaveFun.Service
 {
     public class FriendService : IFriendService
     {
-        private readonly List<Friend> _friends;
-        private readonly List<Friend> _blackList;
+        private readonly List<FriendDTO> _friends;
+        private readonly List<FriendDTO> _blackList;
 
         public FriendService()
         {
-            _friends = new List<Friend>
+            _friends = new List<FriendDTO>
         {
-            new Friend { Id = 1, Name = "LeBron James", ImageUrl = "assets/images/member/home2/01.jpg" },
-            new Friend { Id = 2, Name = "周子魚", ImageUrl = "assets/images/member/home2/02.jpg" },
-            new Friend { Id = 3, Name = "Toyz", ImageUrl = "assets/images/member/home2/03.jpg" }
+            new FriendDTO { Id = 1, Name = "LeBron James", ImageUrl = "assets/images/member/home2/01.jpg" },
+            new FriendDTO { Id = 2, Name = "周子魚", ImageUrl = "assets/images/member/home2/02.jpg" },
+            new FriendDTO { Id = 3, Name = "Toyz", ImageUrl = "assets/images/member/home2/03.jpg" }
         };
 
-            _blackList = new List<Friend>();
+            _blackList = new List<FriendDTO>();
         }
 
-        public List<Friend> GetFriends()
+        public List<FriendDTO> GetFriends()
         {
             return _friends;
         }
 
-        public List<Friend> GetBlockedFriends()
+        public List<FriendDTO> GetBlockedFriends()
         {
             return _blackList;
         }

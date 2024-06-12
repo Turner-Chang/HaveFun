@@ -1,7 +1,6 @@
-﻿namespace HaveFun.Models
+﻿namespace HaveFun.DTOs
 {
-
-    public class Friend
+    public class FriendDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
