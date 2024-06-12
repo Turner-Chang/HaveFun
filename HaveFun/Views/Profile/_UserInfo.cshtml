@@ -139,8 +139,8 @@
 			saveData(){										/* 保存按鈕的函式 */
 				// alert("可以保存了")
 				let formData = new FormData();
-				for (let key in this.material) { formData.append(key, this.material[key]); };
-				if (this.profilePicture) { formData.append("ProfilePicture", this.profilePicture); };
+				for (let key in this.material) { formData.append(key, this.material[key]); }
+				if (this.profilePicture) { formData.append("ProfilePicture", this.profilePicture); }
 				formData.append('Name', this.material.name);
 				formData.append('Gender', this.material.gender);
 				formData.append('BirthDay', this.material.birthDay);
