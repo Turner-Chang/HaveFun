@@ -58,6 +58,11 @@ namespace HaveFun.Controllers.APIs
 			return usersNotInteractedWith;
 		}
 
+		[HttpGet("GetComplaintCategory")]
+		public IEnumerable<ComplaintCategory> GetComplaintCategories()
+		{
+			return _context.ComplaintCategories.ToList();
+		}
 
 		[HttpPost("Like")]
 		public string Like(MatchRequestDTO request)
