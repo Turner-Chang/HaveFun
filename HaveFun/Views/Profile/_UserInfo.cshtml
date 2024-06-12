@@ -170,7 +170,7 @@
 				formData.append('Gender', this.material.gender);
 				formData.append('BirthDay', this.material.birthDay);
 				formData.append('Introduction', this.material.introduction);
-				formData.append('Password', this.material.password);	
+				formData.append('Password', this.material.password);
 				let blob;
 				if (this.profilePicture) {const blob = new Blob([this.profilePicture], { type: "image/*" });}
 				formData.append("ProfilePicture", blob);
