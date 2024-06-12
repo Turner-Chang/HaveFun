@@ -15,16 +15,23 @@ namespace HaveFun.Common
             return buffer;
         }
 
-        // 密碼使用Argon2id來做雜湊
-        public byte[] HashPassword(string password, byte[] salt)
+        // 密碼使用SHA256來做雜湊
+        public string HashPassword(string password, byte[] salt)
         {
-            var argon2 = new Argon2id(Encoding.UTF8.GetBytes(password));
-            argon2.Salt = salt;
-            argon2.DegreeOfParallelism = 24; // 平行運算(基本上看核心數)
-            argon2.MemorySize = 1024 * 1024 * 2; // 用於計算的記憶體大小，2GB
-            argon2.Iterations = 4; // 迭代運算次數
+            using (var hash = SHA256.Create())
+            {
+                byte[] passwordByte = Encoding.UTF8.GetBytes(password);
+                byte[] saltedPassword = new byte[salt.Length + passwordByte.Length];
 
-            return argon2.GetBytes(32);
+                // 把passwordByte跟salt放到saltedPassword內
+                Buffer.BlockCopy(passwordByte, 0, saltedPassword, 0, passwordByte.Length);
+                Buffer.BlockCopy(salt, 0, saltedPassword, passwordByte.Length, salt.Length);
+
+                // 把saltedPassword利用SHA256做雜湊
+                byte[] hashedPasswordBytes = hash.ComputeHash(saltedPassword);
+
+                return Convert.ToBase64String(hashedPasswordBytes);
+            }
         }
     }
 }

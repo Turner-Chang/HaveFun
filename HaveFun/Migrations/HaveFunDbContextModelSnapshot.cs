@@ -485,6 +485,27 @@ namespace HaveFun.Migrations
                     b.ToTable("PostReviews");
                 });
 
+            modelBuilder.Entity("HaveFun.Models.SwipeHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("SwipeDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("SwipeHistories");
+                });
+
             modelBuilder.Entity("HaveFun.Models.Transaction", b =>
                 {
                     b.Property<int>("Id")
@@ -573,9 +594,9 @@ namespace HaveFun.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("Password");
 
-                    b.Property<string>("PasswordSalt")
+                    b.Property<byte[]>("PasswordSalt")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(20)
@@ -715,7 +736,7 @@ namespace HaveFun.Migrations
             modelBuilder.Entity("HaveFun.Models.Comment", b =>
                 {
                     b.HasOne("HaveFun.Models.Comment", "ParentComment")
-                        .WithMany()
+                        .WithMany("Replies")
                         .HasForeignKey("ParentCommentId");
 
                     b.HasOne("HaveFun.Models.Post", "Post")
@@ -770,7 +791,7 @@ namespace HaveFun.Migrations
             modelBuilder.Entity("HaveFun.Models.Like", b =>
                 {
                     b.HasOne("HaveFun.Models.Post", "Post")
-                        .WithMany()
+                        .WithMany("Like")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -843,6 +864,17 @@ namespace HaveFun.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("HaveFun.Models.SwipeHistory", b =>
+                {
+                    b.HasOne("HaveFun.Models.UserInfo", "UserInfo")
+                        .WithMany("SwipeHistories")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserInfo");
+                });
+
             modelBuilder.Entity("HaveFun.Models.Transaction", b =>
                 {
                     b.HasOne("HaveFun.Models.UserInfo", "UserInfo")
@@ -872,6 +904,11 @@ namespace HaveFun.Migrations
                     b.Navigation("ActivityReviews");
                 });
 
+            modelBuilder.Entity("HaveFun.Models.Comment", b =>
+                {
+                    b.Navigation("Replies");
+                });
+
             modelBuilder.Entity("HaveFun.Models.Label", b =>
                 {
                     b.Navigation("MemberLabels");
@@ -885,6 +922,8 @@ namespace HaveFun.Migrations
             modelBuilder.Entity("HaveFun.Models.Post", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Like");
                 });
 
             modelBuilder.Entity("HaveFun.Models.UserInfo", b =>
@@ -910,6 +949,8 @@ namespace HaveFun.Migrations
                     b.Navigation("ReceiverMessages");
 
                     b.Navigation("SenderMessages");
+
+                    b.Navigation("SwipeHistories");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,7 +1,9 @@
-﻿using HaveFun.DTOs;
+﻿using HaveFun.Common;
+using HaveFun.DTOs;
 using HaveFun.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace HaveFun.Controllers.APIs
@@ -11,14 +13,18 @@ namespace HaveFun.Controllers.APIs
 	public class MatchApiController : ControllerBase
 	{
 		private readonly HaveFunDbContext _context;
-		public MatchApiController(HaveFunDbContext context)
+		private readonly MembershipService _membershipService;
+		public MatchApiController(HaveFunDbContext context, MembershipService membershipService)
 		{
 			_context = context;
+			_membershipService = membershipService;
 		}
 
 		[HttpGet("{userId}")]
-		public IEnumerable<MatchUserInfoDTO> GetNotMatchUser(int userId) 
+		public IEnumerable<MatchUserInfoDTO> GetNotMatchUser(int userId)
 		{
+			DateTime today = DateTime.Today;
+
 			var interactedUser = _context.FriendLists
 				.Where(f1 => f1.Clicked == userId)
 				.Select(f1 => f1.BeenClicked);
@@ -35,7 +41,8 @@ namespace HaveFun.Controllers.APIs
 					ProfilePicture = u.ProfilePicture,
 					Introduction = u.Introduction,
 					Level = u.Level,
-					Pictures = u.Pictures.Select(p => new UserPicture{ 
+					Age = today.Year - u.BirthDay.Year,
+					Pictures = u.Pictures.Select(p => new UserPicture {
 						Id = p.Id,
 						UserId = p.UserId,
 						Picture = p.Picture,
@@ -50,9 +57,96 @@ namespace HaveFun.Controllers.APIs
 							Name = m1.Label.LabelCategory.Name
 						}
 					}).ToList()
-				}).ToList() ;
+				}).ToList();
 
 			return usersNotInteractedWith;
+		}
+
+		[HttpGet("GetComplaintCategory")]
+		public IEnumerable<ComplaintCategory> GetComplaintCategories()
+		{
+			return _context.ComplaintCategories.ToList();
+		}
+
+		[HttpPost("Like")]
+		public string Like(MatchRequestDTO request)
+		{
+
+			FriendList fl = null;
+			var interacted = _context.FriendLists.FirstOrDefault(u => u.Clicked == request.BeenClicked && u.BeenClicked == request.Clicked);
+			if (interacted != null)
+			{
+				if (interacted.state == 0)
+				{
+					interacted.state = 1;
+					_context.FriendLists.Update(interacted);
+					fl = new FriendList
+					{
+						Clicked = request.Clicked,
+						BeenClicked = request.BeenClicked,
+						state = 1
+					};
+					_context.FriendLists.Add(fl);
+					_context.SaveChanges();
+					return "配對成功!";
+				}
+			}
+
+			fl = new FriendList
+			{
+				Clicked = request.Clicked,
+				BeenClicked = request.BeenClicked,
+				state = 0
+			};
+
+			_context.FriendLists.Add(fl);
+			_context.SaveChanges();
+			return "";
+
+
+		}
+
+		[HttpPost("Dislike")]
+		public string Dislike(MatchRequestDTO request)
+		{
+			FriendList fl = new FriendList
+			{
+				Clicked = request.Clicked,
+				BeenClicked = request.BeenClicked,
+				state = 2
+			};
+			_context.FriendLists.Add(fl);
+			_context.SaveChanges();
+			return "";
+		}
+
+		[HttpGet("CanUserSwipe/{userId}")]
+		public ActionResult<bool> CanUserSwipe(int userId)
+		{
+			return _membershipService.canUserSwipe(userId);
+		}
+
+		[HttpPost("PostSwipeHistory/{userId}")]
+		public string PostSwipeHistory(int userId)
+		{
+			DateTime dateTime = DateTime.Now;
+			SwipeHistory swipeHistory = new SwipeHistory {UserId = userId, SwipeDate=dateTime };
+			
+			var user = _context.UserInfos.Where(u => u.Id == userId).FirstOrDefault();
+
+			try
+			{
+				if (user.Level == 0)
+				{
+					_context.SwipeHistories.Add(swipeHistory);
+					_context.SaveChanges();
+				}				
+			}
+			catch (DbUpdateException ex)
+			{
+				return ex.Message + "新增滑動歷史記錄失敗!";
+			}
+			return "新增成功";
 		}
 	}
 }

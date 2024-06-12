@@ -1,5 +1,4 @@
-﻿using HaveFun.DTOs;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace HaveFun.Models
 {
@@ -47,6 +46,8 @@ namespace HaveFun.Models
 		public DbSet<Transaction> Transactions { get; set; }
 
 		public DbSet<UserPicture> UserPictures { get; set; }
+
+		public DbSet<SwipeHistory> SwipeHistories { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -117,6 +118,9 @@ namespace HaveFun.Models
 				.WithMany(u => u.PostReviews)
 				.HasForeignKey(m => m.UserId)
 				.OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<UserInfo>()
+				.Property(u => u.PasswordSalt)
+				.HasColumnType("varbinary(max)");
         }
 	}
 }
