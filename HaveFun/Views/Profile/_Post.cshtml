@@ -188,9 +188,10 @@
                 }
 
                 const newPost = {
-                    userId: this.userId,
-                    contents: this.postContent,
-                    pictures: '',
+                    UserId: this.userId,
+                    Contents: this.postContent,
+                    Pictures: '',
+                    Replies:[],
                 };
 
                 try {
@@ -216,7 +217,8 @@
                         userId: this.userId,
                         postId: postId,
                         content: post.newReply,
-                        parentCommentId: null // 父貼文ID
+                        parentCommentId: null, // 父回覆ID
+                        nestedReplies: []
                     };
 
                     try {
@@ -245,7 +247,8 @@
                             userId: this.userId,
                             postId: postId,
                             content: reply.nestedReplyContent,
-                            parentCommentId: replyId // 父貼文ID
+                            parentCommentId: replyId, // 父貼文ID
+                            nestedReplies:[]
                         };
 
                         try {

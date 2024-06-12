@@ -47,7 +47,6 @@ namespace HaveFun.Controllers.APIs
 
         //GET: api/Profile/GetPostsList
         [HttpGet]
-        [HttpGet]
         public async Task<IEnumerable<PostsDTO>> GetPostsList()
         {
             var posts = await _context.Posts
@@ -63,18 +62,20 @@ namespace HaveFun.Controllers.APIs
                         .Where(c => c.ParentCommentId == null)
                         .Select(c => new CommentsDTO
                         {
-                            userId = c.UserId,
-                            postId = c.PostId,
-                            parentCommentId = c.ParentCommentId,
-                            content = c.Contents,
-                            time = c.Time,
-                            nestedReplies = c.Replies.Select(nc => new CommentsDTO
+                            Id = c.Id,
+                            UserId = c.UserId,
+                            PostId = c.PostId,
+                            ParentCommentId = c.ParentCommentId,
+                            Content = c.Contents,
+                            Time = c.Time,
+                            NestedReplies = c.Replies.Select(nc => new CommentsDTO
                             {
-                                userId = nc.UserId,
-                                postId = nc.PostId,
-                                parentCommentId = nc.ParentCommentId,
-                                content = nc.Contents,
-                                time = nc.Time
+                                Id = nc.Id,
+                                UserId = nc.UserId,
+                                PostId = nc.PostId,
+                                ParentCommentId = nc.ParentCommentId,
+                                Content = nc.Contents,
+                                Time = nc.Time
                             }).ToList()
                         }).ToList()
                 })
@@ -87,6 +88,26 @@ namespace HaveFun.Controllers.APIs
         [HttpPost]
         public async Task<ActionResult<PostsDTO>> AddPost(PostsDTO postDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (postDto == null)
+            {
+                return BadRequest("Post data is null");
+            }
+
+            if (string.IsNullOrEmpty(postDto.Contents))
+            {
+                return BadRequest("Post content is empty");
+            }
+
+            if (postDto.UserId <= 0)
+            {
+                return BadRequest("Invalid User ID");
+            }
+
             var post = new Post
             {
                 UserId = postDto.UserId,
@@ -113,22 +134,22 @@ namespace HaveFun.Controllers.APIs
                 return BadRequest("Comment data is null");
             }
 
-            if (string.IsNullOrEmpty(commentDto.content))
+            if (string.IsNullOrEmpty(commentDto.Content))
             {
                 return BadRequest("Comment content is empty");
             }
 
-            if (commentDto.postId <= 0)
+            if (commentDto.PostId <= 0)
             {
                 return BadRequest("Invalid Post ID");
             }
 
             var comment = new Comment
             {
-                UserId = commentDto.userId,
-                PostId = commentDto.postId,
-                ParentCommentId = commentDto.parentCommentId,
-                Contents = commentDto.content,
+                UserId = commentDto.UserId,
+                PostId = commentDto.PostId,
+                ParentCommentId = commentDto.ParentCommentId,
+                Contents = commentDto.Content,
                 Time = DateTime.UtcNow
             };
 
