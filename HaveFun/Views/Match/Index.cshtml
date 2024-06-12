@@ -108,6 +108,20 @@
 				background-color: #0056b3;
 		}
 
+		.button-container {
+			position: relative;
+		}
+
+		.top-right-button {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			background-color: transparent;
+			border: none;
+			cursor: pointer;
+			z-index: 999;
+		}
+
 	</style>
 }
 
@@ -185,18 +199,20 @@
 						<div id="card-container">
 							<div v-for="(user, index) in filterAge" :id="user.id" class="card cards" :style="{'z-index': index}" @@mousedown="startDrag($event, index)"
 								 @@touchstart="startDrag($event, index)">
+								<div class="button-container">
+									<button class="top-right-button" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="fa-solid fa-circle-exclamation" style="color: #ff3838;"></i></button>
+								</div>
 								<div :id="`carouselExampleIndicators${index}`" class="carousel slide">
 									<div class="carousel-indicators">	
 										<button v-for="(btn,btnIndex) in user.pictures" type="button" :data-bs-target="`#carouselExampleIndicators${index}`" :data-bs-slide-to="btnIndex" :class="{'active': btnIndex == 0 }" aria-current="true" :aria-label="`Slide ${btnIndex + 1}`"></button>
 										@* <button type="button" :data-bs-target="`#carouselExampleIndicators${index}`" class="active" data-bs-slide-to="0" aria-label="Slide 1"></button>
 										<button type="button" :data-bs-target="`#carouselExampleIndicators${index}`" data-bs-slide-to="1" aria-label="Slide 2"></button>
 										<button type="button" :data-bs-target="`#carouselExampleIndicators${index}`" data-bs-slide-to="2" aria-label="Slide 3"></button> *@
-									</div>
-									<div class="carousel-inner">
+									</div>									
+									<div class="carousel-inner">										
 										<div v-for="(pic,picIndex) in user.pictures" class="carousel-item" :class="{'active': picIndex == 0 }">
 											<img :src="pic.picture.replace('~', '')" class="d-block w-100" alt="..." draggable="false">
 										</div>
-
 										@* <div class="carousel-item active">
 										<img src="@Url.Content(ViewBag.ImageUrlArr[0])" class="d-block w-100" alt="..." draggable="false">
 										</div>										
@@ -217,7 +233,7 @@
 									</button>
 								</div>
 								<div class="card-body">
-									<h5 class="card-title">{{user.name}} {{user.age}} <i class="fa-brands fa-web-awesome" style="color: #FFD43B;" v-if="user.level==1"></i></h5>
+									<h5 class="card-title">{{user.name}} <i class="fa-solid fa-mars" style="color: #74C0FC;" v-if="user.gender==0"></i><i class="fa-solid fa-venus" style="color: #ff7ace;" v-else></i> {{user.age}} <i class="fa-brands fa-web-awesome" style="color: #FFD43B;" v-if="user.level==1"></i></h5>
 									<p class="card-text">{{user.introduction}}</p>
 									<button :id="`btnCollapse${index}`" :data-bs-target="`#collapseExample${index}`" class="btn btn-primary detail" type="button" data-bs-toggle="collapse" aria-expanded="false" :aria-controls="`collapseExample${index}`">Detail<i class="fa-solid fa-angle-down"></i></button>
 									<div class="collapse collapsing" :id="`collapseExample${index}`">
@@ -241,11 +257,35 @@
 						
 					</div>
 				</div>
+
+			</div>
+		</div>
+	</div>
+	<button @@click="canUserSwipeRequest">按鈕</button>
+
+	<!-- Modal -->
+	<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="staticBackdropLabel">檢舉</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<h6>檢舉理由:</h6>
+					<select v-model="selectedComplaintCategory">
+						<option disabled value="">請選擇...</option>
+						<option v-for="category in complaintCategories" :key="category.complaintCategoryId" :value="category.complaintCategoryId">{{ category.complaintCategoryName }}</option>
+					</select>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+					<button type="button" class="btn btn-primary">確認</button>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
-
 
 @section Scripts
 {
@@ -270,6 +310,9 @@
 					},
 					today: new Date(),
 					labels:[],
+					complaintCategories:[],
+					selectedComplaintCategory:'',
+					canSwipe: true,
 				}
 			},
 			computed: {
@@ -297,6 +340,11 @@
 						.then(res => res.json())
 						.then(u => this.notMatchUsers = u)
 				},
+				getComplaintCategories() {
+					axios.get(`${this.baseAddress}/api/MatchApi/GetComplaintCategory`)
+						.then(response => this.complaintCategories = response.data)
+						.catch(err => alert(err));
+				},
 				startDrag(event, index) {
 					this.currentCard = event.target.closest('.cards');
 					this.startX = event.touches ? event.touches[0].clientX : event.clientX;
@@ -317,7 +365,7 @@
 
 					this.currentCard.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx * 0.05}deg)`;
 				},
-				endDrag(event) {
+				async endDrag(event) {
 					if (!this.currentCard) return;
 
 					this.currentCard.classList.remove('dragging');
@@ -329,6 +377,18 @@
 					let endX = event.changedTouches ? event.changedTouches[0].clientX : event.clientX;
 					let dx = endX - this.startX;
 
+					if (!this.canSwipe) 
+					{
+						Swal.fire({
+							icon: "error",
+							title: "抱歉",
+							text: "已達到右滑上限!",
+							footer: '<a href="#">是否升級會員等級?</a>'
+						});
+						this.currentCard.style.transform = '';
+						return;
+					}
+
 					if (dx > 100) {
 						this.currentCard.style.transform = `translate(100vw, 0)`;
 						setTimeout(() => {
@@ -336,7 +396,10 @@
 							this.likeRequest(@ViewBag.UserId, this.currentCard.id);
 							this.notMatchUsers = this.notMatchUsers.filter(u => u.id != this.currentCard.id);
 							this.currentCard = null;
+							
 						}, 500);
+						await this.swipeHistoryRequest();
+						await this.canUserSwipeRequest();
 					} else if (dx < -100) {
 						this.currentCard.style.transform = `translate(-100vw, 0)`;
 						setTimeout(() => {
@@ -347,7 +410,8 @@
 						}, 500);
 					} else {
 						this.currentCard.style.transform = '';
-					}			
+					}
+					
 				},
 				showDetail() {
 					var div = $(".buttons");
@@ -404,14 +468,13 @@
 					request.beenClicked = beenClickedId;
 					axios.post(`${this.baseAddress}/api/MatchApi/Like`, request)
 						.then(response => { 
-							if (response.data != "") 
-							{
+							if (response.data != "") {
 								Swal.fire({
-									title:'恭喜!',
+									title: '恭喜!',
 									text: '配對成功!',
-									icon:'success',
+									icon: 'success',
 								});
-							}						
+							}
 						})
 						.catch(err => { 
 							alert(err);
@@ -428,11 +491,27 @@
 							alert(err);
 						});
 				},
+				async canUserSwipeRequest() {
+					const response = await fetch(`${this.baseAddress}/api/MatchApi/CanUserSwipe/@ViewBag.UserId`);
+					const data = await response.json();
+					this.canSwipe = data;
+				},
+				async swipeHistoryRequest() 
+				{
+					await axios.post(`${this.baseAddress}/api/MatchApi/PostSwipeHistory/@ViewBag.UserId`)
+						.then(response => {
+						})
+						.catch(err => {
+							alert(err);
+						});
+				},
 			},
 			watch: {
 			},
 			mounted() {
 				this.getNotMatchUsers();
+				this.getComplaintCategories();
+				this.canUserSwipeRequest();
 			},
 		}).mount("#matchApp");
 	</script>
