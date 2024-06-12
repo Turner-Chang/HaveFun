@@ -12,5 +12,7 @@ namespace HaveFun.Models
 		[Required]
 		[MaxLength(10)]
 		public string ComplaintCategoryName { get; set; }
+
+		public virtual ICollection<UserReview> UserReviews { get; set; }
 	}
 }

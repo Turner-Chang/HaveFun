@@ -4,7 +4,6 @@ namespace HaveFun.Models
 {
     public class HaveFunDbContext : DbContext
     {
-
         public HaveFunDbContext(DbContextOptions<HaveFunDbContext> options)
             : base(options)
         {
@@ -126,6 +125,18 @@ namespace HaveFun.Models
                 .HasOne(m => m.User)
                 .WithMany(u => u.Posts)
                 .HasForeignKey(m => m.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<UserReview>()
+                .HasOne(m => m.User1)
+                .WithMany(u => u.ReportUsers)
+                .HasForeignKey(m => m.reportUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<UserReview>()
+                .HasOne(m => m.User2)
+                .WithMany(u => u.BeRepostedUsers)
+                .HasForeignKey(m => m.beReportedUserId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

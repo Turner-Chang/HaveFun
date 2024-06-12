@@ -4,6 +4,7 @@ using HaveFun.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HaveFun.Migrations
 {
     [DbContext(typeof(HaveFunDbContext))]
-    partial class HaveFunDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240612123851_add_userreview_complaintcategory")]
+    partial class add_userreview_complaintcategory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -905,9 +908,9 @@ namespace HaveFun.Migrations
             modelBuilder.Entity("HaveFun.Models.Post", b =>
                 {
                     b.HasOne("HaveFun.Models.UserInfo", "User")
-                        .WithMany("Posts")
+                        .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -1062,8 +1065,6 @@ namespace HaveFun.Migrations
                     b.Navigation("Pictures");
 
                     b.Navigation("PostReviews");
-
-                    b.Navigation("Posts");
 
                     b.Navigation("ReceiverMessages");
 
