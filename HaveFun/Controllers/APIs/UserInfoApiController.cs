@@ -25,25 +25,28 @@ namespace HaveFun.Controllers.APIs
         }
 
         // GET: api/UserInfo/GetUserinfos
-        [HttpGet]
+        [HttpGet("{id}")]
+        [ActionName("GetUserinfos")]
         //拿資料
-        public async Task<ActionResult<IEnumerable<UserIfDTO>>> GetUserInfos()
+        public async Task<UserIfDTO> GetUserInfos(int id)
         {
             var userInf = await _context.UserInfos
+            .Where(u => u.Id == id) // 使用 Where 來過濾資料
             .Select(u => new UserIfDTO
             {
-                Name = u.Name,
-                Address = u.Address,
-                PhoneNumber = u.PhoneNumber,
-                Gender = u.Gender,
-                BirthDay = u.BirthDay,
-                Introduction = u.Introduction
+            Name = u.Name,
+            Address = u.Address,
+            PhoneNumber = u.PhoneNumber,
+            Gender = u.Gender,
+            BirthDay = u.BirthDay,
+            Introduction = u.Introduction,
+            Password = u.Password, // 注意: 密碼通常不應該被傳送到客戶端
             })
-            .ToListAsync();
+            .FirstOrDefaultAsync(); // 使用 FirstOrDefaultAsync 來獲取單個資料
 
             return userInf;
         }
-    
+
 
         // GET: api/UserInfoApi/5
         [HttpGet("{id}")]
@@ -57,6 +60,15 @@ namespace HaveFun.Controllers.APIs
             }
 
             return userInfo;
+        }
+        //GET: api/UserInfo/GetPicture
+        [HttpGet("GetPicture/{id}")]
+        public async Task<FileResult> GetPicture(int id)
+        {
+            UserInfo? user = await _context.UserInfos.FindAsync(id);
+            string path = user.ProfilePicture;
+            byte[] ImageContent = System.IO.File.ReadAllBytes(path);
+            return File(ImageContent, "image/*");
         }
 
         // PUT: api/UserInfoApi/5
@@ -117,9 +129,33 @@ namespace HaveFun.Controllers.APIs
                 PhoneNumber = userInfoDTO.PhoneNumber,
                 Gender = userInfoDTO.Gender.Value,
                 BirthDay = userInfoDTO.BirthDay.Value,
-                Introduction = userInfoDTO.Introduction,               
-
+                Introduction = userInfoDTO.Introduction,
+                Password = userInfoDTO.Password,
             };
+            if (userInfoDTO.ProfilePicture != null)
+            {
+                // 把大頭照丟到wwwtoot的images的headshots資料夾內
+                string imgPath = "../HaveFun/wwwroot/images/headshots";
+
+                // 檔案名為帳號+檔案名
+                string imgName = userInfo.Account + userInfoDTO.ProfilePicture.FileName;
+
+                _saveImage.Path = imgPath;
+                _saveImage.Name = imgName;
+                _saveImage.Picture = userInfoDTO.ProfilePicture;
+                string fullPath = string.Empty;
+                bool isSave = _saveImage.Save(out fullPath);
+                if (isSave == false)
+                {
+                    return new JsonResult(
+                        new
+                        {
+                            success = false,
+                            profilePictureError = "圖片存取失敗"
+                        }
+                    );
+                }
+            }
 
             _context.UserInfos.Add(userInfo);
             await _context.SaveChangesAsync();

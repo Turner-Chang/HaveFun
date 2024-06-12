@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HaveFun.DTOs
 {
     public class UserIfDTO
     {
+        public int Id { get; set; }
         // 暱稱
         [Required(ErrorMessage = "請輸入暱稱")]
         [StringLength(maximumLength: 50,
@@ -34,7 +36,12 @@ namespace HaveFun.DTOs
 
         [Required]
         public string? Introduction { get; set; }
-       
+        //密碼
+        [Required]
+        [StringLength(maximumLength: 255, MinimumLength = 10)]
+        [Column("Password", TypeName = "nvarchar(255)")]
+        public string Password { get; set; }
+
 
     }
 }
