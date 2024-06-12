@@ -61,8 +61,8 @@ namespace HaveFun.Controllers.APIs
 
             return userInfo;
         }
-        //GET: api/UserInfo/GetPicture
-        [HttpGet("GetPicture/{id}")]
+        //GET: api/UserInfo/GetPicture/2
+        [HttpGet("{id}")]
         public async Task<FileResult> GetPicture(int id)
         {
             UserInfo? user = await _context.UserInfos.FindAsync(id);
