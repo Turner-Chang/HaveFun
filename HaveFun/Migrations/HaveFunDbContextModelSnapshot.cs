@@ -594,9 +594,9 @@ namespace HaveFun.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("Password");
 
-                    b.Property<string>("PasswordSalt")
+                    b.Property<byte[]>("PasswordSalt")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(20)
@@ -736,7 +736,7 @@ namespace HaveFun.Migrations
             modelBuilder.Entity("HaveFun.Models.Comment", b =>
                 {
                     b.HasOne("HaveFun.Models.Comment", "ParentComment")
-                        .WithMany()
+                        .WithMany("Replies")
                         .HasForeignKey("ParentCommentId");
 
                     b.HasOne("HaveFun.Models.Post", "Post")
@@ -902,6 +902,11 @@ namespace HaveFun.Migrations
                     b.Navigation("ActivityParticipants");
 
                     b.Navigation("ActivityReviews");
+                });
+
+            modelBuilder.Entity("HaveFun.Models.Comment", b =>
+                {
+                    b.Navigation("Replies");
                 });
 
             modelBuilder.Entity("HaveFun.Models.Label", b =>
