@@ -118,6 +118,9 @@ namespace HaveFun.Models
 				.WithMany(u => u.PostReviews)
 				.HasForeignKey(m => m.UserId)
 				.OnDelete(DeleteBehavior.Restrict);
-		}
+            modelBuilder.Entity<UserInfo>()
+				.Property(u => u.PasswordSalt)
+				.HasColumnType("varbinary(max)");
+        }
 	}
 }

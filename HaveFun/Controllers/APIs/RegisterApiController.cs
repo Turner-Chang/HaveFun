@@ -69,11 +69,9 @@ namespace HaveFun.Controllers.APIs
 
             // 密碼加密
             byte[] salt = _passwordSecure.CreateSalt();
-            string strSalt = Convert.ToBase64String(salt);
             string password = userRegisterDTO.Password;
             string hashPassword = _passwordSecure.HashPassword(password, salt);
-            Console.WriteLine(strSalt);
-            Console.WriteLine(hashPassword);
+
 
             //圖片處理
 
@@ -115,7 +113,7 @@ namespace HaveFun.Controllers.APIs
                 userInfo.Gender = (int)userRegisterDTO.Gender;
                 userInfo.BirthDay = (DateTime)userRegisterDTO.BirthDay;
                 userInfo.ProfilePicture = fullPath;
-                userInfo.PasswordSalt = strSalt;
+                userInfo.PasswordSalt = salt;
 
                 _dbContext.UserInfos.Add(userInfo);
                 await _dbContext.SaveChangesAsync();

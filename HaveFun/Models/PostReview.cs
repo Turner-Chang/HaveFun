@@ -31,7 +31,7 @@ namespace HaveFun.Models
 		public DateTime ReportTime {  get; set; }
 
 		[Required]
-		public int ProcessingStstus {  get; set; } = 0;
+		public int ProcessingStstus { get; set; } = 0;
 
 	}
 }
