@@ -1,4 +1,5 @@
-﻿using HaveFun.DTOs;
+﻿using HaveFun.Common;
+using HaveFun.DTOs;
 using HaveFun.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +12,11 @@ namespace HaveFun.Controllers.APIs
 	public class MatchApiController : ControllerBase
 	{
 		private readonly HaveFunDbContext _context;
-		public MatchApiController(HaveFunDbContext context)
+		private readonly MembershipService _membershipService;
+		public MatchApiController(HaveFunDbContext context, MembershipService membershipService)
 		{
 			_context = context;
+			_membershipService = membershipService;
 		}
 
 		[HttpGet("{userId}")]
@@ -58,40 +61,48 @@ namespace HaveFun.Controllers.APIs
 			return usersNotInteractedWith;
 		}
 
+		[HttpGet("GetComplaintCategory")]
+		public IEnumerable<ComplaintCategory> GetComplaintCategories()
+		{
+			return _context.ComplaintCategories.ToList();
+		}
 
 		[HttpPost("Like")]
 		public string Like(MatchRequestDTO request)
 		{
-			FriendList fl = null;
-			var interacted = _context.FriendLists.FirstOrDefault(u => u.Clicked == request.BeenClicked && u.BeenClicked == request.Clicked);
-			if (interacted != null)
-			{
-				if (interacted.state == 0)
+
+				FriendList fl = null;
+				var interacted = _context.FriendLists.FirstOrDefault(u => u.Clicked == request.BeenClicked && u.BeenClicked == request.Clicked);
+				if (interacted != null)
 				{
-					interacted.state = 1;
-					_context.FriendLists.Update(interacted);
-					fl = new FriendList
+					if (interacted.state == 0)
 					{
-						Clicked = request.Clicked,
-						BeenClicked = request.BeenClicked,
-						state = 1
-					};
-					_context.FriendLists.Add(fl);
-					_context.SaveChanges();
-					return "配對成功!";
+						interacted.state = 1;
+						_context.FriendLists.Update(interacted);
+						fl = new FriendList
+						{
+							Clicked = request.Clicked,
+							BeenClicked = request.BeenClicked,
+							state = 1
+						};
+						_context.FriendLists.Add(fl);
+						_context.SaveChanges();
+						return "配對成功!";
+					}
 				}
-			}
 
-			fl = new FriendList
-			{
-				Clicked = request.Clicked,
-				BeenClicked = request.BeenClicked,
-				state = 0
-			};
+				fl = new FriendList
+				{
+					Clicked = request.Clicked,
+					BeenClicked = request.BeenClicked,
+					state = 0
+				};
 
-			_context.FriendLists.Add(fl);
-			_context.SaveChanges();
-			return "";
+				_context.FriendLists.Add(fl);
+				_context.SaveChanges();
+				return "";
+
+			
 		}
 
 		[HttpPost("Dislike")]
@@ -106,6 +117,12 @@ namespace HaveFun.Controllers.APIs
 			_context.FriendLists.Add(fl);
 			_context.SaveChanges();
 			return "";
+		}
+
+		[HttpGet("CanUserSwipe/{userId}")]
+		public ActionResult<bool> CanUserSwipe(int userId)
+		{
+			return _membershipService.canUserSwipe(userId);
 		}
 	}
 }

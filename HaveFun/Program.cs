@@ -23,6 +23,8 @@ builder.Services.AddSingleton<PasswordSecure>();
 builder.Services.AddScoped<SendEmail>();
 builder.Services.AddSingleton<Jwt>();
 
+builder.Services.AddScoped<MembershipService>();
+
 // ≥]©wCookie + JWT≈Á√“
 var jwtKey = builder.Configuration.GetSection("Jwt:secret").Get<string>();
 builder.Services.AddAuthentication(options =>
