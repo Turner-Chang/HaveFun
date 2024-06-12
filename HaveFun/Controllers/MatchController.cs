@@ -14,7 +14,7 @@ namespace HaveFun.Controllers
 
 		public IActionResult Index()
 		{
-			ViewBag.UserId = 1;
+			ViewBag.UserId = 2;
 			return View();
 		}
 	}
