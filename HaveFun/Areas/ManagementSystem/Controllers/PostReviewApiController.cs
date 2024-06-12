@@ -36,29 +36,30 @@ namespace HaveFun.Areas.ManagementSystem.Controllers
 		public async Task<string> Put(int Id, PostReviewDTO postReviewDTO)
 		{
 			if (Id != postReviewDTO.PostReviewId)
-			{ return "更新失敗"; }
+			{ return "Review狀態更新失敗"; }
 			PostReview postReview1 = await _context.PostReviews.FirstOrDefaultAsync(p => p.PostReviewId == Id);
 			postReview1.ProcessingStstus = postReviewDTO.ProcessingStstus;
 
 			_context.Entry(postReview1).State = EntityState.Modified;
 			try { await _context.SaveChangesAsync(); }
-			catch (Exception e) { return "更新失敗"; }
-			return "更新成功";
+			catch (Exception e) { return "Review狀態更新失敗"; }
+			return "Review狀態更新成功";
 		}
-		//public async Task<string> Delete(int Id)
-		//{
-		//	PostReview review = await _context.PostReviews.FindAsync(Id);
-		//	if (review != null)
-		//	{
-		//		_context.PostReviews.Remove(review);
-		//	}
-		//	try
-		//	{
-		//		await _context.SaveChangesAsync();
-		//	}
-		//	catch (Exception e) { return "刪除失敗"; }
-		//	return "刪除成功";
-		//}
+		[HttpDelete]
+		public async Task<string> Delete(int Id)
+		{
+			PostReview review = await _context.PostReviews.FindAsync(Id);
+			if (review != null)
+			{
+				_context.PostReviews.Remove(review);
+			}
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (Exception e) { return "Review刪除失敗"; }
+			return "Review刪除成功";
+		}
 
 		[HttpPost]
 		public async Task<string> Create(PostReviewDTO reviewDTO)
@@ -67,12 +68,16 @@ namespace HaveFun.Areas.ManagementSystem.Controllers
 			{
 				PostId = reviewDTO.PostId,
 				UserId = reviewDTO.UserId,
-				PostReviewId = reviewDTO.PostReviewId,
-				ProcessingStstus = reviewDTO.ProcessingStstus,
+				ProcessingStstus = 1,
 				ReportItems = reviewDTO.ReportItems,
 				Reason = reviewDTO.Reason,
-				ReportTime = reviewDTO.ReportTime,
+				ReportTime = DateTime.Now,
 			};
+			var record = await _context.PostReviews.FirstOrDefaultAsync(r=>r.PostId==review.PostId && r.ReportItems==review.ReportItems);
+			if(record == null)
+			{
+				return "新增失敗，已被檢舉過";
+			}
 			_context.PostReviews.Add(review);
 			await _context.SaveChangesAsync();
 			return "新增成功";

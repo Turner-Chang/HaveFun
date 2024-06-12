@@ -65,9 +65,29 @@ namespace HaveFun.Controllers.APIs
                 }).ToListAsync();
             return new JsonResult(result);
         }
+        // 取得登入者資料
+        // GET : api/Post/GetLoginUser/5
+        [HttpGet("{id}")]
+        public async Task<IActionResult>GetLoginUser(int id)
+        {
+            var userExist = await _context.UserInfos.AnyAsync(user =>  user.Id == id);
+            if (!userExist)
+            {
+                return new JsonResult(null);
+            }
+            var userInfo = await _context.UserInfos
+                .Where(user => user.Id == id)
+                .Select(user => new
+                {
+                    UserName = user.Name,
+                    UserId = user.Id,
+                    ProfilePicture = user.ProfilePicture
+                }).FirstOrDefaultAsync();
+            return Ok(userInfo);
+        }
         //新增貼文
         //POST: api/Post/CreatePost
-       [HttpPost]
+        [HttpPost]
         public async Task<ActionResult> CreatePost(PostDTO postDTO)
         {
             if (!ModelState.IsValid)
