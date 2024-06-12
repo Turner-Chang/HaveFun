@@ -68,12 +68,16 @@ namespace HaveFun.Areas.ManagementSystem.Controllers
 			{
 				PostId = reviewDTO.PostId,
 				UserId = reviewDTO.UserId,
-				PostReviewId = reviewDTO.PostReviewId,
-				ProcessingStstus = reviewDTO.ProcessingStstus,
+				ProcessingStstus = 1,
 				ReportItems = reviewDTO.ReportItems,
 				Reason = reviewDTO.Reason,
-				ReportTime = reviewDTO.ReportTime,
+				ReportTime = DateTime.Now,
 			};
+			var record = await _context.PostReviews.FirstOrDefaultAsync(r=>r.PostId==review.PostId && r.ReportItems==review.ReportItems);
+			if(record == null)
+			{
+				return "新增失敗，已被檢舉過";
+			}
 			_context.PostReviews.Add(review);
 			await _context.SaveChangesAsync();
 			return "新增成功";
