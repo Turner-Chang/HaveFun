@@ -6,52 +6,53 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HaveFun.Models;
+using HaveFun.DTOs;
 
 namespace HaveFun.Controllers.APIs
 {
-    [Route("api/MemberLabelsApi/[action]")]
+    [Route("api/LabelsApi/[action]")]
     [ApiController]
-    public class MemberLabelsApiController : ControllerBase
+    public class LabelsApiController : ControllerBase
     {
         private readonly HaveFunDbContext _context;
 
-        public MemberLabelsApiController(HaveFunDbContext context)
+        public LabelsApiController(HaveFunDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/MemberLabelsApi
+        // GET: api/LabelsApi//GetLabels
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MemberLabel>>> GetMemberLabels()
+        public async Task<ActionResult<IEnumerable<Label>>> GetLabels()
         {
-            return await _context.MemberLabels.ToListAsync();
-        }
+            return await _context.Labels.ToListAsync();
+        }        
 
-        // GET: api/MemberLabelsApi/5
+        // GET: api/LabelsApi/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<MemberLabel>> GetMemberLabel(int id)
+        public async Task<ActionResult<Label>> GetLabel(int id)
         {
-            var memberLabel = await _context.MemberLabels.FindAsync(id);
+            var label = await _context.Labels.FindAsync(id);
 
-            if (memberLabel == null)
+            if (label == null)
             {
                 return NotFound();
             }
 
-            return memberLabel;
+            return label;
         }
 
         // PUT: api/MemberLabelsApi/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMemberLabel(int id, MemberLabel memberLabel)
+        public async Task<IActionResult> PutLabel(int id, Label label)
         {
-            if (id != memberLabel.Id)
+            if (id != label.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(memberLabel).State = EntityState.Modified;
+            _context.Entry(label).State = EntityState.Modified;
 
             try
             {
@@ -59,7 +60,7 @@ namespace HaveFun.Controllers.APIs
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!MemberLabelExists(id))
+                if (!LabelExists(id))
                 {
                     return NotFound();
                 }
@@ -72,36 +73,36 @@ namespace HaveFun.Controllers.APIs
             return NoContent();
         }
 
-        // POST: api/MemberLabelsApi/PostMemberLabel
+        // POST: api/MemberLabelsApi
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<MemberLabel>> PostMemberLabel(MemberLabel memberLabel)
+        public async Task<ActionResult<Label>> PostLabel(Label label)
         {
-            _context.MemberLabels.Add(memberLabel);
+            _context.Labels.Add(label);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetMemberLabel", new { id = memberLabel.Id }, memberLabel);
-        }   
+            return CreatedAtAction("GetLabel", new { id = label.Id }, label);
+        }
 
         // DELETE: api/MemberLabelsApi/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMemberLabel(int id)
+        public async Task<IActionResult> DeleteLabel(int id)
         {
-            var memberLabel = await _context.MemberLabels.FindAsync(id);
-            if (memberLabel == null)
+            var label = await _context.Labels.FindAsync(id);
+            if (label == null)
             {
                 return NotFound();
             }
 
-            _context.MemberLabels.Remove(memberLabel);
+            _context.Labels.Remove(label);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool MemberLabelExists(int id)
+        private bool LabelExists(int id)
         {
-            return _context.MemberLabels.Any(e => e.Id == id);
+            return _context.Labels.Any(e => e.Id == id);
         }
     }
 }
