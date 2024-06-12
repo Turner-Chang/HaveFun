@@ -398,3 +398,4 @@ FodyWeavers.xsd
 *.sln.iml
 HaveFun/Migrations/20240607064455_Add UserPictures Table.Designer.cs
 HaveFun/Migrations/20240607064455_Add UserPictures Table.cs
+*.cs
