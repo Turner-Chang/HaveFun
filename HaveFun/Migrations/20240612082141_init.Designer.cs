@@ -12,13 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HaveFun.Migrations
 {
     [DbContext(typeof(HaveFunDbContext))]
-<<<<<<<< HEAD:HaveFun/Migrations/20240612080855_init.Designer.cs
-    [Migration("20240612080855_init")]
+    [Migration("20240612082141_init")]
     partial class init
-========
-    [Migration("20240612081433_edit table")]
-    partial class edittable
->>>>>>>> main:HaveFun/Migrations/20240612081433_edit table.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
