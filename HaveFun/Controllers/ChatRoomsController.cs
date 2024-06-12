@@ -11,9 +11,9 @@ namespace HaveFun.Controllers
 {
     
     public class ChatRoomsController : Controller
-    {
+    {    
         private readonly HaveFunDbContext _context;
-
+        //這是類別的建構函式,它接受一個 HaveFunDbContext 類型的參數並將它賦值給 _context 欄位。
         public ChatRoomsController(HaveFunDbContext context)
         {
             _context = context;
@@ -178,6 +178,35 @@ namespace HaveFun.Controllers
                 await _context.SaveChangesAsync();
             }
             return Ok();
+        }
+
+
+        [HttpGet("users")]
+        public async Task<IActionResult> GetUsers()
+        {
+            var users = await _context.UserInfos.ToListAsync();
+            return Ok(users);
+        }
+
+        [HttpGet("messages/{userId}")]
+        public async Task<IActionResult> GetMessages(int userId)
+        {
+            var messages = await _context.ChatRooms
+                .Where(c => c.User1Id == userId || c.User2Id == userId)
+                .ToListAsync();
+            return Ok(messages);
+        }
+
+        [HttpPost("send")]
+        public async Task<IActionResult> SendMessage([FromBody] ChatRoom chatRoom)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.ChatRooms.Add(chatRoom);
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+            return BadRequest(ModelState);
         }
 
         private bool ChatRoomExists(int id)
