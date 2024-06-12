@@ -377,19 +377,17 @@
 					let endX = event.changedTouches ? event.changedTouches[0].clientX : event.clientX;
 					let dx = endX - this.startX;
 
-					if (!this.canSwipe) 
-					{
-						Swal.fire({
-							icon: "error",
-							title: "抱歉",
-							text: "已達到右滑上限!",
-							footer: '<a href="#">是否升級會員等級?</a>'
-						});
-						this.currentCard.style.transform = '';
-						return;
-					}
-
 					if (dx > 100) {
+						if (!this.canSwipe) {
+							Swal.fire({
+								icon: "error",
+								title: "抱歉",
+								text: "已達到上限!",
+								footer: '<a href="#">是否升級會員等級?</a>'
+							});
+							this.currentCard.style.transform = '';
+							return;
+						}
 						this.currentCard.style.transform = `translate(100vw, 0)`;
 						setTimeout(() => {
 							//console.log(this.currentCard.id);
@@ -398,7 +396,7 @@
 							this.currentCard = null;
 							
 						}, 500);
-						await this.swipeHistoryRequest();
+						await this.swipeHistoryRequest(@ViewBag.UserId);
 						await this.canUserSwipeRequest();
 					} else if (dx < -100) {
 						this.currentCard.style.transform = `translate(-100vw, 0)`;
@@ -496,9 +494,9 @@
 					const data = await response.json();
 					this.canSwipe = data;
 				},
-				async swipeHistoryRequest() 
-				{
-					await axios.post(`${this.baseAddress}/api/MatchApi/PostSwipeHistory/@ViewBag.UserId`)
+				async swipeHistoryRequest(userId) 
+				{					
+					await axios.post(`${this.baseAddress}/api/MatchApi/PostSwipeHistory/${userId}`)
 						.then(response => {
 						})
 						.catch(err => {
