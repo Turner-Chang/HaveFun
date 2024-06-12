@@ -22,7 +22,7 @@ namespace HaveFun.Common
 			{
 				var today = DateTime.UtcNow.Date;
 				var swipesTodayCount = _context.SwipeHistories.Count(sh => sh.UserId == userId && sh.SwipeDate >= today);
-				return swipesTodayCount < dailySwipeLimit ;
+				return swipesTodayCount < dailySwipeLimit;
 			}
 		}
 	}
