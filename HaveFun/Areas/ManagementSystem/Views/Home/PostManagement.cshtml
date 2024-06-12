@@ -1,7 +1,13 @@
 ﻿<div id="PostCheckApp">
 	
 	<div class="container row  p-5 pt-5 text-center border-2">
-		
+		<div class="col-12">
+			<span class="col-2 ">處理狀態示意: </span>
+			<button class="text-bg-success col-2 m-2">無須刪除-0</button>
+			<button class="text-bg-warning col-2 m-2">申訴中-1</button>
+			<button class="text-bg-secondary col-2 m-2">已刪除-2</button>
+		</div>
+		<hr />
 		<div class="table-responsive-md">
 			<table class="table table-secondary">
 				<thead class="table-active">
@@ -10,7 +16,7 @@
 						<th scope="col">被檢舉貼文ID</th>
 						<th scope="col">被檢舉人ID</th>
 						<th scope="col">被檢舉理由</th>
-						<th scope="col">被檢舉時間</th>
+						<th scope="col-md-0" >被檢舉時間</th>
 						<th scope="col">處理</th>
 						<th scope="col">貼文狀態</th>
 						
@@ -24,9 +30,9 @@
 						<td >{{r.postId}}</td>
 						<td>{{r.userId}}</td>
 						<td>{{r.reason}}</td>
-						<td>{{r.reportTime}}</td>
+						<td class="col-md-0">{{r.reportTime}}</td>
 						<td>
-							<button :id="r.postReviewId" class="btn btn-warning"
+							<button :id="r.postReviewId" class="btn " :class="btnColor(r.processingStstus)"
 									@@click="check(r.postId,r.postReviewId)">
 								處理
 							</button>
@@ -50,7 +56,7 @@
 		<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
 			 role="document">
 			<div class="modal-content">
-				<div class="modal-header">
+				<div class="modal-header bg-info">
 					<h5 class="modal-title" id="modalTitleId">
 						檢舉貼文
 					</h5>
@@ -60,22 +66,47 @@
 							aria-label="Close">
 					</button>
 				</div>
-				<div class="modal-body">
-					<div>被檢舉貼文Id:{{Post.id}} </div>
-					<div>被檢舉貼文內容:{{Post.contents}}</div>
+				<div class="modal-body row lh-lg">
+					<div><label class="col-6 text-decoration-underline">
+						被檢舉貼文Id:  
+					</label>
+					<label class="col-6 text-start">
+						{{Post.id}}  
+					</label>
+					</div>
 					<div>
-						被檢舉圖片:<img :src="imgSrc(Post.pictures)" style="width:200px;height:150px; "/>
+						<label class="col-6 text-decoration-underline">
+							被檢舉貼文內容:
+						</label>
+						<label class="col-12 text-center lh-base">
+							{{Post.contents}}
+						</label>
+					</div>
+					<div>
+						<label class="col-6 text-decoration-underline">
+							被檢舉圖片:
+						</label>
+							<img class="col-12 img-fluid" :src="imgSrc(Post.pictures)"/>
+
 						</div>
-					<div>檢舉狀態:{{Post.status}}</div>
+					<div>
+						<label class="col-6 text-decoration-underline">
+							檢舉狀態:
+						</label>
+						<label class="col-6 text-start">
+							{{Post.status}}
+						</label>
+
+					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button"
-							@@click="PostStateChange(PostId,0); "
-							class="btn btn-secondary"
+							@@click="PostStateChange(PostId,0) "
+							class="btn btn-secondary "
 							data-bs-dismiss="modal">
 						駁回檢舉
 					</button>
-					<button type="button" @@click="PostStateChange(PostId,2); " class="btn btn-primary">刪除貼文</button>
+					<button type="button" @@click="PostStateChange(PostId,2) " class="btn btn-danger">刪除貼文</button>
 				</div>
 			</div>
 		</div>
@@ -128,7 +159,9 @@
 				},
 				showModal() {
 					$("#PostModal").modal("show");
-				}, hideModal() { 
+				}
+				,
+				hideModal() { 
 					this.Post = {};
 					$("#PostModal").modal("hide");
 
@@ -136,14 +169,14 @@
 				,
 				GetPost(PostId) {
 					baseAdress = "https://localhost:7152/";
-					var ResStr = {} ;
+					
 					var data = fetch(`${baseAdress}api/Post/GetById/${PostId}`, { method: "GET" })
 						.then(response => response.json())
 						.then(data =>
 							JSON.stringify(data)	)
 						.then(d => {
 							App.Post = JSON.parse( d);
-							//alert(d);
+							console.log(App.Post);
 						}
 						)
 						.catch(error => {
@@ -151,7 +184,7 @@
 							alert("錯誤");
 						});
 
-				//	alert(this.Post)
+					
 
 				},
 				PostReviewStateChange(postReviewId,state) {
@@ -173,9 +206,10 @@
 						}
 					).then(res=>res.text())
 					.then(data=>console.log(data))
+					.then(d=> App.GetAll())
 					.catch(err=>alert("err"));
 					this.hideModal();
-					this.GetAll();
+					
 
 				},
 				PostStateChange(PostId, state) {
@@ -195,7 +229,13 @@
 						.catch(err => alert("err"));
 					this.PostReviewStateChange(this.PostReviewId, state);
 					
-				}
+				},
+				btnColor(id) {
+					if (id == 0) { return "btn-success"; }
+					if (id == 1) { return "btn-warning"; }
+					if (id == 2) { return "btn-secondary"; }
+
+				},
 			},
 			mounted: async () => {
 

@@ -28,7 +28,7 @@ namespace HaveFun.Areas.ManagementSystem.Controllers
 		[HttpPut]
 		public async Task<string> PutState(int id,ChangePostStateDTO changePostStateDTO ) {
 			Post post1= await _context.Posts.FindAsync(id);
-			if (post1 == null) { return "修改失敗"; }
+			if (post1 == null) { return "貼文狀態修改失敗"; }
 			if(changePostStateDTO.Id == post1.Id)
 			{
 			post1.Status =changePostStateDTO.Status;
@@ -38,10 +38,10 @@ namespace HaveFun.Areas.ManagementSystem.Controllers
 				_context.SaveChanges();
 			}
 			catch(Exception ex) {
-				return "修改失敗";
+				return "貼文狀態修改失敗";
 			}
 			
-			return "修改成功";
+			return "貼文狀態修改成功";
 		}
 	}
 }

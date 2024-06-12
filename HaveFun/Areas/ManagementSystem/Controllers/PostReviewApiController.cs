@@ -36,14 +36,14 @@ namespace HaveFun.Areas.ManagementSystem.Controllers
 		public async Task<string> Put(int Id, PostReviewDTO postReviewDTO)
 		{
 			if (Id != postReviewDTO.PostReviewId)
-			{ return "更新失敗"; }
+			{ return "Review狀態更新失敗"; }
 			PostReview postReview1 = await _context.PostReviews.FirstOrDefaultAsync(p => p.PostReviewId == Id);
 			postReview1.ProcessingStstus = postReviewDTO.ProcessingStstus;
 
 			_context.Entry(postReview1).State = EntityState.Modified;
 			try { await _context.SaveChangesAsync(); }
-			catch (Exception e) { return "更新失敗"; }
-			return "更新成功";
+			catch (Exception e) { return "Review狀態更新失敗"; }
+			return "Review狀態更新成功";
 		}
 		[HttpDelete]
 		public async Task<string> Delete(int Id)
@@ -57,8 +57,8 @@ namespace HaveFun.Areas.ManagementSystem.Controllers
 			{
 				await _context.SaveChangesAsync();
 			}
-			catch (Exception e) { return "刪除失敗"; }
-			return "刪除成功";
+			catch (Exception e) { return "Review刪除失敗"; }
+			return "Review刪除成功";
 		}
 
 		[HttpPost]
