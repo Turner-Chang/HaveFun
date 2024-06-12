@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HaveFun.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class test : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -75,16 +75,16 @@ namespace HaveFun.Migrations
                     Account = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Password = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    PhoneNumber = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    PhoneNumber = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: true),
                     Gender = table.Column<int>(type: "int", nullable: false),
                     BirthDay = table.Column<DateTime>(type: "Date", nullable: false),
-                    ProfilePicture = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProfilePicture = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
                     AccountStatus = table.Column<int>(type: "int", nullable: false),
-                    RegistrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastLoginTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Introduction = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    RegistrationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastLoginTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Introduction = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Level = table.Column<int>(type: "int", nullable: false),
                     PasswordSalt = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -229,6 +229,26 @@ namespace HaveFun.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SwipeHistories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    SwipeDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SwipeHistories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SwipeHistories_UserInfos_UserId",
+                        column: x => x.UserId,
+                        principalTable: "UserInfos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Transactions",
                 columns: table => new
                 {
@@ -247,6 +267,26 @@ namespace HaveFun.Migrations
                     table.PrimaryKey("PK_Transactions", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Transactions_UserInfos_UserId",
+                        column: x => x.UserId,
+                        principalTable: "UserInfos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserPictures",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    Picture = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserPictures", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserPictures_UserInfos_UserId",
                         column: x => x.UserId,
                         principalTable: "UserInfos",
                         principalColumn: "Id",
@@ -578,8 +618,18 @@ namespace HaveFun.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SwipeHistories_UserId",
+                table: "SwipeHistories",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Transactions_UserId",
                 table: "Transactions",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserPictures_UserId",
+                table: "UserPictures",
                 column: "UserId");
         }
 
@@ -617,7 +667,13 @@ namespace HaveFun.Migrations
                 name: "PostReviews");
 
             migrationBuilder.DropTable(
+                name: "SwipeHistories");
+
+            migrationBuilder.DropTable(
                 name: "Transactions");
+
+            migrationBuilder.DropTable(
+                name: "UserPictures");
 
             migrationBuilder.DropTable(
                 name: "Activities");
