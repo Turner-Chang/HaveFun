@@ -1,104 +1,257 @@
-﻿<div id="PostCheckApp" class="container row  p-5 pt-5 text-center border-2">
-	<div class="table-responsive-md">
-		
-		<table class="table table-secondary">
-			<thead class="table-active">
-				<tr>
-					<th scope="col">被檢舉貼文ID</th>
-					<th scope="col">被檢舉人ID</th>
-					<th scope="col">被檢舉理由</th>
-					<th scope="col">被檢舉時間</th>
-					<th scope="col">處理</th>
+﻿<div id="PostCheckApp">
+	
+	<div class="container row  p-5 pt-5 text-center border-2">
+		<div class="col-12">
+			<span class="col-2 ">處理狀態示意: </span>
+			<button class="text-bg-success col-2 m-2">無須刪除-0</button>
+			<button class="text-bg-warning col-2 m-2">申訴中-1</button>
+			<button class="text-bg-secondary col-2 m-2">已刪除-2</button>
+		</div>
+		<hr />
+		<div class="table-responsive-md">
+			<table class="table table-secondary">
+				<thead class="table-active">
+					<tr>
+						<th scope="col">被檢舉流水ID</th>
+						<th scope="col">被檢舉貼文ID</th>
+						<th scope="col">被檢舉人ID</th>
+						<th scope="col">被檢舉理由</th>
+						<th scope="col" >被檢舉時間</th>
+						<th scope="col">處理</th>
+						<th scope="col">貼文狀態</th>
+						
 
-				</tr>
-			</thead>
-			<tbody>
-				<tr v-for="r in reports" class="">
-					<td scope="row">{{r.postId}}</td>
-					<td>{{r.userId}}</td>
-					<td>{{r.reason}}</td>
-					<td>{{r.reportTime}}</td>
-					<td>
-						<button id="r.postID" class="btn btn-warning"
-								@@click="check(r)">
-							處理
-						</button>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="r in reports" class="">
+						<td >{{r.postReviewId}}</td>
+						<td >{{r.postId}}</td>
+						<td>{{r.userId}}</td>
+						<td>{{r.reason}}</td>
+						<td class="col-md-0">{{r.reportTime}}</td>
+						<td>
+							<button :id="r.postReviewId" class="btn " :class="btnColor(r.processingStstus)"
+									@@click="check(r.postId,r.postReviewId)">
+								處理
+							</button>
+						</td>
+						<td>{{r.processingStstus}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
 
 
-</div>
+	<div class="modal fade"
+		 id="PostModal"
+		 tabindex="-1"
+		 data-bs-backdrop="static"
+		 data-bs-keyboard="false"
+		 role="dialog"
+		 aria-labelledby="modalTitleId"
+		 aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
+			 role="document">
+			<div class="modal-content">
+				<div class="modal-header bg-info">
+					<h5 class="modal-title" id="modalTitleId">
+						檢舉貼文
+					</h5>
+					<button type="button"
+							class="btn-close"
+							data-bs-dismiss="modal"
+							aria-label="Close">
+					</button>
+				</div>
+				<div class="modal-body row lh-lg">
+					<div><label class="col-6 text-decoration-underline">
+						被檢舉貼文Id:  
+					</label>
+					<label class="col-6 text-start">
+						{{Post.id}}  
+					</label>
+					</div>
+					<div>
+						<label class="col-6 text-decoration-underline">
+							被檢舉貼文內容:
+						</label>
+						<label class="col-12 text-center lh-base">
+							{{Post.contents}}
+						</label>
+					</div>
+					<div>
+						<label class="col-6 text-decoration-underline">
+							被檢舉圖片:
+						</label>
+							<img class="col-12 img-fluid" :src="imgSrc(Post.pictures)"/>
 
+						</div>
+					<div>
+						<label class="col-6 text-decoration-underline">
+							檢舉狀態:
+						</label>
+						<label class="col-6 text-start">
+							{{Post.status}}
+						</label>
 
-<div class="modal fade"
-	 id="PostModal"
-	 tabindex="-1"
-	 data-bs-backdrop="static"
-	 data-bs-keyboard="false"
-	 role="dialog"
-	 aria-labelledby="modalTitleId"
-	 aria-hidden="true">
-	<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
-		 role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="modalTitleId">
-					檢舉貼文
-				</h5>
-				<button type="button"
-						class="btn-close"
-						data-bs-dismiss="modal"
-						aria-label="Close">
-				</button>
-			</div>
-			<div class="modal-body">
-				<div>被檢舉者:</div>
-				<div>被檢舉原因:</div>
-				<div>被檢舉貼文:</div>
-				<div>被檢舉圖片:</div>
-				<div>檢舉者:</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button"
-						class="btn btn-secondary"
-						data-bs-dismiss="modal">
-					駁回檢舉
-				</button>
-				<button type="button" class="btn btn-primary">刪除貼文</button>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button"
+							@@click="PostStateChange(PostId,0) "
+							class="btn btn-secondary "
+							data-bs-dismiss="modal">
+						駁回檢舉
+					</button>
+					<button type="button" @@click="PostStateChange(PostId,2) " class="btn btn-danger">刪除貼文</button>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
-
+@* // *@
 @section Scripts {
-	
+
 	<script>
 		var App = Vue.createApp({
 			data() {
 				return {
-					reports: []
+					reports: [],
+					Post: {},
+					PostReviewId:0,
+					PostId:0,
+					
 				}
 			},
 			methods: {
-				check() { $("#PostModal").modal("show"); },
-				
+				GetAll() {
+					baseAdress = "https://localhost:7152/";
+					var data = fetch(`${baseAdress}api/PostReview/GetAll`, { method: "GET" })
+						.then(response => response.json())
+						.then(data =>
+							JSON.stringify(data))
+						.then(d => {
+							App.reports = JSON.parse(d);
+							
+						})
+						.catch(error => {
+							console.error('發生錯誤:', error);
+							alert("錯誤");
+						});
+				}
+				,
+				imgSrc(src) {
+					if(src==null)
+						return "/images/NOimg.jpg"
+					else
+					return `/images/${src}`;
+				}
+				 ,
+				check(postId, postReviewId) {
+					this.showModal();
+					this.GetPost(postId);
+					this.PostReviewId = postReviewId;
+					this.PostId = postId;
+					//alert(postReviewId)
+				},
+				showModal() {
+					$("#PostModal").modal("show");
+				}
+				,
+				hideModal() { 
+					this.Post = {};
+					$("#PostModal").modal("hide");
+
+				}
+				,
+				GetPost(PostId) {
+					baseAdress = "https://localhost:7152/";
+					
+					var data = fetch(`${baseAdress}api/Post/GetById/${PostId}`, { method: "GET" })
+						.then(response => response.json())
+						.then(data =>
+							JSON.stringify(data)	)
+						.then(d => {
+							App.Post = JSON.parse( d);
+							console.log(App.Post);
+						}
+						)
+						.catch(error => {
+							console.error('發生錯誤:', error);
+							alert("錯誤");
+						});
+
+					
+
+				},
+				PostReviewStateChange(postReviewId,state) {
+					var body = {
+						"postReviewId": postReviewId,
+						"userId": 0,
+						"postId": 0,
+						"reportItems": 0,
+						"reason": "string",
+						"reportTime": "2024-06-11T09:48:38.026Z",
+						"processingStstus": state
+					};
+					fetch(
+						`https://localhost:7152/api/PostReview/Put/${postReviewId}`,
+						{
+							method:"PUT",
+							body:JSON.stringify(body),
+							headers: {'Content-Type':'application/json'}
+						}
+					).then(res=>res.text())
+					.then(data=>console.log(data))
+					.then(d=> App.GetAll())
+					.catch(err=>alert("err"));
+					this.hideModal();
+					
+
+				},
+				PostStateChange(PostId, state) {
+					var body = {
+						"id": PostId,
+						"status": state
+					};
+					fetch(
+						`https://localhost:7152/api/Post/PutState?id=${PostId}`,
+						{
+							method: "PUT",
+							body: JSON.stringify(body),
+							headers: { 'Content-Type': 'application/json' }
+						}
+					).then(res => res.text())
+						.then(data => console.log(data))
+						.catch(err => alert("err"));
+					this.PostReviewStateChange(this.PostReviewId, state);
+					
+				},
+				btnColor(id) {
+					if (id == 0) { return "btn-success"; }
+					if (id == 1) { return "btn-warning"; }
+					if (id == 2) { return "btn-secondary"; }
+
+				},
 			},
-			mounted: async() => {
-				
+			mounted: async () => {
+
 				baseAdress = "https://localhost:7152/";
-				
-				const resp = await fetch(
+
+				var resp = await fetch(
 					`${baseAdress}api/PostReview/GetAll`, {
 					method: "GET"
 				});
-				const data = await resp.json();
+				var data = await resp.json();
 				App.reports = data;
-				console.log(App.reports);
-				
-			}
+				//alert(JSON.stringify(data));
+
+			}, computed() { 
+				this.reports;
+			},
 		}).mount("#PostCheckApp");
 
 	</script>
