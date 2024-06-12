@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HaveFun.Migrations
 {
     [DbContext(typeof(HaveFunDbContext))]
-    [Migration("20240612075354_test")]
-    partial class test
+    [Migration("20240612081424_k")]
+    partial class k
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -739,7 +739,7 @@ namespace HaveFun.Migrations
             modelBuilder.Entity("HaveFun.Models.Comment", b =>
                 {
                     b.HasOne("HaveFun.Models.Comment", "ParentComment")
-                        .WithMany()
+                        .WithMany("Replies")
                         .HasForeignKey("ParentCommentId");
 
                     b.HasOne("HaveFun.Models.Post", "Post")
@@ -905,6 +905,11 @@ namespace HaveFun.Migrations
                     b.Navigation("ActivityParticipants");
 
                     b.Navigation("ActivityReviews");
+                });
+
+            modelBuilder.Entity("HaveFun.Models.Comment", b =>
+                {
+                    b.Navigation("Replies");
                 });
 
             modelBuilder.Entity("HaveFun.Models.Label", b =>

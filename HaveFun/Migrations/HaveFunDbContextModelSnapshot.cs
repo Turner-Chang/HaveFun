@@ -736,7 +736,7 @@ namespace HaveFun.Migrations
             modelBuilder.Entity("HaveFun.Models.Comment", b =>
                 {
                     b.HasOne("HaveFun.Models.Comment", "ParentComment")
-                        .WithMany()
+                        .WithMany("Replies")
                         .HasForeignKey("ParentCommentId");
 
                     b.HasOne("HaveFun.Models.Post", "Post")
@@ -902,6 +902,11 @@ namespace HaveFun.Migrations
                     b.Navigation("ActivityParticipants");
 
                     b.Navigation("ActivityReviews");
+                });
+
+            modelBuilder.Entity("HaveFun.Models.Comment", b =>
+                {
+                    b.Navigation("Replies");
                 });
 
             modelBuilder.Entity("HaveFun.Models.Label", b =>

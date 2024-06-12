@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HaveFun.Migrations
 {
     /// <inheritdoc />
-    public partial class test : Migration
+    public partial class k : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
