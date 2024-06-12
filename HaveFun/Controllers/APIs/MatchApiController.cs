@@ -3,6 +3,7 @@ using HaveFun.DTOs;
 using HaveFun.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace HaveFun.Controllers.APIs
@@ -20,7 +21,7 @@ namespace HaveFun.Controllers.APIs
 		}
 
 		[HttpGet("{userId}")]
-		public IEnumerable<MatchUserInfoDTO> GetNotMatchUser(int userId) 
+		public IEnumerable<MatchUserInfoDTO> GetNotMatchUser(int userId)
 		{
 			DateTime today = DateTime.Today;
 
@@ -41,7 +42,7 @@ namespace HaveFun.Controllers.APIs
 					Introduction = u.Introduction,
 					Level = u.Level,
 					Age = today.Year - u.BirthDay.Year,
-					Pictures = u.Pictures.Select(p => new UserPicture{ 
+					Pictures = u.Pictures.Select(p => new UserPicture {
 						Id = p.Id,
 						UserId = p.UserId,
 						Picture = p.Picture,
@@ -56,7 +57,7 @@ namespace HaveFun.Controllers.APIs
 							Name = m1.Label.LabelCategory.Name
 						}
 					}).ToList()
-				}).ToList() ;
+				}).ToList();
 
 			return usersNotInteractedWith;
 		}
@@ -71,38 +72,38 @@ namespace HaveFun.Controllers.APIs
 		public string Like(MatchRequestDTO request)
 		{
 
-				FriendList fl = null;
-				var interacted = _context.FriendLists.FirstOrDefault(u => u.Clicked == request.BeenClicked && u.BeenClicked == request.Clicked);
-				if (interacted != null)
+			FriendList fl = null;
+			var interacted = _context.FriendLists.FirstOrDefault(u => u.Clicked == request.BeenClicked && u.BeenClicked == request.Clicked);
+			if (interacted != null)
+			{
+				if (interacted.state == 0)
 				{
-					if (interacted.state == 0)
+					interacted.state = 1;
+					_context.FriendLists.Update(interacted);
+					fl = new FriendList
 					{
-						interacted.state = 1;
-						_context.FriendLists.Update(interacted);
-						fl = new FriendList
-						{
-							Clicked = request.Clicked,
-							BeenClicked = request.BeenClicked,
-							state = 1
-						};
-						_context.FriendLists.Add(fl);
-						_context.SaveChanges();
-						return "配對成功!";
-					}
+						Clicked = request.Clicked,
+						BeenClicked = request.BeenClicked,
+						state = 1
+					};
+					_context.FriendLists.Add(fl);
+					_context.SaveChanges();
+					return "配對成功!";
 				}
+			}
 
-				fl = new FriendList
-				{
-					Clicked = request.Clicked,
-					BeenClicked = request.BeenClicked,
-					state = 0
-				};
+			fl = new FriendList
+			{
+				Clicked = request.Clicked,
+				BeenClicked = request.BeenClicked,
+				state = 0
+			};
 
-				_context.FriendLists.Add(fl);
-				_context.SaveChanges();
-				return "";
+			_context.FriendLists.Add(fl);
+			_context.SaveChanges();
+			return "";
 
-			
+
 		}
 
 		[HttpPost("Dislike")]
@@ -123,6 +124,24 @@ namespace HaveFun.Controllers.APIs
 		public ActionResult<bool> CanUserSwipe(int userId)
 		{
 			return _membershipService.canUserSwipe(userId);
+		}
+
+		[HttpPost("PostSwipeHistory/{userId}")]
+		public string PostSwipeHistory(int userId)
+		{
+			DateTime dateTime = DateTime.Now;
+			SwipeHistory swipeHistory = new SwipeHistory {UserId = userId, SwipeDate=dateTime };
+			
+			try
+			{
+				_context.SwipeHistories.Add(swipeHistory);
+				_context.SaveChanges();
+			}
+			catch (DbUpdateException ex)
+			{
+				return ex.Message + "新增滑動歷史記錄失敗!";
+			}
+			return "新增成功";
 		}
 	}
 }

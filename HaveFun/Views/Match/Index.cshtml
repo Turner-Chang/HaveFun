@@ -261,6 +261,7 @@
 			</div>
 		</div>
 	</div>
+	<button @@click="canUserSwipeRequest">按鈕</button>
 
 	<!-- Modal -->
 	<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -311,7 +312,7 @@
 					labels:[],
 					complaintCategories:[],
 					selectedComplaintCategory:'',
-					canSwipe: '',
+					canSwipe: true,
 				}
 			},
 			computed: {
@@ -364,7 +365,7 @@
 
 					this.currentCard.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx * 0.05}deg)`;
 				},
-				endDrag(event) {
+				async endDrag(event) {
 					if (!this.currentCard) return;
 
 					this.currentCard.classList.remove('dragging');
@@ -395,7 +396,10 @@
 							this.likeRequest(@ViewBag.UserId, this.currentCard.id);
 							this.notMatchUsers = this.notMatchUsers.filter(u => u.id != this.currentCard.id);
 							this.currentCard = null;
+							
 						}, 500);
+						await this.swipeHistoryRequest();
+						await this.canUserSwipeRequest();
 					} else if (dx < -100) {
 						this.currentCard.style.transform = `translate(-100vw, 0)`;
 						setTimeout(() => {
@@ -406,7 +410,8 @@
 						}, 500);
 					} else {
 						this.currentCard.style.transform = '';
-					}			
+					}
+					
 				},
 				showDetail() {
 					var div = $(".buttons");
@@ -491,13 +496,22 @@
 					const data = await response.json();
 					this.canSwipe = data;
 				},
+				async swipeHistoryRequest() 
+				{
+					await axios.post(`${this.baseAddress}/api/MatchApi/PostSwipeHistory/@ViewBag.UserId`)
+						.then(response => {
+						})
+						.catch(err => {
+							alert(err);
+						});
+				},
 			},
 			watch: {
 			},
 			mounted() {
 				this.getNotMatchUsers();
 				this.getComplaintCategories();
-				//this.canUserSwipeRequest();
+				this.canUserSwipeRequest();
 			},
 		}).mount("#matchApp");
 	</script>
