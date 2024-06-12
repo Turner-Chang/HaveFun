@@ -325,7 +325,7 @@
                 return {
                     //先寫死的部分
                     baseAddress: "https://localhost:7152",
-                    loginUserId: 16,
+                    loginUserId: 2,
                     //先寫死的部分
                     loginUserInfo:[],
                     posts: [],
@@ -466,11 +466,11 @@
                 //檢舉貼文 //目前請求不過
                 ratPost() {
                     let ratpost = {
-                        "PostId": this.watingToRatPost[0],
+                        "PostReviewId": 0,
+                        "PostId": this.watingToRatPost,
                         "UserId": this.loginUserId,
                         "ReportItems": this.ratReason,
                         "Reason": this.ratContent,
-                        "ReportTime": Date.now(),
                         "ProcessingStstus": 0
                     };
                     fetch('/api/Post/RatPostReview', {
