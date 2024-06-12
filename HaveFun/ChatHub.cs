@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
-using HaveFun.Models;  // 確保引用了您的模型命名空間
+using HaveFun.Models;  // 確保引用模型命名空間
 
 public class ChatHub : Hub
 {
-    private readonly HaveFunDbContext _context;  // 假設這是您的DbContext名稱
+    private readonly HaveFunDbContext _context;  // DbContext名稱
 
     public ChatHub(HaveFunDbContext context)
     {
@@ -23,13 +23,14 @@ public class ChatHub : Hub
         {
             User1Id = senderId,
             User2Id = receiverId,
-            MessageText = message
+            MessageText = message,
+            CreateTime = DateTime.UtcNow
         };
 
         _context.ChatRooms.Add(chatRoom);
         await _context.SaveChangesAsync();
 
-        // 只向發送者和接收者傳送消息
+        // Send the message to both the sender and receiver
         await Clients.User(senderId.ToString()).SendAsync("ReceiveMessage", chatRoom);
         await Clients.User(receiverId.ToString()).SendAsync("ReceiveMessage", chatRoom);
     }
