@@ -42,15 +42,15 @@
                             </h4>
                             <div class="form-group">
                                 <label>帳號</label>
-                                <input type="email" class="my-form-control" placeholder="請輸入帳號" v-model="user.account">
+                                <input type="email" class="my-form-control" placeholder="請輸入帳號" v-model="account">
                             </div>
                             <div class="form-group">
                                 <label>密碼</label>
-                                <input type="password" class="my-form-control" placeholder="請輸入密碼" v-model="user.password">
+                                <input type="password" class="my-form-control" placeholder="請輸入密碼" v-model="password">
                             </div>
                             <p class="f-pass"> <a href="#">忘記密碼?</a></p>
                             <div class="text-center">
-                                <button type="submit" class="default-btn" @@click="login"><span>登入</span></button>
+                                <button type="button" class="default-btn" @@click="login"><span>登入</span></button>
                             </div>
                             <div class="or">
                                 <p>或</p>
@@ -73,44 +73,48 @@
         const login = Vue.createApp({
             data() {
                 return {
-                    user: {
-                        account: '',
-                        password: ''
-                    },
+                    account: '',
+                    password: '',
                     errorMessage: [],
                 }
             },
             computed: {
                 checkUser() {
                     this.errorMessage = [];
-                    if (this.user.account == '') {
+                    if (this.account == '') {
                         this.errorMessage.push('帳號不可為空');
                     }
-                    if (this.user.password == '') {
+                    if (this.password == '') {
                         this.errorMessage.push('密碼不可為空')
                     }
                 },
             },
             methods: {
                 login(){
-                    this.checkUser()
+                    this.errorMessage = [];
+                    this.checkUser;
                     fetch('/api/login/login', {
                         method:'Post',
-                        body: user
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            Account: this.account,
+                            Password: this.password
+                        })
                     })
                     .then(resp => resp.json())
                     .then(data => {
                         if(data.status == 400){
-                            this.errorMessage.push(data.errors.Account.toString());
-                            this.errorMessage.push(data.errors.Password.toString());
+                            this.errorMessage.push('帳號或密碼錯誤');                          
                         }
-                        if (data.success == false) {
+                        if (data.success == false || data.success == '') {
                             this.errorMessage.push('帳號或密碼錯誤');
                         } else {
-                            window.location.href = '/Profile/index';
+                            console.log(data);
                         }
                     })
-                    .catch(err)     
+                    .catch()     
                 },
             },
         }).mount('#login');

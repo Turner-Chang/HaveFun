@@ -48,13 +48,11 @@ namespace HaveFun.Controllers.APIs
                     {
                         Expires = DateTime.Now.AddDays(1),
                         HttpOnly = true,
-                        Secure = true
                     });
                     Response.Cookies.Append("userId", Convert.ToString(user.Id), new CookieOptions
                     {
                         Expires = DateTime.Now.AddDays(1),
                         HttpOnly = true,
-                        Secure = true
                     });
                     return new JsonResult(new
                     {
