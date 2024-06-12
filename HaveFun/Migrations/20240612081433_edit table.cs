@@ -6,7 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HaveFun.Migrations
 {
     /// <inheritdoc />
+<<<<<<<< HEAD:HaveFun/Migrations/20240612080855_init.cs
+    public partial class init : Migration
+========
     public partial class edittable : Migration
+>>>>>>>> main:HaveFun/Migrations/20240612081433_edit table.cs
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
