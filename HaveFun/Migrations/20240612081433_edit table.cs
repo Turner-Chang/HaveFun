@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HaveFun.Migrations
 {
     /// <inheritdoc />
-    public partial class test : Migration
+    public partial class edittable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -86,7 +86,7 @@ namespace HaveFun.Migrations
                     LastLoginTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Introduction = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Level = table.Column<int>(type: "int", nullable: false),
-                    PasswordSalt = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    PasswordSalt = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
                 },
                 constraints: table =>
                 {
