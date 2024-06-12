@@ -311,6 +311,7 @@
 					labels:[],
 					complaintCategories:[],
 					selectedComplaintCategory:'',
+					canSwipe: '',
 				}
 			},
 			computed: {
@@ -374,6 +375,18 @@
 
 					let endX = event.changedTouches ? event.changedTouches[0].clientX : event.clientX;
 					let dx = endX - this.startX;
+
+					if (!this.canSwipe) 
+					{
+						Swal.fire({
+							icon: "error",
+							title: "抱歉",
+							text: "已達到右滑上限!",
+							footer: '<a href="#">是否升級會員等級?</a>'
+						});
+						this.currentCard.style.transform = '';
+						return;
+					}
 
 					if (dx > 100) {
 						this.currentCard.style.transform = `translate(100vw, 0)`;
@@ -450,14 +463,13 @@
 					request.beenClicked = beenClickedId;
 					axios.post(`${this.baseAddress}/api/MatchApi/Like`, request)
 						.then(response => { 
-							if (response.data != "") 
-							{
+							if (response.data != "") {
 								Swal.fire({
-									title:'恭喜!',
+									title: '恭喜!',
 									text: '配對成功!',
-									icon:'success',
+									icon: 'success',
 								});
-							}						
+							}
 						})
 						.catch(err => { 
 							alert(err);
@@ -474,12 +486,18 @@
 							alert(err);
 						});
 				},
+				async canUserSwipeRequest() {
+					const response = await fetch(`${this.baseAddress}/api/MatchApi/CanUserSwipe/@ViewBag.UserId`);
+					const data = await response.json();
+					this.canSwipe = data;
+				},
 			},
 			watch: {
 			},
 			mounted() {
 				this.getNotMatchUsers();
 				this.getComplaintCategories();
+				//this.canUserSwipeRequest();
 			},
 		}).mount("#matchApp");
 	</script>
