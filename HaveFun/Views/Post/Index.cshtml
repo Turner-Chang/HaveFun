@@ -472,11 +472,11 @@
                 //檢舉貼文 //目前請求不過
                 ratPost() {
                     let ratpost = {
+
                         "PostId": this.watingToRatPost[0],
                         "UserId": this.loginUserId,
                         "ReportItems": this.ratReason,
                         "Reason": this.ratContent,
-                        "ReportTime": Date.now(),
                         "ProcessingStstus": 0
                     };
                     fetch('/api/PostReview/Create', {

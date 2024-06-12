@@ -82,7 +82,7 @@ namespace HaveFun.Controllers.APIs
                     UserName = user.Name,
                     UserId = user.Id,
                     ProfilePicture = user.ProfilePicture
-                }).FirstOrDefaultAsync();
+                }).ToListAsync();
             return new JsonResult(userInfo);
         }
         //新增貼文
@@ -159,7 +159,7 @@ namespace HaveFun.Controllers.APIs
                     UserId = ratPost.UserId,
                     ReportItems = ratPost.ReportItems,
                     Reason = ratPost.Reason,
-                    ReportTime = ratPost.ReportTime,
+                    ReportTime = DateTime.Now,
                     ProcessingStstus = ratPost.ProcessingStstus
                 };
                 _context.PostReviews.Add(post);
