@@ -20,7 +20,9 @@ namespace HaveFun.Common
 			}
 			else
 			{
-				return false;
+				var today = DateTime.UtcNow.Date;
+				var swipesTodayCount = _context.SwipeHistories.Count(sh => sh.UserId == userId && sh.SwipeDate >= today);
+				return swipesTodayCount < dailySwipeLimit;
 			}
 		}
 	}

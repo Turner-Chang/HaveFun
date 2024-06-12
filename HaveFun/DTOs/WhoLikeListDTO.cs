@@ -1,6 +1,6 @@
 ﻿namespace HaveFun.DTOs
 {
-    public class GetWhoLikeListDTO
+    public class WhoLikeListDTO
     {
         public string Name { get; set; }
         public int Age { get; set; }

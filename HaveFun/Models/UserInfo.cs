@@ -60,7 +60,7 @@ namespace HaveFun.Models
         public int Level { get; set; } = 0;
 
         [Required]
-        public string PasswordSalt { get; set; }
+        public byte[] PasswordSalt { get; set; }
 
         public virtual ICollection<UserPicture> Pictures { get; set; }
         

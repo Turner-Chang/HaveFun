@@ -138,7 +138,7 @@ namespace HaveFun.Controllers.APIs
 
             return NoContent();
         }
-
+       
         private bool ChatRoomExists(int id)
         {
             return _context.ChatRooms.Any(e => e.Id == id);

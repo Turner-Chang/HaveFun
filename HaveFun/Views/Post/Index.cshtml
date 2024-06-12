@@ -121,11 +121,11 @@
                             <div class="lab-thumb">
                                 <div class="thumb-inner">
                                     <div class="thumb-img">
-                                        <img src="assets/images/member/profile/profile.jpg"
+                                        <img :src="`${baseAddress}/${loginUserInfo.profilePicture}`"
                                                 alt="datting thumb">
                                     </div>
                                     <div class="thumb-content">
-                                        <h6><a href="#">userName</a></h6>
+                                        <h6><a href="#">{{loginUserInfo.userName}}</a></h6>
                                     </div>
                                 </div>
                             </div>
@@ -180,7 +180,7 @@
                             <div class="post-author">
                                 <div class="post-author-inner">
                                     <div class="author-thumb">
-                                      <img :src="`${baseAddress}/images/${post.profilePicture}`" alt="datting thumb">
+                                      <img :src="`${baseAddress}/${post.profilePicture}`" alt="datting thumb">
                                     </div>
                                     <div class="author-details">
                                         <h6><a href="#">{{post.userName}}</a></h6>
@@ -205,7 +205,7 @@
                             <!-- 貼文內容 -->
                             <div class="post-description">
                                 <p>{{post.contents}}</p>
-                                <img v-if="post.picture != null" :src="`${baseAddress}/images/postimgs/${post.picture}`" alt="Post Image" />
+                                <img v-if="post.picture != null" :src="`${baseAddress}/${post.picture}`" alt="Post Image" />
                              </div>
                              <!-- 貼文時間 回覆數 分享鍵 -->
                              <div class="post-footer">
@@ -228,7 +228,7 @@
                                             <div class="top">
                                                 <div class="left member--style2">
                                                     <div class="member__thumb">
-                                                      <img :src="`${baseAddress}/images/${com.profilePicture}`" alt="member-img">
+                                                      <img :src="`${baseAddress}/${com.profilePicture}`" alt="member-img">
                                                     </div>
                                                 </div>
                                                 <div class="right">
@@ -323,21 +323,48 @@
         const postPlatform = Vue.createApp({
             data() {
                 return {
+                    //先寫死的部分
                     baseAddress: "https://localhost:7152",
+                    loginUserId: 16,
+                    //先寫死的部分
+                    loginUserInfo:[],
                     posts: [],
                     ratItems:[],
-                    watingToRatPost:[],
+                    watingToRatPost: 0,
                     wannaDeletePost: 0,
                     ratContent:"",
                     ratReason:"",
                 }
             },
             methods: {
+                //請求登入者資料
+                getLoginUser(loginUserId) {
+                    fetch(`api/Post/GetLoginUser/${this.loginUserId}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            this.loginUserInfo = {
+                                ...data,
+                                profilePicture: data.profilePicture ? this.cutPicPath         (data.profilePicture) : null
+                            };
+                        })
+                        .catch(error => { console.log('fetch loginUserInfo failed!') });
+                },
                 //請求所有貼文資訊
                 getPostsList() {
                     fetch(`/api/Post/GetPostsRel`)
                         .then(res => res.json())
-                        .then(data => { this.posts = data.map(post => ({ ...post, expandState: false })); })
+                        .then(data => { 
+                            this.posts = data.map(post => ({ 
+                                ...post,
+                                expandState: false,
+                                profilePicture: post.profilePicture ? this.cutPicPath                  (post.profilePicture) : null,
+                                picture: post.picture ? this.cutPicPath(post.picture) : null,
+                                comment: post.comment ? post.comment.map(comment => ({
+                                    ...comment,
+                                    profilePicture: comment.profilePicture ? this.cutPicPath               (comment.profilePicture) : null
+                                })) : []
+                            })); 
+                        })
                         .catch(error => {console.log('fetch posts failed!')});
                 },
                 //請求檢舉項目
@@ -347,13 +374,12 @@
                         .then(data => { this.ratItems = data })
                         .catch(error => { console.log('fetch ratItems failed!') });
                 },
-                //按讚請求 目前失敗QQ userId目前寫死
+                //按讚請求 目前失敗QQ
                 clickLike(post) {
                     event.preventDefault();
-                    const userId = 21;
                     let like = {
                         "PostId": post.postId,
-                        "UserId": userId
+                        "UserId": this.loginUserId
                     };
                     fetch(`/api/Post/AddLike`, {
                         method: 'POST',
@@ -415,17 +441,16 @@
                 },
                 //顯示檢舉貼文視窗 舉報者先寫死
                 showRat(post) {
-                    const reporter = 21;
                     event.preventDefault();
                     console.log(post);
                     $('.ratBox').css("display", "block");
-                    this.watingToRatPost.push(post.postId, reporter);
+                    this.watingToRatPost = post.postId;
                 },
                 //取消檢舉貼文視窗
                 displayRatBox(event) {
                     event.preventDefault();
                     $('.ratBox').css("display", "none");
-                    this.watingToRatPost = [];
+                    this.watingToRatPost = 0;
                     this.ratContent = '';
                     this.ratReason = '';
                 },
@@ -433,7 +458,7 @@
                     // if (event.key === "Escape") {
                     // event.preventDefault();
                     $('.ratBox').css("display", "none");
-                    this.watingToRatPost = [];
+                    this.watingToRatPost = 0;
                     this.ratContent = '';
                     this.ratReason = '';
                     // }
@@ -442,7 +467,7 @@
                 ratPost() {
                     let ratpost = {
                         "PostId": this.watingToRatPost[0],
-                        "UserId": this.watingToRatPost[1],
+                        "UserId": this.loginUserId,
                         "ReportItems": this.ratReason,
                         "Reason": this.ratContent,
                         "ReportTime": Date.now(),
@@ -466,8 +491,14 @@
                     this.watingToRatPost = [];
                     $('.ratBox').css("display", "none");
                 },
+                //將圖片路徑處理
+                cutPicPath(PicturePath){
+                    const fileName = PicturePath.slice(19);
+                    return fileName;
+                },
             },
             mounted() {
+                this.getLoginUser();
                 this.getPostsList();
                 this.getRatItemsList();
             },

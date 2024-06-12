@@ -261,6 +261,7 @@
 			</div>
 		</div>
 	</div>
+	<button @@click="canUserSwipeRequest">按鈕</button>
 
 	<!-- Modal -->
 	<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -311,6 +312,7 @@
 					labels:[],
 					complaintCategories:[],
 					selectedComplaintCategory:'',
+					canSwipe: true,
 				}
 			},
 			computed: {
@@ -363,7 +365,7 @@
 
 					this.currentCard.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx * 0.05}deg)`;
 				},
-				endDrag(event) {
+				async endDrag(event) {
 					if (!this.currentCard) return;
 
 					this.currentCard.classList.remove('dragging');
@@ -376,13 +378,26 @@
 					let dx = endX - this.startX;
 
 					if (dx > 100) {
+						if (!this.canSwipe) {
+							Swal.fire({
+								icon: "error",
+								title: "抱歉",
+								text: "已達到上限!",
+								footer: '<a href="#">是否升級會員等級?</a>'
+							});
+							this.currentCard.style.transform = '';
+							return;
+						}
 						this.currentCard.style.transform = `translate(100vw, 0)`;
 						setTimeout(() => {
 							//console.log(this.currentCard.id);
 							this.likeRequest(@ViewBag.UserId, this.currentCard.id);
 							this.notMatchUsers = this.notMatchUsers.filter(u => u.id != this.currentCard.id);
 							this.currentCard = null;
+							
 						}, 500);
+						await this.swipeHistoryRequest(@ViewBag.UserId);
+						await this.canUserSwipeRequest();
 					} else if (dx < -100) {
 						this.currentCard.style.transform = `translate(-100vw, 0)`;
 						setTimeout(() => {
@@ -393,7 +408,8 @@
 						}, 500);
 					} else {
 						this.currentCard.style.transform = '';
-					}			
+					}
+					
 				},
 				showDetail() {
 					var div = $(".buttons");
@@ -450,14 +466,13 @@
 					request.beenClicked = beenClickedId;
 					axios.post(`${this.baseAddress}/api/MatchApi/Like`, request)
 						.then(response => { 
-							if (response.data != "") 
-							{
+							if (response.data != "") {
 								Swal.fire({
-									title:'恭喜!',
+									title: '恭喜!',
 									text: '配對成功!',
-									icon:'success',
+									icon: 'success',
 								});
-							}						
+							}
 						})
 						.catch(err => { 
 							alert(err);
@@ -474,12 +489,27 @@
 							alert(err);
 						});
 				},
+				async canUserSwipeRequest() {
+					const response = await fetch(`${this.baseAddress}/api/MatchApi/CanUserSwipe/@ViewBag.UserId`);
+					const data = await response.json();
+					this.canSwipe = data;
+				},
+				async swipeHistoryRequest(userId) 
+				{					
+					await axios.post(`${this.baseAddress}/api/MatchApi/PostSwipeHistory/${userId}`)
+						.then(response => {
+						})
+						.catch(err => {
+							alert(err);
+						});
+				},
 			},
 			watch: {
 			},
 			mounted() {
 				this.getNotMatchUsers();
 				this.getComplaintCategories();
+				this.canUserSwipeRequest();
 			},
 		}).mount("#matchApp");
 	</script>
