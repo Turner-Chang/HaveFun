@@ -83,25 +83,30 @@
                     this.errorMessage = [];
                     if (this.account == '') {
                         this.errorMessage.push('帳號不可為空');
-                    }
-                    if (this.password == '') {
-                        this.errorMessage.push('密碼不可為空')
+                        if (this.password == '') {
+                            this.errorMessage.push('密碼不可為空')
+                        }
+                        return
                     }
                 },
             },
             methods: {
+                generateUserDTO() {
+                    return {
+                        Account: this.account,
+                        Password: this.password
+                    };
+                },
                 login(){
                     this.errorMessage = [];
                     this.checkUser;
+                    let userDTO = this.generateUserDTO();
                     fetch('/api/login/login', {
-                        method:'Post',
+                        method:'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({
-                            Account: this.account,
-                            Password: this.password
-                        })
+                        body: JSON.stringify(userDTO),
                     })
                     .then(resp => resp.json())
                     .then(data => {

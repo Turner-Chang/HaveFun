@@ -40,7 +40,7 @@ namespace HaveFun.Controllers.APIs
             else
             {
                 string salt = user.PasswordSalt;
-                string password = _passwordSecure.HashPassword(userDTO.Password, Encoding.UTF8.GetBytes(salt));
+                string password = _passwordSecure.HashPassword(userDTO.Password, Convert.FromBase64String(salt));
                 if (password == user.Password)
                 {
                     string jwtToken = _jwt.GenerateJWTToken(user);
@@ -48,22 +48,28 @@ namespace HaveFun.Controllers.APIs
                     {
                         Expires = DateTime.Now.AddDays(1),
                         HttpOnly = true,
+                        IsEssential = true
                     });
                     Response.Cookies.Append("userId", Convert.ToString(user.Id), new CookieOptions
                     {
                         Expires = DateTime.Now.AddDays(1),
                         HttpOnly = true,
+                        IsEssential = true
                     });
                     return new JsonResult(new
                     {
                         success = true,
                     });
                 }
-            }
+                else
+                {
+                    return new JsonResult(new
+                    {
+                        success = false,
+                    });
+                }
 
-            return new JsonResult(new {
-                success  = true,
-            });
+            }
         }
     }
 }
