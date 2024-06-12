@@ -396,8 +396,3 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-HaveFun/Migrations/20240607064455_Add UserPictures Table.Designer.cs
-HaveFun/Migrations/20240607064455_Add UserPictures Table.cs
-/HaveFun/Views/Profile/_Post - Back.cshtml
-/HaveFun/Views/Profile/_Post - 貼文回覆.cshtml
-/HaveFun/Views/Profile/_Post - 貼文功能.cshtml
