@@ -132,10 +132,15 @@ namespace HaveFun.Controllers.APIs
 			DateTime dateTime = DateTime.Now;
 			SwipeHistory swipeHistory = new SwipeHistory {UserId = userId, SwipeDate=dateTime };
 			
+			var user = _context.UserInfos.Where(u => u.Id == userId).FirstOrDefault();
+
 			try
 			{
-				_context.SwipeHistories.Add(swipeHistory);
-				_context.SaveChanges();
+				if (user.Level == 0)
+				{
+					_context.SwipeHistories.Add(swipeHistory);
+					_context.SaveChanges();
+				}				
 			}
 			catch (DbUpdateException ex)
 			{
