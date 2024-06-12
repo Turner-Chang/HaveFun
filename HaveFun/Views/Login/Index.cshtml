@@ -38,7 +38,7 @@
                     <div class="main-content inloginp">
                         <form action="#">
                             <h4 class="text-danger" style="background-color:#FF9494;text-align:center">
-                                <p v-for="msg in errorMessage">{{msg}}</p>
+                                <p class="my-0" v-for="msg in errorMessage">{{msg}}</p>
                             </h4>
                             <div class="form-group">
                                 <label>帳號</label>
@@ -74,37 +74,45 @@
             data() {
                 return {
                     user: {
-                        account:'',
-                        password:''
-                    }
+                        account: '',
+                        password: ''
+                    },
                     errorMessage: [],
                 }
             },
-            computed:{
+            computed: {
                 checkUser() {
                     this.errorMessage = [];
-                    if(this.user.account == ''){
+                    if (this.user.account == '') {
                         this.errorMessage.push('帳號不可為空');
                     }
-                    if (this.user.password == ''{
+                    if (this.user.password == '') {
                         this.errorMessage.push('密碼不可為空')
                     }
-                }
-            }
+                },
+            },
             methods: {
                 login(){
-                    fetch(, {
+                    this.checkUser()
+                    fetch('/api/login/login', {
                         method:'Post',
                         body: user
                     })
+                    .then(resp => resp.json())
+                    .then(data => {
+                        if(data.status == 400){
+                            this.errorMessage.push(data.errors.Account.toString());
+                            this.errorMessage.push(data.errors.Password.toString());
+                        }
+                        if (data.success == false) {
+                            this.errorMessage.push('帳號或密碼錯誤');
+                        } else {
+                            window.location.href = '/Profile/index';
+                        }
+                    })
+                    .catch(err)     
                 },
             },
-            watch: {
-
-            },
-            mounted: {
-
-            }
         }).mount('#login');
     </script>
 }
