@@ -28,8 +28,5 @@ namespace HaveFun.Models
 		[Required]
 		public int state { get; set; } = 0; //狀態,0-等待、1-配對、2封鎖
 
-		public List<Friend> Friends { get; set; } //存儲從 FriendService 獲取的好友列表數據
-        public List<Friend> BlackList { get; set; }
-
 	}
 }
