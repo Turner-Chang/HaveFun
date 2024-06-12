@@ -55,6 +55,7 @@ namespace HaveFun.Controllers.APIs
                 {
                     Id = p.Id,
                     UserId = p.UserId,
+                    UserName = p.User.Name,
                     Contents = p.Contents,
                     Time = p.Time,
                     Pictures = p.Pictures,
@@ -64,6 +65,7 @@ namespace HaveFun.Controllers.APIs
                         {
                             Id = c.Id,
                             UserId = c.UserId,
+                            UserName=c.User.Name,
                             PostId = c.PostId,
                             ParentCommentId = c.ParentCommentId,
                             Content = c.Contents,
@@ -72,6 +74,7 @@ namespace HaveFun.Controllers.APIs
                             {
                                 Id = nc.Id,
                                 UserId = nc.UserId,
+                                UserName = nc.User.Name,
                                 PostId = nc.PostId,
                                 ParentCommentId = nc.ParentCommentId,
                                 Content = nc.Contents,
