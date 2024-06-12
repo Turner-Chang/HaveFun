@@ -49,6 +49,8 @@ namespace HaveFun.Models
 
 		public DbSet<SwipeHistory> SwipeHistories { get; set; }
 
+		public DbSet<UserReview> UserReviews { get; set; }
+
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			base.OnModelCreating(modelBuilder);
@@ -121,6 +123,18 @@ namespace HaveFun.Models
             modelBuilder.Entity<UserInfo>()
 				.Property(u => u.PasswordSalt)
 				.HasColumnType("varbinary(max)");
-        }
+
+			modelBuilder.Entity<UserReview>()
+				.HasOne(m => m.User1)
+				.WithMany(u => u.ReportUsers)
+				.HasForeignKey(m => m.reportUserId)
+				.OnDelete(DeleteBehavior.Restrict);
+
+			modelBuilder.Entity<UserReview>()
+				.HasOne(m => m.User2)
+				.WithMany(u => u.BeRepostedUsers)
+				.HasForeignKey(m => m.beReportedUserId)
+				.OnDelete(DeleteBehavior.Restrict);
+		}
 	}
 }
