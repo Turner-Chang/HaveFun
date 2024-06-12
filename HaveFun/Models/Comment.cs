@@ -28,5 +28,6 @@ namespace HaveFun.Models
         public string Contents { get; set; }
         [Required]
         public DateTime Time { get; set; }
+        public virtual ICollection<Comment> Replies { get; set; }
     }
 }
