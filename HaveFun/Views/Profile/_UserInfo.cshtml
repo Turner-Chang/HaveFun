@@ -8,10 +8,9 @@
 				</div>
 				<div class="info-card-content">
 					<ul class="info-list">
-						<li>
+						<li>							
 							<p class="info-name">大頭貼</p>
-							<p class="info-name">大頭貼</p>
-							<img src="https://localhost:7152/api/UserInfo/GetPicture" />
+							<img src="https://localhost:7152/api/UserInfo/GetPicture/2" />
 						</li>
 						<li>
 							<p class="info-name">姓名</p>
@@ -116,7 +115,6 @@
 		</template>
 	</div>
 </div>
-<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
 	const baseAddress = 'https://localhost:7152';
@@ -135,6 +133,7 @@
 				},
 				profilePictureError: '',
 				profilePicture: null,
+				profilePictureUri: ",
 				imagePreview:"", /* 新增圖片預覽URL */
 
 				originalMaterial: {}, //保存一份原始資料
@@ -181,7 +180,7 @@
 					);
 			},
 			fetchData(){									/* 呼叫資料 */
-				axios.get(`${baseAddress}/api/UserInfo/GetUserinfos/8`)
+				axios.get(`${baseAddress}/api/UserInfo/GetUserinfos/2`)
 					.then(response => { this.material = response.data; })
 					.catch(err => { alert(err); });
 			},
@@ -205,7 +204,7 @@
 		},
 		methods: {
 			fetchAvailableLabels() {
-				axios.get(`${baseAddress}api/LabelsApi//GetLabels`)
+				axios.get(`${baseAddress}api/LabelsApi/GetLabels`)
 					.then(response => { this.availableLabels = response.data; })
 					.catch(error => { console.error(error); });
 			},

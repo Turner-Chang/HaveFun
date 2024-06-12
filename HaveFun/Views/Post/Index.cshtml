@@ -132,8 +132,11 @@
                             <div class="lab-content">
                                 <form action="#" class="post-form">
                                     <!-- 發文內容 -->
+                                    <div class="post-description">
                                     <input type="text" id="postContent"
-                                            placeholder="說點什麼......">
+                                            placeholder="說點什麼......" v-model="newPostContent">
+                                    <img v-if="newPostPicURL" :src="newPostPicURL" class="imgPreview" style="width: 60%;" />
+                                    </div>
                                     <div class="content-type">
                                         <ul class="content-list">
 
@@ -141,7 +144,7 @@
                                                 <div class="file-btn">
                                                     <i class="fa-regular fa-image"></i>Photo
                                                 </div>
-                                                <input type="file">
+                                                <input type="file" class="form-control" accept="image/*" v-model="newPostPicture" @@change="previewImage">
                                             </li>
 
                                             <li class="post-submit">
@@ -323,10 +326,10 @@
         const postPlatform = Vue.createApp({
             data() {
                 return {
-                    //先寫死的部分
+                    //------------------------先寫死的部分---------------------
                     baseAddress: "https://localhost:7152",
                     loginUserId: 16,
-                    //先寫死的部分
+                    //------------------------先寫死的部分---------------------
                     loginUserInfo:[],
                     posts: [],
                     ratItems:[],
@@ -334,6 +337,9 @@
                     wannaDeletePost: 0,
                     ratContent:"",
                     ratReason:"",
+                    newPostContent:"",
+                    newPostPicture:null,
+                    newPostPicURL:null,
                 }
             },
             methods: {
@@ -439,7 +445,7 @@
                     })
                     .catch(error => {console.log('fetch delete posts failed!')});
                 },
-                //顯示檢舉貼文視窗 舉報者先寫死
+                //顯示檢舉貼文視窗
                 showRat(post) {
                     event.preventDefault();
                     console.log(post);
@@ -455,25 +461,25 @@
                     this.ratReason = '';
                 },
                 cancleRatbox() {
-                    // if (event.key === "Escape") {
-                    // event.preventDefault();
+                    if (event.key === "Escape") {
+                    event.preventDefault();
                     $('.ratBox').css("display", "none");
                     this.watingToRatPost = 0;
                     this.ratContent = '';
                     this.ratReason = '';
-                    // }
+                    }
                 },
                 //檢舉貼文 //目前請求不過
                 ratPost() {
                     let ratpost = {
+
                         "PostId": this.watingToRatPost[0],
                         "UserId": this.loginUserId,
                         "ReportItems": this.ratReason,
                         "Reason": this.ratContent,
-                        "ReportTime": Date.now(),
                         "ProcessingStstus": 0
                     };
-                    fetch('/api/Post/RatPostReview', {
+                    fetch('/api/PostReview/Create', {
                         method: "POST",
                         headers: {
                           "content-Type":"application/json"
@@ -495,6 +501,9 @@
                 cutPicPath(PicturePath){
                     const fileName = PicturePath.slice(19);
                     return fileName;
+                },
+                previewImage(){
+                    // $('.imgPreview').attr
                 },
             },
             mounted() {
