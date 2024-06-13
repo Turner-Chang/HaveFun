@@ -10,7 +10,7 @@
 					<ul class="info-list">
 						<li>							
 							<p class="info-name">大頭貼</p>
-							<img src="https://localhost:7152/api/UserInfo/GetPicture/2" />
+							<img :src="profilePictureUri" alt="Profile Picture" />
 						</li>
 						<li>
 							<p class="info-name">姓名</p>
@@ -38,7 +38,7 @@
 				</div>
 			</div>
 
-			<div class="info-card mb-4">				
+			<div class="info-card mb-4" v-if="isLoggedIn">
 				<div class="info-card-title">
 					<h6>私人資料</h6>
 				</div>
@@ -101,18 +101,20 @@
 					</div>
 				</div>
 			</div>
-
-		</div>
-
-		<template>
-			<div id="app_MemberLable">
-				<div v-for="label in availableLabels" :key="label.id">
+		</div>		
+		<div id="app_MemberLable">			
+			<div class="info-card mb-4">
+				<div class="info-card-title">
+					<h6>標籤選取</h6>
+				</div>
+				<div class="info-card-content" v-for="label in availableLabels" :key="label.id">
 					<input type="checkbox" :value="label.id" v-model="selectedLabels" />
 					{{ label.name }}
 				</div>
-				<button @@click="submitLabels">提交選擇</button>
 			</div>
-		</template>
+			<button type="button" class="default-btn" @@click="submitLabels">提交選擇</button>
+		</div>
+
 	</div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -129,14 +131,15 @@
 					"introduction": "我愛大家",
 					"phoneNumber": "您的電話號碼",
 					"password": null,
-					"id": 2,					
+					"id": "",					
 				},
 				profilePictureError: '',
 				profilePicture: null,
-				profilePictureUri: "",
+				profilePictureUri: "", /* 圖片URL */
 				imagePreview:"", /* 新增圖片預覽URL */
 
 				originalMaterial: {}, //保存一份原始資料
+				isLoggedIn: false // 新增登录状态
 			}
 		},
 		methods: {
@@ -172,17 +175,29 @@
 				formData.append('BirthDay', this.material.birthDay);
 				formData.append('Introduction', this.material.introduction);
 				formData.append('Password', this.material.password);
-				let blob;
-				if (this.profilePicture) {const blob = new Blob([this.profilePicture], { type: "image/*" });}
+				let blob = null;
+				if (this.profilePicture) {
+					blob = new Blob([this.profilePicture], { type: "image/*" });
+				}
 				formData.append("ProfilePicture", blob);
 				axios.post(`${baseAddress}/api/UserInfo/SaveData`, formData)
-					.then(response => { console.log(response.data); alert("已儲存"); })
+					.then(response => { console.log(response.data); alert("已儲存"); $("#saveModal").modal("hide");
+						// 更新圖片 URL 來保證即時顯示新圖片
+						this.profilePictureUri = `${baseAddress}/api/UserInfo/GetPicture/${this.material.id}?t=${new Date().getTime()}`;
+						this.profilePicture = null; // 重置圖片
+						this.imagePreview = ""; // 清除圖片預覽
+					})
 					.catch(error => { console.error(error); alert("儲存錯誤"); }
-					);
+					);				
 			},
 			fetchData(){									/* 呼叫資料 */
 				axios.get(`${baseAddress}/api/UserInfo/GetUserinfos/2`)
-					.then(response => { this.material = response.data; })
+					.then(response => { this.material = response.data; 
+						// 初始化圖片 URL
+						this.profilePictureUri = `${baseAddress}/api/UserInfo/GetPicture/${this.material.id}?t=${new Date().getTime()}`;
+						// 確認是否為本人的邏輯
+						this.isLoggedIn = this.material.id === this.material.id;
+					})
 					.catch(err => { alert(err); });
 			},
 			cancelChange(){							/* 取消按鈕要顯示原本的內容 */
@@ -207,16 +222,16 @@
 			fetchAvailableLabels() {
 				axios.get(`${baseAddress}/api/LabelsApi/GetLabels`)
 					.then(response => { this.availableLabels = response.data; })
-					.catch(error => { console.error(error); });
+					.catch(error => { console.error('獲取標籤時出錯', error); });
 			},
 			submitLabels(){
 				const memberLabelDto = {
 					UserId: this.userId,
 					LabelIds: this.selectedLabels
 				};
-				axios.post(`${baseAddress}api/MemberLabelsApi/PostMemberLabel`, memberLabelDto)
+				axios.post(`${baseAddress}/api/MemberLabelsApi/PostMemberLabel`, memberLabelDto)
 					.then(response => { console.log("標籤選取成功:", response); })
-					.catch(error => { console.error(error); });
+					.catch(error => { console.error('標籤選取時出錯', error); });
 			},
 		},
 		mounted() {

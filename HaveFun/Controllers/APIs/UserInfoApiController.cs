@@ -34,33 +34,20 @@ namespace HaveFun.Controllers.APIs
             .Where(u => u.Id == id) // 使用 Where 來過濾資料
             .Select(u => new UserIfDTO
             {
-            Name = u.Name,
-            Address = u.Address,
-            PhoneNumber = u.PhoneNumber,
-            Gender = u.Gender,
-            BirthDay = u.BirthDay,
-            Introduction = u.Introduction,
-            Password = u.Password, // 注意: 密碼通常不應該被傳送到客戶端
+                Id = u.Id,
+                Name = u.Name,
+                Address = u.Address,
+                PhoneNumber = u.PhoneNumber,
+                Gender = u.Gender,
+                BirthDay = u.BirthDay,
+                Introduction = u.Introduction,
+                Password = u.Password, // 注意: 密碼通常不應該被傳送到客戶端
             })
             .FirstOrDefaultAsync(); // 使用 FirstOrDefaultAsync 來獲取單個資料
 
             return userInf;
         }
 
-
-        // GET: api/UserInfoApi/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<UserInfo>> GetUserInfo(int id)
-        {
-            var userInfo = await _context.UserInfos.FindAsync(id);
-
-            if (userInfo == null)
-            {
-                return NotFound();
-            }
-
-            return userInfo;
-        }
         //GET: api/UserInfo/GetPicture/2
         [HttpGet("{id}")]
         public async Task<FileResult> GetPicture(int id)
@@ -123,6 +110,10 @@ namespace HaveFun.Controllers.APIs
                 return BadRequest(ModelState);
             }
             UserInfo? user = await _context.UserInfos.FindAsync(userInfoDTO.Id);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
             user.Name = userInfoDTO.Name;
             user.Address = userInfoDTO.Address;
             user.PhoneNumber = userInfoDTO.PhoneNumber;
@@ -134,32 +125,43 @@ namespace HaveFun.Controllers.APIs
             {
                 // 把大頭照丟到wwwtoot的images的headshots資料夾內
                 string imgPath = "../HaveFun/wwwroot/images/headshots";
-
                 // 檔案名為帳號+檔案名
-                string imgName = user.Account + userInfoDTO.ProfilePicture.FileName;
+                string imgName = user.Account+userInfoDTO.ProfilePicture.FileName; // Use unique name
+                string fullPath = Path.Combine(imgPath, imgName);
 
-                _saveImage.Path = imgPath;
-                _saveImage.Name = imgName;
-                _saveImage.Picture = userInfoDTO.ProfilePicture;
-                string fullPath = string.Empty;
-                bool isSave = _saveImage.Save(out fullPath);
-                if (isSave == false)
+                // Save image to disk
+                using (var stream = new FileStream(fullPath, FileMode.Create))
                 {
-                    return new JsonResult(
-                        new
-                        {
-                            success = false,
-                            profilePictureError = "圖片存取失敗"
-                        }
-                    );
+                    await userInfoDTO.ProfilePicture.CopyToAsync(stream);
                 }
-            }
 
-            _context.UserInfos.Add(user);
+                user.ProfilePicture = fullPath; // Save path in the database
+            }
+            _context.UserInfos.Update(user);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "用戶資料以保存成功" });
+            return Ok(new { message = "用戶資料已保存成功" });
         }
+
+        //_saveImage.Path = imgPath;
+        //_saveImage.Name = imgName;
+        //_saveImage.Picture = userInfoDTO.ProfilePicture;
+        //string fullPath = string.Empty;
+        //bool isSave = _saveImage.Save(out fullPath);
+        //if (isSave == false)
+        //{
+        //    return new JsonResult(
+        //        new
+        //        {
+        //            success = false,
+        //            profilePictureError = "圖片存取失敗"
+        //        }
+        //    );
+        //}
+    
+
+            
+    
 
         // DELETE: api/UserInfoApi/5
         [HttpDelete("{id}")]
