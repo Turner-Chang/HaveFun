@@ -122,23 +122,21 @@ namespace HaveFun.Controllers.APIs
             {
                 return BadRequest(ModelState);
             }
-            var userInfo = new UserInfo
-            {
-                Name = userInfoDTO.Name,
-                Address = userInfoDTO.Address,
-                PhoneNumber = userInfoDTO.PhoneNumber,
-                Gender = userInfoDTO.Gender.Value,
-                BirthDay = userInfoDTO.BirthDay.Value,
-                Introduction = userInfoDTO.Introduction,
-                Password = userInfoDTO.Password,
-            };
+            UserInfo? user = await _context.UserInfos.FindAsync(userInfoDTO.Id);
+            user.Name = userInfoDTO.Name;
+            user.Address = userInfoDTO.Address;
+            user.PhoneNumber = userInfoDTO.PhoneNumber;
+            user.Password = userInfoDTO.Password;
+            user.Gender = userInfoDTO.Gender;
+            user.BirthDay = userInfoDTO.BirthDay;
+            user.Introduction = userInfoDTO.Introduction;
             if (userInfoDTO.ProfilePicture != null)
             {
                 // 把大頭照丟到wwwtoot的images的headshots資料夾內
                 string imgPath = "../HaveFun/wwwroot/images/headshots";
 
                 // 檔案名為帳號+檔案名
-                string imgName = userInfo.Account + userInfoDTO.ProfilePicture.FileName;
+                string imgName = user.Account + userInfoDTO.ProfilePicture.FileName;
 
                 _saveImage.Path = imgPath;
                 _saveImage.Name = imgName;
@@ -157,7 +155,7 @@ namespace HaveFun.Controllers.APIs
                 }
             }
 
-            _context.UserInfos.Add(userInfo);
+            _context.UserInfos.Add(user);
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "用戶資料以保存成功" });

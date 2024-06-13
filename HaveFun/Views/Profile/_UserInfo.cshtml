@@ -123,17 +123,17 @@
 			return {
 				material: {
 					"name": "您的姓名",
-					"gender": null,
+					"gender": '',
 					"birthDay": "",
 					"address": "您的居住地",
 					"introduction": "我愛大家",
 					"phoneNumber": "您的電話號碼",
 					"password": null,
-					"id": null,					
+					"id": 2,					
 				},
 				profilePictureError: '',
 				profilePicture: null,
-				profilePictureUri: ",
+				profilePictureUri: "",
 				imagePreview:"", /* 新增圖片預覽URL */
 
 				originalMaterial: {}, //保存一份原始資料
@@ -164,6 +164,7 @@
 			saveData(){										/* 保存按鈕的函式 */
 				// alert("可以保存了")
 				let formData = new FormData();
+				formData.append('Id', this.material.id);
 				formData.append('Name', this.material.name);
 				formData.append('Address', this.material.address);
 				formData.append('PhoneNumber', this.material.phoneNumber);
@@ -204,7 +205,7 @@
 		},
 		methods: {
 			fetchAvailableLabels() {
-				axios.get(`${baseAddress}api/LabelsApi/GetLabels`)
+				axios.get(`${baseAddress}/api/LabelsApi/GetLabels`)
 					.then(response => { this.availableLabels = response.data; })
 					.catch(error => { console.error(error); });
 			},
