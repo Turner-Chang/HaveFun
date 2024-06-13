@@ -152,15 +152,21 @@ namespace HaveFun.Controllers.APIs
 		[HttpPost("ReportUser")]
 		public IActionResult ReportUser([FromBody]MatchUserReviewDTO userReviewDTO)
 		{
-			//if (userReview == null)
-			//{
-			//	return BadRequest("Invalid user review data.");
-			//}
-			
-			//userReview.reportTime = DateTime.Now;
+			if (userReviewDTO == null)
+			{
+				return BadRequest("Invalid user review data.");
+			}
 
-			//_context.UserReviews.Add(userReview);
-			//_context.SaveChanges();
+			userReviewDTO.ReportTime = DateTime.Now;
+
+			UserReview userReview = new UserReview { ReportTime = userReviewDTO.ReportTime, ReportUserId = userReviewDTO.ReportUserId, BeReportedUserId = userReviewDTO.BeReportedUserId, ComplaintCategoryId = userReviewDTO.ComplaintCategoryId};
+
+			_context.UserReviews.Add(userReview);
+
+			FriendList friendList = new FriendList { Clicked = userReview.ReportUserId, BeenClicked = userReview.BeReportedUserId,state=3};
+			_context.FriendLists.Add(friendList);
+
+			_context.SaveChanges();
 
 			return Ok("User reported successfully.");
 		}

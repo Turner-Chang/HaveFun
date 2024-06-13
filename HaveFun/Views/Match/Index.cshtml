@@ -518,7 +518,18 @@
 				setCurrentCard(target) 
 				{
 					this.currentCard = target.closest('.cards');
-				}
+				},
+				reportUser() 
+				{
+					axios.post(`${this.baseAddress}/api/MatchApi/ReportUser`,{
+						reportUserId: @ViewBag.UserId,
+						complaintCategoryId: this.selectedComplaintCategory,
+						beReportedUserId: this.currentCard.id
+					})
+					Swal.fire("檢舉成功!");
+					this.notMatchUsers = this.notMatchUsers.filter(u => u.id != this.currentCard.id);
+					this.currentCard = null;
+				},
 			},
 			watch: {
 			},
