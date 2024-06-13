@@ -4,6 +4,7 @@ using HaveFun.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HaveFun.Migrations
 {
     [DbContext(typeof(HaveFunDbContext))]
-    partial class HaveFunDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240613074146_add_userreview_dbset")]
+    partial class add_userreview_dbset
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -646,25 +649,25 @@ namespace HaveFun.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BeReportedUserId")
+                    b.Property<int>("beReportedUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ComplaintCategoryId")
+                    b.Property<int>("complaintCategoryId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ReportTime")
+                    b.Property<DateTime>("reportTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ReportUserId")
+                    b.Property<int>("reportUserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BeReportedUserId");
+                    b.HasIndex("beReportedUserId");
 
-                    b.HasIndex("ComplaintCategoryId");
+                    b.HasIndex("complaintCategoryId");
 
-                    b.HasIndex("ReportUserId");
+                    b.HasIndex("reportUserId");
 
                     b.ToTable("UserReviews");
                 });
@@ -932,19 +935,19 @@ namespace HaveFun.Migrations
                 {
                     b.HasOne("HaveFun.Models.UserInfo", "User2")
                         .WithMany("BeRepostedUsers")
-                        .HasForeignKey("BeReportedUserId")
+                        .HasForeignKey("beReportedUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("HaveFun.Models.ComplaintCategory", "ComplaintCategory")
                         .WithMany("UserReviews")
-                        .HasForeignKey("ComplaintCategoryId")
+                        .HasForeignKey("complaintCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("HaveFun.Models.UserInfo", "User1")
                         .WithMany("ReportUsers")
-                        .HasForeignKey("ReportUserId")
+                        .HasForeignKey("reportUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

@@ -144,7 +144,7 @@ namespace HaveFun.Controllers.APIs
         //檢舉貼文 //目前未過 未進到Server端
         // POST: api/Post/RatPostReview
         [HttpPost]
-        public async Task<ActionResult> RatPostReview(PostReview ratPost)
+        public async Task<ActionResult> RatPostReview(PostReviewDTO ratPost)
         {
             if (!ModelState.IsValid)
             {
@@ -154,11 +154,12 @@ namespace HaveFun.Controllers.APIs
             {
                 PostReview post = new PostReview
                 {
+                    PostReviewId = 0,
                     PostId = ratPost.PostId,
                     UserId = ratPost.UserId,
                     ReportItems = ratPost.ReportItems,
                     Reason = ratPost.Reason,
-                    ReportTime = ratPost.ReportTime,
+                    ReportTime = DateTime.Now,
                     ProcessingStstus = ratPost.ProcessingStstus
                 };
                 _context.PostReviews.Add(post);

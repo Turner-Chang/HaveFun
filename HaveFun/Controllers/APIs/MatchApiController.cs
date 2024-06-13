@@ -148,5 +148,21 @@ namespace HaveFun.Controllers.APIs
 			}
 			return "新增成功";
 		}
+
+		[HttpPost("ReportUser")]
+		public IActionResult ReportUser([FromBody]MatchUserReviewDTO userReviewDTO)
+		{
+			//if (userReview == null)
+			//{
+			//	return BadRequest("Invalid user review data.");
+			//}
+			
+			//userReview.reportTime = DateTime.Now;
+
+			//_context.UserReviews.Add(userReview);
+			//_context.SaveChanges();
+
+			return Ok("User reported successfully.");
+		}
 	}
 }
