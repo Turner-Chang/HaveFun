@@ -9,10 +9,10 @@ namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
 {
     [Route("api/UserInfo/[action]")]
     [ApiController]
-    public class UserManagementController : ControllerBase
+    public class UserReview_UserInfo_Controller : ControllerBase
     {
         private HaveFunDbContext _context;
-        public UserManagementController(HaveFunDbContext funDbContext)
+        public UserReview_UserInfo_Controller(HaveFunDbContext funDbContext)
         {
             _context = funDbContext;
         }
@@ -48,8 +48,10 @@ namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
 			{
 				return "用戶狀態修改失敗";
 			}
-
+            
 			return "用戶狀態修改成功";
 		}
+
+        
     }
 }

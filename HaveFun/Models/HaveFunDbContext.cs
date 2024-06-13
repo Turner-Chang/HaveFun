@@ -48,6 +48,8 @@ namespace HaveFun.Models
 
         public DbSet<SwipeHistory> SwipeHistories { get; set; }
 
+        public DbSet<UserReview> UserReviews { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
