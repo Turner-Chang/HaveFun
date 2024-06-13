@@ -48,6 +48,8 @@ namespace HaveFun.Models
 
         public DbSet<SwipeHistory> SwipeHistories { get; set; }
 
+        public DbSet<UserReview> UserReviews { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -130,13 +132,13 @@ namespace HaveFun.Models
             modelBuilder.Entity<UserReview>()
                 .HasOne(m => m.User1)
                 .WithMany(u => u.ReportUsers)
-                .HasForeignKey(m => m.reportUserId)
+                .HasForeignKey(m => m.ReportUserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<UserReview>()
                 .HasOne(m => m.User2)
                 .WithMany(u => u.BeRepostedUsers)
-                .HasForeignKey(m => m.beReportedUserId)
+                .HasForeignKey(m => m.BeReportedUserId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

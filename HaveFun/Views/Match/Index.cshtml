@@ -200,7 +200,7 @@
 							<div v-for="(user, index) in filterAge" :id="user.id" class="card cards" :style="{'z-index': index}" @@mousedown="startDrag($event, index)"
 								 @@touchstart="startDrag($event, index)">
 								<div class="button-container">
-									<button class="top-right-button" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="fa-solid fa-circle-exclamation" style="color: #ff3838;"></i></button>
+									<button class="top-right-button" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="fa-solid fa-circle-exclamation" style="color: #ff3838;" @@click="setCurrentCard($event.target)"></i></button>
 								</div>
 								<div :id="`carouselExampleIndicators${index}`" class="carousel slide">
 									<div class="carousel-indicators">	
@@ -280,7 +280,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
-					<button type="button" class="btn btn-primary">確認</button>
+					<button type="button" class="btn btn-primary" @@click="reportUser">確認</button>
 				</div>
 			</div>
 		</div>
@@ -399,6 +399,16 @@
 						await this.swipeHistoryRequest(@ViewBag.UserId);
 						await this.canUserSwipeRequest();
 					} else if (dx < -100) {
+						if (!this.canSwipe) {
+							Swal.fire({
+								icon: "error",
+								title: "抱歉",
+								text: "已達到上限!",
+								footer: '<a href="#">是否升級會員等級?</a>'
+							});
+							this.currentCard.style.transform = '';
+							return;
+						}
 						this.currentCard.style.transform = `translate(-100vw, 0)`;
 						setTimeout(() => {
 							//console.log(this.currentCard.id);
@@ -406,6 +416,8 @@
 							this.notMatchUsers = this.notMatchUsers.filter(u => u.id != this.currentCard.id);
 							this.currentCard = null;
 						}, 500);
+						await this.swipeHistoryRequest(@ViewBag.UserId);
+						await this.canUserSwipeRequest();
 					} else {
 						this.currentCard.style.transform = '';
 					}
@@ -502,6 +514,21 @@
 						.catch(err => {
 							alert(err);
 						});
+				},
+				setCurrentCard(target) 
+				{
+					this.currentCard = target.closest('.cards');
+				},
+				reportUser() 
+				{
+					axios.post(`${this.baseAddress}/api/MatchApi/ReportUser`,{
+						reportUserId: @ViewBag.UserId,
+						complaintCategoryId: this.selectedComplaintCategory,
+						beReportedUserId: this.currentCard.id
+					})
+					Swal.fire("檢舉成功!");
+					this.notMatchUsers = this.notMatchUsers.filter(u => u.id != this.currentCard.id);
+					this.currentCard = null;
 				},
 			},
 			watch: {
