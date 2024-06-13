@@ -404,14 +404,20 @@
                         },
                         body: JSON.stringify(like)
                     })
-                        .then(response => {
-                            console.log(response);
-                            heart.classList.toggle('fa-solid');
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data);
+                            if (data === '取消Like') {
+                                heart.classList.add('fa-regular');
+                                heart.classList.remove('fa-solid');
+                            } else if (data === 'Like成立') {
+                                heart.classList.remove('fa-regular');
+                                heart.classList.add('fa-solid');
+                            }
                             this.getPostsList();
                         })
                         .catch(error => {
-                            console.log(error)
-                            console.log('fetch add like failed!')
+                            console.log('fetch add like failed!', error)
                         });
                 },
                 //按貼文點點按鈕出現刪除貼文&檢舉貼文選項
@@ -459,7 +465,7 @@
                         })
                         .catch(error => { console.log('fetch delete posts failed!') });
                 },
-                //顯示檢舉貼文視窗 舉報者先寫死
+                //顯示檢舉貼文視窗
                 showRat(post) {
                     event.preventDefault();
                     console.log(post);
@@ -483,7 +489,7 @@
                     this.ratReason = '';
                     // }
                 },
-                //檢舉貼文 //目前請求不過
+                //檢舉貼文
                 ratPost() {
                     let ratpost = {
                         "PostReviewId": 0,
@@ -518,7 +524,7 @@
                 },
             },
             mounted() {
-                this.getLoginUser();
+                this.getLoginUser(this.loginUserId);
                 this.getPostsList();
                 this.getRatItemsList();
             },
