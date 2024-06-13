@@ -29,7 +29,8 @@
                                         </div>
                                         <div class="lab-content">
                                             <form class="post-form">
-                                                <input v-model="postContent" type="text" placeholder="Whats on your mind, William?">
+                                                @* <input v-model="postContent" type="text" placeholder="Whats on your mind, William?"> *@
+                                                <textarea v-model="postContent" placeholder="What's on your mind, William?" rows="4"></textarea>
                                                 <div class="content-type">
                                                     <ul class="content-list">
                                                         <li class="text"><a href="#"><i class="fa-solid fa-pen-to-square"></i>Text</a></li>
@@ -99,7 +100,7 @@
                                                         <div class="com-title">
                                                             <div class="com-title-meta">
                                                                 <a href="#">{{reply.UserName}}</a>
-                                                                <span>{{reply.Time}}</span>
+                                                                <span> || {{reply.Time}}</span>
                                                             </div>
                                                             <span class="reply">
                                                                 <a class="comment-reply-link" href="#" @@click.prevent="toggleNestedReplyForm(post.Id, reply.Id)"><i class="icofont-reply-all"></i>Reply</a>
@@ -118,7 +119,7 @@
                                                             <div class="com-title">
                                                                 <div class="com-title-meta">
                                                                     <a href="#">{{ nestedReply.UserName }}</a>
-                                                                    <span>{{nestedReply.Time}} </span>
+                                                                    <span> || {{nestedReply.Time}} </span>
                                                                 </div>
                                                             </div>
                                                             <p>{{ nestedReply.Content}}</p>
@@ -181,7 +182,7 @@
                             UserName:reply.userName,
                             PostId: reply.postId,
                             ParentCommentId: reply.parentCommentId,
-                            Content: reply.content,
+                            Content: reply.contents,
                             Time: reply.time,
                             nestedReplies: (reply.nestedReplies || []).map(nestedReply => ({
                                 Id: nestedReply.id,
@@ -189,7 +190,7 @@
                                 UserName:nestedReply.userName,
                                 PostId: nestedReply.postId,
                                 ParentCommentId: nestedReply.parentCommentId,
-                                Content: nestedReply.content,
+                                Content: nestedReply.contents,
                                 Time: nestedReply.time
                             })),
                             showNestedForm: false,
@@ -213,6 +214,7 @@
                     UserId: this.userId,
                     UserName: this.userName,
                     Contents: this.postContent,
+                    Time:'',
                     Pictures: '',
                     Replies: []
                 };
@@ -245,8 +247,9 @@
                         UserId: this.userId,
                         UserName: this.userName,
                         PostId: PostId,
-                        Content: post.newReply,
-                        ParentCommentId: null, // 父回覆ID
+                        Contents: post.newReply,
+                        Time: '',
+                        ParentCommentId: null, // 貼文回覆ID
                         NestedReplies: []
                     };
 
@@ -257,11 +260,11 @@
                         post.Replies.push({
                             Id: createdReply.id,
                             UserId: createdReply.userId,
+                            UserName: createdReply.userName,
                             PostId: createdReply.postId,
                             ParentCommentId: createdReply.parentCommentId,
                             Content: createdReply.contents,
                             Time: createdReply.time,
-                            UserName: createdReply.userName,
                             showNestedForm: false,
                             nestedReplyContent: '',
                             nestedReplies: []
@@ -282,8 +285,9 @@
                             UserId: this.userId,
                             UserName: this.userName,
                             PostId: PostId,
-                            Content: reply.nestedReplyContent,
-                            ParentCommentId: replyId, // 父貼文ID
+                            Contents: reply.nestedReplyContent,
+                            Time: '',
+                            ParentCommentId: replyId, // 貼文回覆ID
                             NestedReplies:[]
                         };
 
@@ -294,11 +298,11 @@
                             reply.nestedReplies.push({
                                 Id: createdNestedReply.id,
                                 UserId: createdNestedReply.userId,
+                                UserName: createdNestedReply.userName,
                                 PostId: createdNestedReply.postId,
                                 ParentCommentId: createdNestedReply.parentCommentId,
                                 Content: createdNestedReply.contents,
                                 Time: createdNestedReply.time,
-                                UserName: createdNestedReply.userName,
                                 showNestedForm: false,
                                 nestedReplyContent: ''
                             });

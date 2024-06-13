@@ -1,8 +1,6 @@
-﻿.post-meta-bottom {
-    padding-bottom: 0px !important;
-}
-
+﻿
 .comments {
+    margin-top: 0px;
     padding-right: 20px; /* 設定右邊內距 */
     margin-right: 20px; /* 設定右邊外距 */
 }
@@ -37,7 +35,7 @@
     }
 
         .comment-list .comment .com-content .com-title-meta a {
-            font-size: 12px !important; /* 設定作者名稱的字體大小 */
+            font-size: 14px !important; /* 設定作者名稱的字體大小 */
             font-weight: bold !important; /* 設定作者名稱的字體粗細 */
         }
 
@@ -54,6 +52,38 @@
         .comment-list .comment .com-content p {
             font-size: 14px; /* 設定回覆內容的字體大小 */
         }
+
+/*回覆的回覆 間距*/
+.comments .comment-list .comment .comment-list .comment {
+    padding-top: 0px;
+}
+
+/*Like 與 Show Comments區塊*/
+.post-item .post-meta .post-meta-top {
+    padding-top: 8px;
+    padding-bottom: 0px;
+}
+
+/*貼文按鈕區塊*/
+.post-item .post-meta .post-meta-bottom {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+textarea {
+    width: 100%;
+    box-sizing: border-box; /* 确保宽度计算包含内边距和边框 */
+    resize: vertical; /* 允许用户垂直调整大小，可以根据需要调整 */
+    padding: 10px; /* 内边距 */
+    font-size: 16px; /* 字体大小 */
+    line-height: 1.5; /* 行高 */
+}
+
+/*貼文內容顯示區塊*/
+.post-item .post-content .post-description {
+    word-break: break-word;  在单词边界处换行 
+    /*white-space: normal;*/
+}
 
 .nested-reply-form .nested-reply-input {
     font-size: 14px; /* 設定巢狀回覆輸入框的字體大小 */

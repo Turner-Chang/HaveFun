@@ -20,10 +20,10 @@ namespace HaveFun.DTOs
         public int UserId { get; set; }
         public string UserName { get; set; }
         public string Contents { get; set; }
-
         //[JsonConverter(typeof(PostDateTimeConverter))]
-        public DateTime Time { get; set; }
+        public string Time { get; set; }
         public string Pictures { get; set; }
+        public int Status { get; set; } = 0;
         public List<CommentsDTO> Replies { get; set; } // 新增 Replies 屬性
 
     }
