@@ -82,7 +82,7 @@ namespace HaveFun.Controllers.APIs
                     UserName = user.Name,
                     UserId = user.Id,
                     ProfilePicture = user.ProfilePicture
-                }).ToListAsync();
+                }).FirstOrDefaultAsync();
             return new JsonResult(userInfo);
         }
         //新增貼文
@@ -213,7 +213,7 @@ namespace HaveFun.Controllers.APIs
         //新增貼文按讚
         // POST: api/Post/AddLike
         [HttpPost]
-        public async Task<ActionResult> AddLike(Like like)
+        public async Task<ActionResult> AddLike(LikeDTO clcickLike)
         {
             if (!ModelState.IsValid)
             {
@@ -221,6 +221,11 @@ namespace HaveFun.Controllers.APIs
             }
             try
             {
+                Like like = new Like{
+                    Id = 0,
+                    PostId = clcickLike.PostId,
+                    UserId = clcickLike.UserId,
+                };
                 _context.Likes.Add(like);
                 await _context.SaveChangesAsync();
                 return Content("Like成立");

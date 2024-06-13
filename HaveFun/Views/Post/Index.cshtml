@@ -14,70 +14,83 @@
             width: 50%;
             margin: 0 auto;
         }
+
         .author-details {
             display: flex;
             align-items: center;
             flex-grow: 1;
             justify-content: space-between;
         }
+
         .userAction a {
             padding-left: 10px;
         }
 
-        .post-footer{
+        .post-footer {
             display: flex;
-            justify-content:flex-end;
+            justify-content: flex-end;
             margin-top: 5px;
-            gap:30px;
-            margin-right:25px;
+            gap: 30px;
+            margin-right: 25px;
         }
-        .commentInput{
-            padding-bottom:0;
+
+        .commentInput {
+            padding-bottom: 0;
         }
+
         #commentText {
             width: 80%;
         }
+
         #commentSubmit {
             padding: 0;
             width: 15%;
         }
-        .time{
+
+        .time {
             font-size: 12px;
             color: #888888;
         }
+
         summary {
             list-style: none;
             margin: 5px;
             text-align: center;
         }
+
         .btn-group .dropdown-toggle::after {
             display: none !important;
         }
+
         #btnMore:hover {
             color: #f24570;
             text-decoration: none;
         }
-        .dropdown-menu{
-           text-align:center;
+
+        .dropdown-menu {
+            text-align: center;
         }
-        .deleteBox{
-            display:none;
+
+        .deleteBox {
+            display: none;
             width: 250px;
-            height:300px;
+            height: 300px;
             background-color: white;
             position: sticky;
-            left:40%;
-            top:40%;
+            left: 40%;
+            top: 40%;
             border-radius: 10%;
             box-shadow: 0 3px 10px #888888;
-            z-index:2;
-            align-content:center;
-            text-align:center;
+            z-index: 2;
+            align-content: center;
+            text-align: center;
         }
-        .deleteBox > button {
-            margin:20px;
-        }
-        .ratBox{
+
+            .deleteBox > button {
+                margin: 20px;
+            }
+
+        .ratBox {
             display: none;
             width: 500px;
             height: 400px;
@@ -91,200 +104,201 @@
             align-content: center;
             text-align: center;
         }
-        .ratBox > button {
-            margin: 20px;
-        }
-        .ratBox > input, .ratBox > select {
-            width:75%;
-            margin:10px auto 10px;
-            
-        }
+
+            .ratBox > button {
+                margin: 20px;
+            }
+
+            .ratBox > input, .ratBox > select {
+                width: 75%;
+                margin: 10px auto 10px;
+            }
     </style>
 }
 
 <body>
-<div id="postPlatform">
-<!-- 發文form -->
-<div id="posts" class="col-xl-6 order-xl-1">
-<div class="group__bottom--left">
-<div class="tab-content" id="myTabContent">
-<div class="tab-pane fade show active" id="gt1" role="tabpanel" aria-labelledby="gt1-tab">
-<div class="group__bottom--area group__bottom--memberactivity">
-<div class="group__bottom--body">
-    <div class="group__bottom--allmedia">
-        <div class="media-wrapper">
-            <div class="tab-content" id="myTabContent2">
-                <div class="tab-pane fade show active" id="Personal" role="tabpanel"
-                        aria-labelledby="Personal-tab">
-                    <div class="create-post mb-4">
-                        <div class="lab-inner">
-                            <div class="lab-thumb">
-                                <div class="thumb-inner">
-                                    <div class="thumb-img">
-                                        <img :src="`${baseAddress}/${loginUserInfo.profilePicture}`"
-                                                alt="datting thumb">
-                                    </div>
-                                    <div class="thumb-content">
-                                        <h6><a href="#">{{loginUserInfo.userName}}</a></h6>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="lab-content">
-                                <form action="#" class="post-form">
-                                    <!-- 發文內容 -->
-                                    <input type="text" id="postContent"
-                                            placeholder="說點什麼......">
-                                    <div class="content-type">
-                                        <ul class="content-list">
+    <div id="postPlatform">
+        <!-- 發文form -->
+        <div id="posts" class="col-xl-6 order-xl-1">
+            <div class="group__bottom--left">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="gt1" role="tabpanel" aria-labelledby="gt1-tab">
+                        <div class="group__bottom--area group__bottom--memberactivity">
+                            <div class="group__bottom--body">
+                                <div class="group__bottom--allmedia">
+                                    <div class="media-wrapper">
+                                        <div class="tab-content" id="myTabContent2">
+                                            <div class="tab-pane fade show active" id="Personal" role="tabpanel"
+                                                 aria-labelledby="Personal-tab">
+                                                <div class="create-post mb-4">
+                                                    <div class="lab-inner">
+                                                        <div class="lab-thumb">
+                                                            <div class="thumb-inner">
+                                                                <div class="thumb-img">
+                                                                    <img :src="`${baseAddress}/${loginUserInfo.profilePicture}`"
+                                                                         alt="datting thumb">
+                                                                </div>
+                                                                <div class="thumb-content">
+                                                                    <h6><a href="#">{{loginUserInfo.userName}}</a></h6>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="lab-content">
+                                                            <form action="#" class="post-form">
+                                                                <!-- 發文內容 -->
+                                                                <input type="text" id="postContent"
+                                                                       placeholder="說點什麼......">
+                                                                <div class="content-type">
+                                                                    <ul class="content-list">
 
-                                            <li class="image-video">
-                                                <div class="file-btn">
-                                                    <i class="fa-regular fa-image"></i>Photo
-                                                </div>
-                                                <input type="file">
-                                            </li>
+                                                                        <li class="image-video">
+                                                                            <div class="file-btn">
+                                                                                <i class="fa-regular fa-image"></i>Photo
+                                                                            </div>
+                                                                            <input type="file">
+                                                                        </li>
 
-                                            <li class="post-submit">
-                                                <input type="submit" value="發佈"
-                                                        class="default-btn">
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- 彈出視窗們 -->
-                    <!-- 刪除貼文視窗 -->
-                    <div class="deleteBox">
-                        <span>確定要刪除貼文嗎？</span><br><br>
-                        <button class="btn btn-danger" @@click="deletePost">確定</button>
-                        <button class="btn btn-outline-secondary" @@click="displayDeleteBox" @@keyup.esc="cancleDeleteBox()">取消</button>
-                    </div>
-                     <!-- 檢舉貼文視窗 -->
-                    <div class="ratBox">
-                        <span>檢舉事由：</span><br>
-                        <select class="form-select" id="inputState" v-model="ratReason">
-                                <option selected value="">CHOOSE....</option>
-                                <option v-for="item in ratItems" :value="item.complaintCategoryId">{{item.complaintCategoryName}}</option>
-                        </select>
-                        <input type="text" class="form-control" v-model="ratContent" />
-                        <button class="btn btn-danger" @@click="ratPost">確定</button>
-                        <button class="btn btn-outline-secondary" @@click="displayRatBox" @@keyup.esc="cancleRatBox()">取消</button>
-                    </div>
-
-                    <!-- 貼文+留言 -->
-                    <!-- 大頭貼 + 名字 -->
-                    <div v-for="post in posts" class="post-item mb-4">
-                        <div class="post-content">
-                            <div class="post-author">
-                                <div class="post-author-inner">
-                                    <div class="author-thumb">
-                                      <img :src="`${baseAddress}/${post.profilePicture}`" alt="datting thumb">
-                                    </div>
-                                    <div class="author-details">
-                                        <h6><a href="#">{{post.userName}}</a></h6>
-                                        <div class="userAction">
-                                            {{post.like.length}}
-                                            <a href="#" id="btnLike">
-                                              <i id="heart" class="fa-regular fa-heart" @@click="clickLike(post)"></i>
-                                            </a>
-                                            <div class="btn-group">
-                                              <button type="button" id="btnMore" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" @@click="showDropDown">
-                                              <i class="fa-solid fa-ellipsis"></i>
-                                              </button>
-                                              <ul class="dropdown-menu">
-                                                <li @@click="showDelete(post)"><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop">刪除貼文</a>
-                                                <li @@click="showRat(post)"><a class="dropdown-item" href="#">檢舉貼文</a></li>
-                                              </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- 貼文內容 -->
-                            <div class="post-description">
-                                <p>{{post.contents}}</p>
-                                <img v-if="post.picture != null" :src="`${baseAddress}/${post.picture}`" alt="Post Image" />
-                             </div>
-                             <!-- 貼文時間 回覆數 分享鍵 -->
-                             <div class="post-footer">
-                             <p class="time">{{post.time}}</p>
-                             <p>{{post.comment.length}} Comments</p>
-                             <a href="#"><i class="fa-solid fa-share"></i> Share</a>
-                             </div>
-                        </div>
-                        
-                        <div class="post-meta">
-                            <div class="commentInput post-meta-top">
-                                <input id="commentText" class="form-control" type="text" placeholder="請輸入回覆...">
-                                <button id="commentSubmit" class="default-btn">送出</button>
-                            </div>
-                            <div class="expandComments" v-if="post.comment.length > 0">
-                                <details @@toggle="post.expandState = !post.expandState">
-                                    <summary>{{post.expandState? '隱藏所有回覆' : '展開所有回覆'}}</summary>
-                                    <ul class="post-meta-bottom">
-                                        <li v-for="com in post.comment">
-                                            <div class="top">
-                                                <div class="left member--style2">
-                                                    <div class="member__thumb">
-                                                      <img :src="`${baseAddress}/${com.profilePicture}`" alt="member-img">
+                                                                        <li class="post-submit">
+                                                                            <input type="submit" value="發佈"
+                                                                                   class="default-btn">
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </form>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div class="right">
-                                                    <p>{{com.userName}}</p>
-                                                    <p>{{com.contents}}</p>
-                                                    <p class="time">{{com.time}}</p>
+                                                <!-- 彈出視窗們 -->
+                                                <!-- 刪除貼文視窗 -->
+                                                <div class="deleteBox">
+                                                    <span>確定要刪除貼文嗎？</span><br><br>
+                                                    <button class="btn btn-danger" @@click="deletePost">確定</button>
+                                                    <button class="btn btn-outline-secondary" @@click="displayDeleteBox" @@keyup.esc="cancleDeleteBox()">取消</button>
+                                                </div>
+                                                <!-- 檢舉貼文視窗 -->
+                                                <div class="ratBox">
+                                                    <span>檢舉事由：</span><br>
+                                                    <select class="form-select" id="inputState" v-model="ratReason">
+                                                        <option selected value="">CHOOSE....</option>
+                                                        <option v-for="item in ratItems" :value="item.complaintCategoryId">{{item.complaintCategoryName}}</option>
+                                                    </select>
+                                                    <input type="text" class="form-control" v-model="ratContent" />
+                                                    <button class="btn btn-danger" @@click="ratPost">確定</button>
+                                                    <button class="btn btn-outline-secondary" @@click="displayRatBox" @@keyup.esc="cancleRatBox()">取消</button>
+                                                </div>
+
+                                                <!-- 貼文+留言 -->
+                                                <!-- 大頭貼 + 名字 -->
+                                                <div v-for="post in posts" class="post-item mb-4">
+                                                    <div class="post-content">
+                                                        <div class="post-author">
+                                                            <div class="post-author-inner">
+                                                                <div class="author-thumb">
+                                                                    <img :src="`${baseAddress}/${post.profilePicture}`" alt="datting thumb">
+                                                                </div>
+                                                                <div class="author-details">
+                                                                    <h6><a href="#">{{post.userName}}</a></h6>
+                                                                    <div class="userAction">
+                                                                        {{post.like.length}}
+                                                                        <a href="#" id="btnLike">
+                                                                            <i id="heart" class="fa-regular fa-heart" @@click="clickLike(post)"></i>
+                                                                        </a>
+                                                                        <div class="btn-group">
+                                                                            <button type="button" id="btnMore" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" @@click="showDropDown">
+                                                                                <i class="fa-solid fa-ellipsis"></i>
+                                                                            </button>
+                                                                            <ul class="dropdown-menu">
+                                                                                <li @@click="showDelete(post)"><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop">刪除貼文</a>
+                                                                                <li @@click="showRat(post)"><a class="dropdown-item" href="#">檢舉貼文</a></li>
+                                                                            </ul>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- 貼文內容 -->
+                                                        <div class="post-description">
+                                                            <p>{{post.contents}}</p>
+                                                            <img v-if="post.picture != null" :src="`${baseAddress}/${post.picture}`" alt="Post Image" />
+                                                        </div>
+                                                        <!-- 貼文時間 回覆數 分享鍵 -->
+                                                        <div class="post-footer">
+                                                            <p class="time">{{post.time}}</p>
+                                                            <p>{{post.comment.length}} Comments</p>
+                                                            <a href="#"><i class="fa-solid fa-share"></i> Share</a>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="post-meta">
+                                                        <div class="commentInput post-meta-top">
+                                                            <input id="commentText" class="form-control" type="text" placeholder="請輸入回覆...">
+                                                            <button id="commentSubmit" class="default-btn">送出</button>
+                                                        </div>
+                                                        <div class="expandComments" v-if="post.comment.length > 0">
+                                                            <details @@toggle="post.expandState = !post.expandState">
+                                                                <summary>{{post.expandState? '隱藏所有回覆' : '展開所有回覆'}}</summary>
+                                                                <ul class="post-meta-bottom">
+                                                                    <li v-for="com in post.comment">
+                                                                        <div class="top">
+                                                                            <div class="left member--style2">
+                                                                                <div class="member__thumb">
+                                                                                    <img :src="`${baseAddress}/${com.profilePicture}`" alt="member-img">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="right">
+                                                                                <p>{{com.userName}}</p>
+                                                                                <p>{{com.contents}}</p>
+                                                                                <p class="time">{{com.time}}</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </li>
+                                                                </ul>
+                                                            </details>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="text-center mt-5">
+                                                    <a href="#" class="default-btn">
+                                                        <i class="fa-solid fa-spinner"></i> Load
+                                                        More
+                                                    </a>
                                                 </div>
                                             </div>
+                                        </div>
+
+                                        @* <div class="tab-pane fade" id="music" role="tabpanel" aria-labelledby="music-tab">
+                                        <div class="media-content">
+                                        <ul class="media-upload">
+                                        <li class="upload-now">
+                                        <div class="custom-upload">
+                                        <div class="file-btn">
+                                        <i class="fa-solid fa-upload"></i> Upload
+                                        </div>
+                                        <input type="file">
+                                        </div>
                                         </li>
-                                    </ul>
-                                </details>
+                                        </ul>
+                                        <div class="row">
+                                        <div class="col">
+                                        <p>
+                                        <i class="icofont-worried"></i> Sorry !!
+                                        There's no media found for the
+                                        request !!
+                                        </p>
+                                        </div>
+                                        </div>
+                                        </div>
+                                        </div> *@
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="text-center mt-5">
-                        <a href="#" class="default-btn">
-                            <i class="fa-solid fa-spinner"></i> Load
-                            More
-                        </a>
                     </div>
                 </div>
             </div>
-
-            @* <div class="tab-pane fade" id="music" role="tabpanel" aria-labelledby="music-tab">
-                <div class="media-content">
-                    <ul class="media-upload">
-                        <li class="upload-now">
-                            <div class="custom-upload">
-                                <div class="file-btn">
-                                    <i class="fa-solid fa-upload"></i> Upload
-                                </div>
-                                <input type="file">
-                            </div>
-                        </li>
-                    </ul>
-                    <div class="row">
-                        <div class="col">
-                            <p>
-                                <i class="icofont-worried"></i> Sorry !!
-                                There's no media found for the
-                                request !!
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div> *@
         </div>
     </div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
 </body>
 
 
@@ -327,13 +341,13 @@
                     baseAddress: "https://localhost:7152",
                     loginUserId: 2,
                     //先寫死的部分
-                    loginUserInfo:[],
+                    loginUserInfo: [],
                     posts: [],
-                    ratItems:[],
+                    ratItems: [],
                     watingToRatPost: 0,
                     wannaDeletePost: 0,
-                    ratContent:"",
-                    ratReason:"",
+                    ratContent: "",
+                    ratReason: "",
                 }
             },
             methods: {
@@ -344,7 +358,7 @@
                         .then(data => {
                             this.loginUserInfo = {
                                 ...data,
-                                profilePicture: data.profilePicture ? this.cutPicPath         (data.profilePicture) : null
+                                profilePicture: data.profilePicture ? this.cutPicPath(data.profilePicture) : null
                             };
                         })
                         .catch(error => { console.log('fetch loginUserInfo failed!') });
@@ -353,19 +367,19 @@
                 getPostsList() {
                     fetch(`/api/Post/GetPostsRel`)
                         .then(res => res.json())
-                        .then(data => { 
-                            this.posts = data.map(post => ({ 
+                        .then(data => {
+                            this.posts = data.map(post => ({
                                 ...post,
                                 expandState: false,
-                                profilePicture: post.profilePicture ? this.cutPicPath                  (post.profilePicture) : null,
+                                profilePicture: post.profilePicture ? this.cutPicPath(post.profilePicture) : null,
                                 picture: post.picture ? this.cutPicPath(post.picture) : null,
                                 comment: post.comment ? post.comment.map(comment => ({
                                     ...comment,
-                                    profilePicture: comment.profilePicture ? this.cutPicPath               (comment.profilePicture) : null
+                                    profilePicture: comment.profilePicture ? this.cutPicPath(comment.profilePicture) : null
                                 })) : []
-                            })); 
+                            }));
                         })
-                        .catch(error => {console.log('fetch posts failed!')});
+                        .catch(error => { console.log('fetch posts failed!') });
                 },
                 //請求檢舉項目
                 getRatItemsList() {
@@ -374,10 +388,12 @@
                         .then(data => { this.ratItems = data })
                         .catch(error => { console.log('fetch ratItems failed!') });
                 },
-                //按讚請求 目前失敗QQ
+                //按讚請求
                 clickLike(post) {
                     event.preventDefault();
+                    const heart = event.target;
                     let like = {
+                        "Id": 0,
                         "PostId": post.postId,
                         "UserId": this.loginUserId
                     };
@@ -388,11 +404,15 @@
                         },
                         body: JSON.stringify(like)
                     })
-                    .then(data => { 
-                        console.log(data);
-                        event.target.classList.toggle('fa-solid');
-                    })
-                    .catch(error => {console.log('fetch add like failed!')});
+                        .then(response => {
+                            console.log(response);
+                            heart.classList.toggle('fa-solid');
+                            this.getPostsList();
+                        })
+                        .catch(error => {
+                            console.log(error)
+                            console.log('fetch add like failed!')
+                        });
                 },
                 //按貼文點點按鈕出現刪除貼文&檢舉貼文選項
                 showDropDown() {
@@ -407,7 +427,7 @@
                 //顯示刪除貼文視窗
                 showDelete(post) {
                     event.preventDefault();
-                    $('.deleteBox').css("display","block");
+                    $('.deleteBox').css("display", "block");
                     this.wannaDeletePost = post.postId;
                 },
                 //取消刪除貼文視窗
@@ -431,13 +451,13 @@
                             "content-Type": "application/json"
                         }
                     })
-                    .then(data => { 
-                        console.log(data);
-                        $('.deleteBox').css("display", "none");
-                        this.wannaDeletePost = 0;
-                        this.getPostsList()
-                    })
-                    .catch(error => {console.log('fetch delete posts failed!')});
+                        .then(data => {
+                            console.log(data);
+                            $('.deleteBox').css("display", "none");
+                            this.wannaDeletePost = 0;
+                            this.getPostsList();
+                        })
+                        .catch(error => { console.log('fetch delete posts failed!') });
                 },
                 //顯示檢舉貼文視窗 舉報者先寫死
                 showRat(post) {
@@ -447,7 +467,7 @@
                     this.watingToRatPost = post.postId;
                 },
                 //取消檢舉貼文視窗
-                displayRatBox(event) {
+                displayRatBox(e) {
                     event.preventDefault();
                     $('.ratBox').css("display", "none");
                     this.watingToRatPost = 0;
@@ -476,23 +496,23 @@
                     fetch('/api/Post/RatPostReview', {
                         method: "POST",
                         headers: {
-                          "content-Type":"application/json"
+                            "content-Type": "application/json"
                         },
                         body: JSON.stringify(ratpost)
                     })
-                    .then(data => {
-                        console.log(data);
-                    })
-                    .catch(err => {
-                        console.log('檢舉失敗')
-                    });
+                        .then(data => {
+                            console.log(data);
+                        })
+                        .catch(err => {
+                            console.log('檢舉失敗')
+                        });
                     this.ratReason = "";
                     this.ratContent = "";
                     this.watingToRatPost = [];
                     $('.ratBox').css("display", "none");
                 },
                 //將圖片路徑處理
-                cutPicPath(PicturePath){
+                cutPicPath(PicturePath) {
                     const fileName = PicturePath.slice(19);
                     return fileName;
                 },
@@ -503,6 +523,6 @@
                 this.getRatItemsList();
             },
         })
-        .mount("#postPlatform");
+            .mount("#postPlatform");
     </script>
 }
