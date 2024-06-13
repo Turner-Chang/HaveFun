@@ -101,10 +101,20 @@
 					</div>
 				</div>
 			</div>
-		</div>		
+		</div>	
+		
 		<div id="app_MemberLable">			
 			<div class="info-card mb-4">
-				<div class="info-card-title">
+				<div v-if="selectedLabels.length > 0" class="info-card-title">
+					<h6>您的標籤：</h6>
+					<ul>
+						<li v-for="labelId in selectedLabels" :key="labelId">
+							{{ getLabelById(labelId).name }}
+						</li>
+					</ul>
+					<button type="button" class="default-btn" @@click="showLabelSelectionForm">重新選擇</button>
+				</div>
+				<div v-else class="info-card-title">
 					<h6>標籤選取</h6>
 				</div>
 				<div class="info-card-content" v-for="label in availableLabels" :key="label.id">
@@ -213,7 +223,7 @@
 	var app_MemberLable = Vue.createApp({
 		data() {
 			return {
-				userId: 1,
+				userId: "",
 				availableLabels: [], /* 從後端獲取所有可用標籤 */
 				selectedLabels: [], /* 用戶選擇的標籤ID */
 			}
@@ -232,6 +242,13 @@
 				axios.post(`${baseAddress}/api/MemberLabelsApi/PostMemberLabel`, memberLabelDto)
 					.then(response => { console.log("標籤選取成功:", response); })
 					.catch(error => { console.error('標籤選取時出錯', error); });
+			},
+			showLabelSelectionForm() {
+				//清空以選擇的標籤
+				this.selectedLabels = [];				
+			},
+			getLabelById(labelId) {
+				return this.availableLabels.find(label => label.id === labelId);
 			},
 		},
 		mounted() {

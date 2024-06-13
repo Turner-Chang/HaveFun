@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HaveFun.Models;
+using HaveFun.DTOs;
 
 namespace HaveFun.Controllers.APIs
 {
@@ -72,15 +73,28 @@ namespace HaveFun.Controllers.APIs
             return NoContent();
         }
 
-        // POST: api/MemberLabelsApi/PostMemberLabel
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<MemberLabel>> PostMemberLabel(MemberLabel memberLabel)
+        // POST: api/MemberLabelsApi/PostMemberLabel       
+        [HttpPost("{id}")]
+        public async Task<ActionResult<MemberLabel>> PostMemberLabel(MemberLabelDTO memberLabelDTO)
         {
-            _context.MemberLabels.Add(memberLabel);
+            if (memberLabelDTO == null || memberLabelDTO.LabelIds == null || memberLabelDTO.LabelIds.Count == 0)
+            { 
+                return BadRequest("請求數據不能為空");
+            }
+            //在資料庫中建立新的MemberLabel紀錄
+            foreach(var labelId in memberLabelDTO.LabelIds)
+            {
+                var memberLabel = new MemberLabel
+                {
+                    UserId = memberLabelDTO.UserId,
+                    LabelId = labelId
+                };
+                _context.MemberLabels.Add(memberLabel);
+            }
+            
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetMemberLabel", new { id = memberLabel.Id }, memberLabel);
+            return CreatedAtAction("GetMemberLabel", new { id = memberLabelDTO.UserId }, memberLabelDTO);
         }   
 
         // DELETE: api/MemberLabelsApi/5
