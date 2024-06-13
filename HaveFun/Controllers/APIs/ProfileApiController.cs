@@ -51,6 +51,7 @@ namespace HaveFun.Controllers.APIs
         {
             var posts = await _context.Posts
                 .Where(p => p.Status == 0)
+                .OrderByDescending(p => p.Id) // Id由大到小排序
                 .Select(p => new PostsDTO
                 {
                     Id = p.Id,
@@ -115,7 +116,7 @@ namespace HaveFun.Controllers.APIs
             {
                 UserId = postDto.UserId,
                 Contents = postDto.Contents,
-                Time = DateTime.UtcNow,
+                Time = DateTime.Now,
                 Pictures = postDto.Pictures,
                 Status = 0
             };

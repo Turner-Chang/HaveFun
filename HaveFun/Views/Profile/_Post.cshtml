@@ -102,7 +102,7 @@
                                                                 <span>{{reply.Time}}</span>
                                                             </div>
                                                             <span class="reply">
-                                                                <a class="comment-reply-link" href="#" @@click.prevent="toggleNestedReplyForm(post.id, reply.id)"><i class="icofont-reply-all"></i>Reply</a>
+                                                                <a class="comment-reply-link" href="#" @@click.prevent="toggleNestedReplyForm(post.Id, reply.Id)"><i class="icofont-reply-all"></i>Reply</a>
                                                             </span>
                                                         </div>
                                                         <p>{{ reply.Content}}</p>
@@ -127,13 +127,13 @@
                                                 </ul>
                                                 <div v-if="reply.showNestedForm" class="nested-reply-form">
                                                     <input type="text" v-model="reply.nestedReplyContent" class="nested-reply-input" placeholder="Write a reply...">
-                                                    <button class="nested-reply-submit-button" @@click.prevent="addNestedReply(post.id, reply.id)">Reply</button>
+                                                    <button class="nested-reply-submit-button" @@click.prevent="addNestedReply(post.Id, reply.Id)">Reply</button>
                                                 </div>
                                             </li>
                                         </ul>
                                         <div v-if="post.showReplyForm" class="reply-form">
                                             <input type="text" v-model="post.newReply" class="reply-input" placeholder="Write a reply...">
-                                            <button class="btn-reply" @@click.prevent="addReply(post.id)">Post Reply</button>
+                                            <button class="btn-reply" @@click.prevent="addReply(post.Id)">Post Reply</button>
                                         </div>
                                     </div>
                                 </div>
@@ -157,6 +157,7 @@
                 postPrivacy: 'Public',
                 posts: [],
                 postIdCounter: 1,
+                userName:'',
                 userId: 2 // 假設使用者ID為1
             };
         },
@@ -210,20 +211,26 @@
 
                 const newPost = {
                     UserId: this.userId,
+                    UserName: this.userName,
                     Contents: this.postContent,
                     Pictures: '',
-                    Replies:[],
+                    Replies: []
                 };
 
                 try {
                     const response = await axios.post('/api/Profile/AddPost', newPost);
                     const createdPost = response.data;
                     this.posts.unshift({
-                        ...createdPost,
+                        Id: createdPost.id,
+                        UserId: createdPost.userId,
+                        UserName: createdPost.userName,
+                        Contents: createdPost.contents,
+                        Time: createdPost.time,
+                        Pictures: createdPost.pictures,
+                        Replies: createdPost.replies || [],
                         showComments: false,
                         showReplyForm: false,
-                        newReply: '',
-                        replies: []
+                        newReply: ''
                     });
 
                     this.postContent = '';
@@ -231,23 +238,30 @@
                     console.error('Error addPost:', error);
                 }
             },
-            async addReply(postId) {
-                const post = this.posts.find(p => p.id === postId);
+            async addReply(PostId) {
+                const post = this.posts.find(p => p.Id === PostId);
                 if (post && post.newReply.trim()) {
                     const newReply = {
-                        userId: this.userId,
-                        postId: postId,
-                        content: post.newReply,
-                        parentCommentId: null, // 父回覆ID
-                        nestedReplies: []
+                        UserId: this.userId,
+                        UserName: this.userName,
+                        PostId: PostId,
+                        Content: post.newReply,
+                        ParentCommentId: null, // 父回覆ID
+                        NestedReplies: []
                     };
 
                     try {
                         const response = await axios.post('/api/Profile/AddComment', newReply);
                         const createdReply = response.data;
 
-                        post.replies.push({
-                            ...createdReply,
+                        post.Replies.push({
+                            Id: createdReply.id,
+                            UserId: createdReply.userId,
+                            PostId: createdReply.postId,
+                            ParentCommentId: createdReply.parentCommentId,
+                            Content: createdReply.contents,
+                            Time: createdReply.time,
+                            UserName: createdReply.userName,
                             showNestedForm: false,
                             nestedReplyContent: '',
                             nestedReplies: []
@@ -259,17 +273,18 @@
                     }
                 }
             },
-            async addNestedReply(postId, replyId) {
-                const post = this.posts.find(p => p.id === postId);
+            async addNestedReply(PostId, replyId) {
+                const post = this.posts.find(p => p.Id === PostId);
                 if (post) {
-                    const reply = post.replies.find(r => r.id === replyId);
+                    const reply = post.Replies.find(r => r.Id === replyId);
                     if (reply && reply.nestedReplyContent.trim()) {
                         const newNestedReply = {
-                            userId: this.userId,
-                            postId: postId,
-                            content: reply.nestedReplyContent,
-                            parentCommentId: replyId, // 父貼文ID
-                            nestedReplies:[]
+                            UserId: this.userId,
+                            UserName: this.userName,
+                            PostId: PostId,
+                            Content: reply.nestedReplyContent,
+                            ParentCommentId: replyId, // 父貼文ID
+                            NestedReplies:[]
                         };
 
                         try {
@@ -277,7 +292,13 @@
                             const createdNestedReply = response.data;
 
                             reply.nestedReplies.push({
-                                ...createdNestedReply,
+                                Id: createdNestedReply.id,
+                                UserId: createdNestedReply.userId,
+                                PostId: createdNestedReply.postId,
+                                ParentCommentId: createdNestedReply.parentCommentId,
+                                Content: createdNestedReply.contents,
+                                Time: createdNestedReply.time,
+                                UserName: createdNestedReply.userName,
                                 showNestedForm: false,
                                 nestedReplyContent: ''
                             });
@@ -305,10 +326,10 @@
                 alert('Liked!');
                 // Implement like functionality here
             },
-            toggleNestedReplyForm(postId, replyId) {
-                const post = this.posts.find(p => p.id === postId);
+            toggleNestedReplyForm(PostId, replyId) {
+                const post = this.posts.find(p => p.Id === PostId);
                 if (post) {
-                    const reply = post.replies.find(r => r.id === replyId);
+                    const reply = post.Replies.find(r => r.Id === replyId);
                     if (reply) {
                         reply.showNestedForm = !reply.showNestedForm;
                     }
