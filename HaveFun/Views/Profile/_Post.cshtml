@@ -106,7 +106,9 @@
                                                                 <a class="comment-reply-link" href="#" @@click.prevent="toggleNestedReplyForm(post.Id, reply.Id)"><i class="icofont-reply-all"></i>Reply</a>
                                                             </span>
                                                         </div>
-                                                        <p>{{ reply.Content}}</p>
+                                                        <div class="post-description">
+                                                            <p>{{ reply.Content }}</p>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 @* 回覆的回覆 *@
@@ -122,18 +124,31 @@
                                                                     <span> || {{nestedReply.Time}} </span>
                                                                 </div>
                                                             </div>
-                                                            <p>{{ nestedReply.Content}}</p>
+                                                            <div class="post-description">
+                                                                <p>{{ nestedReply.Content}}</p>
+                                                            </div>
                                                         </div>
                                                     </li>
                                                 </ul>
                                                 <div v-if="reply.showNestedForm" class="nested-reply-form">
-                                                    <input type="text" v-model="reply.nestedReplyContent" class="nested-reply-input" placeholder="Write a reply...">
+                                                    @* <input type="text" v-model="reply.nestedReplyContent" class="nested-reply-input" placeholder="Write a reply..."> *@
+                                                    <textarea v-model="reply.nestedReplyContent"
+                                                              class="nested-reply-input"
+                                                              placeholder="Write a reply..."
+                                                              @@keydown.enter="handleEnter"
+                                                              @@blur="resetTextarea('nested-reply-input')">
+                                                    </textarea>
                                                     <button class="nested-reply-submit-button" @@click.prevent="addNestedReply(post.Id, reply.Id)">Reply</button>
                                                 </div>
                                             </li>
                                         </ul>
                                         <div v-if="post.showReplyForm" class="reply-form">
-                                            <input type="text" v-model="post.newReply" class="reply-input" placeholder="Write a reply...">
+                                            <textarea v-model="post.newReply"
+                                                      class="reply-input"
+                                                      placeholder="Write a reply..."
+                                                      @@keydown.enter="handleEnter"
+                                                      @@blur="resetTextarea('reply-input')">
+                                            </textarea>
                                             <button class="btn-reply" @@click.prevent="addReply(post.Id)">Post Reply</button>
                                         </div>
                                     </div>
@@ -158,7 +173,7 @@
                 postPrivacy: 'Public',
                 posts: [],
                 postIdCounter: 1,
-                userName:'',
+                userName: '',
                 userId: 2 // 假設使用者ID為1
             };
         },
@@ -166,20 +181,21 @@
             this.getPosts();
         },
         methods: {
+            // 查詢貼文
             async getPosts() {
                 try {
                     const response = await axios.get('/api/Profile/GetPostsList');
                     this.posts = response.data.map(post => ({
                         Id: post.id,
                         UserId: post.userId,
-                        UserName:post.userName,
+                        UserName: post.userName,
                         Contents: post.contents,
                         Time: post.time,
                         Pictures: post.pictures,
                         Replies: (post.replies || []).map(reply => ({
                             Id: reply.id,
                             UserId: reply.userId,
-                            UserName:reply.userName,
+                            UserName: reply.userName,
                             PostId: reply.postId,
                             ParentCommentId: reply.parentCommentId,
                             Content: reply.contents,
@@ -187,7 +203,7 @@
                             nestedReplies: (reply.nestedReplies || []).map(nestedReply => ({
                                 Id: nestedReply.id,
                                 UserId: nestedReply.userId,
-                                UserName:nestedReply.userName,
+                                UserName: nestedReply.userName,
                                 PostId: nestedReply.postId,
                                 ParentCommentId: nestedReply.parentCommentId,
                                 Content: nestedReply.contents,
@@ -204,9 +220,14 @@
                     console.error('Error getPosts:', error);
                 }
             },
+
+            // 發佈貼文
             async addPost() {
                 if (this.postContent.trim() === '') {
                     alert('貼文不可空白');
+                    return;
+                } else if (this.postContent.trim().length > 2000) {
+                    alert('貼文字數不可超過2000字');
                     return;
                 }
 
@@ -214,7 +235,7 @@
                     UserId: this.userId,
                     UserName: this.userName,
                     Contents: this.postContent,
-                    Time:'',
+                    Time: '',
                     Pictures: '',
                     Replies: []
                 };
@@ -240,9 +261,20 @@
                     console.error('Error addPost:', error);
                 }
             },
+
+            // 貼文回覆
             async addReply(PostId) {
                 const post = this.posts.find(p => p.Id === PostId);
-                if (post && post.newReply.trim()) {
+
+                if (post.newReply.trim() == '') {
+                    alert('回覆不可空白');
+                    return;
+                } else if (post.newReply.trim().length > 280) {
+                    alert('回覆字數不可超過280字');
+                    return;
+                }
+
+                if (post) {
                     const newReply = {
                         UserId: this.userId,
                         UserName: this.userName,
@@ -271,15 +303,27 @@
                         });
                         post.newReply = '';
                         post.showComments = true;
+                        this.resetTextarea('reply-input'); // 重置 newReply textarea高度
                     } catch (error) {
                         console.error('Error addReply:', error);
                     }
                 }
             },
+
+            // 貼文回覆的回覆
             async addNestedReply(PostId, replyId) {
                 const post = this.posts.find(p => p.Id === PostId);
                 if (post) {
                     const reply = post.Replies.find(r => r.Id === replyId);
+
+                    if (reply.nestedReplyContent.trim() == '') {
+                        alert('回覆不可空白');
+                        return;
+                    } else if (reply.nestedReplyContent.trim().length > 280) {
+                        alert('回覆字數不可超過280字');
+                        return;
+                    }
+
                     if (reply && reply.nestedReplyContent.trim()) {
                         const newNestedReply = {
                             UserId: this.userId,
@@ -288,7 +332,7 @@
                             Contents: reply.nestedReplyContent,
                             Time: '',
                             ParentCommentId: replyId, // 貼文回覆ID
-                            NestedReplies:[]
+                            NestedReplies: []
                         };
 
                         try {
@@ -308,15 +352,16 @@
                             });
                             reply.nestedReplyContent = '';
                             reply.showNestedForm = false;
+                            this.resetTextarea('nested-reply-input'); // 重置 newReply textarea高度
                         } catch (error) {
                             console.error('Error addNestedReply:', error);
                         }
                     }
                 }
             },
+
             handleFileUpload(event) {
                 const files = event.target.files;
-                // Implement file upload logic here
                 console.log(files);
             },
             showCommentsAlert(post) {
@@ -328,7 +373,6 @@
             },
             likePost(post) {
                 alert('Liked!');
-                // Implement like functionality here
             },
             toggleNestedReplyForm(PostId, replyId) {
                 const post = this.posts.find(p => p.Id === PostId);
@@ -338,6 +382,33 @@
                         reply.showNestedForm = !reply.showNestedForm;
                     }
                 }
+            },
+
+            // 調整高度
+            autoResize(event) {
+                const textarea = event.target;
+                textarea.style.height = 'auto'; // 重设为 auto
+                const scrollHeight = textarea.scrollHeight;
+                textarea.style.height = `${Math.min(scrollHeight, 72)}px`; // 控制高度最大为 3 行
+            },
+
+            // Enter事件
+            handleEnter(event) {
+                const textarea = event.target;
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // 阻止默认行为
+                    const start = textarea.selectionStart;
+                    const end = textarea.selectionEnd;
+                    const value = textarea.value;
+                    textarea.value = value.substring(0, start) + '\n' + value.substring(end);
+                    textarea.selectionStart = textarea.selectionEnd = start + 1;
+                    this.autoResize(event); // 调整高度
+                }
+            },
+            resetTextarea(name) {
+                const textarea = document.querySelector(`.${name}`);
+                textarea.value = "";
+                textarea.style.height = '24px'; // 重置高度为初始高度
             }
         }
     }).mount('#post');
