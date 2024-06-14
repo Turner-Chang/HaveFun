@@ -1,4 +1,4 @@
-@model HaveFun.Models.FriendList
+@model List<HaveFun.DTOs.FriendDTO>
 
 <div class="tab-pane fade" id="gt4" role="tabpanel" aria-labelledby="gt4-tab">
     <div class="active-member bg-white mb-4">
@@ -18,9 +18,9 @@
                @* 好友列表 *@
                 <div class="tab-pane fade show active" id="Newest" role="tabpanel" aria-labelledby="Newest-tab">
                     <ul>
-                        @if (Model?.Friends != null)
+                        @if (Model != null)
                         {
-                            @foreach (var friend in Model.Friends)
+                            @foreach (var friend in Model)
                             {
                                 <li>
                                     <div class="top">
@@ -51,9 +51,9 @@
                 @* 黑名單 *@
                 <div class="tab-pane fade" id="BlackList" role="tabpanel" aria-labelledby="BlackList-tab">
                     <ul>
-                        @if (Model?.BlackList != null)
+                        @if (Model != null)
                         {
-                            @foreach (var friend in Model.BlackList)
+                            @foreach (var friend in Model)
                             {
                                 <li>
                                     <div class="top">

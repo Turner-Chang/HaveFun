@@ -1,4 +1,4 @@
-﻿using HaveFun.Models;
+﻿using HaveFun.DTOs;
 using HaveFun.Service;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,11 +15,12 @@ namespace HaveFun.Controllers
 
         public IActionResult FriendList()
         {
-            var viewModel = new FriendList
-            {
-                Friends = _friendService.GetFriends(),
-                BlackList = _friendService.GetBlockedFriends()
-            };
+            //var viewModel = new FriendList
+            //{
+            //    Friends = _friendService.GetFriends(),
+            //    BlackList = _friendService.GetBlockedFriends()
+            //};
+            var viewModel = new List<FriendDTO>();
 
             return View(viewModel);
         }
@@ -39,13 +40,13 @@ namespace HaveFun.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<Friend>> GetFriends()
+        public ActionResult<List<FriendDTO>> GetFriends()
         {
             return _friendService.GetFriends();
         }
 
         [HttpGet("blocked")]
-        public ActionResult<List<Friend>> GetBlockedFriends()
+        public ActionResult<List<FriendDTO>> GetBlockedFriends()
         {
             return _friendService.GetBlockedFriends();
         }
