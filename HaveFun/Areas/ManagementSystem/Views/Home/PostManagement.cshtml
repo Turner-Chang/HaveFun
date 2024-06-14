@@ -155,7 +155,7 @@
 					if(src==null || src =="null")
 						return "/images/NOimg.jpg"
 					else
-					return `/images/${src}`;
+					return src.substr(18);
 				}
 				 ,
 				check(postId, postReviewId) {
