@@ -89,8 +89,10 @@ namespace HaveFun.Controllers.APIs
             {
                 try
                 {
-                    string token = Convert.ToBase64String(_passwordSecure.CreateSalt());
-                    string? link = Url.Action("ChangePassword", "Login", new { id = user.Id }, protocol: HttpContext.Request.Scheme);
+                    // 設定唯一性的token跟更改密碼的連結
+                    string userToken = Convert.ToBase64String(_passwordSecure.CreateSalt());
+                    string? link = Url.Action("ChangePassword", "Login", new { id = user.Id, token = userToken }, protocol: HttpContext.Request.Scheme);
+
                     _sendEmail.emailTo = email;
                     _sendEmail.subject = "HaveFun，重置您的帳戶密碼";
                     _sendEmail.body = $@"
@@ -138,6 +140,7 @@ namespace HaveFun.Controllers.APIs
                                     </html>
                                     ";
                     _sendEmail.Send();
+                    
                     return true;
                 }
                 catch (Exception)
@@ -149,8 +152,9 @@ namespace HaveFun.Controllers.APIs
 
         }
 
-        public string ChangePassword(int id, string password)
+        public string ResetPassword(UserResetPasswordDTO resetPasswordDTO)
         {
+
             return "";
         }
     }
