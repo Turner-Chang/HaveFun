@@ -4,6 +4,7 @@ using HaveFun.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,16 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HaveFun.Migrations
 {
     [DbContext(typeof(HaveFunDbContext))]
-    partial class HaveFunDbContextModelSnapshot : ModelSnapshot
+<<<<<<<< HEAD:HaveFun/Migrations/20240612103726_k.Designer.cs
+    [Migration("20240612103726_k")]
+    partial class k
+========
+    [Migration("20240612112909_InitMigrations")]
+    partial class InitMigrations
+>>>>>>>> 7f89edfc33121dfed90489ad3bb7f94963f55d0f:HaveFun/Migrations/20240612112909_InitMigrations.Designer.cs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -68,7 +68,7 @@ namespace HaveFun.Controllers.APIs
         // 取得登入者資料
         // GET : api/Post/GetLoginUser/5
         [HttpGet("{id}")]
-        public async Task<IActionResult>GetLoginUser(int id)
+        public async Task<JsonResult>GetLoginUser(int id)
         {
             var userExist = await _context.UserInfos.AnyAsync(user =>  user.Id == id);
             if (!userExist)
@@ -82,8 +82,8 @@ namespace HaveFun.Controllers.APIs
                     UserName = user.Name,
                     UserId = user.Id,
                     ProfilePicture = user.ProfilePicture
-                }).FirstOrDefaultAsync();
-            return Ok(userInfo);
+                }).ToListAsync();
+            return new JsonResult(userInfo);
         }
         //新增貼文
         //POST: api/Post/CreatePost
@@ -144,7 +144,7 @@ namespace HaveFun.Controllers.APIs
         //檢舉貼文 //目前未過 未進到Server端
         // POST: api/Post/RatPostReview
         [HttpPost]
-        public async Task<ActionResult> RatPostReview(PostReview ratPost)
+        public async Task<ActionResult> RatPostReview(PostReviewDTO ratPost)
         {
             if (!ModelState.IsValid)
             {
@@ -154,11 +154,12 @@ namespace HaveFun.Controllers.APIs
             {
                 PostReview post = new PostReview
                 {
+                    PostReviewId = 0,
                     PostId = ratPost.PostId,
                     UserId = ratPost.UserId,
                     ReportItems = ratPost.ReportItems,
                     Reason = ratPost.Reason,
-                    ReportTime = ratPost.ReportTime,
+                    ReportTime = DateTime.Now,
                     ProcessingStstus = ratPost.ProcessingStstus
                 };
                 _context.PostReviews.Add(post);
