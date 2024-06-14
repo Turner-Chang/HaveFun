@@ -339,10 +339,10 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                     <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
-                                        <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar">
+                                        <img src="https://localhost:7152/api/UserInfo/GetPicture/GetPicture/2" alt="avatar">
                                     </a>
                                     <div class="chat-about">
-                                        <h6 class="m-b-0">Aiden Chavez</h6>
+                                        <h6 class="m-b-0"></h6>
                                         <small>Last seen: 2 hours ago</small>
                                     </div>
                                 </div>
@@ -359,7 +359,7 @@
                                 <li class="clearfix">
                                     <div class="message-data text-right">
                                         <span class="message-data-time">10:10 AM, Today</span>
-                                        <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
+                                        <img src="https://localhost:7152/api/UserInfo/GetPicture/GetPicture/2" alt="avatar">
                                     </div>
                                     <div class="message other-message float-right"> Hi Aiden, how are you? How is the project coming along? </div>
                                 </li>
@@ -398,7 +398,7 @@
     var chatHistory = [
         {
             time: "10:10 AM, Today",
-            img: "https://bootdey.com/img/Content/avatar/avatar7.png",
+                img: "https://localhost:7152/api/UserInfo/GetPicture/GetPicture/1",
             message: "Hi Aiden, how are you? How is the project coming along?",
             type: "other"
         },
@@ -449,7 +449,7 @@
         const msg = user + " says " + message;
         const chat = {
             time: moment().format("h:mm A, MMMM D"),
-            img: "https://bootdey.com/img/Content/avatar/avatar2.png",
+                img:" https://localhost:7152/api/UserInfo/GetPicture/GetPicture/1",
             message: msg,
             type: "other"
         };
@@ -457,10 +457,13 @@
         updateChatHistory();
     });
 
-    connection.start().catch(function (err) {
-        return console.error(err.toString());
-    });
-
+   
+        connection.on("SomeOneOnline", (connid) => {
+            console.log(`有人連線了,Id:${connid}`)
+        });
+        connection.on("SomeOneOffline", (connid) => {
+            console.log(`有人離線了,Id:${connid}`)
+        });
         connection.start().catch(err => console.error(err.toString()));
 
         document.getElementById("sendButton").addEventListener("click", event => {
