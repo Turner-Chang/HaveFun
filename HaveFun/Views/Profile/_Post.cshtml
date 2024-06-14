@@ -29,7 +29,8 @@
                                         </div>
                                         <div class="lab-content">
                                             <form class="post-form">
-                                                <input v-model="postContent" type="text" placeholder="Whats on your mind, William?">
+                                                @* <input v-model="postContent" type="text" placeholder="Whats on your mind, William?"> *@
+                                                <textarea v-model="postContent" placeholder="What's on your mind, William?" rows="4"></textarea>
                                                 <div class="content-type">
                                                     <ul class="content-list">
                                                         <li class="text"><a href="#"><i class="fa-solid fa-pen-to-square"></i>Text</a></li>
@@ -53,6 +54,7 @@
 
                                 @* 顯示貼文 *@
                                 <div v-for="post in posts" :key="post.id" class="post-item mb-4">
+                                    @* 貼文內容 *@
                                     <div class="post-content">
                                         <div class="post-author">
                                             <div class="post-author-inner">
@@ -60,18 +62,19 @@
                                                     <img src="assets/images/member/profile/member1.jpg" alt="datting thumb">
                                                 </div>
                                                 <div class="author-details">
-                                                    <h6><a href="#">William Smith</a></h6>
+                                                    <h6><a href="#">{{ post.UserName }}</a></h6>
                                                     <ul class="post-status">
-                                                        <li class="post-privacy"><i class="icofont-world"></i> {{ post.privacy }}</li>
-                                                        <li class="post-time">Just Now</li>
+                                                        <li class="post-privacy"><i class="icofont-world"></i>{{postPrivacy}}</li>
+                                                        <li class="post-time">{{post.Time}}</li>
                                                     </ul>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="post-description">
-                                            <p>{{ post.contents }}</p>
+                                            <p>{{ post.Contents }}</p>
                                         </div>
                                     </div>
+                                    @* 貼文功能按鈕 *@
                                     <div class="post-meta">
                                         <div class="post-meta-top">
                                             <p><a href="#"><i class="fa-solid fa-thumbs-up"></i> <i class="fa-solid fa-heart"></i> <i class="fa-solid fa-face-laugh"></i> <span>Julia, Petrova and 306 like this</span></a></p>
@@ -85,9 +88,10 @@
                                             </ul>
                                         </div>
                                     </div>
+                                    @* 貼文回覆 *@
                                     <div v-show="post.showComments" class="comments">
                                         <ul class="lab-ul comment-list">
-                                            <li class="comment" v-for="reply in post.replies" :key="reply.id">
+                                            <li class="comment" v-for="reply in post.Replies" :key="reply.Id">
                                                 <div class="com-item">
                                                     <div class="com-thumb">
                                                         <img alt="" src="assets/images/member/profile/member1.jpg">
@@ -95,41 +99,42 @@
                                                     <div class="com-content">
                                                         <div class="com-title">
                                                             <div class="com-title-meta">
-                                                                <a href="#">{{ reply.author }}</a>
-                                                                <span> Just Now </span>
+                                                                <a href="#">{{reply.UserName}}</a>
+                                                                <span> || {{reply.Time}}</span>
                                                             </div>
                                                             <span class="reply">
-                                                                <a class="comment-reply-link" href="#" @@click.prevent="toggleNestedReplyForm(post.id, reply.id)"><i class="icofont-reply-all"></i>Reply</a>
+                                                                <a class="comment-reply-link" href="#" @@click.prevent="toggleNestedReplyForm(post.Id, reply.Id)"><i class="icofont-reply-all"></i>Reply</a>
                                                             </span>
                                                         </div>
-                                                        <p>{{ reply.content}}</p>
+                                                        <p>{{ reply.Content}}</p>
                                                     </div>
                                                 </div>
+                                                @* 回覆的回覆 *@
                                                 <ul class="lab-ul comment-list">
-                                                    <li class="comment" v-for="nestedReply in reply.nestedReplies" :key="nestedReply.id">
+                                                    <li class="comment" v-for="nestedReply in reply.nestedReplies" :key="nestedReply.Id">
                                                         <div class="com-thumb">
                                                             <img alt="" src="assets/images/blog/author/03.jpg">
                                                         </div>
                                                         <div class="com-content">
                                                             <div class="com-title">
                                                                 <div class="com-title-meta">
-                                                                    <a href="#">{{ nestedReply.author }}</a>
-                                                                    <span> Just Now </span>
+                                                                    <a href="#">{{ nestedReply.UserName }}</a>
+                                                                    <span> || {{nestedReply.Time}} </span>
                                                                 </div>
                                                             </div>
-                                                            <p>{{ nestedReply.content}}</p>
+                                                            <p>{{ nestedReply.Content}}</p>
                                                         </div>
                                                     </li>
                                                 </ul>
                                                 <div v-if="reply.showNestedForm" class="nested-reply-form">
                                                     <input type="text" v-model="reply.nestedReplyContent" class="nested-reply-input" placeholder="Write a reply...">
-                                                    <button class="nested-reply-submit-button" @@click.prevent="addNestedReply(post.id, reply.id)">Reply</button>
+                                                    <button class="nested-reply-submit-button" @@click.prevent="addNestedReply(post.Id, reply.Id)">Reply</button>
                                                 </div>
                                             </li>
                                         </ul>
                                         <div v-if="post.showReplyForm" class="reply-form">
                                             <input type="text" v-model="post.newReply" class="reply-input" placeholder="Write a reply...">
-                                            <button class="btn-reply" @@click.prevent="addReply(post.id)">Post Reply</button>
+                                            <button class="btn-reply" @@click.prevent="addReply(post.Id)">Post Reply</button>
                                         </div>
                                     </div>
                                 </div>
@@ -153,6 +158,7 @@
                 postPrivacy: 'Public',
                 posts: [],
                 postIdCounter: 1,
+                userName:'',
                 userId: 2 // 假設使用者ID為1
             };
         },
@@ -164,18 +170,35 @@
                 try {
                     const response = await axios.get('/api/Profile/GetPostsList');
                     this.posts = response.data.map(post => ({
-                        ...post,
+                        Id: post.id,
+                        UserId: post.userId,
+                        UserName:post.userName,
+                        Contents: post.contents,
+                        Time: post.time,
+                        Pictures: post.pictures,
+                        Replies: (post.replies || []).map(reply => ({
+                            Id: reply.id,
+                            UserId: reply.userId,
+                            UserName:reply.userName,
+                            PostId: reply.postId,
+                            ParentCommentId: reply.parentCommentId,
+                            Content: reply.contents,
+                            Time: reply.time,
+                            nestedReplies: (reply.nestedReplies || []).map(nestedReply => ({
+                                Id: nestedReply.id,
+                                UserId: nestedReply.userId,
+                                UserName:nestedReply.userName,
+                                PostId: nestedReply.postId,
+                                ParentCommentId: nestedReply.parentCommentId,
+                                Content: nestedReply.contents,
+                                Time: nestedReply.time
+                            })),
+                            showNestedForm: false,
+                            nestedReplyContent: ''
+                        })),
                         showComments: false,
                         showReplyForm: false,
-                        newReply: '',
-                        replies: post.replies.map(reply => ({
-                            ...reply,
-                            showNestedForm: false,
-                            nestedReplyContent: '',
-                            nestedReplies: reply.nestedReplies.map(nestedReply => ({
-                                ...nestedReply
-                            }))
-                        }))
+                        newReply: ''
                     }));
                 } catch (error) {
                     console.error('Error getPosts:', error);
@@ -189,20 +212,27 @@
 
                 const newPost = {
                     UserId: this.userId,
+                    UserName: this.userName,
                     Contents: this.postContent,
+                    Time:'',
                     Pictures: '',
-                    Replies:[],
+                    Replies: []
                 };
 
                 try {
                     const response = await axios.post('/api/Profile/AddPost', newPost);
                     const createdPost = response.data;
                     this.posts.unshift({
-                        ...createdPost,
+                        Id: createdPost.id,
+                        UserId: createdPost.userId,
+                        UserName: createdPost.userName,
+                        Contents: createdPost.contents,
+                        Time: createdPost.time,
+                        Pictures: createdPost.pictures,
+                        Replies: createdPost.replies || [],
                         showComments: false,
                         showReplyForm: false,
-                        newReply: '',
-                        replies: []
+                        newReply: ''
                     });
 
                     this.postContent = '';
@@ -210,23 +240,31 @@
                     console.error('Error addPost:', error);
                 }
             },
-            async addReply(postId) {
-                const post = this.posts.find(p => p.id === postId);
+            async addReply(PostId) {
+                const post = this.posts.find(p => p.Id === PostId);
                 if (post && post.newReply.trim()) {
                     const newReply = {
-                        userId: this.userId,
-                        postId: postId,
-                        content: post.newReply,
-                        parentCommentId: null, // 父回覆ID
-                        nestedReplies: []
+                        UserId: this.userId,
+                        UserName: this.userName,
+                        PostId: PostId,
+                        Contents: post.newReply,
+                        Time: '',
+                        ParentCommentId: null, // 貼文回覆ID
+                        NestedReplies: []
                     };
 
                     try {
                         const response = await axios.post('/api/Profile/AddComment', newReply);
                         const createdReply = response.data;
 
-                        post.replies.push({
-                            ...createdReply,
+                        post.Replies.push({
+                            Id: createdReply.id,
+                            UserId: createdReply.userId,
+                            UserName: createdReply.userName,
+                            PostId: createdReply.postId,
+                            ParentCommentId: createdReply.parentCommentId,
+                            Content: createdReply.contents,
+                            Time: createdReply.time,
                             showNestedForm: false,
                             nestedReplyContent: '',
                             nestedReplies: []
@@ -238,17 +276,19 @@
                     }
                 }
             },
-            async addNestedReply(postId, replyId) {
-                const post = this.posts.find(p => p.id === postId);
+            async addNestedReply(PostId, replyId) {
+                const post = this.posts.find(p => p.Id === PostId);
                 if (post) {
-                    const reply = post.replies.find(r => r.id === replyId);
+                    const reply = post.Replies.find(r => r.Id === replyId);
                     if (reply && reply.nestedReplyContent.trim()) {
                         const newNestedReply = {
-                            userId: this.userId,
-                            postId: postId,
-                            content: reply.nestedReplyContent,
-                            parentCommentId: replyId, // 父貼文ID
-                            nestedReplies:[]
+                            UserId: this.userId,
+                            UserName: this.userName,
+                            PostId: PostId,
+                            Contents: reply.nestedReplyContent,
+                            Time: '',
+                            ParentCommentId: replyId, // 貼文回覆ID
+                            NestedReplies:[]
                         };
 
                         try {
@@ -256,7 +296,13 @@
                             const createdNestedReply = response.data;
 
                             reply.nestedReplies.push({
-                                ...createdNestedReply,
+                                Id: createdNestedReply.id,
+                                UserId: createdNestedReply.userId,
+                                UserName: createdNestedReply.userName,
+                                PostId: createdNestedReply.postId,
+                                ParentCommentId: createdNestedReply.parentCommentId,
+                                Content: createdNestedReply.contents,
+                                Time: createdNestedReply.time,
                                 showNestedForm: false,
                                 nestedReplyContent: ''
                             });
@@ -284,10 +330,10 @@
                 alert('Liked!');
                 // Implement like functionality here
             },
-            toggleNestedReplyForm(postId, replyId) {
-                const post = this.posts.find(p => p.id === postId);
+            toggleNestedReplyForm(PostId, replyId) {
+                const post = this.posts.find(p => p.Id === PostId);
                 if (post) {
-                    const reply = post.replies.find(r => r.id === replyId);
+                    const reply = post.Replies.find(r => r.Id === replyId);
                     if (reply) {
                         reply.showNestedForm = !reply.showNestedForm;
                     }
