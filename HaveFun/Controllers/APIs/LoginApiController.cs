@@ -18,12 +18,14 @@ namespace HaveFun.Controllers.APIs
         Jwt _jwt;
         PasswordSecure _passwordSecure;
         SendEmail _sendEmail;
-        public LoginApiController(HaveFunDbContext dbContext, Jwt jwt, PasswordSecure passwordSecure, SendEmail sendEmail)
+        DESSecure _desSecure;
+        public LoginApiController(HaveFunDbContext dbContext, Jwt jwt, PasswordSecure passwordSecure, SendEmail sendEmail, DESSecure desSecure)
         {
             _dbContext = dbContext;
             _jwt = jwt;
             _passwordSecure = passwordSecure;
             _sendEmail = sendEmail;
+            _desSecure = desSecure;
         }
 
         [HttpPost]
@@ -90,8 +92,9 @@ namespace HaveFun.Controllers.APIs
                 try
                 {
                     // 設定唯一性的token跟更改密碼的連結
-                    string userToken = Convert.ToBase64String(_passwordSecure.CreateSalt());
-                    string? link = Url.Action("ChangePassword", "Login", new { id = user.Id, token = userToken }, protocol: HttpContext.Request.Scheme);
+                    string decryptToken = $"{user.Id}/{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}";
+                    string encryptToken = _desSecure.Encrypt(decryptToken);
+                    string? link = Url.Action("ChangePassword", "Login", new { token = encryptToken }, protocol: HttpContext.Request.Scheme);
 
                     _sendEmail.emailTo = email;
                     _sendEmail.subject = "HaveFun，重置您的帳戶密碼";
