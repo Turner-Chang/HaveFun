@@ -10,8 +10,8 @@ using HaveFun.DTOs;
 
 namespace HaveFun.Controllers.APIs
 {
-    [Route("api/MemberLabelsApi/[action]")]
-    [ApiController]
+	[Route("api/[controller]/[action]")]
+	[ApiController]
     public class MemberLabelsApiController : ControllerBase
     {
         private readonly HaveFunDbContext _context;
@@ -74,27 +74,46 @@ namespace HaveFun.Controllers.APIs
         }
 
         // POST: api/MemberLabelsApi/PostMemberLabel       
-        [HttpPost("{id}")]
-        public async Task<ActionResult<MemberLabel>> PostMemberLabel(MemberLabelDTO memberLabelDTO)
+        [HttpPost]
+        public async Task<ActionResult<MemberLabelDTO>> PostMemberLabel(MemberLabelDTO memberLabelDTO)
         {
-            if (memberLabelDTO == null || memberLabelDTO.LabelIds == null || memberLabelDTO.LabelIds.Count == 0)
-            { 
-                return BadRequest("請求數據不能為空");
+			if (memberLabelDTO == null || memberLabelDTO.LabelIds == null || !memberLabelDTO.LabelIds.Any())
+			{ 
+                return BadRequest("請求數據不能為空或標籤列表不能為空");
             }
-            //在資料庫中建立新的MemberLabel紀錄
-            foreach(var labelId in memberLabelDTO.LabelIds)
+            try
             {
-                var memberLabel = new MemberLabel
+                var memberLabels = new List<MemberLabel>();
+                //在資料庫中建立新的MemberLabel紀錄
+                foreach (var labelId in memberLabelDTO.LabelIds)
                 {
-                    UserId = memberLabelDTO.UserId,
-                    LabelId = labelId
-                };
-                _context.MemberLabels.Add(memberLabel);
-            }
-            
-            await _context.SaveChangesAsync();
+                    //檢查LabelId是否有效
+                    var labelExists = await _context.Labels.AnyAsync(l => l.Id == labelId);
+                    if (!labelExists)
+                    {
+                        return BadRequest($"標籤ID{labelId} 不存在");
+                    }
 
-            return CreatedAtAction("GetMemberLabel", new { id = memberLabelDTO.UserId }, memberLabelDTO);
+                    var memberLabel = new MemberLabel
+                    {
+                        UserId = memberLabelDTO.UserId,
+                        LabelId = labelId
+                    };
+                    memberLabels.Add(memberLabel);
+                }
+                _context.MemberLabels.AddRange(memberLabels);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction(nameof(GetMemberLabel), new { id = memberLabelDTO.UserId }, memberLabelDTO);
+            }
+            catch (Exception ex)
+            {
+				// 紀錄異常
+				Console.Error.WriteLine($"保存標籤時發生異常: {ex.Message}");
+				return StatusCode(500, $"保存標籤時發生異常2: {ex.Message}");
+			}
+            
+                                  
         }   
 
         // DELETE: api/MemberLabelsApi/5
