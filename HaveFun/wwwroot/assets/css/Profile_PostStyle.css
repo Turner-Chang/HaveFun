@@ -48,8 +48,10 @@
             color: blue; /* 設定回覆連結的字體顏色 */
         }
 
-        .comment-list .comment .com-content p {
+        .comment-list .comment .com-content .post-description p {
             font-size: 14px; /* 設定回覆內容的字體大小 */
+            word-break: break-word; /*處理長單字換行*/
+            white-space: pre-wrap; /*保留空格和換行符號，在必要時換行*/
         }
 
 /*回覆的回覆 間距*/
@@ -95,26 +97,26 @@ textarea {
     /*貼文的回覆*/
     .reply-form .reply-input {
         width: 100%;
-        height: 24px; /*初始高度为1行 */
-        min-height: 30px; /*最小高度 */
-        overflow-y: hidden; /* 隐藏滚动条 */
-        resize: none; /* 禁用手动调整大小 */
+        height: 24px; /* 初始高度為1行 */
+        min-height: 30px; /* 最小高度 */
+        overflow-y: hidden; /* 隱藏垂直scrollbar */
+        resize: none; /* 禁用手動調整大小 */
         padding-top: 5px;
         padding-bottom: 5px;
         padding-left: 10px;
         padding-right: 10px;
         margin-left: 10px;
-        box-sizing: border-box; /* 确保内边距不影响整体宽度 */
+        box-sizing: border-box; /* 確保內邊距不影響整體寬度 */
         border: 1px solid #ccc;
         border-radius: 4px;
         font-size: 14px;
-        line-height: 20px; /*每行高度*/
-        transition: height 0.2s ease-in-out; /* 动画效果 */
+        line-height: 20px; /* 每行高度 */
+        transition: height 0.2s ease-in-out; /* 動畫效果 */
     }
 
-    .reply-form .reply-input::-webkit-scrollbar {
-            display: none; /* 隐藏滚动条 */
-    }
+    /*.reply-form .reply-input::-webkit-scrollbar {
+            display: none;*/ /* 隱藏scrollbar */
+    /*}*/
 
     .reply-form .btn-reply {
         background-color: #f24570;

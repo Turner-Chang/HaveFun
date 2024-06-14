@@ -133,7 +133,7 @@
                                                 <div v-if="reply.showNestedForm" class="nested-reply-form">
                                                     @* <input type="text" v-model="reply.nestedReplyContent" class="nested-reply-input" placeholder="Write a reply..."> *@
                                                     <textarea v-model="reply.nestedReplyContent"
-                                                              class="nested-reply-input"
+                                                              :class="`nested-reply-input nested-reply-input-${reply.Id}`"
                                                               placeholder="Write a reply..."
                                                               @@keydown.enter="handleEnter"
                                                               @@blur="resetTextarea('nested-reply-input')">
@@ -144,7 +144,7 @@
                                         </ul>
                                         <div v-if="post.showReplyForm" class="reply-form">
                                             <textarea v-model="post.newReply"
-                                                      class="reply-input"
+                                                      :class="`reply-input reply-input-${post.Id}`"
                                                       placeholder="Write a reply..."
                                                       @@keydown.enter="handleEnter"
                                                       @@blur="resetTextarea('reply-input')">
@@ -367,13 +367,24 @@
             showCommentsAlert(post) {
                 alert("Show Comments");
             },
+
+            // 顯示/隱藏 回覆內容與輸入框
             commentOnPost(post) {
                 post.showReplyForm = !post.showReplyForm;
                 post.showComments = post.showReplyForm;
+
+                this.$nextTick(() => {
+                    const textarea = document.querySelector(`.reply-input-${post.Id}`);
+                    if (textarea) {
+                        textarea.focus(); // 聚焦到 reply-input
+                    }
+                });
             },
             likePost(post) {
                 alert('Liked!');
             },
+
+            // 顯示/隱藏 貼文回覆的回覆輸入框 
             toggleNestedReplyForm(PostId, replyId) {
                 const post = this.posts.find(p => p.Id === PostId);
                 if (post) {
@@ -382,21 +393,28 @@
                         reply.showNestedForm = !reply.showNestedForm;
                     }
                 }
+
+                this.$nextTick(() => {
+                    const textarea = document.querySelector(`.nested-reply-input-${replyId}`)
+                    if (textarea) {
+                        textarea.focus(); // 聚焦到 nested-reply-input
+                    }
+                });
             },
 
             // 調整高度
             autoResize(event) {
                 const textarea = event.target;
-                textarea.style.height = 'auto'; // 重设为 auto
+                textarea.style.height = 'auto'; // 設定行高自動依內文調整
                 const scrollHeight = textarea.scrollHeight;
-                textarea.style.height = `${Math.min(scrollHeight, 72)}px`; // 控制高度最大为 3 行
+                textarea.style.height = `${Math.min(scrollHeight, 72)}px`; // 設定行高最多三行(一行24px)、Math.min(a,b) a<b return a 、a>b return b
             },
 
             // Enter事件
             handleEnter(event) {
                 const textarea = event.target;
                 if (event.key === 'Enter') {
-                    event.preventDefault(); // 阻止默认行为
+                    event.preventDefault(); 
                     const start = textarea.selectionStart;
                     const end = textarea.selectionEnd;
                     const value = textarea.value;
@@ -408,7 +426,7 @@
             resetTextarea(name) {
                 const textarea = document.querySelector(`.${name}`);
                 textarea.value = "";
-                textarea.style.height = '24px'; // 重置高度为初始高度
+                textarea.style.height = '24px'; // 初始化原始高度
             }
         }
     }).mount('#post');
