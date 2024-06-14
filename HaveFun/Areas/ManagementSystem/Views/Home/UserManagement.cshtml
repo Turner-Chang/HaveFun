@@ -54,7 +54,7 @@
 			<div class="modal-content">
 				<div class="modal-header bg-info">
 					<h5 class="modal-title" id="modalTitleId">
-						檢舉貼文
+						檢舉使用者
 					</h5>
 					<button type="button"
 							class="btn-close"
@@ -65,20 +65,25 @@
 				<div class="modal-body row lh-lg">
 					<div>
 						<label class="col-6 text-decoration-underline">
-							被檢舉貼文Id:
+							被檢舉人名稱:
 						</label>
 						<label class="col-6 text-start">
-							
+							{{userInfos.name}}
 						</label>
-					</div>
-					<div>
 						<label class="col-6 text-decoration-underline">
-							被檢舉貼文內容:
+							被檢舉人性別:
 						</label>
-						<label class="col-12 text-center lh-base">
-							
+						<label class="col-6 text-start">
+							{{userInfos.gender}}
+						</label>
+						<label class="col-6 text-decoration-underline">
+							被檢舉人地址:
+						</label>
+						<label class="col-6 text-start">
+							{{userInfos.address}}
 						</label>
 					</div>
+				
 					<div>
 						<label class="col-6 text-decoration-underline">
 							被檢舉圖片:
@@ -103,7 +108,7 @@
 							data-bs-dismiss="modal">
 						駁回檢舉
 					</button>
-					<button type="button" @@click=" " class="btn btn-danger">刪除貼文</button>
+					<button type="button" @@click=" " class="btn btn-danger">封鎖使用者</button>
 				</div>
 			</div>
 		</div>
@@ -121,15 +126,16 @@
 					reviews: [],
 					tableStart:0,
 					tableEnd: 5,
+					userInfos:[]
 				};
 			},
 			methods: {
 				check(id) {
 					this.showModal();
-
+					this.getUserInfo(id);
 				},	
 				getUserInfo(userid) {
-				//axios.get('')
+					axios.get('https://localhost:7152/api/UserInfo/GetUserinfos/4').then(r=>r.data).then(d=>App.userInfos=d );
 				},
 				showModal() { $("#UserModal").modal("show"); },
 				hideModal() { $("#UserModal").modal("hide"); },

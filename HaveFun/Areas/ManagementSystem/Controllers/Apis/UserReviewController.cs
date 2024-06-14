@@ -30,5 +30,19 @@ namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
             }
         return review1;
         }
+        [HttpPost]
+        public async Task<string> Create(UserReviewDTO userReviewDTO ) {
+            UserReview userReview1 = new UserReview { 
+            
+            complaintCategoryId = userReviewDTO.complaintCategoryId,
+            beReportedUserId=userReviewDTO.beReportedUserId,
+            reportUserId=userReviewDTO.reportUserId,
+            reportTime=userReviewDTO.reportTime,
+            
+            };
+            _context.UserReviews.Add(userReview1);
+            await _context.SaveChangesAsync();
+            return "新增成功";
+        } 
     }
 }
