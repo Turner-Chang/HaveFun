@@ -34,10 +34,10 @@ namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
         public async Task<string> Create(UserReviewDTO userReviewDTO ) {
             UserReview userReview1 = new UserReview { 
             
-            complaintCategoryId = userReviewDTO.complaintCategoryId,
-            beReportedUserId=userReviewDTO.beReportedUserId,
-            reportUserId=userReviewDTO.reportUserId,
-            reportTime=userReviewDTO.reportTime,
+            ComplaintCategoryId = userReviewDTO.complaintCategoryId,
+            BeReportedUserId=userReviewDTO.beReportedUserId,
+            ReportUserId=userReviewDTO.reportUserId,
+            ReportTime=userReviewDTO.reportTime,
             
             };
             _context.UserReviews.Add(userReview1);
