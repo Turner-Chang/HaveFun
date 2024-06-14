@@ -201,7 +201,7 @@
                                                                     <div class="userAction">
                                                                         {{post.like.length}}
                                                                         <a href="#" id="btnLike">
-                                                                            <i id="heart" class="fa-regular fa-heart" @@click="clickLike(post)"></i>
+                                                                            <i id="heart" :class="['fa-heart', clickLikeOrNot(post) ? 'fa-solid' : 'fa-regular']" @@click="clickLike(post)"></i>
                                                                         </a>
                                                                         <div class="btn-group">
                                                                             <button type="button" id="btnMore" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" @@click="showDropDown">
@@ -387,6 +387,15 @@
                         .then(res => res.json())
                         .then(data => { this.ratItems = data })
                         .catch(error => { console.log('fetch ratItems failed!') });
+                },
+                //檢查登入者是否按此篇貼文Like
+                clickLikeOrNot(post) {
+                    const userIds = post.like.map(like => like.userId);
+                    if (userIds.includes(this.loginUserId)) { 
+                        return true;
+                    } else {
+                        return false;
+                    }
                 },
                 //按讚請求
                 clickLike(post) {
