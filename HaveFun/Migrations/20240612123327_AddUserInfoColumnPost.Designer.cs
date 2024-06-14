@@ -4,6 +4,7 @@ using HaveFun.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HaveFun.Migrations
 {
     [DbContext(typeof(HaveFunDbContext))]
-    partial class HaveFunDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240612123327_AddUserInfoColumnPost")]
+    partial class AddUserInfoColumnPost
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -299,6 +302,40 @@ namespace HaveFun.Migrations
                     b.HasKey("ComplaintCategoryId");
 
                     b.ToTable("ComplaintCategories");
+                });
+
+            modelBuilder.Entity("HaveFun.Models.Friend", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("FriendListId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("FriendListId1")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsBlocked")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FriendListId");
+
+                    b.HasIndex("FriendListId1");
+
+                    b.ToTable("Friend");
                 });
 
             modelBuilder.Entity("HaveFun.Models.FriendList", b =>
@@ -638,37 +675,6 @@ namespace HaveFun.Migrations
                     b.ToTable("UserPictures");
                 });
 
-            modelBuilder.Entity("HaveFun.Models.UserReview", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BeReportedUserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ComplaintCategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ReportTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ReportUserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BeReportedUserId");
-
-                    b.HasIndex("ComplaintCategoryId");
-
-                    b.HasIndex("ReportUserId");
-
-                    b.ToTable("UserReviews");
-                });
-
             modelBuilder.Entity("HaveFun.Models.Activity", b =>
                 {
                     b.HasOne("HaveFun.Models.ActivityType", "ActivityType")
@@ -787,6 +793,17 @@ namespace HaveFun.Migrations
                     b.Navigation("Post");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("HaveFun.Models.Friend", b =>
+                {
+                    b.HasOne("HaveFun.Models.FriendList", null)
+                        .WithMany("BlackList")
+                        .HasForeignKey("FriendListId");
+
+                    b.HasOne("HaveFun.Models.FriendList", null)
+                        .WithMany("Friends")
+                        .HasForeignKey("FriendListId1");
                 });
 
             modelBuilder.Entity("HaveFun.Models.FriendList", b =>
@@ -928,33 +945,6 @@ namespace HaveFun.Migrations
                     b.Navigation("UserInfo");
                 });
 
-            modelBuilder.Entity("HaveFun.Models.UserReview", b =>
-                {
-                    b.HasOne("HaveFun.Models.UserInfo", "User2")
-                        .WithMany("BeRepostedUsers")
-                        .HasForeignKey("BeReportedUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("HaveFun.Models.ComplaintCategory", "ComplaintCategory")
-                        .WithMany("UserReviews")
-                        .HasForeignKey("ComplaintCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("HaveFun.Models.UserInfo", "User1")
-                        .WithMany("ReportUsers")
-                        .HasForeignKey("ReportUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("ComplaintCategory");
-
-                    b.Navigation("User1");
-
-                    b.Navigation("User2");
-                });
-
             modelBuilder.Entity("HaveFun.Models.Activity", b =>
                 {
                     b.Navigation("ActivityParticipants");
@@ -967,9 +957,11 @@ namespace HaveFun.Migrations
                     b.Navigation("Replies");
                 });
 
-            modelBuilder.Entity("HaveFun.Models.ComplaintCategory", b =>
+            modelBuilder.Entity("HaveFun.Models.FriendList", b =>
                 {
-                    b.Navigation("UserReviews");
+                    b.Navigation("BlackList");
+
+                    b.Navigation("Friends");
                 });
 
             modelBuilder.Entity("HaveFun.Models.Label", b =>
@@ -995,8 +987,6 @@ namespace HaveFun.Migrations
 
                     b.Navigation("ActivityReviews");
 
-                    b.Navigation("BeRepostedUsers");
-
                     b.Navigation("Comments");
 
                     b.Navigation("Friends1");
@@ -1014,8 +1004,6 @@ namespace HaveFun.Migrations
                     b.Navigation("Posts");
 
                     b.Navigation("ReceiverMessages");
-
-                    b.Navigation("ReportUsers");
 
                     b.Navigation("SenderMessages");
 

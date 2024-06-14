@@ -1,11 +1,11 @@
-﻿using HaveFun.Models;
+﻿using HaveFun.DTOs;
 
 namespace HaveFun.Service
 {
     public interface IFriendService
     {
-        List<Friend> GetFriends();
-        List<Friend> GetBlockedFriends();
+        List<FriendDTO> GetFriends();
+        List<FriendDTO> GetBlockedFriends();
         void BlockFriend(int friendId);
         void UnblockFriend(int friendId);
     }
