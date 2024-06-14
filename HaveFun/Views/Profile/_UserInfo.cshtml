@@ -114,7 +114,7 @@
 					</ul>
 					<button type="button" class="default-btn" @@click="showLabelSelectionForm">重新選擇</button>
 				</div>
-				<div v-else class="info-card-title">
+				<div v-else style="display: none;" class="info-card-title">
 					<h6>標籤選取</h6>
 				</div>
 				<div class="info-card-content" v-for="label in availableLabels" :key="label.id">
@@ -223,7 +223,7 @@
 	var app_MemberLable = Vue.createApp({
 		data() {
 			return {
-				userId: "",
+				userId: 2,
 				availableLabels: [], /* 從後端獲取所有可用標籤 */
 				selectedLabels: [], /* 用戶選擇的標籤ID */
 			}
@@ -239,13 +239,31 @@
 					UserId: this.userId,
 					LabelIds: this.selectedLabels
 				};
-				axios.post(`${baseAddress}/api/MemberLabelsApi/PostMemberLabel`, memberLabelDto)
-					.then(response => { console.log("標籤選取成功:", response); })
-					.catch(error => { console.error('標籤選取時出錯', error); });
+				axios.post(`${baseAddress}/api/MemberLabelsApi/submitLabels`, memberLabelDto, {
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				})
+					.then(response => {
+						console.log("標籤選取成功:", response);
+					})
+					.catch(error => {
+						console.error('標籤選取時出錯', error);
+						if (error.response) {
+							console.error('响应数据:', error.response.data);
+							console.error('响应状态:', error.response.status);
+							console.error('响应头:', error.response.headers);
+						} else if (error.request) {
+							console.error('请求数据:', error.request);
+						} else {
+							console.error('错误信息:', error.message);
+						}
+					});
 			},
 			showLabelSelectionForm() {
 				//清空以選擇的標籤
-				this.selectedLabels = [];				
+				this.selectedLabels = [];
+				document.getElementById("labelSelectionForm").style.display = "block";
 			},
 			getLabelById(labelId) {
 				return this.availableLabels.find(label => label.id === labelId);
