@@ -82,7 +82,7 @@ namespace HaveFun.Controllers.APIs
                     UserName = user.Name,
                     UserId = user.Id,
                     ProfilePicture = user.ProfilePicture
-                }).ToListAsync();
+                }).FirstOrDefaultAsync();
             return new JsonResult(userInfo);
         }
         //新增貼文
@@ -141,17 +141,22 @@ namespace HaveFun.Controllers.APIs
             var result = await _context.ComplaintCategories.ToListAsync();
             return new JsonResult(result);
         }
-        //檢舉貼文 //目前未過 未進到Server端
+        //檢舉貼文
         // POST: api/Post/RatPostReview
         [HttpPost]
-        public async Task<ActionResult> RatPostReview(PostReviewDTO ratPost)
+        public async Task<JsonResult> RatPostReview(PostReviewDTO ratPost)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return new JsonResult(ModelState);
             }
             try 
             {
+                bool exist = await _context.PostReviews.AnyAsync(record => record.UserId == ratPost.UserId && record.PostId == ratPost.PostId);
+                if (exist)
+                {
+                    return new JsonResult("此用戶已經檢舉過此貼文");
+                }
                 PostReview post = new PostReview
                 {
                     PostReviewId = 0,
@@ -164,15 +169,15 @@ namespace HaveFun.Controllers.APIs
                 };
                 _context.PostReviews.Add(post);
                 await _context.SaveChangesAsync();
-                return Content("新增檢舉貼文成功");
+                return new JsonResult("新增檢舉貼文成功");
             }
             catch (DbException ex)
             {
-                return Content($"資料庫錯誤：{ex.Message}");
+                return new JsonResult($"資料庫錯誤：{ex.Message}");
             }
             catch (Exception ex)
             {
-                return Content($"伺服器錯誤：{ex.Message}");
+                return new JsonResult($"伺服器錯誤：{ex.Message}");
             }
         }
         //刪除貼文(目前未使用，從資料庫整筆貼文刪掉)
@@ -213,25 +218,41 @@ namespace HaveFun.Controllers.APIs
         //新增貼文按讚
         // POST: api/Post/AddLike
         [HttpPost]
-        public async Task<ActionResult> AddLike(Like like)
+        public async Task<JsonResult> AddLike(LikeDTO clcickLike)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return new JsonResult(ModelState);
             }
             try
             {
-                _context.Likes.Add(like);
-                await _context.SaveChangesAsync();
-                return Content("Like成立");
+                var record = await _context.Likes.FirstOrDefaultAsync(record => record.PostId == clcickLike.PostId && record.UserId == clcickLike.UserId);
+                if (record != null)
+                {
+                    _context.Likes.Remove(record);
+                    await _context.SaveChangesAsync();
+                    return new JsonResult("取消Like");
+                }
+                else
+                {
+                    Like like = new Like
+                    {
+                        Id = 0,
+                        PostId = clcickLike.PostId,
+                        UserId = clcickLike.UserId,
+                    };
+                    _context.Likes.Add(like);
+                    await _context.SaveChangesAsync();
+                    return new JsonResult("Like成立");
+                }
             }
             catch (DbException ex)
             {
-                return Content($"資料庫錯誤：{ex.Message}");
+                return new JsonResult($"資料庫錯誤：{ex.Message}");
             }
             catch (Exception ex)
             {
-                return Content($"伺服器錯誤：{ex.Message}");
+                return new JsonResult($"伺服器錯誤：{ex.Message}");
             }
         }
     }

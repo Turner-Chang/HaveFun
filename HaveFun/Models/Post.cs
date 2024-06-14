@@ -12,6 +12,7 @@ namespace HaveFun.Models
         [ForeignKey("User")]
         public int UserId { get; set; }
         public virtual UserInfo User { get; set; }
+
         [Required]
         [MaxLength(2000, ErrorMessage ="文字上限為2000字")]
         [Column("Contents", TypeName = "nvarchar")]
