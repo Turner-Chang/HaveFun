@@ -51,12 +51,14 @@ namespace HaveFun.Controllers.APIs
         {
             var posts = await _context.Posts
                 .Where(p => p.Status == 0)
+                .OrderByDescending(p => p.Id) // Id由大到小排序
                 .Select(p => new PostsDTO
                 {
                     Id = p.Id,
                     UserId = p.UserId,
+                    UserName = p.User.Name,
                     Contents = p.Contents,
-                    Time = p.Time,
+                    Time = p.Time.ToString("yyyy-MM-dd HH:mm:ss"),
                     Pictures = p.Pictures,
                     Replies = p.Comments
                         .Where(c => c.ParentCommentId == null)
@@ -64,18 +66,20 @@ namespace HaveFun.Controllers.APIs
                         {
                             Id = c.Id,
                             UserId = c.UserId,
+                            UserName=c.User.Name,
                             PostId = c.PostId,
                             ParentCommentId = c.ParentCommentId,
-                            Content = c.Contents,
-                            Time = c.Time,
+                            Contents = c.Contents,
+                            Time = c.Time.ToString("yyyy-MM-dd HH:mm:ss"),
                             NestedReplies = c.Replies.Select(nc => new CommentsDTO
                             {
                                 Id = nc.Id,
                                 UserId = nc.UserId,
+                                UserName = nc.User.Name,
                                 PostId = nc.PostId,
                                 ParentCommentId = nc.ParentCommentId,
-                                Content = nc.Contents,
-                                Time = nc.Time
+                                Contents = nc.Contents,
+                                Time = nc.Time.ToString("yyyy-MM-dd HH:mm:ss")
                             }).ToList()
                         }).ToList()
                 })
@@ -108,11 +112,20 @@ namespace HaveFun.Controllers.APIs
                 return BadRequest("Invalid User ID");
             }
 
+            // 查詢會員資訊
+            var userInfo = await _context.UserInfos
+                   .FirstOrDefaultAsync(u => u.Id == postDto.UserId);
+
+            if (userInfo == null)
+            {
+                return BadRequest("User not found");
+            }
+
             var post = new Post
             {
                 UserId = postDto.UserId,
                 Contents = postDto.Contents,
-                Time = DateTime.UtcNow,
+                Time = DateTime.Now,
                 Pictures = postDto.Pictures,
                 Status = 0
             };
@@ -121,6 +134,8 @@ namespace HaveFun.Controllers.APIs
             await _context.SaveChangesAsync();
 
             postDto.Id = post.Id;
+            postDto.UserName = userInfo.Name;
+            postDto.Time = post.Time.ToString("yyyy-MM-dd HH:mm:ss");
 
             return CreatedAtAction(nameof(GetPostsList), new { id = post.Id }, postDto);
         }
@@ -134,7 +149,7 @@ namespace HaveFun.Controllers.APIs
                 return BadRequest("Comment data is null");
             }
 
-            if (string.IsNullOrEmpty(commentDto.Content))
+            if (string.IsNullOrEmpty(commentDto.Contents))
             {
                 return BadRequest("Comment content is empty");
             }
@@ -144,28 +159,32 @@ namespace HaveFun.Controllers.APIs
                 return BadRequest("Invalid Post ID");
             }
 
+            // 查詢會員資訊
+            var userInfo = await _context.UserInfos
+                   .FirstOrDefaultAsync(u => u.Id == commentDto.UserId);
+
+            if (userInfo == null)
+            {
+                return BadRequest("User not found");
+            }
+
             var comment = new Comment
             {
                 UserId = commentDto.UserId,
                 PostId = commentDto.PostId,
                 ParentCommentId = commentDto.ParentCommentId,
-                Contents = commentDto.Content,
-                Time = DateTime.UtcNow
+                Contents = commentDto.Contents,
+                Time = DateTime.Now
             };
 
             _context.Comments.Add(comment);
             await _context.SaveChangesAsync();
 
-            var createdComment = new Comment
-            {
-                UserId = comment.UserId,
-                PostId = comment.PostId,
-                ParentCommentId = comment.ParentCommentId,
-                Contents = comment.Contents,
-                Time = comment.Time
-            };
+            commentDto.Id = comment.Id;
+            commentDto.UserName = userInfo.Name;
+            commentDto.Time = comment.Time.ToString("yyyy-MM-dd HH:mm:ss");
 
-            return CreatedAtAction(nameof(AddComment), new { id = createdComment.Id }, createdComment);
+            return CreatedAtAction(nameof(AddComment), new { id = comment.Id }, commentDto);
         }
 
         [HttpGet]

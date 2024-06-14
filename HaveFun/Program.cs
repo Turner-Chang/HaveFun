@@ -22,6 +22,7 @@ builder.Services.AddScoped<SaveImage>();
 builder.Services.AddSingleton<PasswordSecure>();
 builder.Services.AddScoped<SendEmail>();
 builder.Services.AddSingleton<Jwt>();
+builder.Services.AddSingleton<DESSecure>();
 
 builder.Services.AddScoped<MembershipService>();
 
