@@ -149,8 +149,9 @@ namespace HaveFun.Controllers.APIs
 
         // 傳送Email的Api
         [HttpGet("{id}")]
-        public async Task<JsonResult> SendCheckEmail(int id)
+        public async Task<JsonResult> SendCheckEmail(int userid)
         {
+            string? link = Url.Action("Verification", "Register", new { id = userid }, protocol: HttpContext.Request.Scheme);
             // 寄信的內容
             string mailBody = @$"<!DOCTYPE html>
                                 <html lang=""en"">
@@ -166,10 +167,10 @@ namespace HaveFun.Controllers.APIs
                                         <p>親愛的用戶，</p>
                                         <p>感謝您註冊我們的服務！為了完成您的註冊，請點擊下方的鏈接進行確認：</p>
                                         <p style=""text-align: center;"">
-                                            <a href=""https://localhost:7152/Register/Verification/{id}"" style=""display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none;"">確認郵件</a>
+                                            <a href=""{link}"" style=""display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none;"">確認郵件</a>
                                         </p>
                                         <p>如果上面的鏈接無法點擊，請將以下地址複製到您的瀏覽器地址欄中進行訪問：</p>
-                                        <p style=""text-align: center;"">https://localhost:7152/Register/Verification/{id}</p>
+                                        <p style=""text-align: center;"">{link}</p>
                                         <p>如果您並未註冊，請忽略此郵件。</p>
                                         <p>祝您使用愉快！</p>
                                         <p>此致，敬禮</p>
@@ -182,7 +183,7 @@ namespace HaveFun.Controllers.APIs
             try
             {
                 // 獲取寄信的人的email
-                UserInfo? user = await _dbContext.UserInfos.FindAsync(id);
+                UserInfo? user = await _dbContext.UserInfos.FindAsync(userid);
                 if (user == null)
                 {
                     return new JsonResult(new
