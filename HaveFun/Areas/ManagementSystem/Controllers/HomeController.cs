@@ -21,5 +21,9 @@ namespace HaveFun.Areas.ManagementSystem.Controllers
         {
             return View();
         }
-    }
+		public IActionResult LabelManage()
+		{
+			return View();
+		}
+	}
 }
