@@ -44,24 +44,7 @@ namespace HaveFun.Controllers.APIs
             return Ok(chatRoomDTOs);
         }
 
-        // GET: api/ChatRooms/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ChatRoomDTO>> GetChatRoom(int id)
-        {
-            var chatRoom = await _context.ChatRooms
-                .Include(c => c.Receiver)
-                .Include(c => c.Sender)
-                .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (chatRoom == null)
-            {
-                return NotFound();
-            }
-
-            var chatRoomDTO = MapToChatRoomDTO(chatRoom, chatRoom.Sender, chatRoom.Receiver);
-            return Ok(chatRoomDTO);
-        }
-        // POST: api/ChatRooms
         [HttpPost]
         public async Task<ActionResult<string>> PostChatRoom(ChatRoomDTO chatRoomDTO)
         {
@@ -79,7 +62,40 @@ namespace HaveFun.Controllers.APIs
 
             return CreatedAtAction(nameof(GetChatRoom), new { id = chatRoom.Id }, $"聊天室編號:{chatRoom.Id}");
         }
+        // GET: api/ChatRooms/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ChatRoomDTO>> GetChatRoom(int id)
+        {
+            var chatRoom = await _context.ChatRooms
+                .Include(c => c.Receiver)
+                .Include(c => c.Sender)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
+            if (chatRoom == null)
+            {
+                return NotFound();
+            }
+
+            var chatRoomDTO = MapToChatRoomDTO(chatRoom, chatRoom.Sender, chatRoom.Receiver);
+            return Ok(chatRoomDTO);
+        }
+        [HttpGet("GetByUser1IdAndUser2Id/{User1Id}/{User2Id}")]
+        public async Task<ActionResult<IEnumerable<ChatRoomDTO>>> GetByUser1IdAndUser2Id(int User1Id, int User2Id)
+        {
+            var chatRooms = await _context.ChatRooms
+                .Where(m => m.User1Id == User1Id && m.User2Id == User2Id)
+                .Include(c => c.Receiver)
+                .Include(c => c.Sender)
+                .ToListAsync();
+
+            if (!chatRooms.Any())
+            {
+                return NotFound();
+            }
+
+            var chatRoomDTOs = chatRooms.Select(chatRoom => MapToChatRoomDTO(chatRoom, chatRoom.Sender, chatRoom.Receiver));
+            return Ok(chatRoomDTOs);
+        }
         // PUT: api/ChatRooms/5
         [HttpPut("{id}")]
         public async Task<ActionResult<string>> PutChatRoom(int id, ChatRoomDTO chatRoomDTO)
@@ -121,8 +137,6 @@ namespace HaveFun.Controllers.APIs
 
             return Ok("修改聊天室紀錄成功");
         }
-
-
         // DELETE: api/ChatRooms/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteChatRoom(int id)

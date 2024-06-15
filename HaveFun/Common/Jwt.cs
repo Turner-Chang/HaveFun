@@ -10,7 +10,6 @@ namespace HaveFun.Common
     public class Jwt
     {
         IConfiguration _iconfiguration;
-        public Jwt() { }
         public Jwt(IConfiguration iconfiguration)
         {
             _iconfiguration = iconfiguration;
