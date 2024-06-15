@@ -79,12 +79,13 @@ namespace HaveFun.Controllers.APIs
 		{
 			if (memberLabelDTO == null || memberLabelDTO.LabelIds == null || !memberLabelDTO.LabelIds.Any())
 			{
-				return BadRequest("请求数据不能为空或标签列表不能为空");
+				return BadRequest("请求數據不能為空或標籤列表不能為空");
 			}
 
-			try
-			{
-				Console.WriteLine($"接收到的数据: UserId = {memberLabelDTO.UserId}, LabelIds = {string.Join(", ", memberLabelDTO.LabelIds)}");
+			Console.WriteLine($"接收到的數據: UserId = {memberLabelDTO.UserId}, LabelIds = {string.Join(", ", memberLabelDTO.LabelIds)}");
+			
+            try
+			{			
 
 				// 清理旧的标签记录
 				var existingLabels = await _context.MemberLabels
@@ -108,8 +109,8 @@ namespace HaveFun.Controllers.APIs
 			}
 			catch (Exception ex)
 			{
-				Console.Error.WriteLine($"保存成员标签时发生异常: {ex.Message}");
-				return StatusCode(500, $"保存成员标签时发生异常: {ex.Message}");
+				Console.Error.WriteLine($"保存標籤時發生異常: {ex.Message}");
+				return StatusCode(500, $"保存標籤時發生異常: {ex.Message}");
 			}
 		}
 
