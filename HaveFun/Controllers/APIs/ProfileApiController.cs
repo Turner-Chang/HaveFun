@@ -29,11 +29,27 @@ namespace HaveFun.Controllers.APIs
                     Name = fl.User1.Name,
                     Age = CalculateAge(fl.User1.BirthDay),
                     Gender = fl.User1.Gender == 1 ? "male" : "female",
-                    ProfilePicture = fl.User1.ProfilePicture
+                    ProfilePicture = ModiffyAddress(fl.User1.ProfilePicture)
                 })
                 .ToListAsync();
 
             return whoLikeList;
+        }
+
+        private static string ModiffyAddress(string ProfilePictureAddress)
+        {
+            // 替换路径分隔符和处理相对路径
+            string formattedPath = ProfilePictureAddress.Replace('\\', '/');
+
+            // 查找并移除 "wwwroot/" 之前的部分
+            if (formattedPath.Contains("wwwroot/"))
+            {
+                formattedPath = formattedPath.Substring(formattedPath.IndexOf("wwwroot/") + 8);
+            }
+
+            string fullPath = "/" + formattedPath;
+            
+            return fullPath;
         }
 
         private static int CalculateAge(DateTime birthDate)

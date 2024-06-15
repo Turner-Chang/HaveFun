@@ -28,8 +28,7 @@
                             <div class="member__item w-100">
                                 <div class="member__inner m-0">
                                     <div class="member__thumb">
-                                        @* <img src="~/images/headshots/tiffanyding0330@gmail.comtrump.jpg" alt="member-img"> *@
-                                        <img src="/images/headshots/tiffanyding0330@gmail.comtrump.jpg" alt="member-img">
+                                        <img src=`"{{member.profilePicture}}"` alt="member-img">
                                         @* <img src={{member.profilePicture}} alt="member-img"> *@
                                         
                                         @* <span class="member__activity">Online</span> *@
@@ -66,7 +65,7 @@
                 axios.get('https://localhost:7152/api/Profile/GetWhoLikeList')
                     .then(response => {
                         this.members = response.data.map(member => {
-                            // console.log("profilePicture: " + member.profilePicture);
+                            console.log("profilePicture: " + member.profilePicture);
                             return {
                                 name: member.name,
                                 age: member.age,
