@@ -176,81 +176,89 @@
     </div>
 </div>
 
-<style>
-    .right {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-    }
 
-        .right a, .right span {
-            margin-right: auto;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friend List</title>
+    <style>
+        .right {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-</style>
+    </style>
+</head>
+<body>
+    <div class="tab-pane fade show active" id="Newest" role="tabpanel" aria-labelledby="Newest-tab"></div>
 
-<script>
-    var blockButtons = document.querySelectorAll('.block-btn');
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const userId = 29; // 
 
-    blockButtons.forEach(function (button) {
-        button.addEventListener('click', function () {
-            var memberItem = this.closest('li');
-            var blacklist = document.getElementById('BlackList').querySelector('ul');
-            blacklist.appendChild(memberItem);
+            // 從API取好友列表資料
+            fetch(`/api/Friend/GetFriend/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    renderFriendList(data);
+                })
+                .catch(error => console.error('Error:', error));
+        });
 
-            this.style.display = 'none';
+        function renderFriendList(data) {
+            const friendListContainer = document.getElementById('Newest');
+            friendListContainer.innerHTML = ''; // 清空當前列表
 
-            var unblockButton = document.createElement('button');
-            unblockButton.className = 'btn btn-success unblock-btn';
-            unblockButton.innerText = '解鎖';
-            unblockButton.addEventListener('click', function () {
-                var friendsList = document.getElementById('Newest').querySelector('ul');
-                friendsList.appendChild(memberItem);
+            data.forEach(FriendDTO => {
+                const listItem = document.createElement('li');
 
-                this.remove();
-                button.style.display = 'inline-block';
+                listItem.innerHTML = `
+                            <div class="top">
+                                <div class="left member--style2">
+                                    <div class="member__thumb">
+                                        <img src="${FriendDTO.Image}" alt="member-img">
+                                        <span class="member__activity"></span>
+                                    </div>
+                                </div>
+                                <div class="right">
+                                    <a href="member-single.html"><h6>${FriendDTO.Name}</h6></a>
+                                    <span>${FriendDTO.ActivityTime}</span>
+                                    <button class="btn btn-danger block-btn">封鎖</button>
+                                </div>
+                            </div>
+                        `;
+
+                friendListContainer.appendChild(listItem);
             });
 
-            memberItem.querySelector('.right').appendChild(unblockButton);
-        });
-    });
+            
+            updateButtons();
+        }
 
-    document.querySelectorAll('.unblock-btn').forEach(function (button) {
-        button.addEventListener('click', function () {
-            var memberItem = this.closest('li');
-            var friendsList = document.getElementById('Newest').querySelector('ul');
-            friendsList.appendChild(memberItem);
+        function updateButtons() {
+            document.querySelectorAll('.block-btn').forEach(button => {
+                button.onclick = function () {
+                    const memberItem = button.closest('li');
+                    document.getElementById('BlackList').appendChild(memberItem);
+                    button.innerText = '解鎖';
+                    button.className = 'btn btn-success unblock-btn';
+                    updateButtons();
+                };
+            });
 
-            this.remove();
+            document.querySelectorAll('.unblock-btn').forEach(button => {
+                button.onclick = function () {
+                    const memberItem = button.closest('li');
+                    document.getElementById('Newest').appendChild(memberItem);
+                    button.innerText = '封鎖';
+                    button.className = 'btn btn-danger block-btn';
+                    updateButtons();
+                };
+            });
+        }
+    </script>
+</body>
+</html>
 
-            var blockButton = memberItem.querySelector('.block-btn');
-            if (blockButton) {
-                blockButton.style.display = 'inline-block';
-            } else {
-                var newBlockButton = document.createElement('button');
-                newBlockButton.className = 'btn btn-danger block-btn';
-                newBlockButton.innerText = '封鎖';
-                newBlockButton.addEventListener('click', function () {
-                    var blacklist = document.getElementById('BlackList').querySelector('ul');
-                    blacklist.appendChild(memberItem);
-
-                    this.style.display = 'none';
-
-                    var newUnblockButton = document.createElement('button');
-                    newUnblockButton.className = 'btn btn-success unblock-btn';
-                    newUnblockButton.innerText = '解鎖';
-                    newUnblockButton.addEventListener('click', function () {
-                        friendsList.appendChild(memberItem);
-
-                        this.remove();
-                        newBlockButton.style.display = 'inline-block';
-                    });
-
-                    memberItem.querySelector('.right').appendChild(newUnblockButton);
-                });
-
-                memberItem.querySelector('.right').appendChild(newBlockButton);
-            }
-        });
-    });
-</script>
