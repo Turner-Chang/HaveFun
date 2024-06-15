@@ -23,8 +23,7 @@ namespace HaveFun.Controllers.APIs
         public async Task<IEnumerable<WhoLikeListDTO>> GetWhoLikeList()
         {
             var whoLikeList = await _context.FriendLists
-                .Where(fl => fl.state == 0)
-                .Include(fl => fl.User1)
+                .Where(fl => fl.state == 0 && fl.BeenClicked==2)
                 .Select(fl => new WhoLikeListDTO
                 {
                     Name = fl.User1.Name,

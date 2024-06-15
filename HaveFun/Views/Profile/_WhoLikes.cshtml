@@ -28,8 +28,11 @@
                             <div class="member__item w-100">
                                 <div class="member__inner m-0">
                                     <div class="member__thumb">
-                                        <img :src="member.profilePicture" alt="member-img">
-                                        <span class="member__activity">Online</span>
+                                        @* <img src="~/images/headshots/tiffanyding0330@gmail.comtrump.jpg" alt="member-img"> *@
+                                        <img src="/images/headshots/tiffanyding0330@gmail.comtrump.jpg" alt="member-img">
+                                        @* <img src={{member.profilePicture}} alt="member-img"> *@
+                                        
+                                        @* <span class="member__activity">Online</span> *@
                                     </div>
                                     <div class="member__content">
                                         <a href="member-single.html"><h6>{{ member.name }}</h6></a>
@@ -62,7 +65,15 @@
             getMembers() {
                 axios.get('https://localhost:7152/api/Profile/GetWhoLikeList')
                     .then(response => {
-                        this.members = response.data;
+                        this.members = response.data.map(member => {
+                            // console.log("profilePicture: " + member.profilePicture);
+                            return {
+                                name: member.name,
+                                age: member.age,
+                                gender: member.gender,
+                                profilePicture: member.profilePicture
+                            };
+                        });
                     })
                     .catch(err => {
                         alert(err);
