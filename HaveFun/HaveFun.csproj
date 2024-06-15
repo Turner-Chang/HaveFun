@@ -29,7 +29,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\ManagementSystem\Data\" />
-    <Folder Include="Areas\ManagementSystem\DTOs\" />
     <Folder Include="Areas\ManagementSystem\Models\" />
     <Folder Include="Migrations\" />
     <Folder Include="wwwroot\images\headshots\" />

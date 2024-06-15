@@ -1,4 +1,5 @@
-﻿using HaveFun.Models;
+﻿using HaveFun.Areas.ManagementSystem.DTOs;
+using HaveFun.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

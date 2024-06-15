@@ -2,9 +2,9 @@
 <div id="UserManagementApp" class="container row  p-5 pt-5 text-center border-2">
 	<div class="col-12">
 		<span class="col-2 ">處理狀態示意: </span>
-		<button class="text-bg-warning  col-2 m-2">申訴中-0</button>
-		<button class="text-bg-success col-2 m-2">無須刪除-1</button>
-		<button class="text-bg-secondary col-2 m-2">已刪除-2</button>
+		<label class="text-bg-warning  col-2 m-2">申訴中-0</label>
+		<label class="text-bg-success col-2 m-2">無須刪除-1</label>
+		<label class="text-bg-secondary col-2 m-2">已刪除-2</label>
 	</div>
 	<hr />
 	<div class="table-responsive">
@@ -28,8 +28,7 @@
 					<td>{{r.complaintCategoryId}}</td>
 					<td>
 						<button class="btn btn-warning"  :id="r.id"
-					@@click="check(r.id)"
-					>處理</button>
+								@@click="check(r.beReportedUserId)">處理</button>
 						</td>
 				</tr>
 
@@ -39,6 +38,10 @@
 	<div>
 		<button class="btn btn-secondary m-3" @@click="UpperFive()">上五筆</button>
 		<button class="btn btn-secondary m-3" @@click="LowerFive()">下五筆</button>
+	</div>
+	<div class="  text-light bg-secondary">
+		<label>檢舉項目:</label> <br />
+		<label v-for="c in complaint" class="form-label col-12 col-md-2 col-sm-6">{{c.complaintCategoryId}}  {{c.complaintCategoryName}}</label>
 	</div>
 
 	<div class="modal fade"
@@ -77,16 +80,16 @@
 							{{userInfos.gender}}
 						</label>
 						<label class="col-6 text-decoration-underline">
-							被檢舉人地址:
+							被檢舉人介紹:
 						</label>
 						<label class="col-6 text-start">
-							{{userInfos.address}}
+							{{userInfos.introduction}}
 						</label>
 					</div>
 				
 					<div>
 						<label class="col-6 text-decoration-underline">
-							被檢舉圖片:
+							被檢舉人圖片:
 						</label>
 						<img class="col-12 img-fluid" :src="" />
 
@@ -95,8 +98,8 @@
 						<label class="col-6 text-decoration-underline">
 							檢舉狀態:
 						</label>
-						<label class="col-6 text-start">
-							
+						<label class="col-6 text-start ">
+							{{userInfos.status}}
 						</label>
 
 					</div>
@@ -126,16 +129,24 @@
 					reviews: [],
 					tableStart:0,
 					tableEnd: 5,
-					userInfos:[]
+					userInfos:[],
+					complaint:[],
 				};
 			},
 			methods: {
+				gender(type) {
+					if (type == 0) { return "男"; }
+					else if (type == 1) { return "女"; }
+					else { return "不男不女"; }
+				}
+				,
 				check(id) {
 					this.showModal();
 					this.getUserInfo(id);
 				},	
 				getUserInfo(userid) {
-					axios.get('https://localhost:7152/api/UserInfo/GetUserinfos/4').then(r=>r.data).then(d=>App.userInfos=d );
+					axios.get(`https://localhost:7152/api/UserInfo/GetById/${userid}`
+		).then(r=>r.data).then(d=>App.userInfos=d );
 				},
 				showModal() { $("#UserModal").modal("show"); },
 				hideModal() { $("#UserModal").modal("hide"); },
@@ -164,7 +175,7 @@
 				},
 				mounted() {
 					this.getAllReview();
-
+				fetch("https://localhost:7152/api/Getall", { method: "GET" }).then(r => r.json()).then(d => App.complaint = d);
 				},
 			}).mount("#UserManagementApp");
 	</script>

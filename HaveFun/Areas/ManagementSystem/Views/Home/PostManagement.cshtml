@@ -2,19 +2,19 @@
 	
 	<div class="container row  p-lg-10 p-5 text-center border-2">
 		<div class="col-12">
-			<span class="col-2 ">處理狀態示意: </span>
-			<button class="text-bg-warning  col-2 m-2">申訴中-0</button>
-			<button class="text-bg-success col-2 m-2">無須刪除-1</button>
-			<button class="text-bg-secondary col-2 m-2">已刪除-2</button>
+			<span class="col-12 col-md-2 col-sm-6 m-2 ">處理狀態示意: </span>
+			<label class=" text-bg-warning  col-12 col-md-2 col-sm-6 m-2">申訴中-0</label>
+			<label class="text-bg-secondary col-12 col-md-2 col-sm-6 m-2">已刪除-1</label>
+			<label class="text-bg-success col-12 col-md-2 col-sm-6 m-2">無須刪除-2</label>
 		</div>
 		<hr />
 		<div class="table-responsive-md">
 			<table class="table table-secondary">
 				<thead class="table-active">
 					<tr>
-						<th scope="col">被檢舉流水ID</th>
 						<th scope="col">被檢舉貼文ID</th>
 						<th scope="col">被檢舉人ID</th>
+						<th scope="col">被檢舉項目ID</th>
 						<th scope="col">被檢舉理由</th>
 						<th scope="col" >被檢舉時間</th>
 						<th scope="col">處理</th>
@@ -26,9 +26,9 @@
 				</thead>
 				<tbody>
 					<tr v-for="r in reports.slice(tableStart,tableEnd)" class="">
-						<td >{{r.postReviewId}}</td>
 						<td >{{r.postId}}</td>
 						<td>{{r.userId}}</td>
+						<td>{{r.reportItems}}</td>
 						<td>{{r.reason}}</td>
 						<td class="col-md-0">{{r.reportTime}}</td>
 						<td>
@@ -46,6 +46,10 @@
 		<div>
 			<button class="btn btn-secondary m-3" @@click="UpperFive()">上五筆</button>
 			<button class="btn btn-secondary m-3" @@click="LowerFive()">下五筆</button>
+		</div>
+		<div class="  text-light bg-secondary">
+			<label >檢舉項目:</label> <br />
+			<label v-for="c in complaint" class="form-label col-12 col-md-2 col-sm-6">{{c.complaintCategoryId}}  {{c.complaintCategoryName}}</label> 
 		</div>
 	</div>
 
@@ -106,12 +110,12 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button"
-							@@click="PostStateChange(PostId,1) "
+							@@click="PostStateChange(PostId,2) "
 							class="btn btn-secondary "
 							data-bs-dismiss="modal">
 						駁回檢舉
 					</button>
-					<button type="button" @@click="PostStateChange(PostId,2) " class="btn btn-danger">刪除貼文</button>
+					<button type="button" @@click="PostStateChange(PostId,1) " class="btn btn-danger">刪除貼文</button>
 				</div>
 			</div>
 		</div>
@@ -130,7 +134,7 @@
 					PostId:0,
 					tableStart:0,
 					tableEnd:5,
-					
+					complaint:[],
 					
 				}
 			},
@@ -240,8 +244,8 @@
 				},
 				btnColor(id) {
 					if (id == 0) { return "btn-warning"; }
-					if (id == 1) { return "btn-success "; }
-					if (id == 2) { return "btn-secondary"; }
+					if (id == 1) { return "btn-secondary "; }
+					if (id == 2) { return "btn-success"; }
 
 				},
 				UpperFive() {
@@ -274,7 +278,9 @@
 				var data = await resp.json();
 				App.reports = data;
 				//alert(JSON.stringify(data));
-				
+
+				fetch("https://localhost:7152/api/Getall", { method: "GET" }).then(r => r.json()).then(d => App.complaint = d);
+				//
 
 			}, 
 		}).mount("#PostCheckApp");
