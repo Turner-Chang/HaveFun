@@ -8,10 +8,9 @@
 				</div>
 				<div class="info-card-content">
 					<ul class="info-list">
-						<li>
+						<li>							
 							<p class="info-name">大頭貼</p>
-							<p class="info-name">大頭貼</p>
-							<img src="https://localhost:7152/api/UserInfo/GetPicture/2" />
+							<img :src="profilePictureUri" alt="Profile Picture" />
 						</li>
 						<li>
 							<p class="info-name">姓名</p>
@@ -39,7 +38,7 @@
 				</div>
 			</div>
 
-			<div class="info-card mb-4">				
+			<div class="info-card mb-4" v-if="isLoggedIn">
 				<div class="info-card-title">
 					<h6>私人資料</h6>
 				</div>
@@ -102,21 +101,32 @@
 					</div>
 				</div>
 			</div>
-
-		</div>
-
-		<template>
-			<div id="app_MemberLable">
-				<div v-for="label in availableLabels" :key="label.id">
+		</div>	
+		
+		<div id="app_MemberLable">			
+			<div class="info-card mb-4">
+				<div v-if="selectedLabels.length > 0" class="info-card-title">
+					<h6>您的標籤：</h6>
+					<ul>
+						<li v-for="labelId in selectedLabels" :key="labelId">
+							{{ getLabelById(labelId).name }}
+						</li>
+					</ul>
+					<button type="button" class="default-btn" @@click="showLabelSelectionForm">重新選擇</button>
+				</div>
+				<div v-else style="display: none;" class="info-card-title">
+					<h6>標籤選取</h6>
+				</div>
+				<div class="info-card-content" v-for="label in availableLabels" :key="label.id">
 					<input type="checkbox" :value="label.id" v-model="selectedLabels" />
 					{{ label.name }}
 				</div>
-				<button @@click="submitLabels">提交選擇</button>
 			</div>
-		</template>
+			<button type="button" class="default-btn" @@click="submitLabels">提交選擇</button>
+		</div>
+
 	</div>
 </div>
-<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
 	const baseAddress = 'https://localhost:7152';
@@ -125,19 +135,21 @@
 			return {
 				material: {
 					"name": "您的姓名",
-					"gender": null,
+					"gender": '',
 					"birthDay": "",
 					"address": "您的居住地",
 					"introduction": "我愛大家",
 					"phoneNumber": "您的電話號碼",
 					"password": null,
-					"id": null,					
+					"id": "",					
 				},
 				profilePictureError: '',
 				profilePicture: null,
+				profilePictureUri: "", /* 圖片URL */
 				imagePreview:"", /* 新增圖片預覽URL */
 
 				originalMaterial: {}, //保存一份原始資料
+				isLoggedIn: false // 新增登录状态
 			}
 		},
 		methods: {
@@ -165,6 +177,7 @@
 			saveData(){										/* 保存按鈕的函式 */
 				// alert("可以保存了")
 				let formData = new FormData();
+				formData.append('Id', this.material.id);
 				formData.append('Name', this.material.name);
 				formData.append('Address', this.material.address);
 				formData.append('PhoneNumber', this.material.phoneNumber);
@@ -172,17 +185,29 @@
 				formData.append('BirthDay', this.material.birthDay);
 				formData.append('Introduction', this.material.introduction);
 				formData.append('Password', this.material.password);
-				let blob;
-				if (this.profilePicture) {const blob = new Blob([this.profilePicture], { type: "image/*" });}
+				let blob = null;
+				if (this.profilePicture) {
+					blob = new Blob([this.profilePicture], { type: "image/*" });
+				}
 				formData.append("ProfilePicture", blob);
 				axios.post(`${baseAddress}/api/UserInfo/SaveData`, formData)
-					.then(response => { console.log(response.data); alert("已儲存"); })
+					.then(response => { console.log(response.data); alert("已儲存"); $("#saveModal").modal("hide");
+						// 更新圖片 URL 來保證即時顯示新圖片
+						this.profilePictureUri = `${baseAddress}/api/UserInfo/GetPicture/${this.material.id}?t=${new Date().getTime()}`;
+						this.profilePicture = null; // 重置圖片
+						this.imagePreview = ""; // 清除圖片預覽
+					})
 					.catch(error => { console.error(error); alert("儲存錯誤"); }
-					);
+					);				
 			},
 			fetchData(){									/* 呼叫資料 */
-				axios.get(`${baseAddress}/api/UserInfo/GetUserinfos/8`)
-					.then(response => { this.material = response.data; })
+				axios.get(`${baseAddress}/api/UserInfo/GetUserinfos/2`)
+					.then(response => { this.material = response.data; 
+						// 初始化圖片 URL
+						this.profilePictureUri = `${baseAddress}/api/UserInfo/GetPicture/${this.material.id}?t=${new Date().getTime()}`;
+						// 確認是否為本人的邏輯
+						this.isLoggedIn = this.material.id === this.material.id;
+					})
 					.catch(err => { alert(err); });
 			},
 			cancelChange(){							/* 取消按鈕要顯示原本的內容 */
@@ -198,25 +223,50 @@
 	var app_MemberLable = Vue.createApp({
 		data() {
 			return {
-				userId: 1,
+				userId: 2,
 				availableLabels: [], /* 從後端獲取所有可用標籤 */
 				selectedLabels: [], /* 用戶選擇的標籤ID */
 			}
 		},
 		methods: {
 			fetchAvailableLabels() {
-				axios.get(`${baseAddress}api/LabelsApi//GetLabels`)
+				axios.get(`${baseAddress}/api/LabelsApi/GetLabels`)
 					.then(response => { this.availableLabels = response.data; })
-					.catch(error => { console.error(error); });
+					.catch(error => { console.error('獲取標籤時出錯', error); });
 			},
 			submitLabels(){
 				const memberLabelDto = {
 					UserId: this.userId,
 					LabelIds: this.selectedLabels
 				};
-				axios.post(`${baseAddress}api/MemberLabelsApi/PostMemberLabel`, memberLabelDto)
-					.then(response => { console.log("標籤選取成功:", response); })
-					.catch(error => { console.error(error); });
+				axios.post(`${baseAddress}/api/MemberLabelsApi/submitLabels`, memberLabelDto, {
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				})
+					.then(response => {
+						console.log("標籤選取成功:", response);
+					})
+					.catch(error => {
+						console.error('標籤選取時出錯', error);
+						if (error.response) {
+							console.error('响应数据:', error.response.data);
+							console.error('响应状态:', error.response.status);
+							console.error('响应头:', error.response.headers);
+						} else if (error.request) {
+							console.error('请求数据:', error.request);
+						} else {
+							console.error('错误信息:', error.message);
+						}
+					});
+			},
+			showLabelSelectionForm() {
+				//清空以選擇的標籤
+				this.selectedLabels = [];
+				document.getElementById("labelSelectionForm").style.display = "block";
+			},
+			getLabelById(labelId) {
+				return this.availableLabels.find(label => label.id === labelId);
 			},
 		},
 		mounted() {

@@ -1,24 +1,27 @@
 ﻿using HaveFun.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace HaveFun.Controllers.APIs
 {
-    [Route("api/Friend/[action]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class FriendApiController : ControllerBase
     {
-        HaveFunDbContext _dbContext;
+        private readonly HaveFunDbContext _dbContext;
+
         public FriendApiController(HaveFunDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
         [HttpGet("{id}")]
-        public async Task<ICollection<FriendList>> GetFriend(int id)
+        public async Task<IActionResult> GetFriend(int id)
         {
-            var friendList =  _dbContext.FriendLists.Where(fl => fl.Clicked == id).ToList();
-            return friendList;
+            var friendList = await _dbContext.FriendLists.ToListAsync();
+            return Ok(friendList);
         }
     }
 }
