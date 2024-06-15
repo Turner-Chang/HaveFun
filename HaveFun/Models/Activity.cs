@@ -22,6 +22,10 @@ namespace HaveFun.Models
         public virtual ActivityType ActivityType { get; set; }
 
         [Required]
+        [MaxLength(50)]
+        public string Title { get; set; }
+
+        [Required]
         [MaxLength(1000)]
         public string Content { get; set; }
 
@@ -55,7 +59,9 @@ namespace HaveFun.Models
         [Required]
         public int Status { get; set; }
 
-        public ICollection<ActivityParticipant> ActivityParticipants { get; set; }
+		public byte[]? Picture { get; set; }
+
+		public ICollection<ActivityParticipant> ActivityParticipants { get; set; }
 
         public ICollection<ActivityReview> ActivityReviews { get; set; }
     }
