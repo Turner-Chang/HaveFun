@@ -1,10 +1,10 @@
 ﻿<div id="PostCheckApp">
 	
-	<div class="container row  p-5 pt-5 text-center border-2">
+	<div class="container row  p-lg-10 p-5 text-center border-2">
 		<div class="col-12">
 			<span class="col-2 ">處理狀態示意: </span>
-			<button class="text-bg-success col-2 m-2">無須刪除-0</button>
-			<button class="text-bg-warning col-2 m-2">申訴中-1</button>
+			<button class="text-bg-warning  col-2 m-2">申訴中-0</button>
+			<button class="text-bg-success col-2 m-2">無須刪除-1</button>
 			<button class="text-bg-secondary col-2 m-2">已刪除-2</button>
 		</div>
 		<hr />
@@ -25,7 +25,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="r in reports" class="">
+					<tr v-for="r in reports.slice(tableStart,tableEnd)" class="">
 						<td >{{r.postReviewId}}</td>
 						<td >{{r.postId}}</td>
 						<td>{{r.userId}}</td>
@@ -41,6 +41,11 @@
 					</tr>
 				</tbody>
 			</table>
+			
+		</div>
+		<div>
+			<button class="btn btn-secondary m-3" @@click="UpperFive()">上五筆</button>
+			<button class="btn btn-secondary m-3" @@click="LowerFive()">下五筆</button>
 		</div>
 	</div>
 
@@ -101,7 +106,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button"
-							@@click="PostStateChange(PostId,0) "
+							@@click="PostStateChange(PostId,1) "
 							class="btn btn-secondary "
 							data-bs-dismiss="modal">
 						駁回檢舉
@@ -123,6 +128,9 @@
 					Post: {},
 					PostReviewId:0,
 					PostId:0,
+					tableStart:0,
+					tableEnd:5,
+					
 					
 				}
 			},
@@ -144,10 +152,10 @@
 				}
 				,
 				imgSrc(src) {
-					if(src==null)
+					if(src==null || src =="null"||src=="")
 						return "/images/NOimg.jpg"
 					else
-					return `/images/${src}`;
+					return src.substr(18);
 				}
 				 ,
 				check(postId, postReviewId) {
@@ -231,10 +239,28 @@
 					
 				},
 				btnColor(id) {
-					if (id == 0) { return "btn-success"; }
-					if (id == 1) { return "btn-warning"; }
+					if (id == 0) { return "btn-warning"; }
+					if (id == 1) { return "btn-success "; }
 					if (id == 2) { return "btn-secondary"; }
 
+				},
+				UpperFive() {
+					if (this.tableStart > 0) {
+						this.tableStart -= 5;
+						this.tableEnd -= 5;
+					}
+					else {
+						alert("已經是第一頁")
+					}
+				},
+				LowerFive() {
+					if (this.tableEnd < this.reports.length) {
+						this.tableStart += 5;
+						this.tableEnd += 5;
+					}
+					else {
+					alert("已經是最後一頁")
+					}
 				},
 			},
 			mounted: async () => {
@@ -248,10 +274,9 @@
 				var data = await resp.json();
 				App.reports = data;
 				//alert(JSON.stringify(data));
+				
 
-			}, computed() { 
-				this.reports;
-			},
+			}, 
 		}).mount("#PostCheckApp");
 
 	</script>

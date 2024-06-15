@@ -7,20 +7,20 @@ namespace HaveFun.Models
 	{
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-		public int Id { get; set; }
+		public int Id { get; set; } //流水號
 
-		public DateTime reportTime { get; set; }
+		public DateTime ReportTime { get; set; }
 
 		[ForeignKey("ComplaintCategory")]
-		public int complaintCategoryId { get; set; }
+		public int ComplaintCategoryId { get; set; }
 		public virtual ComplaintCategory ComplaintCategory { get; set; }
 
 		[ForeignKey("User1")]
-		public int reportUserId { get; set; }
+		public int ReportUserId { get; set; }
 		public virtual UserInfo User1 { get; set; }
 
 		[ForeignKey("User2")]
-		public int beReportedUserId { get; set; }
+		public int BeReportedUserId { get; set; }
 		public virtual UserInfo User2 { get; set; }
 	}
 }

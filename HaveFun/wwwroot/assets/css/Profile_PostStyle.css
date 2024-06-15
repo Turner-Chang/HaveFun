@@ -1,9 +1,6 @@
-﻿.post-meta-bottom {
-    padding-bottom: 0px !important;
-}
-
+﻿
 .comments {
-    padding-right: 20px; /* 設定右邊內距 */
+    margin-top: 0px;
     margin-right: 20px; /* 設定右邊外距 */
 }
 
@@ -37,7 +34,7 @@
     }
 
         .comment-list .comment .com-content .com-title-meta a {
-            font-size: 12px !important; /* 設定作者名稱的字體大小 */
+            font-size: 14px !important; /* 設定作者名稱的字體大小 */
             font-weight: bold !important; /* 設定作者名稱的字體粗細 */
         }
 
@@ -51,30 +48,113 @@
             color: blue; /* 設定回覆連結的字體顏色 */
         }
 
-        .comment-list .comment .com-content p {
+        .comment-list .comment .com-content .post-description p {
             font-size: 14px; /* 設定回覆內容的字體大小 */
+            word-break: break-word; /*處理長單字換行*/
+            white-space: pre-wrap; /*保留空格和換行符號，在必要時換行*/
         }
 
-.nested-reply-form .nested-reply-input {
-    font-size: 14px; /* 設定巢狀回覆輸入框的字體大小 */
+/*回覆的回覆 間距*/
+.comments .comment-list .comment .comment-list .comment {
+    padding-top: 0px;
 }
 
-.nested-reply-form .nested-reply-submit-button {
-    font-size: 14px; /* 設定巢狀回覆提交按鈕的字體大小 */
+/*Like 與 Show Comments區塊*/
+.post-item .post-meta .post-meta-top {
+    padding-top: 8px;
+    padding-bottom: 0px;
 }
 
+/*貼文按鈕區塊*/
+.post-item .post-meta .post-meta-bottom {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
 
+/*貼文輸入區塊*/
+textarea {
+    width: 100%;
+    box-sizing: border-box; /* 確保寬度計算包含內邊距和邊框 */
+    overflow-y: hidden; /* 隐藏滚动条 */
+    resize: none; /* 允許使用者垂直調整大小，可以根據需要調整 */
+    padding: 10px; /* 內邊距 */
+    padding-left: 30px; /* 左內邊距 */
+    font-size: 16px; /* 字體大小 */
+    line-height: 1.5; /* 行高 */
+}
+
+/*貼文內容顯示區塊*/
+.post-item .post-content .post-description {
+    word-break: break-word; /*處理長單字換行*/
+    white-space: pre-wrap; /*保留空格和換行符號，在必要時換行*/
+}
+
+/* 貼文回覆顯示 */
+.reply-form {
+    display: flex;
+    align-items: center;
+}
+    /*貼文的回覆*/
+    .reply-form .reply-input {
+        width: 100%;
+        height: 24px; /* 初始高度為1行 */
+        min-height: 30px; /* 最小高度 */
+        overflow-y: hidden; /* 隱藏垂直scrollbar */
+        resize: none; /* 禁用手動調整大小 */
+        padding-top: 5px;
+        padding-bottom: 5px;
+        padding-left: 10px;
+        padding-right: 10px;
+        margin-left: 10px;
+        box-sizing: border-box; /* 確保內邊距不影響整體寬度 */
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+        line-height: 20px; /* 每行高度 */
+        transition: height 0.2s ease-in-out; /* 動畫效果 */
+    }
+
+    /*.reply-form .reply-input::-webkit-scrollbar {
+            display: none;*/ /* 隱藏scrollbar */
+    /*}*/
+
+    .reply-form .btn-reply {
+        background-color: #f24570;
+        color: #fff;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 4px;
+        margin-bottom: 6px;
+        margin-left: 20px;
+        margin-right: 0px;
+        white-space: nowrap; /* 确保按钮内的文本不换行 */
+    }
+
+/*貼文回覆的回覆*/
 .nested-reply-form {
     display: flex;
     align-items: center;
 }
 
     .nested-reply-form .nested-reply-input {
-        flex: 1;
-        padding: 8px;
-        border-radius: 5px;
-        border: 1px solid #ddd;
+        width: 100%;
+        height: 24px; /*初始高度为1行 */
+        min-height: 30px; /*最小高度 */
+        overflow-y: hidden; /* 隐藏滚动条 */
+        resize: none; /* 禁用手动调整大小 */
+        padding-top: 5px;
+        padding-bottom: 5px;
+        padding-left: 10px;
+        padding-right: 10px;
         margin-left: 10px;
+        box-sizing: border-box; /* 确保内边距不影响整体宽度 */
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+        line-height: 20px; /*每行高度*/
+        transition: height 0.2s ease-in-out; /* 动画效果 */
     }
 
     .nested-reply-form .nested-reply-submit-button {
@@ -84,36 +164,12 @@
         padding: 5px 10px;
         border-radius: 5px;
         cursor: pointer;
-        margin-right: 10px;
-    }
-
-/* Input樣式 */
-.reply-form {
-    display: flex;
-    align-items: center;
-}
-
-    .reply-form .reply-input {
-        flex: 1;
-        padding: 8px;
-        border-radius: 5px;
-        border: 1px solid #ddd;
+        font-size: 14px; /* 設定巢狀回覆提交按鈕的字體大小 */
         margin-left: 10px;
-        margin-right: 10px;
-        margin-bottom: 10px;
-    }
-
-    .reply-form .btn-reply {
-        background-color: #f24570;
-        color: #fff;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 5px;
-        cursor: pointer;
         margin-right: 0px;
-        margin-bottom: 10px;
     }
 
+/*貼文功能按鈕*/
 .post-meta-bottom {
     display: flex;
     justify-content: space-between;
@@ -122,7 +178,6 @@
     border-top: 1px solid #e0e0e0;
     margin-top: 10px;
 }
-
     .post-meta-bottom .react-list {
         display: flex;
         list-style: none;
