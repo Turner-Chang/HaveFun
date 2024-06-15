@@ -113,6 +113,7 @@ namespace HaveFun.Controllers.APIs
             {
                 Post post = new Post
                 {
+                    Id = 0,
                     UserId = postDTO.UserId,
                     Contents = postDTO.Contents,
                     Time = DateTime.Now,
