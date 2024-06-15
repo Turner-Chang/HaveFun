@@ -47,19 +47,30 @@ namespace HaveFun.Controllers.APIs
             return userInf;
         }
 
-
-        // GET: api/UserInfoApi/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<UserInfo>> GetUserInfo(int id)
+        // GET: api/UserInfo  //抓到全部的USERInfo
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<UserIfDTO>>> GetUserInfo()
         {
-            var userInfo = await _context.UserInfos.FindAsync(id);
+            var userInfos = await _context.UserInfos
+                .Select(u => new UserIfDTO
+                {
+                    Id = u.Id, // Include the Id property
+                    Name = u.Name,
+                    Address = u.Address,
+                    PhoneNumber = u.PhoneNumber,
+                    Gender = u.Gender,
+                    BirthDay = u.BirthDay,
+                    Introduction = u.Introduction,
+                    Password = u.Password
+                })
+                .ToListAsync();
 
-            if (userInfo == null)
+            if (!userInfos.Any())
             {
                 return NotFound();
             }
 
-            return userInfo;
+            return Ok(userInfos);
         }
         //GET: api/UserInfo/GetPicture
         [HttpGet("GetPicture/{id}")]

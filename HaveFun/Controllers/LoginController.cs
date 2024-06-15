@@ -2,15 +2,18 @@
 
 namespace HaveFun.Controllers
 {
-    [Route("/Login/{action}")]
-    public class LoginController : Controller
+	
+	public class LoginController : Controller
     {
-        public IActionResult Index()
+        [HttpGet]
+		
+		public IActionResult Index()
         {
             return View();
         }
-
-        public IActionResult ForgetPassword()
+        [HttpGet]
+		
+		public IActionResult ForgetPassword()
         {
             return View();
         }
