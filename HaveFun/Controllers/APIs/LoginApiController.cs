@@ -151,11 +151,11 @@ namespace HaveFun.Controllers.APIs
             }
 
         }
+        //[HttpGet]
+        //public string ResetPassword(UserResetPasswordDTO resetPasswordDTO)
+        //{
 
-        public string ResetPassword(UserResetPasswordDTO resetPasswordDTO)
-        {
-
-            return "";
-        }
+        //    return "";
+        //}
     }
 }
