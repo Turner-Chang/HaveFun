@@ -7,7 +7,7 @@ namespace HaveFun.Models
 	{
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-		public int Id { get; set; }
+		public int Id { get; set; } //流水號
 
 		public DateTime ReportTime { get; set; }
 
