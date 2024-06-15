@@ -225,7 +225,7 @@
                                                         <div class="post-footer">
                                                             <p class="time">{{post.time}}</p>
                                                             <p>{{post.comment.length}} Comments</p>
-                                                            <a href="#"><i class="fa-solid fa-share"></i> Share</a>
+                                                            <a href="#" @@click="shareToFacebook(post)"><i class="fa-solid fa-share"></i> Share</a>
                                                         </div>
                                                     </div>
 
@@ -530,6 +530,10 @@
                 cutPicPath(PicturePath) {
                     const fileName = PicturePath.slice(19);
                     return fileName;
+                },
+                shareToFacebook(post) {
+                    const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(this.baseAddress + '/post/' + post.postId)}&quote=${encodeURIComponent(post.contents)}`;
+                    window.open(shareUrl, 'facebook-share-dialog', 'width=800,height=600');
                 },
             },
             mounted() {
