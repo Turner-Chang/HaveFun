@@ -1,6 +1,7 @@
 ﻿using HaveFun.Common;
 using HaveFun.DTOs;
 using HaveFun.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +31,14 @@ namespace HaveFun.Controllers.APIs
         public async Task<IEnumerable<Post>> GetPosts()
         {
             return _context.Posts;
+        }
+        // Get: api/Post/GetLoginUser
+        [Authorize]
+        [HttpGet]
+        public async Task<JsonResult> GetLoginUser()
+        {
+            var loginUser = Convert.ToInt32(Request.Cookies["userId"]);
+            return new JsonResult(loginUser);
         }
         //顯示貼文+回覆相關資料
         // GET : api/Post/GetPostsRel
