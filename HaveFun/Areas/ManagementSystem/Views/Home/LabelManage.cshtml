@@ -1,0 +1,257 @@
+﻿<div id="app_TagManage" class="container">
+        <h1 class="my-4">標籤和標籤種類管理</h1>
+       
+        
+        <!-- 標籤查詢 -->
+        <div class="mb-3">
+            <label for="label-query" class="form-label">查詢標籤</label>
+            <input type="text" id="label-query" v-model="labelQuery" class="form-control" placeholder="輸入標籤名稱">
+        </div>
+        
+        <!-- 標籤顯示 -->
+        <div class="table-responsive">
+            <h2>標籤</h2>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>名稱</th>
+                        <th>種類</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="label in filteredLabels" :key="label.id">
+                        <td>{{ label.id }}</td>
+                        <td>{{ label.name }}</td>
+                        <td>{{ getLabelCategoryName(label.categoryId) }}</td>
+                        <td>
+                            <button class="btn btn-primary" @@click="editLabel(label)">編輯</button>
+                            <button class="btn btn-danger" @@click="deleteLabel(label.id)">刪除</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 標籤種類查詢 -->
+        <div class="mb-3">
+            <label for="category-query" class="form-label">查詢標籤種類</label>
+            <input type="text" id="category-query" v-model="categoryQuery" class="form-control" placeholder="輸入標籤種類名稱">
+        </div>
+        
+        <!-- 標籤種類顯示 -->
+        <div class="table-responsive">
+            <h2>標籤種類</h2>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>名稱</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="category in filteredCategories" :key="category.id">
+                        <td>{{ category.id }}</td>
+                        <td>{{ category.name }}</td>
+                        <td>
+                            <button class="btn btn-primary" @@click="editCategory(category)">編輯</button>
+                            <button class="btn btn-danger" @@click="deleteCategory(category.id)">刪除</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 新增/編輯標籤表單 -->
+        <div class="my-4">
+            <h2>{{ isEditingLabel ? '編輯標籤' : '新增標籤' }}</h2>
+            <div @@submit.prevent="submitLabelForm">
+                <div class="mb-3">
+                    <label for="label-id" class="form-label">ID</label>
+                    <input type="text" id="label-id" v-model="labelForm.id" class="form-control" :readonly="isEditingLabel">
+                </div>
+                <div class="mb-3">
+                    <label for="label-name" class="form-label">名稱</label>
+                    <input type="text" id="label-name" v-model="labelForm.name" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="label-category" class="form-label">種類</label>
+                    <select id="label-category" v-model="labelForm.categoryId" class="form-control">
+                        <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success">{{ isEditingLabel ? '更新' : '新增' }}</button>
+                <button type="button" class="btn btn-danger" @@click="deleteLabel(labelForm.id)" v-if="isEditingLabel">刪除</button>
+                <button type="button" class="btn btn-secondary" @@click="resetLabelForm">取消</button>
+            </div>
+        </div>
+        
+        <!-- 新增/編輯標籤種類表單 -->
+        <div class="my-4">
+            <h2>{{ isEditingCategory ? '編輯標籤種類' : '新增標籤種類' }}</h2>
+            <div @@submit.prevent="submitCategoryForm">
+                <div class="mb-3">
+                    <label for="category-id" class="form-label">ID</label>
+                    <input type="text" id="category-id" v-model="categoryForm.id" class="form-control" :readonly="isEditingCategory">
+                </div>
+                <div class="mb-3">
+                    <label for="category-name" class="form-label">名稱</label>
+                    <input type="text" id="category-name" v-model="categoryForm.name" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-success">{{ isEditingCategory ? '更新' : '新增' }}</button>
+                <button type="button" class="btn btn-danger" @@click="deleteCategory(categoryForm.id)" v-if="isEditingCategory">刪除</button>
+                <button type="button" class="btn btn-secondary" @@click="resetCategoryForm">取消</button>
+            </div>
+        </div>
+    </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
+
+<script>
+    const app_TagManage = Vue.createApp({
+        data() {
+            return {
+                labels: [],
+                categories: [],
+                labelForm: {
+                    id: '',
+                    name: '',
+                    categoryId: ''
+                },
+                categoryForm: {
+                    id: '',
+                    name: ''
+                },
+                isEditingLabel: false,
+                isEditingCategory: false,
+                labelQuery: '',
+                categoryQuery: ''
+            }
+        },
+        computed: {
+            filteredLabels() {
+                return this.labels.filter(label =>
+                    label.name.toLowerCase().includes(this.labelQuery.toLowerCase())
+                );
+            },
+            filteredCategories() {
+                return this.categories.filter(category =>
+                    category.name.toLowerCase().includes(this.categoryQuery.toLowerCase())
+                );
+            }
+        },
+        methods: {
+            getLabelCategoryName(categoryId) {
+                const category = this.categories.find(c => c.id === categoryId);
+                return category ? category.name : '未知';
+            },
+            editLabel(label) {
+                this.labelForm = { ...label };
+                this.isEditingLabel = true;
+            },
+            deleteLabel(id) {
+                if (!confirm("確定要刪除此標籤嗎？")) return;
+                axios.delete(`/api/labels/${id}`)
+                    .then(() => {
+                        this.labels = this.labels.filter(label => label.id !== id);
+                        this.resetLabelForm();
+                    })
+                    .catch(error => {
+                        console.error("刪除標籤時發生錯誤:", error);
+                    });
+            },
+            submitLabelForm() {
+                if (this.isEditingLabel) {
+                    axios.put(`/api/labels/${this.labelForm.id}`, this.labelForm)
+                        .then(response => {
+                            const index = this.labels.findIndex(label => label.id === this.labelForm.id);
+                            if (index !== -1) {
+                                this.labels.splice(index, 1, response.data);
+                            }
+                            this.resetLabelForm();
+                        })
+                        .catch(error => {
+                            console.error("更新標籤時發生錯誤:", error);
+                        });
+                } else {
+                    axios.post('/api/labels', this.labelForm)
+                        .then(response => {
+                            this.labels.push(response.data);
+                            this.resetLabelForm();
+                        })
+                        .catch(error => {
+                            console.error("新增標籤時發生錯誤:", error);
+                        });
+                }
+            },
+            resetLabelForm() {
+                this.labelForm = { id: '', name: '', categoryId: '' };
+                this.isEditingLabel = false;
+            },
+            editCategory(category) {
+                this.categoryForm = { ...category };
+                this.isEditingCategory = true;
+            },
+            deleteCategory(id) {
+                if (!confirm("確定要刪除此標籤種類嗎？")) return;
+                axios.delete(`/api/categories/${id}`)
+                    .then(() => {
+                        this.categories = this.categories.filter(category => category.id !== id);
+                        this.labels = this.labels.filter(label => label.categoryId !== id);
+                        this.resetCategoryForm();
+                    })
+                    .catch(error => {
+                        console.error("刪除標籤種類時發生錯誤:", error);
+                    });
+            },
+            submitCategoryForm() {
+                if (this.isEditingCategory) {
+                    axios.put(`/api/categories/${this.categoryForm.id}`, this.categoryForm)
+                        .then(response => {
+                            const index = this.categories.findIndex(category => category.id === this.categoryForm.id);
+                            if (index !== -1) {
+                                this.categories.splice(index, 1, response.data);
+                            }
+                            this.resetCategoryForm();
+                        })
+                        .catch(error => {
+                            console.error("更新標籤種類時發生錯誤:", error);
+                        });
+                } else {
+                    axios.post('/api/categories', this.categoryForm)
+                        .then(response => {
+                            this.categories.push(response.data);
+                            this.resetCategoryForm();
+                        })
+                        .catch(error => {
+                            console.error("新增標籤種類時發生錯誤:", error);
+                        });
+                }
+            },
+            resetCategoryForm() {
+                this.categoryForm = { id: '', name: '' };
+                this.isEditingCategory = false;
+            }
+        },
+        mounted() {
+            axios.get('/api/labels')
+                .then(response => {
+                    this.labels = response.data;
+                })
+                .catch(error => {
+                    console.error("加載標籤數據時發生錯誤:", error);
+                });
+            axios.get('/api/categories')
+                .then(response => {
+                    this.categories = response.data;
+                })
+                .catch(error => {
+                    console.error("加載標籤種類數據時發生錯誤:", error);
+                });
+        }
+    }).mount("#app_TagManage");
+</script>
+
