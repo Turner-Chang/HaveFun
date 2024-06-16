@@ -4,7 +4,8 @@ namespace HaveFun.DTOs
 {
     public class UserResetPasswordDTO
     {
-        public int Id { get; set; }
+        [Required(ErrorMessage = "帳號驗證錯誤")]
+        public string EncryptToken { get; set; }
 
         // 密碼
         [Required(ErrorMessage = "密碼不可為空")]
