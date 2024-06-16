@@ -660,6 +660,9 @@ namespace HaveFun.Migrations
                     b.Property<int>("ComplaintCategoryId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ProcessingStatus")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("ReportTime")
                         .HasColumnType("datetime2");
 
