@@ -46,7 +46,7 @@
             padding: 0;
             width: 15%;
         }
-
+        
         .time {
             font-size: 12px;
             color: #888888;
@@ -86,9 +86,9 @@
             text-align: center;
         }
 
-            .deleteBox > button {
-                margin: 20px;
-            }
+        .deleteBox > button {
+            margin: 20px;
+        }
 
         .ratBox {
             display: none;
@@ -104,15 +104,20 @@
             align-content: center;
             text-align: center;
         }
+        
+        .ratBox > button {
+            margin: 20px;
+        }
 
-            .ratBox > button {
-                margin: 20px;
-            }
+        .ratBox > input, .ratBox > select {
+           width: 75%;
+           margin: 10px auto 10px;
+        }
 
-            .ratBox > input, .ratBox > select {
-                width: 75%;
-                margin: 10px auto 10px;
-            }
+        .imgPreview{
+            width: 60%;
+            margin: 20px;
+        }
     </style>
 }
 
@@ -148,6 +153,8 @@
                                                                 <!-- 發文內容 -->
                                                                 <input type="text" id="postContent"
                                                                        placeholder="說點什麼......">
+                                                                <img class="imgPreview" />
+                                                                <button v-if="newPostPic != null" @@click="removeNewPostPic">移除</button>
                                                                 <div class="content-type">
                                                                     <ul class="content-list">
 
@@ -155,7 +162,7 @@
                                                                             <div class="file-btn">
                                                                                 <i class="fa-regular fa-image"></i>Photo
                                                                             </div>
-                                                                            <input type="file">
+                                                                            <input type="file" v-model="newPostPic" @@change="previewPic" accept="image/*">
                                                                         </li>
 
                                                                         <li class="post-submit">
@@ -225,7 +232,7 @@
                                                         <div class="post-footer">
                                                             <p class="time">{{post.time}}</p>
                                                             <p>{{post.comment.length}} Comments</p>
-                                                            <a href="#"><i class="fa-solid fa-share"></i> Share</a>
+                                                            <a href="#" @@click="shareToFacebook(post)"><i class="fa-solid fa-share"></i> Share</a>
                                                         </div>
                                                     </div>
 
@@ -257,39 +264,8 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
-                                                <div class="text-center mt-5">
-                                                    <a href="#" class="default-btn">
-                                                        <i class="fa-solid fa-spinner"></i> Load
-                                                        More
-                                                    </a>
-                                                </div>
                                             </div>
                                         </div>
-
-                                        @* <div class="tab-pane fade" id="music" role="tabpanel" aria-labelledby="music-tab">
-                                        <div class="media-content">
-                                        <ul class="media-upload">
-                                        <li class="upload-now">
-                                        <div class="custom-upload">
-                                        <div class="file-btn">
-                                        <i class="fa-solid fa-upload"></i> Upload
-                                        </div>
-                                        <input type="file">
-                                        </div>
-                                        </li>
-                                        </ul>
-                                        <div class="row">
-                                        <div class="col">
-                                        <p>
-                                        <i class="icofont-worried"></i> Sorry !!
-                                        There's no media found for the
-                                        request !!
-                                        </p>
-                                        </div>
-                                        </div>
-                                        </div>
-                                        </div> *@
                                     </div>
                                 </div>
                             </div>
@@ -305,33 +281,8 @@
 
 @section Scripts
 {
-    <!-- All Needed JS -->
-    <script src="assets/js/vendor/jquery-3.6.0.min.js"></script>
-    <script src="assets/js/vendor/modernizr-3.11.2.min.js"></script>
-    <script src="assets/js/isotope.pkgd.min.js"></script>
-    <script src="assets/js/swiper.min.js"></script>
-    <!-- <script src="assets/js/all.min.js"></script> -->
-    <script src="assets/js/wow.js"></script>
-    <script src="assets/js/counterup.js"></script>
-    <script src="assets/js/jquery.countdown.min.js"></script>
-    <script src="assets/js/lightcase.js"></script>
-    <script src="assets/js/waypoints.min.js"></script>
-    <script src="assets/js/vendor/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/plugins.js"></script>
-    <script src="assets/js/main.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/vue@3.4.27"></script>
-    <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
-    <script>
-        window.ga = function () {
-            ga.q.push(arguments)
-        };
-        ga.q = [];
-        ga.l = +new Date;
-        ga('create', 'UA-XXXXX-Y', 'auto');
-        ga('set', 'anonymizeIp', true);
-        ga('set', 'transport', 'beacon');
-        ga('send', 'pageview')
-    </script>
     <script src="https://www.google-analytics.com/analytics.js" async></script>
     <script>
         const postPlatform = Vue.createApp({
@@ -339,8 +290,8 @@
                 return {
                     //先寫死的部分
                     baseAddress: "https://localhost:7152",
-                    loginUserId: 2,
                     //先寫死的部分
+                    loginUserId: @ViewBag.UserId,
                     loginUserInfo: [],
                     posts: [],
                     ratItems: [],
@@ -348,11 +299,12 @@
                     wannaDeletePost: 0,
                     ratContent: "",
                     ratReason: "",
+                    newPostPic: null, //請記得提交發文的post請求成功後執行的程式碼加入 this.newPostPic = null;
                 }
             },
             methods: {
                 //請求登入者資料
-                getLoginUser(loginUserId) {
+                getLoginUser(userId) {
                     fetch(`api/Post/GetLoginUser/${this.loginUserId}`)
                         .then(res => res.json())
                         .then(data => {
@@ -364,8 +316,8 @@
                         .catch(error => { console.log('fetch loginUserInfo failed!') });
                 },
                 //請求所有貼文資訊
-                getPostsList() {
-                    fetch(`/api/Post/GetPostsRel`)
+                getPostsList(userId) {
+                    fetch(`/api/Post/GetPostsRel/${userId}`)
                         .then(res => res.json())
                         .then(data => {
                             this.posts = data.map(post => ({
@@ -423,7 +375,7 @@
                                 heart.classList.remove('fa-regular');
                                 heart.classList.add('fa-solid');
                             }
-                            this.getPostsList();
+                            this.getPostsList(this.loginUserId);
                         })
                         .catch(error => {
                             console.log('fetch add like failed!', error)
@@ -470,7 +422,7 @@
                             console.log(data);
                             $('.deleteBox').css("display", "none");
                             this.wannaDeletePost = 0;
-                            this.getPostsList();
+                            this.getPostsList(this.loginUserId);
                         })
                         .catch(error => { console.log('fetch delete posts failed!') });
                 },
@@ -526,15 +478,46 @@
                     this.watingToRatPost = [];
                     $('.ratBox').css("display", "none");
                 },
-                //將圖片路徑處理
+                //將資料庫圖片路徑字串處理
                 cutPicPath(PicturePath) {
                     const fileName = PicturePath.slice(19);
                     return fileName;
                 },
+                // share鍵觸發的分享貼文到第三方(目前以臉書為例) 目前只弄到登入還不成功
+                shareToFacebook(post) {
+                    event.preventDefault();
+                    const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(this.baseAddress + '/post/' + post.postId)}&quote=${encodeURIComponent(post.contents)}`;
+                    window.open(shareUrl, 'facebook-share-dialog', 'width=800,height=600');
+                },
+                //發文預覽圖片
+                previewPic(){
+                    const allowType = "image.*";
+                    let file = event.target.files[0];
+                    if (file.type.match(allowType)) {
+                        var reader = new FileReader();
+                        reader.onload = function () {
+                            this.newPostPic = this.result;
+                            let blob = new Blob([this.newPostPic], { type: "image/jpeg" });
+                            let uriCreator = window.URL || wondow.webkitURL;
+                            let imgUrl = uriCreator.createObjectURL(blob);
+                            $('.imgPreview').attr("src", imgUrl);
+                        };
+                        reader.readAsArrayBuffer(file);
+                        this.newPostPic = file
+                    } else {
+                        this.newPostPic = null;
+                        $('.imgPreview').attr("src", null);
+                    }
+                },
+                //移除發文選的圖片
+                removeNewPostPic() {
+                    this.newPostPic = null;
+                    $('.imgPreview').attr("src", null);
+                },
             },
             mounted() {
-                this.getLoginUser(this.loginUserId);
-                this.getPostsList();
+                this.getLoginUser(@ViewBag.UserId);
+                this.getPostsList(@ViewBag.UserId);
                 this.getRatItemsList();
             },
         })

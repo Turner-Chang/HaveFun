@@ -1,0 +1,364 @@
+﻿@section Styles
+{
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+}	
+
+<div id="activityApp">
+	<!-- ================> Page Header section start here <================== -->
+	<div class="pageheader bg_img" style="background-image: url(assets/images/bg-img/pageheader.jpg);">
+		<div class="container">
+			<div class="pageheader__content text-center">
+				<h2>All Activities</h2>
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb justify-content-center mb-0">
+						<li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+						<li class="breadcrumb-item"><a href="#">Activity</a></li>
+					</ol>
+				</nav>
+			</div>
+		</div>
+	</div>
+	<!-- ================> Member section start here <================== -->
+	<div class="member story story--style2 padding-top padding-bottom overflow-hidden" style="outline: 2px solid red; padding-top: 20px;">
+		<div class="overflow-hidden">
+			<a type="button" class="default-btn float-end" style="background-color:#f24570; color:white; margin-right: 20px;" asp-controller="Activity" asp-action="Create"><b>主辦活動 <i class="fa-solid fa-plus"></i></b></a>
+		</div>
+		<div class="container" style="outline: 2px solid blue;">
+			<div class="section__wrapper">
+				<div class="member__info mb-4">
+					<div class="member__info--left">
+						<div class="member__info--filter">
+							<div class="default-btn" data-bs-toggle="modal" data-bs-target="#exampleModal"><span>Filter Your Search <i class="fa-solid fa-sliders"></i></span></div>
+						</div>
+						<div class="member__info--count">
+							<div class="default-btn"><span>All Activities</span></div>
+							<p>20365587</p>
+						</div>
+					</div>
+					<div class="member__info--right">
+						<div class="member__info--customselect right w-100">
+							<div class="default-btn"><span>Order By:</span></div>
+							<div class="banner__inputlist">
+								<select>
+									<option value="0">Last Active </option>
+									<option value="1">Oldest</option>
+									<option value="2">Popular</option>
+									<option value="3">Most Active</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row g-4 justify-content-center row-cols-lg-4 row-cols-sm-2 row-cols-1">
+					<div class="col">
+						<div class="story__item style2 story--theme-color">
+							<div class="story__inner">
+								<div class="story__thumb position-relative">
+									<a href="group-single.html"><img src="assets/images/group/01.jpg" alt="dating thumb"></a>
+									<span class="member__activity member__activity--ofline">2 days ago</span>
+								</div>
+								<div class="story__content px-0 pb-0">
+									<a href="group-single.html"><h4>Be young, love life</h4></a>
+									<p>You become what you believe. –Oprah Winfrey</p>
+									<div class="story__content--author justify-content-between border-top pt-3">
+										<div class="story__content--content">
+											<p><i class="fa-solid fa-earth-africa"></i> Public Group</p>
+										</div>
+										<ul class="img-stack">
+											<li>
+												<a href="#">
+													<img src="assets/images/group/icon/01.png" alt="member-img">
+													<div class="time-tooltip">
+														<div class="time-tooltip-holder">
+															<span class="tooltip-info">Klaus Klug</span>
+														</div>
+													</div>
+												</a>
+											</li>
+											<li>
+												<a href="#">
+													<img src="assets/images/group/icon/02.png" alt="member-img">
+													<div class="time-tooltip">
+														<div class="time-tooltip-holder">
+															<span class="tooltip-info">Mary C. Shen</span>
+														</div>
+													</div>
+												</a>
+											</li>
+											<li>
+												<a href="#">
+													<img src="assets/images/group/icon/03.png" alt="member-img">
+													<div class="time-tooltip">
+														<div class="time-tooltip-holder">
+															<span class="tooltip-info">Lucas Vogler</span>
+														</div>
+													</div>
+												</a>
+											</li>
+											<li>
+												<a href="#">
+													<img src="assets/images/group/icon/04.png" alt="member-img">
+													<div class="time-tooltip">
+														<div class="time-tooltip-holder">
+															<span class="tooltip-info">Manuela Moench</span>
+														</div>
+													</div>
+												</a>
+											</li>
+											<li>
+												<a href="#">
+													<img src="assets/images/group/icon/05.png" alt="member-img">
+													<div class="time-tooltip">
+														<div class="time-tooltip-holder">
+															<span class="tooltip-info">Matthias Propst</span>
+														</div>
+													</div>
+												</a>
+											</li>
+											<li class="bg-theme">
+												<a href="#">
+													12+
+													<div class="time-tooltip">
+														<div class="time-tooltip-holder">
+															<span class="tooltip-info">More</span>
+														</div>
+													</div>
+												</a>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="story__item style2 story--theme-color2">
+							<div class="story__inner">
+								<div class="story__thumb position-relative">
+									<a href="group-single.html"><img src="assets/images/group/02.jpg" alt="dating thumb"></a>
+									<span class="member__activity member__activity--ofline">4 days ago</span>
+								</div>
+								<div class="story__content px-0 pb-0">
+									<a href="group-single.html"><h4>Learn how to love</h4></a>
+									<p>Fall seven times and stand up eight. –Japanese Proverb</p>
+									<div class="story__content--author justify-content-between border-top pt-3">
+										<div class="story__content--content">
+											<p><i class="fa-solid fa-earth-africa"></i> Public Group</p>
+										</div>
+										<ul class="img-stack">
+											<li>
+												<a href="#">
+													<img src="assets/images/group/icon/06.png" alt="member-img">
+													<div class="time-tooltip">
+														<div class="time-tooltip-holder">
+															<span class="tooltip-info">Klaus Klug</span>
+														</div>
+													</div>
+												</a>
+											</li>
+											<li>
+												<a href="#">
+													<img src="assets/images/group/icon/07.png" alt="member-img">
+													<div class="time-tooltip">
+														<div class="time-tooltip-holder">
+															<span class="tooltip-info">Mary C. Shen</span>
+														</div>
+													</div>
+												</a>
+											</li>
+											<li>
+												<a href="#">
+													<img src="assets/images/group/icon/08.png" alt="member-img">
+													<div class="time-tooltip">
+														<div class="time-tooltip-holder">
+															<span class="tooltip-info">Lucas Vogler</span>
+														</div>
+													</div>
+												</a>
+											</li>
+											<li>
+												<a href="#">
+													<img src="assets/images/group/icon/09.png" alt="member-img">
+													<div class="time-tooltip">
+														<div class="time-tooltip-holder">
+															<span class="tooltip-info">Manuela Moench</span>
+														</div>
+													</div>
+												</a>
+											</li>
+											<li>
+												<a href="#">
+													<img src="assets/images/group/icon/10.png" alt="member-img">
+													<div class="time-tooltip">
+														<div class="time-tooltip-holder">
+															<span class="tooltip-info">Matthias Propst</span>
+														</div>
+													</div>
+												</a>
+											</li>
+											<li class="bg-theme">
+												<a href="#">
+													12+
+													<div class="time-tooltip">
+														<div class="time-tooltip-holder">
+															<span class="tooltip-info">More</span>
+														</div>
+													</div>
+												</a>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<div class="member__pagination mt-4">
+					<div class="member__pagination--left">
+						<p>Viewing 1 - 20 of 12,345 Members</p>
+					</div>
+					<div class="member__pagination--right">
+						<ul class="default-pagination">
+							<li>
+								<a href="#"><i class="fas fa-chevron-left"></i></a>
+							</li>
+							<li>
+								<a href="#">01</a>
+							</li>
+							<li>
+								<a href="#" class="active">02</a>
+							</li>
+							<li>
+								<a href="#">03</a>
+							</li>
+							<li>
+								<a href="#"><i class="fas fa-chevron-right"></i></a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- ================> Member section end here <================== -->
+	<!-- Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Filter your search</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form action="#">
+						<div class="banner__list">
+							<div class="row align-items-center row-cols-1">
+								<div class="col">
+									<label>I am a</label>
+									<div class="banner__inputlist">
+										<select>
+											<option>Select Gender</option>
+											<option value="male" selected>Male</option>
+											<option value="female">Female</option>
+											<option value="others">Others</option>
+										</select>
+									</div>
+								</div>
+								<div class="col">
+									<label>Looking for</label>
+									<div class="banner__inputlist">
+										<select>
+											<option>Select Gender</option>
+											<option value="male">Male</option>
+											<option value="female" selected>Female</option>
+											<option value="others">Others</option>
+										</select>
+									</div>
+								</div>
+								<div class="col">
+									<label>Age</label>
+									<div class="row g-3">
+										<div class="col-6">
+											<div class="banner__inputlist">
+												<select>
+													<option value="18" selected>18</option>
+													<option value="19">19</option>
+													<option value="20">20</option>
+												</select>
+											</div>
+										</div>
+										<div class="col-6">
+											<div class="banner__inputlist">
+												<select>
+													<option value="18">18</option>
+													<option value="19">19</option>
+													<option value="20">20</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col">
+									<label>Country</label>
+									<div class="banner__inputlist">
+										<select id="country2" name="country2">
+											<option value="Afganistan">Afghanistan</option>
+											<option value="Albania">Albania</option>
+											<option value="Algeria">Algeria</option>
+											<option value="American Samoa">American Samoa</option>
+										</select>
+									</div>
+								</div>
+								<div class="col">
+									<button type="submit" class="default-btn reverse d-block"><span>Find Your Partner</span></button>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- modal -->
+</div>
+
+@section Scripts
+{
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity = "sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin ="anonymous" referrerpolicy="no-referrer" asp-append-version="true">
+	</script>
+
+	<script>
+		// 在页面加载时检查是否有成功消息，并显示 SweetAlert 弹窗
+		document.addEventListener("DOMContentLoaded", function () {
+			var successMessage = '@Html.Raw(TempData["SuccessMessage"])';
+			if (successMessage) {
+				Swal.fire({
+					icon: 'success',
+					title: '成功！',
+					text: successMessage
+				});
+			}
+		});
+
+		const matchApp = Vue.createApp({
+			data() {
+				return {
+					baseAddress: "https://localhost:7152",
+					
+				}
+			},
+			computed: {
+				
+			},
+			methods: {
+				
+			},
+			watch: {
+			},
+			mounted() {
+				
+			},
+		}).mount("#activityApp");
+	</script>	
+}

@@ -1,6 +1,7 @@
 ﻿using HaveFun.Common;
 using HaveFun.DTOs;
 using HaveFun.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,7 @@ namespace HaveFun.Controllers.APIs
 {
 
     [Route("api/Post/[action]")]
- 
+
     [ApiController]
     public class PostsApiController : ControllerBase
     {
@@ -32,12 +33,12 @@ namespace HaveFun.Controllers.APIs
             return _context.Posts;
         }
         //顯示貼文+回覆相關資料
-        // GET : api/Post/GetPostsRel
-        [HttpGet]
-        public async Task<JsonResult> GetPostsRel()
+        // GET : api/Post/GetPostsRel/5
+        [HttpGet("{loginUserId}")]
+        public async Task<JsonResult> GetPostsRel(int loginUserId)
         {
             var result = await _context.Posts
-                .Where(p => p.Status == 0)
+                .Where(p => p.UserId == loginUserId && p.Status == 0)
                 .Include(p => p.User)
                 .Include(p => p.Comments)
                 .Include(p => p.Like)
@@ -113,6 +114,7 @@ namespace HaveFun.Controllers.APIs
             {
                 Post post = new Post
                 {
+                    Id = 0,
                     UserId = postDTO.UserId,
                     Contents = postDTO.Contents,
                     Time = DateTime.Now,

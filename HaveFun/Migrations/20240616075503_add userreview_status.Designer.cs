@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HaveFun.Migrations
 {
     [DbContext(typeof(HaveFunDbContext))]
-    [Migration("20240613074146_add_userreview_dbset")]
-    partial class add_userreview_dbset
+    [Migration("20240616075503_add userreview_status")]
+    partial class adduserreview_status
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -65,11 +65,19 @@ namespace HaveFun.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
+                    b.Property<byte[]>("Picture")
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<DateTime>("RegistrationTime")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
@@ -649,25 +657,28 @@ namespace HaveFun.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("beReportedUserId")
+                    b.Property<int>("BeReportedUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("complaintCategoryId")
+                    b.Property<int>("ComplaintCategoryId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("reportTime")
+                    b.Property<DateTime>("ReportTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("reportUserId")
+                    b.Property<int>("ReportUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("status")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("beReportedUserId");
+                    b.HasIndex("BeReportedUserId");
 
-                    b.HasIndex("complaintCategoryId");
+                    b.HasIndex("ComplaintCategoryId");
 
-                    b.HasIndex("reportUserId");
+                    b.HasIndex("ReportUserId");
 
                     b.ToTable("UserReviews");
                 });
@@ -675,7 +686,7 @@ namespace HaveFun.Migrations
             modelBuilder.Entity("HaveFun.Models.Activity", b =>
                 {
                     b.HasOne("HaveFun.Models.ActivityType", "ActivityType")
-                        .WithMany()
+                        .WithMany("Activities")
                         .HasForeignKey("Type")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -935,19 +946,19 @@ namespace HaveFun.Migrations
                 {
                     b.HasOne("HaveFun.Models.UserInfo", "User2")
                         .WithMany("BeRepostedUsers")
-                        .HasForeignKey("beReportedUserId")
+                        .HasForeignKey("BeReportedUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("HaveFun.Models.ComplaintCategory", "ComplaintCategory")
                         .WithMany("UserReviews")
-                        .HasForeignKey("complaintCategoryId")
+                        .HasForeignKey("ComplaintCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("HaveFun.Models.UserInfo", "User1")
                         .WithMany("ReportUsers")
-                        .HasForeignKey("reportUserId")
+                        .HasForeignKey("ReportUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -963,6 +974,11 @@ namespace HaveFun.Migrations
                     b.Navigation("ActivityParticipants");
 
                     b.Navigation("ActivityReviews");
+                });
+
+            modelBuilder.Entity("HaveFun.Models.ActivityType", b =>
+                {
+                    b.Navigation("Activities");
                 });
 
             modelBuilder.Entity("HaveFun.Models.Comment", b =>

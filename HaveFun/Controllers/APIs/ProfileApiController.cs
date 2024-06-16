@@ -103,7 +103,7 @@ namespace HaveFun.Controllers.APIs
                         {
                             Id = c.Id,
                             UserId = c.UserId,
-                            UserName=c.User.Name,
+                            UserName = c.User.Name,
                             PostId = c.PostId,
                             ParentCommentId = c.ParentCommentId,
                             Contents = c.Contents,
