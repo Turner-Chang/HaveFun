@@ -6,11 +6,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HaveFun.Models;
+using HaveFun.DTOs;
 
 namespace HaveFun.Controllers.APIs
 {
-    [Route("api/MemberLabelsApi/[action]")]
-    [ApiController]
+	[Route("api/[controller]")]
+	[ApiController]
     public class MemberLabelsApiController : ControllerBase
     {
         private readonly HaveFunDbContext _context;
@@ -72,19 +73,48 @@ namespace HaveFun.Controllers.APIs
             return NoContent();
         }
 
-        // POST: api/MemberLabelsApi/PostMemberLabel
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<MemberLabel>> PostMemberLabel(MemberLabel memberLabel)
-        {
-            _context.MemberLabels.Add(memberLabel);
-            await _context.SaveChangesAsync();
+		// POST: api/MemberLabelsApi/submitLabels      
+		[HttpPost("submitLabels")]
+		public async Task<IActionResult> SubmitLabels([FromBody] MemberLabelDTO memberLabelDTO)
+		{
+			if (memberLabelDTO == null || memberLabelDTO.LabelIds == null || !memberLabelDTO.LabelIds.Any())
+			{
+				return BadRequest("请求数据不能为空或标签列表不能为空");
+			}
 
-            return CreatedAtAction("GetMemberLabel", new { id = memberLabel.Id }, memberLabel);
-        }   
+			try
+			{
+				Console.WriteLine($"接收到的数据: UserId = {memberLabelDTO.UserId}, LabelIds = {string.Join(", ", memberLabelDTO.LabelIds)}");
 
-        // DELETE: api/MemberLabelsApi/5
-        [HttpDelete("{id}")]
+				// 清理旧的标签记录
+				var existingLabels = await _context.MemberLabels
+					.Where(ml => ml.UserId == memberLabelDTO.UserId)
+					.ToListAsync();
+				_context.MemberLabels.RemoveRange(existingLabels);
+
+				// 添加新的标签记录
+				foreach (var labelId in memberLabelDTO.LabelIds)
+				{
+					var memberLabel = new MemberLabel
+					{
+						UserId = memberLabelDTO.UserId,
+						LabelId = labelId
+					};
+					_context.MemberLabels.Add(memberLabel);
+				}
+
+				await _context.SaveChangesAsync();
+				return CreatedAtAction(nameof(GetMemberLabel), new { id = memberLabelDTO.UserId }, memberLabelDTO);
+			}
+			catch (Exception ex)
+			{
+				Console.Error.WriteLine($"保存成员标签时发生异常: {ex.Message}");
+				return StatusCode(500, $"保存成员标签时发生异常: {ex.Message}");
+			}
+		}
+
+		// DELETE: api/MemberLabelsApi/5
+		[HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMemberLabel(int id)
         {
             var memberLabel = await _context.MemberLabels.FindAsync(id);
