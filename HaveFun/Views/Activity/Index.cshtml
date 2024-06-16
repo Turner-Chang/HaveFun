@@ -1,4 +1,9 @@
-﻿	<!-- ================> Page Header section start here <================== -->
+﻿@section Styles
+{
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+}	
+
+<!-- ================> Page Header section start here <================== -->
 <div class="pageheader bg_img" style="background-image: url(assets/images/bg-img/pageheader.jpg);">
 	<div class="container">
 		<div class="pageheader__content text-center">
@@ -315,3 +320,20 @@
 	</div>
 </div>
 <!-- modal -->
+
+@section Scripts
+{
+	<script>
+		// 在页面加载时检查是否有成功消息，并显示 SweetAlert 弹窗
+		document.addEventListener("DOMContentLoaded", function () {
+			var successMessage = '@Html.Raw(TempData["SuccessMessage"])';
+			if (successMessage) {
+				Swal.fire({
+					icon: 'success',
+					title: '成功！',
+					text: successMessage
+				});
+			}
+		});
+	</script>	
+}
