@@ -197,9 +197,9 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const userId = 1; // 用户ID，可以根据实际情况进行更改
+            const userId = 1; // 用户ID，可以依照實際情況進行更改
 
-            // 从API获取好友列表数据
+            // 從API取得好友列表資料
             fetch(`/api/FriendApi/GetFriend/${userId}`)
                 .then(response => response.json())
                 .then(data => {
@@ -210,7 +210,7 @@
 
         function renderFriendList(data) {
             const friendListContainer = document.getElementById('Newest');
-            friendListContainer.innerHTML = ''; // 清空当前列表
+            friendListContainer.innerHTML = ''; // 清空當前列表
 
             data.forEach(FriendDTO => {
                 const listItem = document.createElement('li');
