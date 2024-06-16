@@ -47,6 +47,23 @@ namespace HaveFun.Controllers.APIs
 
             return userInf;
         }
+        //GetUserInfo 找全部的user 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<UserIfDTO>>> GetUserInfo()
+        {
+            var userInfos = await _context.UserInfos
+                .Select(u => new UserIfDTO
+                {
+                    Id = u.Id, // Include the Id property
+                    Name = u.Name,
+                    Address = u.Address,
+                    PhoneNumber = u.PhoneNumber,
+                    Gender = u.Gender,
+                    BirthDay = u.BirthDay,
+                    Introduction = u.Introduction,
+                    Password = u.Password
+                })
+                .ToListAsync();
 
         //GET: api/UserInfo/GetPicture/2
         [HttpGet("{id}")]
