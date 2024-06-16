@@ -174,7 +174,7 @@
                 posts: [],
                 postIdCounter: 1,
                 userName: '',
-                userId: 2 // 假設使用者ID為1
+                userId: 2 // 假設使用者ID為2
             };
         },
         created() {
@@ -221,7 +221,6 @@
                 }
             },
 
-            // 發佈貼文
             async addPost() {
                 if (this.postContent.trim() === '') {
                     alert('貼文不可空白');

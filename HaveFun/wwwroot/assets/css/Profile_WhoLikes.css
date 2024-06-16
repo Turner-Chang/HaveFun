@@ -1,0 +1,5 @@
+﻿.fixed-size-img {
+    width: 200px; /* 设置固定宽度 */
+    height: 200px; /* 设置固定高度 */
+    object-fit: cover; /* 保持图片比例 */
+}
