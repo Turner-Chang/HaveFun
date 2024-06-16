@@ -15,7 +15,7 @@ namespace HaveFun.Controllers
         }
         [HttpGet]
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        
         public IActionResult ForgetPassword()
         {
             return View();

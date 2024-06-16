@@ -53,6 +53,7 @@ namespace HaveFun.Controllers.APIs
 
                 if (password == user.Password)
                 {
+                    // 這邊設定Cookie驗證
                     var claims = new Claim[]
                     {
                         new Claim(ClaimTypes.Name, user.Id.ToString())
@@ -60,8 +61,9 @@ namespace HaveFun.Controllers.APIs
                     var claimsIdentity = new ClaimsIdentity(claims, "Login");
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
+                    //這邊設定JWT驗證
                     string jwtToken = _jwt.GenerateJWTToken(user);
-                    Response.Cookies.Append("secret", jwtToken, new CookieOptions
+                    Response.Cookies.Append("JwtSecret", jwtToken, new CookieOptions
                     {
                         Expires = DateTime.Now.AddDays(1),
                         HttpOnly = true,
