@@ -1,6 +1,8 @@
 ﻿using HaveFun.Common;
 using HaveFun.DTOs;
 using HaveFun.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
