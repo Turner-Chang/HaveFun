@@ -12,9 +12,9 @@
 			<table class="table table-secondary">
 				<thead class="table-active">
 					<tr>
-						<th scope="col">被檢舉貼文ID</th>
-						<th scope="col">被檢舉人ID</th>
-						<th scope="col">被檢舉項目ID</th>
+						<th scope="col">被檢舉貼文Id</th>
+						<th scope="col">被檢舉人Id</th>
+						<th scope="col">被檢舉項目</th>
 						<th scope="col">被檢舉理由</th>
 						<th scope="col" >被檢舉時間</th>
 						<th scope="col">處理</th>
@@ -28,7 +28,7 @@
 					<tr v-for="r in reports.slice(tableStart,tableEnd)" class="">
 						<td >{{r.postId}}</td>
 						<td>{{r.userId}}</td>
-						<td>{{r.reportItems}}</td>
+						<td>{{this.ComplaintToString(r.reportItems)}}</td>
 						<td>{{r.reason}}</td>
 						<td class="col-md-0">{{r.reportTime}}</td>
 						<td>
@@ -37,7 +37,7 @@
 								處理
 							</button>
 						</td>
-						<td>{{r.processingStstus}}</td>
+						<td>{{this.ReviewStatusToString(r.processingStstus)}}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -49,7 +49,7 @@
 		</div>
 		<div class="  text-light bg-secondary">
 			<label >檢舉項目:</label> <br />
-			<label v-for="c in complaint" class="form-label col-12 col-md-2 col-sm-6">{{c.complaintCategoryId}}  {{c.complaintCategoryName}}</label> 
+			<label v-for="c in complaint" class="form-label col-12 col-md-2 col-sm-6">{{c.complaintCategoryId}} . {{c.complaintCategoryName}}</label> 
 		</div>
 	</div>
 
@@ -103,14 +103,14 @@
 							檢舉狀態:
 						</label>
 						<label class="col-6 text-start">
-							{{Post.status}}
+							{{this.PostStatusToString(Post.status)}}
 						</label>
 
 					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button"
-							@@click="PostStateChange(PostId,2) "
+							@@click="PostStateChange(PostId,0) "
 							class="btn btn-secondary "
 							data-bs-dismiss="modal">
 						駁回檢舉
@@ -135,13 +135,13 @@
 					tableStart:0,
 					tableEnd:5,
 					complaint:[],
-					
+					baseAdress: "https://localhost:7152",
 				}
 			},
 			methods: {
 				GetAll() {
-					baseAdress = "https://localhost:7152/";
-					var data = fetch(`${baseAdress}api/PostReview/GetAll`, { method: "GET" })
+					
+					var data = fetch(`${this.baseAdress}/api/PostReview/GetAll`, { method: "GET" })
 						.then(response => response.json())
 						.then(data =>
 							JSON.stringify(data))
@@ -180,9 +180,9 @@
 				}
 				,
 				GetPost(PostId) {
-					baseAdress = "https://localhost:7152/";
 					
-					var data = fetch(`${baseAdress}api/Post/GetById/${PostId}`, { method: "GET" })
+
+					var data = fetch(`${this.baseAdress}/api/Post/GetById/${PostId}`, { method: "GET" })
 						.then(response => response.json())
 						.then(data =>
 							JSON.stringify(data)	)
@@ -210,7 +210,7 @@
 						"processingStstus": state
 					};
 					fetch(
-						`https://localhost:7152/api/PostReview/Put/${postReviewId}`,
+						`${this.baseAdress}/api/PostReview/Put/${postReviewId}`,
 						{
 							method:"PUT",
 							body:JSON.stringify(body),
@@ -230,7 +230,7 @@
 						"status": state
 					};
 					fetch(
-						`https://localhost:7152/api/Post/PutState?id=${PostId}`,
+						`${this.baseAdress}/api/Post/PutState?id=${PostId}`,
 						{
 							method: "PUT",
 							body: JSON.stringify(body),
@@ -239,6 +239,7 @@
 					).then(res => res.text())
 						.then(data => console.log(data))
 						.catch(err => alert("err"));
+					if (state == 0) { state = 2; }
 					this.PostReviewStateChange(this.PostReviewId, state);
 					
 				},
@@ -266,20 +267,35 @@
 					alert("已經是最後一頁")
 					}
 				},
+				ReviewStatusToString(s) { 
+					if (s == 0) { return "申訴中"; } 
+					else if (s == 1) { return "已刪除"; } 
+					else  { return "無須刪除"; } 
+				},
+				PostStatusToString(s) {
+					if (s == 0) { return "未下架貼文"; }
+					else { return "已下架貼文"; }
+				}, ComplaintToString(id) {
+					if (this.complaint.length != 0)
+						return this.complaint[parseInt(id) - 1].complaintCategoryName
+					else
+						return "null";
+				}
+
 			},
 			mounted: async () => {
 
-				baseAdress = "https://localhost:7152/";
+				var baseAdress= "https://localhost:7152";
 
 				var resp = await fetch(
-					`${baseAdress}api/PostReview/GetAll`, {
+					`${baseAdress}/api/PostReview/GetAll`, {
 					method: "GET"
 				});
 				var data = await resp.json();
 				App.reports = data;
 				//alert(JSON.stringify(data));
 
-				fetch("https://localhost:7152/api/Getall", { method: "GET" }).then(r => r.json()).then(d => App.complaint = d);
+				fetch(`${baseAdress}/api/complaint/Getall`, { method: "GET" }).then(r => r.json()).then(d => App.complaint = d);
 				//
 
 			}, 
