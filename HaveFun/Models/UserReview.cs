@@ -22,5 +22,8 @@ namespace HaveFun.Models
 		[ForeignKey("User2")]
 		public int BeReportedUserId { get; set; }
 		public virtual UserInfo User2 { get; set; }
+		
+		public int ProcessingStatus { get; set; } = 0;
+
 	}
 }

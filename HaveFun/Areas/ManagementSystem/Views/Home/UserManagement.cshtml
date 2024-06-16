@@ -27,9 +27,11 @@
 					<td>{{r.reportTime}}</td>
 					<td>{{r.complaintCategoryId}}</td>
 					<td>
-						<button class="btn btn-warning"  :id="r.id"
-								@@click="check(r.beReportedUserId)">處理</button>
-						</td>
+						<button class="btn btn-warning" :id="r.id"
+								@@click="check(r.beReportedUserId)">
+							處理
+						</button>
+					</td>
 				</tr>
 
 			</tbody>
@@ -52,8 +54,8 @@
 		 role="dialog"
 		 aria-labelledby="modalTitleId"
 		 aria-hidden="true">
-		<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
-			 role="document">
+		<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered "
+			 role="document" style="width:450px">
 			<div class="modal-content">
 				<div class="modal-header bg-info">
 					<h5 class="modal-title" id="modalTitleId">
@@ -67,38 +69,69 @@
 				</div>
 				<div class="modal-body row lh-lg">
 					<div>
-						<label class="col-6 text-decoration-underline">
+						<label class="col-4 text-decoration-underline">
 							被檢舉人名稱:
 						</label>
-						<label class="col-6 text-start">
+						<label class="col-8 text-start">
 							{{userInfos.name}}
 						</label>
-						<label class="col-6 text-decoration-underline">
+						<label class="col-4 text-decoration-underline">
 							被檢舉人性別:
 						</label>
-						<label class="col-6 text-start">
-							{{userInfos.gender}}
+						<label class="col-8 text-start">
+							{{gender(userInfos.gender)}}
 						</label>
-						<label class="col-6 text-decoration-underline">
+						<label class="col-4 text-decoration-underline">
 							被檢舉人介紹:
 						</label>
-						<label class="col-6 text-start">
+						<label class="col-8 text-start">
 							{{userInfos.introduction}}
 						</label>
+						<label class="col-4 text-decoration-underline">
+							被檢舉人帳號:
+						</label>
+						<label class="col-8 text-start">
+							{{userInfos.account}}
+						</label>
+						<label class="col-4 text-decoration-underline">
+							被檢舉人地址:
+						</label>
+						<label class="col-8 text-start">
+							{{userInfos.address}}
+						</label>
+						<label class="col-4 text-decoration-underline">
+							被檢舉人電話:
+						</label>
+						<label class="col-8 text-start">
+							{{userInfos.phoneNumber}}
+						</label>
+						<label class="col-4 text-decoration-underline">
+							被檢舉人生日:
+						</label>
+						<label class="col-8 text-start">
+							{{userInfos.birthDay}}
+						</label>
+						<label class="col-4 text-decoration-underline">
+							被檢舉人註冊時間:
+						</label>
+						<label class="col-8 text-start">
+							{{userInfos.registrationDate}}
+						</label>
+
 					</div>
-				
+
 					<div>
-						<label class="col-6 text-decoration-underline">
+						<label class="col-4 text-decoration-underline">
 							被檢舉人圖片:
 						</label>
-						<img class="col-12 img-fluid" :src="" />
+						<img class="col-12 img-fluid" :src="imgSrc(userInfos.profilePicture)" />
 
 					</div>
 					<div>
-						<label class="col-6 text-decoration-underline">
+						<label class="col-4 text-decoration-underline">
 							檢舉狀態:
 						</label>
-						<label class="col-6 text-start ">
+						<label class="col-8 text-start ">
 							{{userInfos.status}}
 						</label>
 
@@ -106,12 +139,14 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button"
-							@@click=""
 							class="btn btn-secondary "
-							data-bs-dismiss="modal">
+							data-bs-dismiss="modal"
+							@@click="changeUserStatus(userInfos.id,0)">
 						駁回檢舉
 					</button>
-					<button type="button" @@click=" " class="btn btn-danger">封鎖使用者</button>
+					<button type="button" @@click="changeUserStatus(userInfos.id,1) " class="btn btn-danger">
+						封鎖使用者
+					</button>
 				</div>
 			</div>
 		</div>
@@ -120,17 +155,17 @@
 </div>
 
 @section Scripts {
-	
+
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<script>
 		var App = Vue.createApp({
 			data() {
 				return {
 					reviews: [],
-					tableStart:0,
+					tableStart: 0,
 					tableEnd: 5,
-					userInfos:[],
-					complaint:[],
+					userInfos: [],
+					complaint: [],
 				};
 			},
 			methods: {
@@ -138,22 +173,42 @@
 					if (type == 0) { return "男"; }
 					else if (type == 1) { return "女"; }
 					else { return "不男不女"; }
-				}
-				,
+				},
+				imgSrc(src) {
+					if (src == null || src == "null" || src == "")
+						return "/images/NOimg.jpg"
+					else
+						return src.substr(18);
+				},
 				check(id) {
 					this.showModal();
 					this.getUserInfo(id);
-				},	
+				},
 				getUserInfo(userid) {
 					axios.get(`https://localhost:7152/api/UserInfo/GetById/${userid}`
-		).then(r=>r.data).then(d=>App.userInfos=d );
+					).then(r => r.data).then(d => App.userInfos = d);
 				},
-				showModal() { $("#UserModal").modal("show"); },
-				hideModal() { $("#UserModal").modal("hide"); },
+				showModal() {
+					$("#UserModal").modal("show");
+				},
+				hideModal() {
+					$("#UserModal").modal("hide");
+				},
 				getAllReview() {
 					axios.get('https://localhost:7152/api/userReview/GetAll').then(r => r.data).then(r => App.reviews = r);
 				},
-			
+				changeUserStatus(UserId, state) {
+
+					axios.put(`https://localhost:7152/api/UserInfo/ChangeUserState?id=${UserId}`,
+						{
+							"id": UserId,
+							"status": state,
+						}
+
+					).then(r => r.data).then(d => console.log(d));
+					this.hideModal();
+					this.userInfos = [];
+				},
 				UpperFive() {
 					if (this.tableStart > 0) {
 						this.tableStart -= 5;
@@ -172,12 +227,15 @@
 						alert("已經是最後一頁")
 					}
 				},
+				getComplaintItem() {	//get檢舉項目清單
+					fetch("https://localhost:7152/api/complaint/Getall", { method: "GET" }).then(r => r.json()).then(d => App.complaint = d);
 				},
-				mounted() {
-					this.getAllReview();
-				fetch("https://localhost:7152/api/Getall", { method: "GET" }).then(r => r.json()).then(d => App.complaint = d);
-				},
-			}).mount("#UserManagementApp");
+			},
+			mounted() {
+				this.getAllReview();
+				this.getComplaintItem();
+			},
+		}).mount("#UserManagementApp");
 	</script>
 
 }

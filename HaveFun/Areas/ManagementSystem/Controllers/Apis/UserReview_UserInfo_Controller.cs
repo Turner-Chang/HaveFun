@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
 {
-	[Route("api/UserInfo/[action]")]
+    [Route("api/UserInfo/[action]")]
 	[ApiController]
 	public class UserReview_UserInfo_Controller : ControllerBase
 	{
@@ -38,19 +38,26 @@ namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
 					Status = user1.Status,
 					Introduction = user1.Introduction,
 					BirthDay = user1.BirthDay,
+					Account=user1.Account,
+					Address = user1.Address,
+					Level = user1.Level,
+					AccountStatus = user1.AccountStatus,
+					PhoneNumber = user1.PhoneNumber,
+					ProfilePicture = user1.ProfilePicture,
+					RegistrationDate = user1.RegistrationDate,
 				};
 			
 
 			return userInfoDTO1;
 		}
 		[HttpPut]
-		public async Task<string> ChangeUserState(int id, UserInfoDTO userInfoDTO)
+		public async Task<string> ChangeUserState(int id, UserStateDTO userstateDTO)
 		{
 			UserInfo user1 = await _context.UserInfos.FindAsync(id);
 			if (user1 == null) { return "用戶狀態修改失敗"; }
-			if (userInfoDTO.Id == user1.Id)
+			if (userstateDTO.Id == user1.Id)
 			{
-				user1.Status = userInfoDTO.Status;
+				user1.Status = userstateDTO.Status;
 			}
 			_context.Entry(user1).State = EntityState.Modified;
 			try

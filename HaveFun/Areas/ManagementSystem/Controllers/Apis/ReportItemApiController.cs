@@ -5,7 +5,7 @@ using System.Collections;
 
 namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
 {
-	[Route("api/[action]")]
+	[Route("api/complaint/[action]")]
 	[ApiController]
 	public class ReportItemApiController : ControllerBase
 	{ private HaveFunDbContext _context;
