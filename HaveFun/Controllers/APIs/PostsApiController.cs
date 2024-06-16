@@ -13,7 +13,7 @@ namespace HaveFun.Controllers.APIs
 {
 
     [Route("api/Post/[action]")]
- 
+
     [ApiController]
     public class PostsApiController : ControllerBase
     {
@@ -32,21 +32,13 @@ namespace HaveFun.Controllers.APIs
         {
             return _context.Posts;
         }
-        // Get: api/Post/GetLoginUser
-        [Authorize]
-        [HttpGet]
-        public async Task<JsonResult> GetLoginUser()
-        {
-            var loginUser = Convert.ToInt32(Request.Cookies["userId"]);
-            return new JsonResult(loginUser);
-        }
         //顯示貼文+回覆相關資料
-        // GET : api/Post/GetPostsRel
-        [HttpGet]
-        public async Task<JsonResult> GetPostsRel()
+        // GET : api/Post/GetPostsRel/5
+        [HttpGet("{loginUserId}")]
+        public async Task<JsonResult> GetPostsRel(int loginUserId)
         {
             var result = await _context.Posts
-                .Where(p => p.Status == 0)
+                .Where(p => p.UserId == loginUserId && p.Status == 0)
                 .Include(p => p.User)
                 .Include(p => p.Comments)
                 .Include(p => p.Like)

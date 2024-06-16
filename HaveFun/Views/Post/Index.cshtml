@@ -290,8 +290,8 @@
                 return {
                     //先寫死的部分
                     baseAddress: "https://localhost:7152",
-                    loginUserId: 2,
                     //先寫死的部分
+                    loginUserId: @ViewBag.UserId,
                     loginUserInfo: [],
                     posts: [],
                     ratItems: [],
@@ -304,7 +304,7 @@
             },
             methods: {
                 //請求登入者資料
-                getLoginUser(loginUserId) {
+                getLoginUser(userId) {
                     fetch(`api/Post/GetLoginUser/${this.loginUserId}`)
                         .then(res => res.json())
                         .then(data => {
@@ -316,8 +316,8 @@
                         .catch(error => { console.log('fetch loginUserInfo failed!') });
                 },
                 //請求所有貼文資訊
-                getPostsList() {
-                    fetch(`/api/Post/GetPostsRel`)
+                getPostsList(userId) {
+                    fetch(`/api/Post/GetPostsRel/${userId}`)
                         .then(res => res.json())
                         .then(data => {
                             this.posts = data.map(post => ({
@@ -375,7 +375,7 @@
                                 heart.classList.remove('fa-regular');
                                 heart.classList.add('fa-solid');
                             }
-                            this.getPostsList();
+                            this.getPostsList(this.loginUserId);
                         })
                         .catch(error => {
                             console.log('fetch add like failed!', error)
@@ -422,7 +422,7 @@
                             console.log(data);
                             $('.deleteBox').css("display", "none");
                             this.wannaDeletePost = 0;
-                            this.getPostsList();
+                            this.getPostsList(this.loginUserId);
                         })
                         .catch(error => { console.log('fetch delete posts failed!') });
                 },
@@ -516,8 +516,8 @@
                 },
             },
             mounted() {
-                this.getLoginUser(this.loginUserId);
-                this.getPostsList();
+                this.getLoginUser(@ViewBag.UserId);
+                this.getPostsList(@ViewBag.UserId);
                 this.getRatItemsList();
             },
         })
