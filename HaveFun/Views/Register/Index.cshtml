@@ -261,7 +261,7 @@
                     if (nval == '') {
                         this.passwordError = '密碼不可為空';
                     } else if (!passwordRex.test(nval)){
-                        this.passwordError = '密碼必須包含至少一個大寫字母、一個小寫字母和一個數字，且長度在 10 到 20 個字符之間';
+                        this.passwordError = '密碼必須包含至少一個大寫字母、一個小寫字母和一個數字，且長度在 10 到 20 個字符之間，不能有特殊符號';
                     } else {
                         this.passwordError = '';
                     }     

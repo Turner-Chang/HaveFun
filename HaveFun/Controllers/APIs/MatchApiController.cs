@@ -42,7 +42,8 @@ namespace HaveFun.Controllers.APIs
 					Introduction = u.Introduction,
 					Level = u.Level,
 					Age = today.Year - u.BirthDay.Year,
-					Pictures = u.Pictures.Select(p => new UserPicture {
+					Pictures = u.Pictures.Select(p => new UserPicture
+					{
 						Id = p.Id,
 						UserId = p.UserId,
 						Picture = p.Picture,
@@ -130,8 +131,8 @@ namespace HaveFun.Controllers.APIs
 		public string PostSwipeHistory(int userId)
 		{
 			DateTime dateTime = DateTime.Now;
-			SwipeHistory swipeHistory = new SwipeHistory {UserId = userId, SwipeDate=dateTime };
-			
+			SwipeHistory swipeHistory = new SwipeHistory { UserId = userId, SwipeDate = dateTime };
+
 			var user = _context.UserInfos.Where(u => u.Id == userId).FirstOrDefault();
 
 			try
@@ -140,7 +141,7 @@ namespace HaveFun.Controllers.APIs
 				{
 					_context.SwipeHistories.Add(swipeHistory);
 					_context.SaveChanges();
-				}				
+				}
 			}
 			catch (DbUpdateException ex)
 			{
@@ -150,7 +151,7 @@ namespace HaveFun.Controllers.APIs
 		}
 
 		[HttpPost("ReportUser")]
-		public IActionResult ReportUser([FromBody]MatchUserReviewDTO userReviewDTO)
+		public IActionResult ReportUser([FromBody] MatchUserReviewDTO userReviewDTO)
 		{
 			if (userReviewDTO == null)
 			{
@@ -159,11 +160,11 @@ namespace HaveFun.Controllers.APIs
 
 			userReviewDTO.ReportTime = DateTime.Now;
 
-			UserReview userReview = new UserReview { ReportTime = userReviewDTO.ReportTime, ReportUserId = userReviewDTO.ReportUserId, BeReportedUserId = userReviewDTO.BeReportedUserId, ComplaintCategoryId = userReviewDTO.ComplaintCategoryId};
+			UserReview userReview = new UserReview { ReportTime = userReviewDTO.ReportTime, ReportUserId = userReviewDTO.ReportUserId, BeReportedUserId = userReviewDTO.BeReportedUserId, ComplaintCategoryId = userReviewDTO.ComplaintCategoryId };
 
 			_context.UserReviews.Add(userReview);
 
-			FriendList friendList = new FriendList { Clicked = userReview.ReportUserId, BeenClicked = userReview.BeReportedUserId,state=3};
+			FriendList friendList = new FriendList { Clicked = userReview.ReportUserId, BeenClicked = userReview.BeReportedUserId, state = 3 };
 			_context.FriendLists.Add(friendList);
 
 			_context.SaveChanges();
