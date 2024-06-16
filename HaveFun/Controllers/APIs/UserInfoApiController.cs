@@ -64,6 +64,8 @@ namespace HaveFun.Controllers.APIs
                     Password = u.Password
                 })
                 .ToListAsync();
+            return userInfos;
+        }
 
         //GET: api/UserInfo/GetPicture/2
         [HttpGet("{id}")]
