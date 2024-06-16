@@ -21,7 +21,7 @@ namespace HaveFun.Controllers.APIs
             _context = context;
         }
 
-        // GET: api/LabelsApi//GetLabels
+        // GET: api/LabelsApi/GetLabels
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Label>>> GetLabels()
         {
@@ -44,7 +44,7 @@ namespace HaveFun.Controllers.APIs
 
         // PUT: api/MemberLabelsApi/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [HttpPut]
         public async Task<IActionResult> PutLabel(int id, Label label)
         {
             if (id != label.Id)
