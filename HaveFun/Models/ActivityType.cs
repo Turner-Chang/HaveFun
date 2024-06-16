@@ -12,8 +12,8 @@ namespace HaveFun.Models
         public int Id {  get; set; }
 
         [Required]
-
         public string TypeName {  get; set; }
       
+        public virtual ICollection<Activity>? Activities { get; set; }
     }
 }

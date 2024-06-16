@@ -1,0 +1,138 @@
+﻿@model HaveFun.ViewModels.ActivityViewModel;
+
+<div class="container-fluid p-5" style="width: 70%; background-color: white; border-radius: 20px;">
+    <div class="row">
+        <div class="col-12 d-flex justify-content-center">
+            <h2>主辦活動</h2>
+        </div>
+    </div>
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label asp-for="Activity.Type" class="form-label"></label>
+                <select asp-for="Activity.Type" class="form-control">
+                    <option value="" disabled selected>請選擇...</option>
+                    @foreach (var activityType in Model.ActivityTypes)
+                    {
+                        <option value="@activityType.Id">@activityType.TypeName</option>
+                    }
+                </select>
+                <span asp-validation-for="Activity.Type" class="text-danger"></span>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label asp-for="Activity.Title" class="form-label"></label>
+                <input asp-for="Activity.Title" class="form-control" />
+                <span asp-validation-for="Activity.Title" class="text-danger"></span>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label asp-for="Activity.Amount" class="form-label"></label>
+                <input asp-for="Activity.Amount" class="form-control" />
+                <span asp-validation-for="Activity.Amount" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label asp-for="Activity.Content" class="form-label"></label>
+                <textarea asp-for="Activity.Content" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Activity.Content" class="text-danger"></span>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label asp-for="Activity.Notes" class="form-label"></label>
+                <textarea asp-for="Activity.Notes" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Activity.Notes" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 mb-3">
+                <label asp-for="Activity.Location" class="form-label"></label>
+                <input asp-for="Activity.Location" class="form-control" />
+                <span asp-validation-for="Activity.Location" class="text-danger"></span>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label asp-for="Activity.MaxParticipants" class="form-label"></label>
+                <input asp-for="Activity.MaxParticipants" class="form-control" />
+                <span asp-validation-for="Activity.MaxParticipants" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label asp-for="Activity.InitiationTime" class="form-label"></label>
+                <input asp-for="Activity.InitiationTime" class="form-control" />
+                <span asp-validation-for="Activity.InitiationTime" class="text-danger"></span>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label asp-for="Activity.RegistrationTime" class="form-label"></label>
+                <input asp-for="Activity.RegistrationTime" class="form-control" />
+                <span asp-validation-for="Activity.RegistrationTime" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label asp-for="Activity.DeadlineTime" class="form-label"></label>
+                <input asp-for="Activity.DeadlineTime" class="form-control" />
+                <span asp-validation-for="Activity.DeadlineTime" class="text-danger"></span>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label asp-for="Activity.ActivityTime" class="form-label"></label>
+                <input asp-for="Activity.ActivityTime" class="form-control" />
+                <span asp-validation-for="Activity.ActivityTime" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label asp-for="UploadedPicture" class="form-label"></label>
+                <img id="imgPreview" src="@Url.Content("~/images/NOimg.jpg")" title="待上傳" style="width: 100%; height: auto; max-width: 320px; display:block; margin-bottom: 10px;" />
+                <input asp-for="UploadedPicture" class="form-control" type="file" accept="image/*" />
+                <span asp-validation-for="UploadedPicture" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 mb-3">
+                <button type="submit" class="btn btn-primary">創建</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        //箭頭函式的this和function()的this定義不一樣，這不能用箭頭函式
+        $("#UploadedPicture").on("change", function () {
+            //alert("change");
+            //this就是觸發這個事件的element, previewImage在previewImage.js中
+            previewImage(this, $("#imgPreview"));
+        });
+
+        function previewImage(inputFile, img) {
+            //允許多檔案上傳，所以要控制只拿第一個
+            if (inputFile.files && inputFile.files[0]) {
+                var allowType = "image.*";
+
+                if (inputFile.files[0].type.match(allowType)) {
+                    //預覽
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        img.attr("src", e.target.result);
+                        img.attr("title", inputFile.files[0].name);
+                    };
+                    reader.readAsDataURL(inputFile.files[0]);
+                    $(".btn").prop("disabled", false);
+                }
+                else {
+                    alert("不支援的檔案上傳類型!");
+                    $(".btn").prop("disabled", true);
+                }
+            }
+        };
+    </script>
+}

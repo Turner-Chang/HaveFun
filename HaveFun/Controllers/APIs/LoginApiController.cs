@@ -2,10 +2,13 @@
 using HaveFun.DTOs;
 using HaveFun.Models;
 using Humanizer;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Drawing.Printing;
+using System.Security.Claims;
 using System.Text;
 
 namespace HaveFun.Controllers.APIs
@@ -35,7 +38,7 @@ namespace HaveFun.Controllers.APIs
             {
             }
 
-            UserInfo user = await _dbContext.UserInfos.Where(user => user.Account == userDTO.Account).FirstAsync();
+            UserInfo? user = await _dbContext.UserInfos.Where(user => user.Account == userDTO.Account).FirstOrDefaultAsync();
             if (user == null)
             {
                 return new JsonResult(new
@@ -47,15 +50,26 @@ namespace HaveFun.Controllers.APIs
             {
                 byte[] salt = user.PasswordSalt;
                 string password = _passwordSecure.HashPassword(userDTO.Password, salt);
+
                 if (password == user.Password)
                 {
+                    // 這邊設定Cookie驗證
+                    var claims = new Claim[]
+                    {
+                        new Claim(ClaimTypes.Name, user.Id.ToString())
+                    };
+                    var claimsIdentity = new ClaimsIdentity(claims, "Login");
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+                    //這邊設定JWT驗證
                     string jwtToken = _jwt.GenerateJWTToken(user);
-                    Response.Cookies.Append("secret", jwtToken, new CookieOptions
+                    Response.Cookies.Append("JwtSecret", jwtToken, new CookieOptions
                     {
                         Expires = DateTime.Now.AddDays(1),
                         HttpOnly = true,
                         IsEssential = true
                     });
+                    
                     Response.Cookies.Append("userId", Convert.ToString(user.Id), new CookieOptions
                     {
                         Expires = DateTime.Now.AddDays(1),
@@ -154,11 +168,79 @@ namespace HaveFun.Controllers.APIs
             }
 
         }
-        //[HttpGet]
-        //public string ResetPassword(UserResetPasswordDTO resetPasswordDTO)
-        //{
 
-        //    return "";
-        //}
+        [HttpGet("{token}")]
+        public async Task<bool> CheckToken(string token)
+        {
+            try
+            {
+                if (token == null)
+                {
+                    return false;
+                }
+                string[] encryptToken = _desSecure.Decrypt(token).Split('/');
+                int userId = Convert.ToInt32(encryptToken[0]);
+                DateTime tokenDate = Convert.ToDateTime(encryptToken[1]);
+                TimeSpan time = DateTime.Now - tokenDate;
+                if (time > TimeSpan.FromMinutes(30))
+                {
+                    return false;
+                }
+                UserInfo? user = await _dbContext.UserInfos.FindAsync(userId);
+                if (user == null)
+                {
+                    return false;
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+
+                return false;
+            }
+
+        }
+
+        [HttpPost]
+        public async Task<string> ResetPassword(UserResetPasswordDTO resetPasswordDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+
+            }
+
+            try
+            {
+                // 獲取token並解密
+                string[] encryptToken = _desSecure.Decrypt(resetPasswordDTO.EncryptToken).Split('/');
+
+                // 獲取userId跟token產生時間
+                int userId = Convert.ToInt32(encryptToken[0]);
+                DateTime tokenDate = Convert.ToDateTime(encryptToken[1]);
+
+                //比對時間，如果超過30分鐘，就傳錯誤
+                TimeSpan time = DateTime.Now - tokenDate;
+                if (time > TimeSpan.FromMinutes(30))
+                {
+                    return "已超過時間限制，請重新重置密碼";
+                }
+
+                // 更改密碼
+                UserInfo? user = await _dbContext.UserInfos.FindAsync(userId);
+                if (user == null)
+                {
+                    return "找不到使用者，請確認帳號是否正確";
+                }
+                byte[] salt = _passwordSecure.CreateSalt();
+                user.PasswordSalt = salt;
+                user.Password = _passwordSecure.HashPassword(resetPasswordDTO.Password, salt);
+                await _dbContext.SaveChangesAsync();
+                return "true";
+            }
+            catch (Exception)
+            {
+                return "驗證錯誤，請重新重置密碼"; ;
+            }
+        }
     }
 }

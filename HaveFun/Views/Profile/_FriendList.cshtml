@@ -193,13 +193,14 @@
 </head>
 <body>
     <div class="tab-pane fade show active" id="Newest" role="tabpanel" aria-labelledby="Newest-tab"></div>
+    <div id="BlackList" role="tabpanel"></div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const userId = 29; // 
+            const userId = 1; // 用户ID，可以依照實際情況進行更改
 
-            // 從API取好友列表資料
-            fetch(`/api/Friend/GetFriend/${userId}`)
+            // 從API取得好友列表資料
+            fetch(`/api/FriendApi/GetFriend/${userId}`)
                 .then(response => response.json())
                 .then(data => {
                     renderFriendList(data);
@@ -233,7 +234,6 @@
                 friendListContainer.appendChild(listItem);
             });
 
-            
             updateButtons();
         }
 

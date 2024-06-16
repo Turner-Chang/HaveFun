@@ -4,6 +4,7 @@ using HaveFun.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HaveFun.Migrations
 {
     [DbContext(typeof(HaveFunDbContext))]
-    partial class HaveFunDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240615025208_Add activity title")]
+    partial class Addactivitytitle
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -660,16 +663,10 @@ namespace HaveFun.Migrations
                     b.Property<int>("ComplaintCategoryId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProcessingStatus")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("ReportTime")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("ReportUserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("status")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -686,7 +683,7 @@ namespace HaveFun.Migrations
             modelBuilder.Entity("HaveFun.Models.Activity", b =>
                 {
                     b.HasOne("HaveFun.Models.ActivityType", "ActivityType")
-                        .WithMany("Activities")
+                        .WithMany()
                         .HasForeignKey("Type")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -974,11 +971,6 @@ namespace HaveFun.Migrations
                     b.Navigation("ActivityParticipants");
 
                     b.Navigation("ActivityReviews");
-                });
-
-            modelBuilder.Entity("HaveFun.Models.ActivityType", b =>
-                {
-                    b.Navigation("Activities");
                 });
 
             modelBuilder.Entity("HaveFun.Models.Comment", b =>
