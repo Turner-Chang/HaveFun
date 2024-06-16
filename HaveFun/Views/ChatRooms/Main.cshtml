@@ -437,6 +437,23 @@
         });
     }
 
+    //user2 對  user1的聊天紀錄
+
+        fetch('/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/2/1')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(message => {
+                    const newChatMessage = {
+                        time: moment(message.createTime).format("h:mm A, MMMM D"),
+                        img: `/api/UserInfo/GetPicture/${message.user1Id}`,
+                        message: message.messageText,
+                        type: message.user1Id === 2 ? "my" : "other"
+                    };
+                    chatHistory.push(newChatMessage);
+                });
+                updateChatHistory();
+            })
+            .catch(error => console.error('Error fetching chat history:', error));
     // Initial call to update chat history
     updateChatHistory();
 
