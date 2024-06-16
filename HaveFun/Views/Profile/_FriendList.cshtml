@@ -1,5 +1,3 @@
-@model List<HaveFun.DTOs.FriendDTO>
-
 <div class="tab-pane fade" id="gt4" role="tabpanel" aria-labelledby="gt4-tab">
     <div class="active-member bg-white mb-4">
         <div class="modal-header">
@@ -15,70 +13,162 @@
         </div>
         <div class="modal-body group__bottom--body">
             <div class="tab-content" id="myTabContent4">
-               @* 好友列表 *@
                 <div class="tab-pane fade show active" id="Newest" role="tabpanel" aria-labelledby="Newest-tab">
                     <ul>
-                        @if (Model != null)
-                        {
-                            @foreach (var friend in Model)
-                            {
-                                <li>
-                                    <div class="top">
-                                        <div class="left member--style2">
-                                            <div class="member__thumb">
-                                                <img src="@friend.ImageUrl" alt="member-img">
-                                                <span class="member__activity"></span>
-                                            </div>
-                                        </div>
-                                        <div class="right">
-                                            <a href="member-single.html"><h6>@friend.Name</h6></a>
-                                            <span>2 years ago</span>
-                                            <form method="post" asp-action="BlockFriend" asp-controller="Friend">
-                                                <input type="hidden" name="friendId" value="@friend.Id" />
-                                                <button type="submit" class="btn btn-danger">封鎖</button>
-                                            </form>
-                                        </div>
+                        <li>
+                            <div class="top">
+                                <div class="left member--style2">
+                                    <div class="member__thumb">
+                                        <img src="assets/images/member/home2/01.jpg" alt="member-img">
+                                        <span class="member__activity"></span>
                                     </div>
-                                </li>
-                            }
-                        }
-                        else
-                        {
-                            <li>暫無好友</li>
-                        }
+                                </div>
+                                <div class="right">
+                                    <a href="member-single.html"><h6>LBJ</h6></a>
+                                    <span>2 years ago</span>
+                                    <button class="btn btn-danger block-btn">封鎖</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="top">
+                                <div class="left member--style2">
+                                    <div class="member__thumb">
+                                        <img src="assets/images/member/home2/02.jpg" alt="member-img">
+                                        <span class="member__activity"></span>
+                                    </div>
+                                </div>
+                                <div class="right">
+                                    <a href="member-single.html"><h6>Allen</h6></a>
+                                    <span>2 years ago</span>
+                                    <button class="btn btn-danger block-btn">封鎖</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="top">
+                                <div class="left member--style2">
+                                    <div class="member__thumb">
+                                        <img src="assets/images/member/home2/03.jpg" alt="member-img">
+                                        <span class="member__activity"></span>
+                                    </div>
+                                </div>
+                                <div class="right">
+                                    <a href="member-single.html"><h6>Sean</h6></a>
+                                    <span>2 years ago</span>
+                                    <button class="btn btn-danger block-btn">封鎖</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="top">
+                                <div class="left member--style2">
+                                    <div class="member__thumb">
+                                        <img src="assets/images/member/home2/04.jpg" alt="member-img">
+                                        <span class="member__activity"></span>
+                                    </div>
+                                </div>
+                                <div class="right">
+                                    <a href="member-single.html"><h6>Bieber</h6></a>
+                                    <span>2 years ago</span>
+                                    <button class="btn btn-danger block-btn">封鎖</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="top">
+                                <div class="left member--style2">
+                                    <div class="member__thumb">
+                                        <img src="assets/images/member/home2/05.jpg" alt="member-img">
+                                        <span class="member__activity"></span>
+                                    </div>
+                                </div>
+                                <div class="right">
+                                    <a href="member-single.html"><h6>Klein</h6></a>
+                                    <span>2 years ago</span>
+                                    <button class="btn btn-danger block-btn">封鎖</button>
+                                </div>
+                            </div>
+                        </li>
                     </ul>
                 </div>
-                @* 黑名單 *@
                 <div class="tab-pane fade" id="BlackList" role="tabpanel" aria-labelledby="BlackList-tab">
                     <ul>
-                        @if (Model != null)
-                        {
-                            @foreach (var friend in Model)
-                            {
-                                <li>
-                                    <div class="top">
-                                        <div class="left member--style2">
-                                            <div class="member__thumb">
-                                                <img src="@friend.ImageUrl" alt="member-img">
-                                                <span class="member__activity"></span>
-                                            </div>
-                                        </div>
-                                        <div class="right">
-                                            <a href="member-single.html"><h6>@friend.Name</h6></a>
-                                            <span>2 years ago</span>
-                                            <form method="post" asp-action="UnblockFriend" asp-controller="Friend">
-                                                <input type="hidden" name="friendId" value="@friend.Id" />
-                                                <button type="submit" class="btn btn-success">解鎖</button>
-                                            </form>
-                                        </div>
+                        <li>
+                            <div class="top">
+                                <div class="left member--style2">
+                                    <div class="member__thumb">
+                                        <img src="assets/images/member/home2/06.jpg" alt="member-img">
+                                        <span class="member__activity"></span>
                                     </div>
-                                </li>
-                            }
-                        }
-                        else
-                        {
-                            <li>黑名單中無任何成員</li>
-                        }
+                                </div>
+                                <div class="right">
+                                    <a href="member-single.html"><h6>Leon</h6></a>
+                                    <span>2 years ago</span>
+                                    <button class="btn btn-success unblock-btn">解鎖</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="top">
+                                <div class="left member--style2">
+                                    <div class="member__thumb">
+                                        <img src="assets/images/member/home2/07.jpg" alt="member-img">
+                                        <span class="member__activity"></span>
+                                    </div>
+                                </div>
+                                <div class="right">
+                                    <a href="member-single.html"><h6>Schmid</h6></a>
+                                    <span>2 years ago</span>
+                                    <button class="btn btn-success unblock-btn">解鎖</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="top">
+                                <div class="left member--style2">
+                                    <div class="member__thumb">
+                                        <img src="assets/images/member/home2/08.jpg" alt="member-img">
+                                        <span class="member__activity"></span>
+                                    </div>
+                                </div>
+                                <div class="right">
+                                    <a href="member-single.html"><h6>Chloe</h6></a>
+                                    <span>2 years ago</span>
+                                    <button class="btn btn-success unblock-btn">解鎖</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="top">
+                                <div class="left member--style2">
+                                    <div class="member__thumb">
+                                        <img src="assets/images/member/home2/09.jpg" alt="member-img">
+                                        <span class="member__activity"></span>
+                                    </div>
+                                </div>
+                                <div class="right">
+                                    <a href="member-single.html"><h6>Jennie</h6></a>
+                                    <span>2 years ago</span>
+                                    <button class="btn btn-success unblock-btn">解鎖</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="top">
+                                <div class="left member--style2">
+                                    <div class="member__thumb">
+                                        <img src="assets/images/member/home2/10.jpg" alt="member-img">
+                                        <span class="member__activity"></span>
+                                    </div>
+                                </div>
+                                <div class="right">
+                                    <a href="member-single.html"><h6>Jeans</h6></a>
+                                    <span>2 years ago</span>
+                                    <button class="btn btn-success unblock-btn">解鎖</button>
+                                </div>
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -86,81 +176,89 @@
     </div>
 </div>
 
-<template>
-    <div>
-        <h1>好友列表</h1>
-        <ul>
-            <li v-for="friend in friends" :key="friend.id">
-                <img :src="friend.imageUrl" alt="friend-img" />
-                <span>{{ friend.name }}</span>
-                <button @@click="blockFriend(friend.id)">封鎖</button>
-            </li>
-        </ul>
 
-        <h1>黑名單</h1>
-        <ul>
-            <li v-for="friend in blockedFriends" :key="friend.id">
-                <img :src="friend.imageUrl" alt="friend-img" />
-                <span>{{ friend.name }}</span>
-                <button @@click="unblockFriend(friend.id)">解除封鎖</button>
-            </li>
-        </ul>
-    </div>
-</template>
-
-<script>
-    import axios from 'axios';
-
-    export default {
-        data() {
-            return {
-                friends: [],
-                blockedFriends: []
-            };
-        },
-        created() {
-            this.fetchFriends();
-            this.fetchBlockedFriends();
-        },
-        methods: {
-            fetchFriends() {
-                axios.get('/api/friends')
-                    .then(response => {
-                        this.friends = response.data;
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-            },
-            fetchBlockedFriends() {
-                axios.get('/api/friends/blocked')
-                    .then(response => {
-                        this.blockedFriends = response.data;
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-            },
-            blockFriend(friendId) {
-                axios.post('/api/friends/block', { friendId })
-                    .then(() => {
-                        this.fetchFriends();
-                        this.fetchBlockedFriends();
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-            },
-            unblockFriend(friendId) {
-                axios.post('/api/friends/unblock', { friendId })
-                    .then(() => {
-                        this.fetchFriends();
-                        this.fetchBlockedFriends();
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-            }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friend List</title>
+    <style>
+        .right {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-    };
-</script>
+    </style>
+</head>
+<body>
+    <div class="tab-pane fade show active" id="Newest" role="tabpanel" aria-labelledby="Newest-tab"></div>
+    <div id="BlackList" role="tabpanel"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const userId = 1; // 用户ID，可以依照實際情況進行更改
+
+            // 從API取得好友列表資料
+            fetch(`/api/FriendApi/GetFriend/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    renderFriendList(data);
+                })
+                .catch(error => console.error('Error:', error));
+        });
+
+        function renderFriendList(data) {
+            const friendListContainer = document.getElementById('Newest');
+            friendListContainer.innerHTML = ''; // 清空當前列表
+
+            data.forEach(FriendDTO => {
+                const listItem = document.createElement('li');
+
+                listItem.innerHTML = `
+                            <div class="top">
+                                <div class="left member--style2">
+                                    <div class="member__thumb">
+                                        <img src="${FriendDTO.Image}" alt="member-img">
+                                        <span class="member__activity"></span>
+                                    </div>
+                                </div>
+                                <div class="right">
+                                    <a href="member-single.html"><h6>${FriendDTO.Name}</h6></a>
+                                    <span>${FriendDTO.ActivityTime}</span>
+                                    <button class="btn btn-danger block-btn">封鎖</button>
+                                </div>
+                            </div>
+                        `;
+
+                friendListContainer.appendChild(listItem);
+            });
+
+            updateButtons();
+        }
+
+        function updateButtons() {
+            document.querySelectorAll('.block-btn').forEach(button => {
+                button.onclick = function () {
+                    const memberItem = button.closest('li');
+                    document.getElementById('BlackList').appendChild(memberItem);
+                    button.innerText = '解鎖';
+                    button.className = 'btn btn-success unblock-btn';
+                    updateButtons();
+                };
+            });
+
+            document.querySelectorAll('.unblock-btn').forEach(button => {
+                button.onclick = function () {
+                    const memberItem = button.closest('li');
+                    document.getElementById('Newest').appendChild(memberItem);
+                    button.innerText = '封鎖';
+                    button.className = 'btn btn-danger block-btn';
+                    updateButtons();
+                };
+            });
+        }
+    </script>
+</body>
+</html>
+
