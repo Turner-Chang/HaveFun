@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HaveFun.Migrations
 {
     [DbContext(typeof(HaveFunDbContext))]
-    [Migration("20240612123851_add_userreview_complaintcategory")]
-    partial class add_userreview_complaintcategory
+    [Migration("20240615022223_Add activity picture")]
+    partial class Addactivitypicture
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -64,6 +64,9 @@ namespace HaveFun.Migrations
                         .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("ProfilePicture")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("RegistrationTime")
                         .HasColumnType("datetime2");
@@ -302,40 +305,6 @@ namespace HaveFun.Migrations
                     b.HasKey("ComplaintCategoryId");
 
                     b.ToTable("ComplaintCategories");
-                });
-
-            modelBuilder.Entity("HaveFun.Models.Friend", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("FriendListId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("FriendListId1")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsBlocked")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FriendListId");
-
-                    b.HasIndex("FriendListId1");
-
-                    b.ToTable("Friend");
                 });
 
             modelBuilder.Entity("HaveFun.Models.FriendList", b =>
@@ -683,25 +652,25 @@ namespace HaveFun.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("beReportedUserId")
+                    b.Property<int>("BeReportedUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("complaintCategoryId")
+                    b.Property<int>("ComplaintCategoryId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("reportTime")
+                    b.Property<DateTime>("ReportTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("reportUserId")
+                    b.Property<int>("ReportUserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("beReportedUserId");
+                    b.HasIndex("BeReportedUserId");
 
-                    b.HasIndex("complaintCategoryId");
+                    b.HasIndex("ComplaintCategoryId");
 
-                    b.HasIndex("reportUserId");
+                    b.HasIndex("ReportUserId");
 
                     b.ToTable("UserReviews");
                 });
@@ -826,17 +795,6 @@ namespace HaveFun.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("HaveFun.Models.Friend", b =>
-                {
-                    b.HasOne("HaveFun.Models.FriendList", null)
-                        .WithMany("BlackList")
-                        .HasForeignKey("FriendListId");
-
-                    b.HasOne("HaveFun.Models.FriendList", null)
-                        .WithMany("Friends")
-                        .HasForeignKey("FriendListId1");
-                });
-
             modelBuilder.Entity("HaveFun.Models.FriendList", b =>
                 {
                     b.HasOne("HaveFun.Models.UserInfo", "User2")
@@ -908,9 +866,9 @@ namespace HaveFun.Migrations
             modelBuilder.Entity("HaveFun.Models.Post", b =>
                 {
                     b.HasOne("HaveFun.Models.UserInfo", "User")
-                        .WithMany()
+                        .WithMany("Posts")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -980,19 +938,19 @@ namespace HaveFun.Migrations
                 {
                     b.HasOne("HaveFun.Models.UserInfo", "User2")
                         .WithMany("BeRepostedUsers")
-                        .HasForeignKey("beReportedUserId")
+                        .HasForeignKey("BeReportedUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("HaveFun.Models.ComplaintCategory", "ComplaintCategory")
                         .WithMany("UserReviews")
-                        .HasForeignKey("complaintCategoryId")
+                        .HasForeignKey("ComplaintCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("HaveFun.Models.UserInfo", "User1")
                         .WithMany("ReportUsers")
-                        .HasForeignKey("reportUserId")
+                        .HasForeignKey("ReportUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -1018,13 +976,6 @@ namespace HaveFun.Migrations
             modelBuilder.Entity("HaveFun.Models.ComplaintCategory", b =>
                 {
                     b.Navigation("UserReviews");
-                });
-
-            modelBuilder.Entity("HaveFun.Models.FriendList", b =>
-                {
-                    b.Navigation("BlackList");
-
-                    b.Navigation("Friends");
                 });
 
             modelBuilder.Entity("HaveFun.Models.Label", b =>
@@ -1065,6 +1016,8 @@ namespace HaveFun.Migrations
                     b.Navigation("Pictures");
 
                     b.Navigation("PostReviews");
+
+                    b.Navigation("Posts");
 
                     b.Navigation("ReceiverMessages");
 

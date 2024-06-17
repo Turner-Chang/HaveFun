@@ -7,7 +7,7 @@
 		
 
 		#out {
-			outline: 2px solid red;
+			/* outline: 2px solid red; */
 			display: flex;
 			justify-content: center;
 			height: 100%;
@@ -18,10 +18,11 @@
 
 
 		#card-container {
-			outline: 2px solid green;
+			border: 2px solid white;
+			border-radius: 25px;
 			position: relative;
-			width: 25rem; /* 23rem */
-			height: 600px; /* 500px */
+			width: 26rem; /* 23rem */
+			height: 550px; /* 500px */
 		}
 
 		.collapseCard {
@@ -127,11 +128,11 @@
 
 
 <div id="matchApp">
-	<div class="banner p-3 bg_img" style="background-image: url(assets/images/banner/bg.jpg); outline: 2px solid yellow;">
-		<div class="container" style="outline:2px solid blue;">
+	<div class="banner p-3 bg_img" style="background-image: url(assets/images/banner/bg.jpg); /* outline: 2px solid yellow; */">
+		<div class="container" @* style="outline:2px solid blue;" *@>
 			<div class="row">
-				<div class="col-lg-5 col-12">
-					<div class="banner__content wow fadeInUp" data-wow-duration="1.5s" data-wow-delay=".5s">
+				<div class="col-lg-5 col-12 out">
+					<div class="banner__content wow fadeInUp" data-wow-duration="1.5s" data-wow-delay=".5s" style="margin-top: 80px;">
 						<div class="banner__title">
 							<h2>Find your true love</h2>
 							<p>Serious dating with your perfect match is just a click away.</p>

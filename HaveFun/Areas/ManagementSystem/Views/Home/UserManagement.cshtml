@@ -2,9 +2,9 @@
 <div id="UserManagementApp" class="container row  p-5 pt-5 text-center border-2">
 	<div class="col-12">
 		<span class="col-2 ">處理狀態示意: </span>
-		<button class="text-bg-warning  col-2 m-2">申訴中-0</button>
-		<button class="text-bg-success col-2 m-2">無須刪除-1</button>
-		<button class="text-bg-secondary col-2 m-2">已刪除-2</button>
+		<label class="text-bg-warning  col-2 m-2">申訴中-0</label>
+		<label class="text-bg-secondary col-2 m-2">已刪除-1</label>
+		<label class="text-bg-success col-2 m-2">無須刪除-2</label>
 	</div>
 	<hr />
 	<div class="table-responsive">
@@ -14,8 +14,9 @@
 					<th scope="col">被檢舉使用者Id</th>
 					<th scope="col">檢舉使用者Id</th>
 					<th scope="col">檢舉時間</th>
-					<th scope="col">檢舉項目Id</th>
+					<th scope="col">檢舉項目</th>
 					<th scope="col">處理按鈕</th>
+					<th scope="col">處理狀態</th>
 
 
 				</tr>
@@ -25,12 +26,15 @@
 					<td>{{r.beReportedUserId}}</td>
 					<td>{{r.reportUserId}}</td>
 					<td>{{r.reportTime}}</td>
-					<td>{{r.complaintCategoryId}}</td>
+					<td>{{this.ComplaintToString(r.complaintCategoryId)}}</td>
 					<td>
-						<button class="btn btn-warning"  :id="r.id"
-					@@click="check(r.id)"
-					>處理</button>
-						</td>
+						<button class="btn " 
+							:class="btnColor(r.status)"
+								@@click="UserCheck(r.beReportedUserId,r.id)">
+							處理
+						</button>
+					</td>
+					<td>{{this.ReviewStatusToString(r.status)}}</td>
 				</tr>
 
 			</tbody>
@@ -39,6 +43,10 @@
 	<div>
 		<button class="btn btn-secondary m-3" @@click="UpperFive()">上五筆</button>
 		<button class="btn btn-secondary m-3" @@click="LowerFive()">下五筆</button>
+	</div>
+	<div class="  text-light bg-secondary">
+		<label>檢舉項目:</label> <br />
+		<label v-for="c in complaint" class="form-label col-12 col-md-2 col-sm-6">{{c.complaintCategoryId}} . {{c.complaintCategoryName}}</label>
 	</div>
 
 	<div class="modal fade"
@@ -49,8 +57,8 @@
 		 role="dialog"
 		 aria-labelledby="modalTitleId"
 		 aria-hidden="true">
-		<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
-			 role="document">
+		<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered "
+			 role="document" style="width:450px">
 			<div class="modal-content">
 				<div class="modal-header bg-info">
 					<h5 class="modal-title" id="modalTitleId">
@@ -64,51 +72,88 @@
 				</div>
 				<div class="modal-body row lh-lg">
 					<div>
-						<label class="col-6 text-decoration-underline">
+						<label class="col-4 text-decoration-underline">
 							被檢舉人名稱:
 						</label>
-						<label class="col-6 text-start">
+						<label class="col-8 text-start">
 							{{userInfos.name}}
 						</label>
-						<label class="col-6 text-decoration-underline">
+						<label class="col-4 text-decoration-underline">
 							被檢舉人性別:
 						</label>
-						<label class="col-6 text-start">
-							{{userInfos.gender}}
+						<label class="col-8 text-start">
+							{{gender(userInfos.gender)}}
 						</label>
-						<label class="col-6 text-decoration-underline">
+						<label class="col-4 text-decoration-underline">
+							被檢舉人介紹:
+						</label>
+						<label class="col-8 text-start">
+							{{userInfos.introduction}}
+						</label>
+						<label class="col-4 text-decoration-underline">
+							被檢舉人帳號:
+						</label>
+						<label class="col-8 text-start">
+							{{userInfos.account}}
+						</label>
+						<label class="col-4 text-decoration-underline">
 							被檢舉人地址:
 						</label>
-						<label class="col-6 text-start">
+						<label class="col-8 text-start">
 							{{userInfos.address}}
 						</label>
-					</div>
-				
-					<div>
-						<label class="col-6 text-decoration-underline">
-							被檢舉圖片:
+						<label class="col-4 text-decoration-underline">
+							被檢舉人電話:
 						</label>
-						<img class="col-12 img-fluid" :src="" />
+						<label class="col-8 text-start">
+							{{userInfos.phoneNumber}}
+						</label>
+						<label class="col-4 text-decoration-underline">
+							被檢舉人生日:
+						</label>
+						<label class="col-8 text-start">
+							{{userInfos.birthDay}}
+						</label>
+						<label class="col-4 text-decoration-underline">
+							被檢舉人註冊時間:
+						</label>
+						<label class="col-8 text-start">
+							{{userInfos.registrationDate}}
+						</label>
+
+					</div>
+
+					<div>
+						<label class="col-4 text-decoration-underline">
+							被檢舉人圖片:
+						</label>
+						<img class="col-12 img-fluid" :src="imgSrc(userInfos.profilePicture)" />
 
 					</div>
 					<div>
-						<label class="col-6 text-decoration-underline">
-							檢舉狀態:
+						<label class="col-4 text-decoration-underline">
+							封鎖狀態:
 						</label>
-						<label class="col-6 text-start">
-							
+						<label class="col-8 text-start ">
+							{{this.UserStatusToString(userInfos.status)}}
 						</label>
 
 					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button"
-							@@click=""
 							class="btn btn-secondary "
-							data-bs-dismiss="modal">
+							data-bs-dismiss="modal"
+							@@click="changeUserStatus(userInfos.id,0),
+									changeReviewState(this.UserReviewid,2)">
 						駁回檢舉
 					</button>
-					<button type="button" @@click=" " class="btn btn-danger">封鎖使用者</button>
+					<button type="button" 
+						@@click="changeUserStatus(userInfos.id,1) ,
+								changeReviewState(this.UserReviewid,1)"
+					class="btn btn-danger">
+						封鎖使用者
+					</button>
 				</div>
 			</div>
 		</div>
@@ -117,32 +162,74 @@
 </div>
 
 @section Scripts {
-	
+
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<script>
 		var App = Vue.createApp({
 			data() {
 				return {
 					reviews: [],
-					tableStart:0,
+					tableStart: 0,
 					tableEnd: 5,
-					userInfos:[]
+					userInfos: [],
+					complaint: [],
+					UserReviewid: 0,
+					baseAdress:"https://localhost:7152",
+					// complaintArr:[],
 				};
 			},
 			methods: {
-				check(id) {
+				gender(type) {
+					if (type == 0) { return "男"; }
+					else if (type == 1) { return "女"; }
+					else { return "不男不女"; }
+				},
+				imgSrc(src) {
+					if (src == null || src == "null" || src == "")
+						return "/images/NOimg.jpg"
+					else
+						return src.substr(18);
+				},
+				UserCheck(UserId,ReviewId) {
 					this.showModal();
-					this.getUserInfo(id);
-				},	
+					this.getUserInfo(UserId);
+					this.UserReviewid = ReviewId;
+				},
 				getUserInfo(userid) {
-					axios.get('https://localhost:7152/api/UserInfo/GetUserinfos/4').then(r=>r.data).then(d=>App.userInfos=d );
+					axios.get(`${this.baseAdress}/api/UserInfo/GetById/${userid}`
+					).then(r => r.data).then(d => App.userInfos = d);
 				},
-				showModal() { $("#UserModal").modal("show"); },
-				hideModal() { $("#UserModal").modal("hide"); },
+				showModal() {
+					$("#UserModal").modal("show");
+				},
+				hideModal() {
+					$("#UserModal").modal("hide");
+				},
 				getAllReview() {
-					axios.get('https://localhost:7152/api/userReview/GetAll').then(r => r.data).then(r => App.reviews = r);
+					axios.get(`${this.baseAdress}/api/userReview/GetAll`).then(r => r.data).then(r => App.reviews = r);
 				},
-			
+				changeUserStatus(UserId, state) {
+
+					axios.put(`${this.baseAdress}/api/UserInfo/ChangeUserState?id=${UserId}`,
+						{
+							"id": UserId,
+							"status": state,
+						}
+
+					).then(r => r.data).then(d => console.log(d));
+					this.hideModal();
+					this.userInfos = [];
+					
+				},
+				changeReviewState(ReviewId,state) {
+					axios.put(`${this.baseAdress}/api/userReview/ChangeReviewState?id=${ReviewId}`, {
+						"id": ReviewId,
+						"status": state,
+					})
+					.then(r => r.data)
+					.then(d => console.log(d))
+					.then(d => this.getAllReview());
+				},
 				UpperFive() {
 					if (this.tableStart > 0) {
 						this.tableStart -= 5;
@@ -161,12 +248,41 @@
 						alert("已經是最後一頁")
 					}
 				},
-				},
-				mounted() {
-					this.getAllReview();
+				btnColor(id) {
+					if (id == 0) { return "btn-warning"; }
+					if (id == 1) { return "btn-secondary "; }
+					if (id == 2) { return "btn-success"; }
 
 				},
-			}).mount("#UserManagementApp");
+				getComplaintItem() {	//get檢舉項目清單
+					fetch(`${this.baseAdress}/api/complaint/Getall`, { method: "GET" }).then(r => r.json()).then(d => App.complaint = d);
+				},
+				ReviewStatusToString(s) {
+					if (s == 0) { return "申訴中"; }
+					else if (s == 1) { return "已刪除"; }
+					else { return "無須刪除"; }
+				},
+				UserStatusToString(s) {
+					if (s == 0) { return "未封鎖"; }
+					else { return "已封鎖"; }
+				},
+				ComplaintToString(id) {
+					if (this.complaint.length != 0)
+						return this.complaint[parseInt(id) - 1].complaintCategoryName
+					else
+						return "null";
+				}
+				
+			},
+			Computed: {
+				
+			
+			},
+			mounted() {
+				this.getAllReview();
+				this.getComplaintItem();
+			},
+		}).mount("#UserManagementApp");
 	</script>
 
 }

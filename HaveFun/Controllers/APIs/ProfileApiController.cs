@@ -1,5 +1,7 @@
 ﻿using HaveFun.DTOs;
 using HaveFun.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,21 +24,54 @@ namespace HaveFun.Controllers.APIs
         [HttpGet]
         public async Task<IEnumerable<WhoLikeListDTO>> GetWhoLikeList()
         {
-            var whoLikeList = await _context.FriendLists
-                .Where(fl => fl.state == 0)
-                .Include(fl => fl.User1)
-                .Select(fl => new WhoLikeListDTO
+            var whoLikeListData = await _context.FriendLists
+                .Where(f => f.state == 0 && f.BeenClicked == 2)
+                .Select(f => new
                 {
-                    Name = fl.User1.Name,
-                    Age = CalculateAge(fl.User1.BirthDay),
-                    Gender = fl.User1.Gender == 1 ? "male" : "female",
-                    ProfilePicture = fl.User1.ProfilePicture
+                    f.User1.Id,
+                    f.User1.Name,
+                    f.User1.BirthDay,
+                    f.User1.Gender,
+                    f.User1.ProfilePicture
                 })
                 .ToListAsync();
+
+            var whoLikeList = new List<WhoLikeListDTO>();
+            foreach (var item in whoLikeListData)
+            {
+                whoLikeList.Add(new WhoLikeListDTO
+                {
+                    Id = item.Id.ToString(),
+                    Name = item.Name,
+                    Age = CalculateAge(item.BirthDay),
+                    Gender = item.Gender == 1 ? "male" : "female",
+                    ProfilePicture = CreatePictureUrl("GetPicture", "Profile", new { id = item.Id })
+                });
+            }
 
             return whoLikeList;
         }
 
+        public string CreatePictureUrl(string action, string controller, object routeValues)
+        {
+            // 使用 Url.Action 生成 URL
+            string baseUrl = Url.Action(action, controller, routeValues, Request.Scheme);
+
+            // Replace增加api路徑
+            return baseUrl.Replace($"/{controller}/{action}", $"/api/{controller}/{action}");
+        }
+
+        // Get: api/Profile/GetProfilePicture
+        [HttpGet("{id}")]
+        public async Task<FileResult> GetPicture(int id)
+        {
+            UserInfo? user = await _context.UserInfos.FindAsync(id);
+            string path = user.ProfilePicture;
+            byte[] ImageContent = System.IO.File.ReadAllBytes(path);
+            return File(ImageContent, "image/*");
+        }
+
+        // 計算年齡
         private static int CalculateAge(DateTime birthDate)
         {
             var today = DateTime.Today;
@@ -46,9 +81,11 @@ namespace HaveFun.Controllers.APIs
         }
 
         //GET: api/Profile/GetPostsList
+        [Authorize(AuthenticationSchemes = "Bearer,Cookies")]
         [HttpGet]
         public async Task<IEnumerable<PostsDTO>> GetPostsList()
         {
+            string userId = Request.Cookies["userId"];
             var posts = await _context.Posts
                 .Where(p => p.Status == 0)
                 .OrderByDescending(p => p.Id) // Id由大到小排序
@@ -66,7 +103,7 @@ namespace HaveFun.Controllers.APIs
                         {
                             Id = c.Id,
                             UserId = c.UserId,
-                            UserName=c.User.Name,
+                            UserName = c.User.Name,
                             PostId = c.PostId,
                             ParentCommentId = c.ParentCommentId,
                             Contents = c.Contents,
