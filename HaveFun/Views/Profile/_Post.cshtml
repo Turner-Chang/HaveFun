@@ -82,7 +82,10 @@
                                         </div>
                                         <div class="post-meta-bottom">
                                             <ul class="react-list">
-                                                <li class="react"><a href="#" @@click.prevent="likePost"><i class="fa-solid fa-thumbs-up"></i>Like</a></li>
+                                                <li class="react">
+                                                    <a href="#" @@click.prevent="clickLike(post)">
+                                                        <i id:Like :class="['fa-heart', clickLikeOrNot(post) ? 'fa-solid' : 'fa-regular']"></i> Like
+                                                    </a>
                                                 <li class="react"><a href="#" @@click.prevent="commentOnPost(post)"><i class="fa-solid fa-comment"></i>Comment</a></li>
                                                 <li class="react"><a href="#"><i class="fa-solid fa-share-nodes"></i>Share</a></li>
                                             </ul>
@@ -174,7 +177,7 @@
                 posts: [],
                 postIdCounter: 1,
                 userName: '',
-                userId: 2 // 假設使用者ID為2
+                userId: 8 // 假設使用者ID為2
             };
         },
         created() {
@@ -192,6 +195,7 @@
                         Contents: post.contents,
                         Time: post.time,
                         Pictures: post.pictures,
+                        Like:post.like,
                         Replies: (post.replies || []).map(reply => ({
                             Id: reply.id,
                             UserId: reply.userId,
@@ -367,6 +371,38 @@
                 alert("Show Comments");
             },
 
+            // 檢查登入者是否按此篇貼文Like
+            clickLikeOrNot(post) {
+                const userIds = post.Like.map(like => like.userId);
+                return userIds.includes(this.loginUserId);
+            },
+
+            // 按讚請求
+            clickLike(post) {
+                const heart = event.target;
+                let like = {
+                    "PostId": post.Id,
+                    "UserId": this.userId
+                };
+                axios.post('/api/Profile/AddLike', like)
+                    .then(response => response.data)
+                    .then(data => {
+                        // console.log(data);
+                        if (data === 'CancelLike') {
+                            // heart.firstChild.setAttribute = ("class", "fa-heart fa-regular ")
+                            heart.firstChild.classList.add('fa-regular');
+                            heart.firstChild.classList.remove('fa-solid');
+                        } else if (data === 'Like') {
+                            // heart.firstChild.setAttribute = ("class", "fa-heart fa-regular ")
+                            heart.firstChild.classList.remove('fa-regular');
+                            heart.firstChild.classList.add('fa-solid');
+                        }
+                    })
+                    .catch(error => {
+                        console.log('fetch add like failed!', error);
+                    });
+            },
+
             // 顯示/隱藏 回覆內容與輸入框
             commentOnPost(post) {
                 post.showReplyForm = !post.showReplyForm;
@@ -378,9 +414,6 @@
                         textarea.focus(); // 聚焦到 reply-input
                     }
                 });
-            },
-            likePost(post) {
-                alert('Liked!');
             },
 
             // 顯示/隱藏 貼文回覆的回覆輸入框 
