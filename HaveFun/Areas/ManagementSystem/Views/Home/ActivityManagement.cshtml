@@ -1,5 +1,5 @@
-﻿<div id="PostCheckApp">
-	
+﻿<div id="ActivityCheckApp">
+
 	<div class="container row  p-lg-10 p-5 text-center border-2">
 		<div class="col-12">
 			<span class="col-12 col-md-2  m-2 ">處理狀態示意: </span>
@@ -12,28 +12,28 @@
 			<table class="table table-secondary">
 				<thead class="table-active">
 					<tr>
-						<th scope="col">被檢舉貼文Id</th>
+						<th scope="col">被檢舉活動Id</th>
 						<th scope="col">被檢舉人Id</th>
 						<th scope="col">被檢舉項目</th>
 						<th scope="col">被檢舉理由</th>
-						<th scope="col" >被檢舉時間</th>
+						<th scope="col">被檢舉時間</th>
 						<th scope="col">處理</th>
-						<th scope="col">貼文狀態</th>
-						
+						<th scope="col">活動狀態</th>
+
 
 
 					</tr>
 				</thead>
 				<tbody>
 					<tr v-for="r in reports.slice(tableStart,tableEnd)" class="">
-						<td >{{r.postId}}</td>
+						<td>{{r.activityId}}</td>
 						<td>{{r.userId}}</td>
 						<td>{{this.ComplaintToString(r.reportItems)}}</td>
-						<td>{{r.reason}}</td>
+						<td>{{r.reportReason}}</td>
 						<td class="col-md-0">{{r.reportTime}}</td>
 						<td>
 							<button :id="r.postReviewId" class="btn " :class="btnColor(r.processingStstus)"
-									@@click="check(r.postId,r.postReviewId)">
+									@@click="check(r.activityId,r.activityReviewId)">
 								處理
 							</button>
 						</td>
@@ -41,15 +41,15 @@
 					</tr>
 				</tbody>
 			</table>
-			
+
 		</div>
 		<div>
 			<button class="btn btn-secondary m-3" @@click="UpperFive()">上五筆</button>
 			<button class="btn btn-secondary m-3" @@click="LowerFive()">下五筆</button>
 		</div>
 		<div class="  text-light bg-secondary">
-			<label >檢舉項目:</label> <br />
-			<label v-for="c in complaint" class="form-label col-12 col-md-2 col-sm-6">{{c.complaintCategoryId}} . {{c.complaintCategoryName}}</label> 
+			<label>檢舉項目:</label> <br />
+			<label v-for="c in complaint" class="form-label col-12 col-md-2 col-sm-6">{{c.complaintCategoryId}} . {{c.complaintCategoryName}}</label>
 		</div>
 	</div>
 
@@ -67,7 +67,7 @@
 			<div class="modal-content">
 				<div class="modal-header bg-info">
 					<h5 class="modal-title" id="modalTitleId">
-						檢舉貼文
+						檢舉活動貼文
 					</h5>
 					<button type="button"
 							class="btn-close"
@@ -76,34 +76,64 @@
 					</button>
 				</div>
 				<div class="modal-body row lh-lg">
-					<div><label class="col-6 text-decoration-underline">
-						被檢舉貼文Id:  
-					</label>
-					<label class="col-6 text-start">
-						{{Post.id}}  
-					</label>
+					<div>
+						<label class="col-3 text-decoration-underline">
+							活動標題:
+						</label>
+						<label class="col-3 text-start">
+							{{Act.title}}
+						</label>
+					
+						<label class="col-3 text-decoration-underline">
+							貼文類別:
+						</label>
+						<label class="col-3 text-center lh-base">
+							{{Act.type}}
+						</label>
+					
+						<label class="col-3 text-decoration-underline">
+							主辦人:
+						</label>
+						<label class="col-3 text-center lh-base">
+							{{Act.userId}}
+						</label>
+					
+						<label class="col-3 text-decoration-underline">
+							參加人數限制:
+						</label>
+						<label class="col-3 text-center lh-base">
+							{{Act.maxParticipants}}
+						</label>
 					</div>
 					<div>
 						<label class="col-6 text-decoration-underline">
 							被檢舉貼文內容:
 						</label>
-						<label class="col-12 text-center lh-base">
-							{{Post.contents}}
+						<label class="col-6 text-center lh-base">
+							{{Act.content}}
+						</label>
+					</div>
+					<div>
+						<label class="col-6 text-decoration-underline">
+							地點:
+						</label>
+						<label class="col-6 text-center lh-base">
+							{{Act.location}}
 						</label>
 					</div>
 					<div>
 						<label class="col-6 text-decoration-underline">
 							被檢舉圖片:
 						</label>
-							<img class="col-12 img-fluid" :src="imgSrc(Post.pictures)"/>
+						<img class="col-6 img-fluid"/>
 
-						</div>
+					</div>
 					<div>
 						<label class="col-6 text-decoration-underline">
 							檢舉狀態:
 						</label>
 						<label class="col-6 text-start">
-							{{this.PostStatusToString(Post.status)}}
+							{{this.PostStatusToString(Act.status)}}
 						</label>
 
 					</div>
@@ -129,25 +159,25 @@
 			data() {
 				return {
 					reports: [],
-					Post: {},
-					PostReviewId:0,
-					PostId:0,
-					tableStart:0,
-					tableEnd:5,
-					complaint:[],
+					Act: {},
+					ActivityReviewId: 0,
+					ActivityId: 0,
+					tableStart: 0,
+					tableEnd: 5,
+					complaint: [],
 					baseAdress: "https://localhost:7152",
 				}
 			},
 			methods: {
 				GetAll() {
-					
-					var data = fetch(`${this.baseAdress}/api/PostReview/GetAll`, { method: "GET" })
+
+					var data = fetch(`${this.baseAdress}/api/ActivityReview/GetAll`, { method: "GET" })
 						.then(response => response.json())
 						.then(data =>
 							JSON.stringify(data))
 						.then(d => {
 							App.reports = JSON.parse(d);
-							
+
 						})
 						.catch(error => {
 							console.error('發生錯誤:', error);
@@ -156,50 +186,49 @@
 				}
 				,
 				imgSrc(src) {
-					if(src==null || src =="null"||src=="")
+					if (src == null || src == "null" || src == "")
 						return "/images/NOimg.jpg"
 					else
-					return src.substr(18);
+						return src.substr(18);
 				}
-				 ,
-				check(postId, postReviewId) {
+				,
+				check(ActivityId, ActivityReviewId) {
 					this.showModal();
-					this.GetPost(postId);
-					this.PostReviewId = postReviewId;
-					this.PostId = postId;
+					this.GetActivity(ActivityId);
+					this.ActivityReviewId = ActivityReviewId;
+					this.ActivityId = ActivityId;
 					//alert(postReviewId)
 				},
 				showModal() {
 					$("#PostModal").modal("show");
 				}
 				,
-				hideModal() { 
-					this.Post = {};
+				hideModal() {
+					this.Act = {};
 					$("#PostModal").modal("hide");
 
 				}
 				,
-				GetPost(PostId) {
-					
+				GetActivity(ActivityId) {
 
-					var data = fetch(`${this.baseAdress}/api/Post/GetById/${PostId}`, { method: "GET" })
+
+					var data = fetch(`${this.baseAdress}/api/ActivityReview/GetActById?id=${ActivityId}`, { method: "GET" })
 						.then(response => response.json())
 						.then(data =>
-							JSON.stringify(data)	)
+							JSON.stringify(data))
 						.then(d => {
-							App.Post = JSON.parse( d);
-							console.log(App.Post);
-						}
-						)
+							App.Act = JSON.parse(d);
+							console.log(App.Act);
+						})
 						.catch(error => {
 							console.error('發生錯誤:', error);
 							alert("錯誤");
 						});
 
-					
+
 
 				},
-				PostReviewStateChange(postReviewId,state) {
+				PostReviewStateChange(postReviewId, state) {
 					var body = {
 						"postReviewId": postReviewId,
 						"userId": 0,
@@ -212,16 +241,16 @@
 					fetch(
 						`${this.baseAdress}/api/PostReview/Put/${postReviewId}`,
 						{
-							method:"PUT",
-							body:JSON.stringify(body),
-							headers: {'Content-Type':'application/json'}
+							method: "PUT",
+							body: JSON.stringify(body),
+							headers: { 'Content-Type': 'application/json' }
 						}
-					).then(res=>res.text())
-					.then(data=>console.log(data))
-					.then(d=> App.GetAll())
-					.catch(err=>alert("err"));
+					).then(res => res.text())
+						.then(data => console.log(data))
+						.then(d => App.GetAll())
+						.catch(err => alert("err"));
 					this.hideModal();
-					
+
 
 				},
 				PostStateChange(PostId, state) {
@@ -241,7 +270,7 @@
 						.catch(err => alert("err"));
 					if (state == 0) { state = 2; }
 					this.PostReviewStateChange(this.PostReviewId, state);
-					
+
 				},
 				btnColor(id) {
 					if (id == 0) { return "btn-warning"; }
@@ -264,18 +293,19 @@
 						this.tableEnd += 5;
 					}
 					else {
-					alert("已經是最後一頁")
+						alert("已經是最後一頁")
 					}
 				},
-				ReviewStatusToString(s) { 
-					if (s == 0) { return "申訴中"; } 
-					else if (s == 1) { return "已刪除"; } 
-					else  { return "無須刪除"; } 
+				ReviewStatusToString(s) {
+					if (s == 0) { return "申訴中"; }
+					else if (s == 1) { return "已刪除"; }
+					else { return "無須刪除"; }
 				},
 				PostStatusToString(s) {
 					if (s == 0) { return "未下架貼文"; }
 					else { return "已下架貼文"; }
-				}, ComplaintToString(id) {
+				}, 
+				ComplaintToString(id) {
 					if (this.complaint.length != 0)
 						return this.complaint[parseInt(id) - 1].complaintCategoryName
 					else
@@ -285,10 +315,10 @@
 			},
 			mounted: async () => {
 
-				var baseAdress= "https://localhost:7152";
+				var baseAdress = "https://localhost:7152";
 
 				var resp = await fetch(
-					`${baseAdress}/api/PostReview/GetAll`, {
+					`${baseAdress}/api/ActivityReview/GetAll`, {
 					method: "GET"
 				});
 				var data = await resp.json();
@@ -298,8 +328,8 @@
 				fetch(`${baseAdress}/api/complaint/Getall`, { method: "GET" }).then(r => r.json()).then(d => App.complaint = d);
 				//
 
-			}, 
-		}).mount("#PostCheckApp");
+			},
+		}).mount("#ActivityCheckApp");
 
 	</script>
 }
