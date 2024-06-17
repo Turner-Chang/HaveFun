@@ -18,7 +18,7 @@ namespace HaveFun.Controllers
         {
             _context = context;
         }
-        
+        //
         public async Task<IActionResult> Main()
         {
             var haveFunDbContext = _context.ChatRooms.Include(c => c.Receiver).Include(c => c.Sender);
@@ -69,14 +69,18 @@ namespace HaveFun.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,MessageText,CreateTime,User1Id,User2Id,IsRead")] ChatRoom chatRoom)
         {
-            if (!ModelState.IsValid)
+            if (chatRoom.User1Id != chatRoom.User2Id)
             {
-                _context.Add(chatRoom);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (!ModelState.IsValid)
+                {
+                    _context.Add(chatRoom);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
             }
             ViewData["User2Id"] = new SelectList(_context.UserInfos, "Id", "Account", chatRoom.User2Id);
             ViewData["User1Id"] = new SelectList(_context.UserInfos, "Id", "Account", chatRoom.User1Id);
+            Console.WriteLine("User2Id", "User1 and User2 cannot be the same.");
             return View(chatRoom);
         }
         [HttpGet]
