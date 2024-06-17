@@ -1,4 +1,5 @@
-﻿using HaveFun.Models;
+﻿using HaveFun.Areas.ManagementSystem.DTOs;
+using HaveFun.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -43,6 +44,26 @@ namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
             _context.UserReviews.Add(userReview1);
             await _context.SaveChangesAsync();
             return "新增成功";
-        } 
+        }
+        [HttpPut]
+        public async Task<string> ChangeReviewState(
+            int id,UserReviewStateDTO userReviewState) {
+            var review1=await _context.UserReviews.FindAsync(id);
+            if (review1 == null)
+            {
+                return "修改失敗";
+            }
+            if (userReviewState.Id == review1.Id) {
+                review1.status = userReviewState.status;
+            }
+				_context.Entry(review1).State = EntityState.Modified;
+                try { 
+                _context.SaveChanges();
+                }
+                catch(Exception ex) 
+                { return "修改失敗"; }
+			return "修改成功";
+		}
+        
     }
 }

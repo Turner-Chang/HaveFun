@@ -5408,7 +5408,7 @@ textarea.form-control-lg {
     margin-left: auto;
   }
   .modal-sm {
-    --bs-modal-width: 300px;
+    --bs-modal-width: 450px;
   }
 }
 @media (min-width: 992px) {
