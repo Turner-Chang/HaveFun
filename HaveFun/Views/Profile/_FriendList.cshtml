@@ -210,11 +210,12 @@
 
         function renderFriendList(data) {
             const friendListContainer = document.getElementById('Newest');
+            const blackListContainer = document.getElementById('BlackList');
             friendListContainer.innerHTML = ''; // 清空當前列表
+            blackListContainer.innerHTML = ''; // 清空當前黑名单列表
 
             data.forEach(FriendDTO => {
                 const listItem = document.createElement('li');
-
                 listItem.innerHTML = `
                             <div class="top">
                                 <div class="left member--style2">
@@ -225,13 +226,19 @@
                                 </div>
                                 <div class="right">
                                     <a href="member-single.html"><h6>${FriendDTO.Name}</h6></a>
-                                    <span>${FriendDTO.ActivityTime}</span>
-                                    <button class="btn btn-danger block-btn">封鎖</button>
+                                    <span>${FriendDTO.ActivityTime} days ago</span>
+                                    <button class="btn ${FriendDTO.IsBlocked ? 'btn-success unblock-btn' : 'btn-danger block-btn'}">
+                                        ${FriendDTO.IsBlocked ? '解鎖' : '封鎖'}
+                                    </button>
                                 </div>
                             </div>
                         `;
 
-                friendListContainer.appendChild(listItem);
+                if (FriendDTO.IsBlocked) {
+                    blackListContainer.appendChild(listItem);
+                } else {
+                    friendListContainer.appendChild(listItem);
+                }
             });
 
             updateButtons();
@@ -240,21 +247,39 @@
         function updateButtons() {
             document.querySelectorAll('.block-btn').forEach(button => {
                 button.onclick = function () {
-                    const memberItem = button.closest('li');
-                    document.getElementById('BlackList').appendChild(memberItem);
-                    button.innerText = '解鎖';
-                    button.className = 'btn btn-success unblock-btn';
-                    updateButtons();
+                    const friendId = button.closest('li').dataset.id;
+                    fetch('/api/FriendApi/BlockUser', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(friendId)
+                    }).then(() => {
+                        const memberItem = button.closest('li');
+                        document.getElementById('BlackList').appendChild(memberItem);
+                        button.innerText = '解鎖';
+                        button.className = 'btn btn-success unblock-btn';
+                        updateButtons();
+                    });
                 };
             });
 
             document.querySelectorAll('.unblock-btn').forEach(button => {
                 button.onclick = function () {
-                    const memberItem = button.closest('li');
-                    document.getElementById('Newest').appendChild(memberItem);
-                    button.innerText = '封鎖';
-                    button.className = 'btn btn-danger block-btn';
-                    updateButtons();
+                    const friendId = button.closest('li').dataset.id;
+                    fetch('/api/FriendApi/UnblockUser', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(friendId)
+                    }).then(() => {
+                        const memberItem = button.closest('li');
+                        document.getElementById('Newest').appendChild(memberItem);
+                        button.innerText = '封鎖';
+                        button.className = 'btn btn-danger block-btn';
+                        updateButtons();
+                    });
                 };
             });
         }
