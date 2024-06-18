@@ -228,43 +228,90 @@ namespace HaveFun.Controllers.APIs
 
         //新增貼文按讚
         // POST: api/Profile/AddLike
-        //[HttpPost]
-        //public async Task<JsonResult> AddLike(LikeDTO clcickLike)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return new JsonResult(ModelState);
-        //    }
-        //    try
-        //    {
-        //        var record = await _context.Likes.FirstOrDefaultAsync(record => record.PostId == clcickLike.PostId && record.UserId == clcickLike.UserId);
-        //        if (record != null)
-        //        {
-        //            _context.Likes.Remove(record);
-        //            await _context.SaveChangesAsync();
-        //            return new JsonResult("CancelLike");
-        //        }
-        //        else
-        //        {
-        //            Like like = new Like
-        //            {
-        //                PostId = clcickLike.PostId,
-        //                UserId = clcickLike.UserId,
-        //            };
-        //            _context.Likes.Add(like);
-        //            await _context.SaveChangesAsync();
-        //            return new JsonResult("Like");
-        //        }
-        //    }
-        //    catch (DbException ex)
-        //    {
-        //        return new JsonResult($"資料庫錯誤：{ex.Message}");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new JsonResult($"伺服器錯誤：{ex.Message}");
-        //    }
-        //}
+        [HttpPost]
+        public async Task<JsonResult> AddLike(LikeDTO clcickLike)
+        {
+            if (!ModelState.IsValid)
+            {
+                return new JsonResult(ModelState);
+            }
+            try
+            {
+                var record = await _context.Likes.FirstOrDefaultAsync(record => record.PostId == clcickLike.PostId && record.UserId == clcickLike.UserId);
+                if (record != null)
+                {
+                    _context.Likes.Remove(record);
+                    await _context.SaveChangesAsync();
+                    return new JsonResult("CancelLike");
+                }
+                else
+                {
+                    Like like = new Like
+                    {
+                        PostId = clcickLike.PostId,
+                        UserId = clcickLike.UserId,
+                    };
+                    _context.Likes.Add(like);
+                    await _context.SaveChangesAsync();
+                    return new JsonResult("Like");
+                }
+            }
+            catch (DbException ex)
+            {
+                return new JsonResult($"資料庫錯誤：{ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult($"伺服器錯誤：{ex.Message}");
+            }
+        }
+
+        //查詢檢舉項目
+        // GET : api/Profile/GetComplaintCategory
+        [HttpGet]
+        public async Task<JsonResult> GetComplaintCategory()
+        {
+            var result = await _context.ComplaintCategories.ToListAsync();
+            return new JsonResult(result);
+        }
+        //檢舉貼文
+        // POST: api/Profile/RatPostReview
+        [HttpPost]
+        public async Task<JsonResult> RatPostReview(PostReviewDTO ratPost)
+        {
+            if (!ModelState.IsValid)
+            {
+                return new JsonResult(ModelState);
+            }
+            try
+            {
+                bool exist = await _context.PostReviews.AnyAsync(record => record.UserId == ratPost.UserId && record.PostId == ratPost.PostId);
+                if (exist)
+                {
+                    return new JsonResult("此用戶已經檢舉過此貼文");
+                }
+                PostReview post = new PostReview
+                {
+                    PostId = ratPost.PostId,
+                    UserId = ratPost.UserId,
+                    ReportItems = ratPost.ReportItems,
+                    Reason = ratPost.Reason,
+                    ReportTime = DateTime.Now,
+                    ProcessingStstus = ratPost.ProcessingStstus
+                };
+                _context.PostReviews.Add(post);
+                await _context.SaveChangesAsync();
+                return new JsonResult("新增檢舉貼文成功");
+            }
+            catch (DbException ex)
+            {
+                return new JsonResult($"資料庫錯誤：{ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult($"伺服器錯誤：{ex.Message}");
+            }
+        }
 
         [HttpGet]
         // 測試用
