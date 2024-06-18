@@ -84,16 +84,8 @@
                                 <li>
                                     <a class="nav-link" asp-area="" asp-controller="POST" asp-action="Index">POST</a>
                                 </li>
+                               
                                 
-                                <teplate v-if="isLogin">
-                                    <li>
-                                        <a>
-                                            <img src="~/assets/images/member/profile/01.jpg" />
-                                            登出
-                                        </a>
-                                    </li>
-                                </teplate>
-                                <template v-else>
                                     <li>
                                         <a class="nav-link" asp-area="" asp-controller="Register" asp-action="Index">註冊</a>
 
@@ -103,8 +95,15 @@
                                         <a class="nav-link" asp-area="" asp-controller="Login" asp-action="Index">登入</a>
                                     </li>
 
-                                </template>
+                                
 
+                                <teplate v-if="isLogin">
+                                    <li>
+                                        <a class="nav-link">
+                                            登出
+                                        </a>
+                                    </li>
+                                </teplate>
                             </ul>
                         </div>
 
