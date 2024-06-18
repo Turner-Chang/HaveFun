@@ -13,20 +13,27 @@
 			</li>
 		</ul>
 		<!-- ================> 即將發生的活動 <================== -->
-		<div v-if="currentType === 'commingup'" class="blog__item">
+		<div v-if="currentType === 'commingup'" v-for="act in allActivities" class="blog__item">
 			<div class="blog__inner">
 				<img src="assets/images/blog/10.jpg" alt="blog">
 				<div class="blog__content">
-					<h3>喚醒身體 - 和緩瑜珈體驗</h3>
+					<h3>{{act.title}}</h3>
 					<ul class="lab-ul blog__date">
-						<li><span><i class="fa-solid fa-calendar-days"></i> 活動時間:January 01, 2022 10:59 am </span></li>
-						<li><span><i class="fa-solid fa-user"></i> 主辦者：Robot Smith</span> </li>
-						<li><span><i class="fa-solid fa-users"></i> 9 位參加者</span></li>
+						<li><span><i class="fa-solid fa-calendar-days"></i> 活動時間:{{act.activityTime}} </span></li>
+						<li><span><i class="fa-solid fa-user"></i> 主辦者：{{act.host}}</span> </li>
+						<li><span><i class="fa-solid fa-users"></i> {{act.participant.length}} 位參加者</span></li>
 					</ul>
-					<p>
-						初學者友善, 不須基礎, 男女都歡迎.<br>
-						不須準備瑜珈墊/輔具, 只要帶著一個放鬆的心情即可。
-					</p>
+					<details @@toggle ="act.expandState = !act.expandState">
+						<summary>{{act.expandState? '隱藏詳細內容' : '展開詳細內容'}}</summary>
+					<div>
+						<span class="infoTitle">活動類型：</span>
+						{{act.type}}<br>
+						<span class="infoTitle">活動內容：</span><br>
+						{{act.content}}<br>
+						<span class="infoTitle">注意事項：</span><br>
+						{{act.notes}}
+					</div>
+					</details>
 				</div>
 			</div>
 		</div>
@@ -66,7 +73,6 @@
 		</div>
     </div>
 </div>
-<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 <script>
 	const activityPlatform = Vue.createApp({
 		data() {
@@ -76,6 +82,7 @@
 				loginUserId: 8,
 				//先寫死的部分
 				currentType: "commingup",
+				allActivities:[],
 				commingupActivities: [],
 				editActivities: [],
 				pastActivities: [],
@@ -84,16 +91,33 @@
 		},
 		methods: {
 			//取得登入者所有活動
-			getActivitiesList(this.loginUserId){
-				return null;
+			getActivitiesList(userId){
+				fetch(`api/personalActivities/GetActivities/${this.loginUserId}`)
+					.then(res => res.json())
+					.then(data => {
+						this.allActivities = data.map(activity => ({
+						...activity,
+						expandState: false
+						})); 
+					})
+					.catch(error => { console.log('fetch allActivities failed!') });
 			},
 			//取得所有活動類型
 			getActivityTypeList(){
 				fetch(`api/personalActivities/GetActivityType`)
 					.then(res => res.json())
-					.then(data => { this.activityType = data })
+					.then(data => { 
+						this.activitiyType = data;
+					})
 					.catch(error => { console.log('fetch activityType failed!') });
 			},
+			//將請求的個人所有活動分類到不同時態的陣列
+			// PackActivitiesToArray() {
+			// 	const Now = new Date();
+			// 	this.commingupActivities = this.allActivities.filter(activity => 
+			// 		const activityTime = new Date(activity.T);
+			// 		return activityTime > Now);
+			// },
 			//切換狀態顯示活動
 			switchType(type) {
 				this.currentType = type;
@@ -105,6 +129,7 @@
         mounted() {
 			this.getActivitiesList(this.loginUserId);
 			this.getActivityTypeList();
+			// this.PackActivitiesToArray();
         },
     })
         .mount('#activityPlatform');
