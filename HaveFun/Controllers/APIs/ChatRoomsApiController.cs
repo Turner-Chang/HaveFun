@@ -44,10 +44,15 @@ namespace HaveFun.Controllers.APIs
             return Ok(chatRoomDTOs);
         }
 
-
+        // POST: api/ChatRooms
         [HttpPost]
         public async Task<ActionResult<string>> PostChatRoom(ChatRoomDTO chatRoomDTO)
         {
+            if (chatRoomDTO.User1Id == chatRoomDTO.User2Id)
+            {
+                // 拋出例外或返回錯誤訊息
+                return BadRequest("User1Id 和 User2Id 不能相同");
+            }
             var chatRoom = new ChatRoom
             {
                 MessageText = chatRoomDTO.MessageText,
@@ -56,7 +61,7 @@ namespace HaveFun.Controllers.APIs
                 User2Id = chatRoomDTO.User2Id,
                 IsRead = chatRoomDTO.IsRead
             };
-
+            
             _context.ChatRooms.Add(chatRoom);
             await _context.SaveChangesAsync();
 

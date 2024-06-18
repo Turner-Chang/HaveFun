@@ -9,9 +9,9 @@ using HaveFun.Models;
 
 namespace HaveFun.Controllers
 {
-    
+
     public class ChatRoomsController : Controller
-    {    
+    {
         private readonly HaveFunDbContext _context;
         //這是類別的建構函式,它接受一個 HaveFunDbContext 類型的參數並將它賦值給 _context 欄位。
         public ChatRoomsController(HaveFunDbContext context)
@@ -78,9 +78,9 @@ namespace HaveFun.Controllers
                     return RedirectToAction(nameof(Index));
                 }
             }
-            ViewData["User2Id"] = new SelectList(_context.UserInfos, "Id", "Account", chatRoom.User2Id);
+                ModelState.AddModelError(string.Empty, "User1Id 和 User2Id 不能相同");
+                ViewData["User2Id"] = new SelectList(_context.UserInfos, "Id", "Account", chatRoom.User2Id);
             ViewData["User1Id"] = new SelectList(_context.UserInfos, "Id", "Account", chatRoom.User1Id);
-            Console.WriteLine("User2Id", "User1 and User2 cannot be the same.");
             return View(chatRoom);
         }
         [HttpGet]
