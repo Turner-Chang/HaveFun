@@ -1,0 +1,15 @@
+﻿body {
+}
+summary {
+    list-style: none;
+    margin: 5px;
+    text-align: center;
+}
+.infoTitle {
+    color: #f24570;
+    font-size: 16px;
+    margin:0;
+}
+.blog__item{
+    margin: 20px;
+}
