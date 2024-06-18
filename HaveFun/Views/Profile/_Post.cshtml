@@ -1,4 +1,5 @@
 ﻿<link href="~/assets/css/profile_poststyle.css" rel="stylesheet" />
+
 <div class="tab-pane fade show active" id="gt1" role="tabpanel" aria-labelledby="gt1-tab">
     <div id="post">
         <div class="group__bottom--area group__bottom--memberactivity">
@@ -69,6 +70,15 @@
                                                     </ul>
                                                 </div>
                                             </div>
+                                            <div class="post-review-dropdown">
+                                                <button type="button" id="btnMore" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="fa-solid fa-ellipsis"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li @@click.prevent="showDelete(post)"><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop">刪除貼文</a></li>
+                                                    <li @@click.prevent="showRat(post)"><a class="dropdown-item" href="#">檢舉貼文</a></li>
+                                                </ul>
+                                            </div>
                                         </div>
                                         <div class="post-description">
                                             <p>{{ post.Contents }}</p>
@@ -84,7 +94,7 @@
                                             <ul class="react-list">
                                                 <li class="react">
                                                     <a href="#" @@click.prevent="clickLike(post)">
-                                                        <i id:Like :class="['fa-heart', clickLikeOrNot(post) ? 'fa-solid' : 'fa-regular']"></i> Like
+                                                        <i :class="['fa-heart', clickLikeOrNot(post) ? 'fa-solid' : 'fa-regular']"></i> Like
                                                     </a>
                                                 <li class="react"><a href="#" @@click.prevent="commentOnPost(post)"><i class="fa-solid fa-comment"></i>Comment</a></li>
                                                 <li class="react"><a href="#"><i class="fa-solid fa-share-nodes"></i>Share</a></li>
@@ -379,7 +389,7 @@
 
             // 按讚請求
             clickLike(post) {
-                const heart = event.target;
+                const Like = event.target;
                 let like = {
                     "PostId": post.Id,
                     "UserId": this.userId
@@ -389,19 +399,34 @@
                     .then(data => {
                         // console.log(data);
                         if (data === 'CancelLike') {
-                            // heart.firstChild.setAttribute = ("class", "fa-heart fa-regular ")
-                            heart.firstChild.classList.add('fa-regular');
-                            heart.firstChild.classList.remove('fa-solid');
+                            Like.firstChild.classList.add('fa-regular');
+                            Like.firstChild.classList.remove('fa-solid');
                         } else if (data === 'Like') {
-                            // heart.firstChild.setAttribute = ("class", "fa-heart fa-regular ")
-                            heart.firstChild.classList.remove('fa-regular');
-                            heart.firstChild.classList.add('fa-solid');
+                            Like.firstChild.classList.remove('fa-regular');
+                            Like.firstChild.classList.add('fa-solid');
                         }
                     })
                     .catch(error => {
                         console.log('fetch add like failed!', error);
                     });
             },
+
+            //顯示刪除貼文視窗
+            showDelete(post) {
+                event.preventDefault();
+                $('.deleteBox').css("display", "block");
+                this.wannaDeletePost = post.postId;
+            },
+            // //按貼文點點按鈕出現刪除貼文&檢舉貼文選項
+            // showDropDown() {
+            //     let target = null;
+            //     if (event.target.tagName.toLowerCase() != "button") {
+            //         target = event.target.parentElement;
+            //     } else {
+            //         target = event.target;
+            //     }
+            //     target.classList.toggle('show');
+            // },
 
             // 顯示/隱藏 回覆內容與輸入框
             commentOnPost(post) {

@@ -228,43 +228,43 @@ namespace HaveFun.Controllers.APIs
 
         //新增貼文按讚
         // POST: api/Profile/AddLike
-        [HttpPost]
-        public async Task<JsonResult> AddLike(LikeDTO clcickLike)
-        {
-            if (!ModelState.IsValid)
-            {
-                return new JsonResult(ModelState);
-            }
-            try
-            {
-                var record = await _context.Likes.FirstOrDefaultAsync(record => record.PostId == clcickLike.PostId && record.UserId == clcickLike.UserId);
-                if (record != null)
-                {
-                    _context.Likes.Remove(record);
-                    await _context.SaveChangesAsync();
-                    return new JsonResult("CancelLike");
-                }
-                else
-                {
-                    Like like = new Like
-                    {
-                        PostId = clcickLike.PostId,
-                        UserId = clcickLike.UserId,
-                    };
-                    _context.Likes.Add(like);
-                    await _context.SaveChangesAsync();
-                    return new JsonResult("Like");
-                }
-            }
-            catch (DbException ex)
-            {
-                return new JsonResult($"資料庫錯誤：{ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                return new JsonResult($"伺服器錯誤：{ex.Message}");
-            }
-        }
+        //[HttpPost]
+        //public async Task<JsonResult> AddLike(LikeDTO clcickLike)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return new JsonResult(ModelState);
+        //    }
+        //    try
+        //    {
+        //        var record = await _context.Likes.FirstOrDefaultAsync(record => record.PostId == clcickLike.PostId && record.UserId == clcickLike.UserId);
+        //        if (record != null)
+        //        {
+        //            _context.Likes.Remove(record);
+        //            await _context.SaveChangesAsync();
+        //            return new JsonResult("CancelLike");
+        //        }
+        //        else
+        //        {
+        //            Like like = new Like
+        //            {
+        //                PostId = clcickLike.PostId,
+        //                UserId = clcickLike.UserId,
+        //            };
+        //            _context.Likes.Add(like);
+        //            await _context.SaveChangesAsync();
+        //            return new JsonResult("Like");
+        //        }
+        //    }
+        //    catch (DbException ex)
+        //    {
+        //        return new JsonResult($"資料庫錯誤：{ex.Message}");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return new JsonResult($"伺服器錯誤：{ex.Message}");
+        //    }
+        //}
 
         [HttpGet]
         // 測試用
