@@ -1,14 +1,15 @@
-﻿<div class="tab-pane fade show active" id="gt3" role="tabpanel" aria-labelledby="gt3-tab">
+﻿<link href="~/assets/css/profile_activitiesmanagement.css" rel="stylesheet" />
+<div class="tab-pane fade show active" id="gt3" role="tabpanel" aria-labelledby="gt3-tab">
     <div id="activityPlatform">
 		<ul class="tags lab-ul justify-content-center">
 			<li>
-				<button class="default-btn" @@click="switchType('commingup')">即將舉辦活動</button>
+				<button class="default-btn" @@click="switchType('commingup')">{{ buttonText('commingup', '即將舉辦活動') }}</button>
 			</li>
 			<li>
-				<button class="default-btn" @@click="switchType('edit')">修改主辦活度內容</button>
+				<button class="default-btn" @@click="switchType('edit')">{{ buttonText('edit', '修改主辦活度內容') }}</button>
 			</li>
 			<li>
-				<button class="default-btn" @@click="switchType('past')">已結束的活動</button>
+				<button class="default-btn" @@click="switchType('past')">{{ buttonText('past', '已結束的活動') }}</button>
 			</li>
 		</ul>
 		<!-- ================> 即將發生的活動 <================== -->
@@ -67,20 +68,43 @@
 </div>
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 <script>
-    const activityPlatform = Vue.createApp({
-        data() {
-                return{
-                baseAddress: "https://localhost:7152",
+	const activityPlatform = Vue.createApp({
+		data() {
+			return {
+				//先寫死的部分
+				baseAddress: "https://localhost:7152",
+				loginUserId: 8,
+				//先寫死的部分
 				currentType: "commingup",
-            }
-        },
-        methods: {
+				commingupActivities: [],
+				editActivities: [],
+				pastActivities: [],
+				activitiyType: [],
+			}
+		},
+		methods: {
+			//取得登入者所有活動
+			getActivitiesList(this.loginUserId){
+				return null;
+			},
+			//取得所有活動類型
+			getActivityTypeList(){
+				fetch(`api/personalActivities/GetActivityType`)
+					.then(res => res.json())
+					.then(data => { this.activityType = data })
+					.catch(error => { console.log('fetch activityType failed!') });
+			},
+			//切換狀態顯示活動
 			switchType(type) {
 				this.currentType = type;
 			},
+			buttonText(type, text) {
+				return this.currentType === type ? '● ' + text : text;
+			},
         },
         mounted() {
-
+			this.getActivitiesList(this.loginUserId);
+			this.getActivityTypeList();
         },
     })
         .mount('#activityPlatform');
