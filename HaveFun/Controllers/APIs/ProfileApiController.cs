@@ -52,7 +52,7 @@ namespace HaveFun.Controllers.APIs
 
             return whoLikeList;
         }
-
+        [HttpGet]
         public string CreatePictureUrl(string action, string controller, object routeValues)
         {
             // 使用 Url.Action 生成 URL
