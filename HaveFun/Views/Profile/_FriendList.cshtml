@@ -193,13 +193,13 @@
 </head>
 <body>
     <div class="tab-pane fade show active" id="Newest" role="tabpanel" aria-labelledby="Newest-tab"></div>
-    <div id="BlackList" role="tabpanel"></div>
+    <div class="tab-pane fade" id="BlackList" role="tabpanel" aria-labelledby="BlackList-tab"></div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const userId = 1; // 用户ID，可以依照實際情況進行更改
+            const userId = 1; // 替換為實際的用戶ID
 
-            // 從API取得好友列表資料
+            // 從API獲取好友列表數據
             fetch(`/api/FriendApi/GetFriend/${userId}`)
                 .then(response => response.json())
                 .then(data => {
@@ -212,10 +212,12 @@
             const friendListContainer = document.getElementById('Newest');
             const blackListContainer = document.getElementById('BlackList');
             friendListContainer.innerHTML = ''; // 清空當前列表
-            blackListContainer.innerHTML = ''; // 清空當前黑名单列表
+            blackListContainer.innerHTML = ''; // 清空當前黑名單
 
             data.forEach(FriendDTO => {
                 const listItem = document.createElement('li');
+                listItem.dataset.id = FriendDTO.Id;
+
                 listItem.innerHTML = `
                             <div class="top">
                                 <div class="left member--style2">
@@ -226,15 +228,15 @@
                                 </div>
                                 <div class="right">
                                     <a href="member-single.html"><h6>${FriendDTO.Name}</h6></a>
-                                    <span>${FriendDTO.ActivityTime} days ago</span>
-                                    <button class="btn ${FriendDTO.IsBlocked ? 'btn-success unblock-btn' : 'btn-danger block-btn'}">
-                                        ${FriendDTO.IsBlocked ? '解鎖' : '封鎖'}
+                                    <span>${FriendDTO.ActivityTime}</span>
+                                    <button class="btn ${FriendDTO.State === 3 ? 'btn-success unblock-btn' : 'btn-danger block-btn'}">
+                                        ${FriendDTO.State === 3 ? '解鎖' : '封鎖'}
                                     </button>
                                 </div>
                             </div>
                         `;
 
-                if (FriendDTO.IsBlocked) {
+                if (FriendDTO.State === 3) {
                     blackListContainer.appendChild(listItem);
                 } else {
                     friendListContainer.appendChild(listItem);
@@ -286,4 +288,3 @@
     </script>
 </body>
 </html>
-
