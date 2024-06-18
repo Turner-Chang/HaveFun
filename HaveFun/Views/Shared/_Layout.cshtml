@@ -84,12 +84,13 @@
                                 <li>
                                     <a class="nav-link" asp-area="" asp-controller="POST" asp-action="Index">POST</a>
                                 </li>
-                                
+                                <li>
+                                    <a class="nav-link" href="#">好友清單</a>
+                                </li>
                                 <teplate v-if="isLogin">
                                     <li>
                                         <a>
                                             <img src="~/assets/images/member/profile/01.jpg" />
-                                            登出
                                         </a>
                                     </li>
                                 </teplate>
@@ -199,17 +200,14 @@
         const app_Layout = Vue.createApp({
             data() {
                 return {
-                    isLogin:false,
-                    iddd:"",
+                    isLogin: false,
                 }
             },
             computed: {
             },
             methods: {
-                isLogin(id) { if (id != "") return true; },
             },
-            mounted: {
-                fetch('https://localhost:7152/api/layout/getLoginId', { method:"get"}).then(res => res.text()).then(d => this.iddd = d).then(d => app_Layout.isLogin(d));
+            watch: {
             },
         }).mount("#app_Layout");
 
