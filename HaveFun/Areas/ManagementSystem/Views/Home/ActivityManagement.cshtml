@@ -1,335 +1,379 @@
 ﻿<div id="ActivityCheckApp">
 
-	<div class="container row  p-lg-10 p-5 text-center border-2">
-		<div class="col-12">
-			<span class="col-12 col-md-2  m-2 ">處理狀態示意: </span>
-			<label class=" text-bg-warning  col-12 col-md-2  m-2">申訴中-0</label>
-			<label class="text-bg-secondary col-12 col-md-2  m-2">已刪除-1</label>
-			<label class="text-bg-success col-12 col-md-2  m-2">無須刪除-2</label>
-		</div>
-		<hr />
-		<div class="table-responsive-md">
-			<table class="table table-secondary">
-				<thead class="table-active">
-					<tr>
-						<th scope="col">被檢舉活動Id</th>
-						<th scope="col">被檢舉人Id</th>
-						<th scope="col">被檢舉項目</th>
-						<th scope="col">被檢舉理由</th>
-						<th scope="col">被檢舉時間</th>
-						<th scope="col">處理</th>
-						<th scope="col">活動狀態</th>
+    <div class="container row  p-lg-10 p-5 text-center border-2">
+        <div class="col-12">
+            <span class="col-12 col-md-2  m-2 ">處理狀態示意: </span>
+            <label class=" text-bg-warning  col-12 col-md-2  m-2">申訴中-0</label>
+            <label class="text-bg-secondary col-12 col-md-2  m-2">已刪除-1</label>
+            <label class="text-bg-success col-12 col-md-2  m-2">無須刪除-2</label>
+        </div>
+        <hr />
+        <div class="table-responsive-md">
+            <table class="table table-secondary">
+                <thead class="table-active">
+                    <tr>
+                        <th scope="col">被檢舉活動Id</th>
+                        <th scope="col">被檢舉人Id</th>
+                        <th scope="col">被檢舉項目</th>
+                        <th scope="col">被檢舉理由</th>
+                        <th scope="col">被檢舉時間</th>
+                        <th scope="col">處理</th>
+                        <th scope="col">活動狀態</th>
 
 
 
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="r in reports.slice(tableStart,tableEnd)" class="">
-						<td>{{r.activityId}}</td>
-						<td>{{r.userId}}</td>
-						<td>{{this.ComplaintToString(r.reportItems)}}</td>
-						<td>{{r.reportReason}}</td>
-						<td class="col-md-0">{{r.reportTime}}</td>
-						<td>
-							<button :id="r.postReviewId" class="btn " :class="btnColor(r.processingStstus)"
-									@@click="check(r.activityId,r.activityReviewId)">
-								處理
-							</button>
-						</td>
-						<td>{{this.ReviewStatusToString(r.processingStstus)}}</td>
-					</tr>
-				</tbody>
-			</table>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="r in reports.slice(tableStart,tableEnd)" class="">
+                        <td>{{r.activityId}}</td>
+                        <td>{{r.userId}}</td>
+                        <td>{{this.ComplaintToString(r.reportItems)}}</td>
+                        <td>{{r.reportReason}}</td>
+                        <td class="col-md-0">{{r.reportTime}}</td>
+                        <td>
+                            <button :id="r.postReviewId" class="btn " :class="btnColor(r.processingStstus)"
+                                    @@click="check(r.activityId,r.activityReviewId)">
+                                處理
+                            </button>
+                        </td>
+                        <td>{{this.ReviewStatusToString(r.processingStstus)}}</td>
+                    </tr>
+                </tbody>
+            </table>
 
-		</div>
-		<div>
-			<button class="btn btn-secondary m-3" @@click="UpperFive()">上五筆</button>
-			<button class="btn btn-secondary m-3" @@click="LowerFive()">下五筆</button>
-		</div>
-		<div class="  text-light bg-secondary">
-			<label>檢舉項目:</label> <br />
-			<label v-for="c in complaint" class="form-label col-12 col-md-2 col-sm-6">{{c.complaintCategoryId}} . {{c.complaintCategoryName}}</label>
-		</div>
-	</div>
+        </div>
+        <div>
+            <button class="btn btn-secondary m-3" @@click="UpperFive()">上五筆</button>
+            <button class="btn btn-secondary m-3" @@click="LowerFive()">下五筆</button>
+        </div>
+        <div class="  text-light bg-secondary">
+            <label>檢舉項目:</label> <br />
+            <label v-for="c in complaint" class="form-label col-12 col-md-2 col-sm-6">{{c.complaintCategoryId}} . {{c.complaintCategoryName}}</label>
+        </div>
+    </div>
 
 
-	<div class="modal fade"
-		 id="PostModal"
-		 tabindex="-1"
-		 data-bs-backdrop="static"
-		 data-bs-keyboard="false"
-		 role="dialog"
-		 aria-labelledby="modalTitleId"
-		 aria-hidden="true">
-		<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
-			 role="document">
-			<div class="modal-content">
-				<div class="modal-header bg-info">
-					<h5 class="modal-title" id="modalTitleId">
-						檢舉活動貼文
-					</h5>
-					<button type="button"
-							class="btn-close"
-							data-bs-dismiss="modal"
-							aria-label="Close">
-					</button>
-				</div>
-				<div class="modal-body row lh-lg">
-					<div>
-						<label class="col-3 text-decoration-underline">
-							活動標題:
-						</label>
-						<label class="col-3 text-start">
-							{{Act.title}}
-						</label>
-					
-						<label class="col-3 text-decoration-underline">
-							貼文類別:
-						</label>
-						<label class="col-3 text-center lh-base">
-							{{Act.type}}
-						</label>
-					
-						<label class="col-3 text-decoration-underline">
-							主辦人:
-						</label>
-						<label class="col-3 text-center lh-base">
-							{{Act.userId}}
-						</label>
-					
-						<label class="col-3 text-decoration-underline">
-							參加人數限制:
-						</label>
-						<label class="col-3 text-center lh-base">
-							{{Act.maxParticipants}}
-						</label>
-					</div>
-					<div>
-						<label class="col-6 text-decoration-underline">
-							被檢舉貼文內容:
-						</label>
-						<label class="col-6 text-center lh-base">
-							{{Act.content}}
-						</label>
-					</div>
-					<div>
-						<label class="col-6 text-decoration-underline">
-							地點:
-						</label>
-						<label class="col-6 text-center lh-base">
-							{{Act.location}}
-						</label>
-					</div>
-					<div>
-						<label class="col-6 text-decoration-underline">
-							被檢舉圖片:
-						</label>
-						<img class="col-6 img-fluid"/>
+    <div class="modal fade"
+         id="PostModal"
+         tabindex="-1"
+         data-bs-backdrop="static"
+         data-bs-keyboard="false"
+         role="dialog"
+         aria-labelledby="modalTitleId"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
+             role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title" id="modalTitleId">
+                        檢舉活動貼文
+                    </h5>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body row lh-lg">
+                    <div>
+                        <label class="col-3 text-decoration-underline">
+                            活動標題:
+                        </label>
+                        <label class="col-3 text-center lh-base">
+                            {{Act.title}}
+                        </label>
 
-					</div>
-					<div>
-						<label class="col-6 text-decoration-underline">
-							檢舉狀態:
-						</label>
-						<label class="col-6 text-start">
-							{{this.PostStatusToString(Act.status)}}
-						</label>
+                        <label class="col-3 text-decoration-underline">
+                            貼文類別:
+                        </label>
+                        <label class="col-3 text-center lh-base">
+                            {{Act.type}}
+                        </label>
 
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button"
-							@@click="PostStateChange(PostId,0) "
-							class="btn btn-secondary "
-							data-bs-dismiss="modal">
-						駁回檢舉
-					</button>
-					<button type="button" @@click="PostStateChange(PostId,1) " class="btn btn-danger">刪除貼文</button>
-				</div>
-			</div>
-		</div>
-	</div>
+                        <label class="col-3 text-decoration-underline">
+                            主辦人:
+                        </label>
+                        <label class="col-3 text-center lh-base">
+                            {{Act.userId}}
+                        </label>
+
+                        <label class="col-3 text-decoration-underline">
+                            參加人數限制:
+                        </label>
+                        <label class="col-3 text-center lh-base">
+                            {{Act.maxParticipants}}
+                        </label>
+                        <label class="col-3 text-decoration-underline">
+                            地點:
+                        </label>
+                        <label class="col-3 text-center lh-base">
+                            {{Act.location}}
+                        </label>
+                        <label class="col-3 text-decoration-underline">
+                            自備金額:
+                        </label>
+                        <label class="col-3 text-center lh-base">
+                            {{Act.amount}}
+                        </label>
+
+                    </div>
+                    <div>
+                        <label class="col-6 text-decoration-underline">
+                            被檢舉貼文內容:
+                        </label>
+                        <label class="col-12 text-center lh-base">
+                            {{Act.content}}
+                        </label>
+                        <label class="col-6 text-decoration-underline">
+                            註記:
+                        </label>
+                        <label class="col-12 text-center lh-base">
+                            {{Act.notes}}
+                        </label>
+                    </div>
+                    <div>
+                        <label class="col-3 text-decoration-underline">
+                            發起時間:
+                        </label>
+                        <label class="col-9 text-center lh-base">
+                            {{this.TimeSplit(Act.initiationTime
+)}}
+                        </label>
+                        <label class="col-3 text-decoration-underline">
+                            報名時間:
+                        </label>
+                        <label class="col-9 text-center lh-base">
+                            {{this.TimeSplit(Act.registrationTime)}}
+                        </label>
+                        <label class="col-3 text-decoration-underline">
+                            截止時間:
+                        </label>
+                        <label class="col-9 text-center lh-base">
+                            {{this.TimeSplit(Act.deadlineTime)}}
+                        </label>
+                        <label class="col-3 text-decoration-underline">
+                            開始時間:
+                        </label>
+                        <label class="col-9 text-center lh-base">
+                            {{this.TimeSplit(Act.activityTime)}}
+                        </label>
+                    </div>
+                    <div>
+                        <label class="col-6 text-decoration-underline">
+                            被檢舉圖片:
+                        </label>
+                        <img class="col-6 img-fluid" />
+
+                    </div>
+                    <div>
+                        <label class="col-6 text-decoration-underline">
+                            檢舉狀態:
+                        </label>
+                        <label class="col-6 text-start">
+                            {{this.PostStatusToString(Act.status)}}
+                        </label>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            @@click="ActivityReviewStateChange(this.ActivityReviewId,2),ActivityStateChange(this.ActivityId,0) "
+                            class="btn btn-secondary "
+                            data-bs-dismiss="modal">
+                        駁回檢舉
+                    </button>
+                    <button type="button" @@click="ActivityReviewStateChange(this.ActivityReviewId,1) ,ActivityStateChange(this.ActivityId,2)" class="btn btn-danger">刪除貼文</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @* // *@
 @section Scripts {
 
-	<script>
-		var App = Vue.createApp({
-			data() {
-				return {
-					reports: [],
-					Act: {},
-					ActivityReviewId: 0,
-					ActivityId: 0,
-					tableStart: 0,
-					tableEnd: 5,
-					complaint: [],
-					baseAdress: "https://localhost:7152",
-				}
-			},
-			methods: {
-				GetAll() {
+    <script>
+        var App = Vue.createApp({
+            data() {
+                return {
+                    reports: [],
+                    Act: {},
+                    ActivityReviewId: 0,
+                    ActivityId: 0,
+                    tableStart: 0,
+                    tableEnd: 5,
+                    complaint: [],
 
-					var data = fetch(`${this.baseAdress}/api/ActivityReview/GetAll`, { method: "GET" })
-						.then(response => response.json())
-						.then(data =>
-							JSON.stringify(data))
-						.then(d => {
-							App.reports = JSON.parse(d);
+                    baseAdress: "",			 /*"https://localhost:7152"*/
 
-						})
-						.catch(error => {
-							console.error('發生錯誤:', error);
-							alert("錯誤");
-						});
-				}
-				,
-				imgSrc(src) {
-					if (src == null || src == "null" || src == "")
-						return "/images/NOimg.jpg"
-					else
-						return src.substr(18);
-				}
-				,
-				check(ActivityId, ActivityReviewId) {
-					this.showModal();
-					this.GetActivity(ActivityId);
-					this.ActivityReviewId = ActivityReviewId;
-					this.ActivityId = ActivityId;
-					//alert(postReviewId)
-				},
-				showModal() {
-					$("#PostModal").modal("show");
-				}
-				,
-				hideModal() {
-					this.Act = {};
-					$("#PostModal").modal("hide");
+                }
+            },
+            methods: {
+                GetAll() {
 
-				}
-				,
-				GetActivity(ActivityId) {
+                    var data = fetch(`${this.baseAdress}/api/ActivityReview/GetAll`, { method: "GET" })
+                        .then(response => response.json())
+                        .then(data =>
+                            JSON.stringify(data))
+                        .then(d => {
+                            App.reports = JSON.parse(d);
 
+                        })
+                        .catch(error => {
+                            console.error('發生錯誤:', error);
+                            alert("錯誤");
+                        });
+                }
+                ,
+                imgSrc(src) {
+                    if (src == null || src == "null" || src == "")
+                        return "/images/NOimg.jpg"
+                    else
+                        return src.substr(18);
+                }
+                ,
+                check(ActivityId, ActivityReviewId) {
+                    this.showModal();
+                    this.GetActivity(ActivityId);
+                    this.ActivityReviewId = ActivityReviewId;
+                    this.ActivityId = ActivityId;
+                    //alert(postReviewId)
+                },
+                showModal() {
+                    $("#PostModal").modal("show");
+                }
+                ,
+                hideModal() {
+                    this.Act = {};
+                    $("#PostModal").modal("hide");
 
-					var data = fetch(`${this.baseAdress}/api/ActivityReview/GetActById?id=${ActivityId}`, { method: "GET" })
-						.then(response => response.json())
-						.then(data =>
-							JSON.stringify(data))
-						.then(d => {
-							App.Act = JSON.parse(d);
-							console.log(App.Act);
-						})
-						.catch(error => {
-							console.error('發生錯誤:', error);
-							alert("錯誤");
-						});
+                }
+                ,
+                GetActivity(ActivityId) {
 
 
-
-				},
-				PostReviewStateChange(postReviewId, state) {
-					var body = {
-						"postReviewId": postReviewId,
-						"userId": 0,
-						"postId": 0,
-						"reportItems": 0,
-						"reason": "string",
-						"reportTime": "2024-06-11T09:48:38.026Z",
-						"processingStstus": state
-					};
-					fetch(
-						`${this.baseAdress}/api/PostReview/Put/${postReviewId}`,
-						{
-							method: "PUT",
-							body: JSON.stringify(body),
-							headers: { 'Content-Type': 'application/json' }
-						}
-					).then(res => res.text())
-						.then(data => console.log(data))
-						.then(d => App.GetAll())
-						.catch(err => alert("err"));
-					this.hideModal();
+                    var data = fetch(`${this.baseAdress}/api/ActivityReview/GetActById?id=${ActivityId}`, { method: "GET" })
+                        .then(response => response.json())
+                        .then(data =>
+                            JSON.stringify(data))
+                        .then(d => {
+                            App.Act = JSON.parse(d);
+                            console.log(App.Act);
+                        })
+                        .catch(error => {
+                            console.error('發生錯誤:', error);
+                            alert("錯誤");
+                        });
 
 
-				},
-				PostStateChange(PostId, state) {
-					var body = {
-						"id": PostId,
-						"status": state
-					};
-					fetch(
-						`${this.baseAdress}/api/Post/PutState?id=${PostId}`,
-						{
-							method: "PUT",
-							body: JSON.stringify(body),
-							headers: { 'Content-Type': 'application/json' }
-						}
-					).then(res => res.text())
-						.then(data => console.log(data))
-						.catch(err => alert("err"));
-					if (state == 0) { state = 2; }
-					this.PostReviewStateChange(this.PostReviewId, state);
 
-				},
-				btnColor(id) {
-					if (id == 0) { return "btn-warning"; }
-					if (id == 1) { return "btn-secondary "; }
-					if (id == 2) { return "btn-success"; }
+                },
 
-				},
-				UpperFive() {
-					if (this.tableStart > 0) {
-						this.tableStart -= 5;
-						this.tableEnd -= 5;
-					}
-					else {
-						alert("已經是第一頁")
-					}
-				},
-				LowerFive() {
-					if (this.tableEnd < this.reports.length) {
-						this.tableStart += 5;
-						this.tableEnd += 5;
-					}
-					else {
-						alert("已經是最後一頁")
-					}
-				},
-				ReviewStatusToString(s) {
-					if (s == 0) { return "申訴中"; }
-					else if (s == 1) { return "已刪除"; }
-					else { return "無須刪除"; }
-				},
-				PostStatusToString(s) {
-					if (s == 0) { return "未下架貼文"; }
-					else { return "已下架貼文"; }
-				}, 
-				ComplaintToString(id) {
-					if (this.complaint.length != 0)
-						return this.complaint[parseInt(id) - 1].complaintCategoryName
-					else
-						return "null";
-				}
+                ActivityReviewStateChange(ReviewId, state) {
+                    var body = {
+                        "ActivityReviewId": ReviewId,
 
-			},
-			mounted: async () => {
+                        "ProcessingStstus": state
+                    };
+                    fetch(
+                        `${this.baseAdress}/api/ActivityReview/ChangeActivityReviewState?id=${ReviewId}`,
+                        {
+                            method: "PUT",
+                            body: JSON.stringify(body),
+                            headers: { 'Content-Type': 'application/json' }
+                        }
+                    ).then(res => res.text())
+                        .then(data => console.log(data))
+                        .then(d => App.GetAll())
+                        .catch(err => alert("err"));
+                    this.hideModal();
 
-				var baseAdress = "https://localhost:7152";
 
-				var resp = await fetch(
-					`${baseAdress}/api/ActivityReview/GetAll`, {
-					method: "GET"
-				});
-				var data = await resp.json();
-				App.reports = data;
-				//alert(JSON.stringify(data));
+                },
+                ActivityStateChange(ActivityId, state) {
+                    var body = {
+                        "Id": ActivityId,
+                        "status": state
+                    };
+                    fetch(
+                        `${this.baseAdress}/api/ActivityReview/ChangeActivityState?id=${ActivityId}`,
+                        {
+                            method: "PUT",
+                            body: JSON.stringify(body),
+                            headers: { 'Content-Type': 'application/json' }
+                        }
+                    ).then(res => res.text())
+                        .then(data => console.log(data))
+                        .catch(err => alert("err"));
 
-				fetch(`${baseAdress}/api/complaint/Getall`, { method: "GET" }).then(r => r.json()).then(d => App.complaint = d);
-				//
 
-			},
-		}).mount("#ActivityCheckApp");
 
-	</script>
+                },
+                btnColor(id) {
+                    if (id == 0) { return "btn-warning"; }
+                    if (id == 1) { return "btn-secondary "; }
+                    if (id == 2) { return "btn-success"; }
+
+                },
+                UpperFive() {
+                    if (this.tableStart > 0) {
+                        this.tableStart -= 5;
+                        this.tableEnd -= 5;
+                    }
+                    else {
+                        alert("已經是第一頁")
+                    }
+                },
+                LowerFive() {
+                    if (this.tableEnd < this.reports.length) {
+                        this.tableStart += 5;
+                        this.tableEnd += 5;
+                    }
+                    else {
+                        alert("已經是最後一頁")
+                    }
+                },
+                ReviewStatusToString(s) {
+                    if (s == 0) { return "申訴中"; }
+                    else if (s == 1) { return "已刪除"; }
+                    else { return "無須刪除"; }
+                },
+                PostStatusToString(s) {
+                    if (s == 0) { return "未下架貼文"; }
+                    else if (s == 1) { return "貼文待審核"; }
+                    else { return "已下架貼文"; }
+                },
+                ComplaintToString(id) {
+                    if (this.complaint.length != 0)
+                        return this.complaint[parseInt(id) - 1].complaintCategoryName
+                    else
+                        return "null";
+                },
+                TimeSplit(timeStr) {
+                    if (timeStr != null) {
+                        var timeArr = timeStr.split('T').join('-').split('-').join(':').split(":");
+                        return `${timeArr[0]}年 ${timeArr[1]}月 ${timeArr[2]}日 ${timeArr[3]}時 ${timeArr[4]}分`;
+                    }
+
+                },
+            },
+            mounted: async () => {
+
+                var baseAdress = "https://localhost:7152";
+
+                var resp = await fetch(
+                    `${baseAdress}/api/ActivityReview/GetAll`, {
+                    method: "GET"
+                });
+                var data = await resp.json();
+                App.reports = data;
+                //alert(JSON.stringify(data));
+
+                fetch(`${baseAdress}/api/complaint/Getall`, { method: "GET" }).then(r => r.json()).then(d => App.complaint = d);
+                //
+
+            },
+        }).mount("#ActivityCheckApp");
+
+    </script>
 }
