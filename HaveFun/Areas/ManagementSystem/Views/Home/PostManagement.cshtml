@@ -1,6 +1,8 @@
 ﻿<div id="PostCheckApp">
 	
 	<div class="container row  p-lg-10 p-5 text-center border-2">
+		<h1>個人貼文管理</h1>
+		<hr />
 		<div class="col-12">
 			<span class="col-12 col-md-2  m-2 ">處理狀態示意: </span>
 			<label class=" text-bg-warning  col-12 col-md-2  m-2">申訴中-0</label>
@@ -30,7 +32,7 @@
 						<td>{{r.userId}}</td>
 						<td>{{this.ComplaintToString(r.reportItems)}}</td>
 						<td>{{r.reason}}</td>
-						<td class="col-md-0">{{r.reportTime}}</td>
+						<td class="col-md-0">{{this.TimeSplit(r.reportTime)}}</td>
 						<td>
 							<button :id="r.postReviewId" class="btn " :class="btnColor(r.processingStstus)"
 									@@click="check(r.postId,r.postReviewId)">
@@ -65,8 +67,9 @@
 		<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
 			 role="document">
 			<div class="modal-content">
-				<div class="modal-header bg-info">
-					<h5 class="modal-title" id="modalTitleId">
+				<div class="modal-header " style="background-color:coral;">
+					<span style="width:150px;"></span>
+					<h5 class="modal-title " id="modalTitleId">
 						檢舉貼文
 					</h5>
 					<button type="button"
@@ -275,13 +278,19 @@
 				PostStatusToString(s) {
 					if (s == 0) { return "未下架貼文"; }
 					else { return "已下架貼文"; }
-				}, ComplaintToString(id) {
+				}, 
+				ComplaintToString(id) {
 					if (this.complaint.length != 0)
 						return this.complaint[parseInt(id) - 1].complaintCategoryName
 					else
 						return "null";
-				}
-
+				},
+				TimeSplit(timeStr) {
+					if (timeStr != null) {
+						var timeArr = timeStr.split('T').join('-').split('-').join(':').split(":");
+						return `${timeArr[0]}年 ${timeArr[1]}月 ${timeArr[2]}日 ${timeArr[3]}時 ${timeArr[4]}分`;
+					}
+				},
 			},
 			mounted: async () => {
 
