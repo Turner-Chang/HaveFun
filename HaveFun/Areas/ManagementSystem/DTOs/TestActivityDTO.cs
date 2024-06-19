@@ -1,10 +1,10 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using HaveFun.Models;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
-namespace HaveFun.Models
+namespace HaveFun.Areas.ManagementSystem.DTOs
 {
-    public class Activity
+    public class TestActivityDTO
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -13,22 +13,22 @@ namespace HaveFun.Models
         [Required]
         [ForeignKey("User")]
         public int UserId { get; set; }
-        public virtual UserInfo? User { get; set; }
 
-        [Required]       
+
+        [Required]
         [ForeignKey("ActivityType")]
-        [Display(Name ="活動類型")]
+        [Display(Name = "活動類型")]
         public int Type { get; set; }
-        public virtual ActivityType? ActivityType { get; set; }
+
 
         [Required(ErrorMessage = "此項為必填")]
         [MaxLength(50)]
-        [Display(Name ="活動標題")]
+        [Display(Name = "活動標題")]
         public string Title { get; set; }
 
         [Required(ErrorMessage = "此項為必填")]
         [MaxLength(1000)]
-        [Display(Name ="活動内容")]
+        [Display(Name = "活動内容")]
         public string Content { get; set; }
 
         [Required(ErrorMessage = "此項為必填")]
@@ -37,17 +37,18 @@ namespace HaveFun.Models
         public string Notes { get; set; }
 
         [Required(ErrorMessage = "此項為必填")]
-        [Display(Name ="活動預算")]
-        public int Amount { get; set; }
+        [MaxLength(10)]
+        [Display(Name = "活動預算")]
+        public int Amount { get; set; } = 0;
 
         [Required(ErrorMessage = "此項為必填")]
         [Range(1, int.MaxValue, ErrorMessage = "活動最大人數必須大於 0")]
-        [Display(Name ="活動最大人數")]
+        [Display(Name = "活動最大人數")]
         public int MaxParticipants { get; set; }
 
         [Required(ErrorMessage = "此項為必填")]
         [MaxLength(200)]
-        [Display(Name ="活動地點")]
+        [Display(Name = "活動地點")]
         public string Location { get; set; }
 
         [Required(ErrorMessage = "此項為必填")]
@@ -71,15 +72,9 @@ namespace HaveFun.Models
         public int Status { get; set; } = 0;
 
         [Display(Name = "活動圖片")]
-		public byte[]? Picture { get; set; }
+        public byte[]? Picture { get; set; }
 
-		public ICollection<ActivityParticipant>? ActivityParticipants { get; set; }
 
-        public ICollection<ActivityReview>? ActivityReviews { get; set; }
 
     }
-
-
-
-
 }

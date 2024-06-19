@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Drawing.Printing;
 using System.Security.Claims;
 using System.Text;
+using NuGet.Common;
 
 namespace HaveFun.Controllers.APIs
 {
@@ -106,7 +107,7 @@ namespace HaveFun.Controllers.APIs
                 try
                 {
                     // 設定唯一性的token跟更改密碼的連結
-                    string decryptToken = $"{user.Id}/{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}";
+                    string decryptToken = $"{user.Id}|{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}";
                     string encryptToken = _desSecure.Encrypt(decryptToken);
                     string? link = Url.Action("ChangePassword", "Login", new { token = encryptToken }, protocol: HttpContext.Request.Scheme);
 
@@ -157,7 +158,7 @@ namespace HaveFun.Controllers.APIs
                                     </html>
                                     ";
                     _sendEmail.Send();
-                    
+                    HttpContext.Session.SetString(encryptToken, user.Id.ToString());
                     return true;
                 }
                 catch (Exception)
@@ -169,8 +170,8 @@ namespace HaveFun.Controllers.APIs
 
         }
 
-        [HttpGet("{token}")]
-        public async Task<bool> CheckToken(string token)
+        [HttpPost]
+        public async Task<bool> CheckToken([FromBody] string token)
         {
             try
             {
@@ -178,24 +179,36 @@ namespace HaveFun.Controllers.APIs
                 {
                     return false;
                 }
-                string[] encryptToken = _desSecure.Decrypt(token).Split('/');
-                int userId = Convert.ToInt32(encryptToken[0]);
+
+                string[] encryptToken = _desSecure.Decrypt(token).Split('|');
+                int userId = Convert.ToInt32(encryptToken[0]); 
                 DateTime tokenDate = Convert.ToDateTime(encryptToken[1]);
                 TimeSpan time = DateTime.Now - tokenDate;
+                string sessionToken = HttpContext.Session.GetString(token);
+                // 驗證session的值是否正確
+                if (sessionToken != userId.ToString() || string.IsNullOrEmpty(sessionToken))
+                {
+                    HttpContext.Session.Remove(token);
+                    return false;
+                }
+
+                // 驗證時間是否超過30分鐘
                 if (time > TimeSpan.FromMinutes(30))
                 {
+                    HttpContext.Session.Remove(token);
                     return false;
                 }
                 UserInfo? user = await _dbContext.UserInfos.FindAsync(userId);
                 if (user == null)
                 {
+                    HttpContext.Session.Remove(token);
                     return false;
                 }
                 return true;
             }
             catch (Exception)
             {
-
+                HttpContext.Session.Remove(token);
                 return false;
             }
 
@@ -204,24 +217,38 @@ namespace HaveFun.Controllers.APIs
         [HttpPost]
         public async Task<string> ResetPassword(UserResetPasswordDTO resetPasswordDTO)
         {
+            string token = resetPasswordDTO.EncryptToken;
+            string? sessionToken = HttpContext.Session.GetString(token);
+            if (string.IsNullOrEmpty(sessionToken))
+            {
+                return "驗證錯誤，請重新重置密碼";
+            }
+
             if (!ModelState.IsValid)
             {
-
+                
             }
 
             try
             {
                 // 獲取token並解密
-                string[] encryptToken = _desSecure.Decrypt(resetPasswordDTO.EncryptToken).Split('/');
-
+                string[] encryptToken = _desSecure.Decrypt(resetPasswordDTO.EncryptToken).Split('|');
+                
                 // 獲取userId跟token產生時間
                 int userId = Convert.ToInt32(encryptToken[0]);
                 DateTime tokenDate = Convert.ToDateTime(encryptToken[1]);
+
+                if(sessionToken != userId.ToString())
+                {
+                    HttpContext.Session.Remove(token);
+                    return "驗證錯誤，請重新重置密碼";
+                }
 
                 //比對時間，如果超過30分鐘，就傳錯誤
                 TimeSpan time = DateTime.Now - tokenDate;
                 if (time > TimeSpan.FromMinutes(30))
                 {
+                    HttpContext.Session.Remove(token);
                     return "已超過時間限制，請重新重置密碼";
                 }
 
@@ -229,17 +256,20 @@ namespace HaveFun.Controllers.APIs
                 UserInfo? user = await _dbContext.UserInfos.FindAsync(userId);
                 if (user == null)
                 {
+                    HttpContext.Session.Remove(token);
                     return "找不到使用者，請確認帳號是否正確";
                 }
                 byte[] salt = _passwordSecure.CreateSalt();
                 user.PasswordSalt = salt;
                 user.Password = _passwordSecure.HashPassword(resetPasswordDTO.Password, salt);
                 await _dbContext.SaveChangesAsync();
+                HttpContext.Session.Remove(token);
                 return "true";
             }
             catch (Exception)
             {
-                return "驗證錯誤，請重新重置密碼"; ;
+                HttpContext.Session.Remove(token);
+                return "驗證錯誤，請重新重置密碼"; 
             }
         }
     }

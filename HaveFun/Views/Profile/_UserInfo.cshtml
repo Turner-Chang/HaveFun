@@ -18,7 +18,7 @@
 						</li>
 						<li>
 							<p class="info-name">性別</p>
-							<p class="info-details">{{ material.gender }}</p>
+							<p class="info-details">{{ displayGender  }}</p>
 						</li>
 						<li>
 							<p class="info-name">生日</p>
@@ -31,11 +31,7 @@
 						<li>
 							<p class="info-name">所在地</p>
 							<p class="info-details">{{ material.address }}</p>
-						</li>
-						<li>
-							<p class="info-name">密碼</p>
-							<p class="info-details">{{ maskedPassword }}</p>
-						</li>
+						</li>		
 					</ul>
 				</div>
 			</div>
@@ -53,27 +49,26 @@
 			<button type="button" class="default-btn" v-on:click="showModel">編輯個人資料</button>  @* 編輯基本資料.自我介紹.找朋友的按鈕 *@
 
 
+			
 			<div class="modal fade" id="saveModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" @* 編輯個人資料表單 *@
-				 role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+				 role="dialog" aria-labelledby="modalTitleId" aria-hidden="true" >
 				<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title" id="modalTitleId">編輯個人資料</h5>
 							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
-						<div class="modal-body">
+						<div class="modal-body" style="width: auto;height: 300px;" >
 							<label form-label>姓名:</label>
-							<div style="border-style:groove"><input v-model="material.name" placeholder="請輸入姓名" /></div>
-							<label form-label>性別:</label>
-							<div style="border-style:groove"><input v-model="material.gender" placeholder="請輸入性別" /></div>
+							<div style="border-style:groove"><input v-model="material.name" placeholder="請輸入姓名" /></div>							
 							<label form-label>生日:</label>
 							<div style="border-style:groove"><input v-model="material.birthDay" placeholder="請輸入生日" /></div>
-							<label form-label>居住地:</label>
+							<div><span v-if="customErrors.birthDay" class="error">{{ customErrors.birthDay }}</span></div>
+							<label form-label>居住地: </label>
 							<div style="border-style:groove"><input v-model="material.address" placeholder="請輸入居住地" /></div>							
 							<label form-label>電話:</label>
 							<div style="border-style:groove"><input v-model="material.phoneNumber" placeholder="請輸入您的電話號碼" /></div>
-							<label form-label>密碼:</label>
-							<div style="border-style:groove"><input v-model="material.password" placeholder="請輸入您的新密碼" /></div>
+							<div><span v-if="customErrors.phoneNumber" class="error">{{ customErrors.phoneNumber }}</span></div>							
 							<label form-label>自我介紹:</label>
 							<textarea v-model="material.introduction" placeholder="請開始介紹自己"></textarea>
 							<div class="form-group">
@@ -90,6 +85,7 @@
 					</div>
 				</div>
 			</div>
+			
 		</div>
 
 		<div id="app_MemberLable">
@@ -104,14 +100,16 @@
 						</span>
 					</div>
 				</div>
+				<div v-if="errorMessage" class="error-message">
+					<p>{{ errorMessage }}</p>
+				</div>
 				<button type="button" class="default-btn" @@click="submitLabels">保存選擇</button>
 				<button type="button" class="default-btn" @@click="clearSelection">重新選擇</button>
 				<div v-else class="info-card-title">
 					<h6>標籤選取</h6>
 					<div class="info-card-content">
-						<div v-for="label in availableLabels"
-							 :key="label.id"
-							 :class="{ 'label-item': true, 'selected': selectedLabels.includes(label.id) }"
+						<div v-for="label in availableLabels" :key="label.id" class="label-item"
+							 :class="{ 'selected': selectedLabels.includes(label.id) }"
 							 @@click="toggleLabel(label.id)">
 							{{ label.name }}
 						</div>
@@ -187,6 +185,13 @@
 	.default-btn:hover {
 		background-color: #0056b3;
 	}
+
+	/* 錯誤訊息樣式 */
+	.error {
+		color: red;
+		font-size: 0.9em;
+	}
+
 </style>
 
 
@@ -198,7 +203,7 @@
 			return {
 				material: {
 					"name": "您的姓名",
-					"gender": '',
+					"gender": 0,
 					"birthDay": "",
 					"address": "您的居住地",
 					"introduction": "我愛大家",
@@ -206,19 +211,35 @@
 					"password": null,
 					"id": "",
 				},
+				genderOptions: {
+					0: '男',
+					1: '女'
+				},
 				profilePictureError: '',
 				profilePicture: null,
 				profilePictureUri: "", /* 圖片URL */
 				imagePreview: "", /* 新增圖片預覽URL */
 
 				originalMaterial: {}, //保存一份原始資料
-				isLoggedIn: false // 新增登录状态
+				isLoggedIn: false, // 新增登录状态
+				customErrors: { // 用於保存自定義錯誤訊息
+					birthDay: '',
+					phoneNumber: ''
+				}
 			}
 		},
 		computed: {
 			maskedPassword() {
 				return this.material.password ? '*******' : '';
+			},
+			displayGender() {
+				return this.genderOptions[this.material.gender];
+			},
+			formattedBirthDay() {
+				// 如果 `material.birthDay` 有值，切割並取日期部分
+				return this.material.birthDay ? this.material.birthDay.split('T')[0] : '';
 			}
+
 		},
 		methods: {
 			showModel() {									/* 顯示修改的表單 */
@@ -244,15 +265,32 @@
 			},
 			saveData() {										/* 保存按鈕的函式 */
 				// alert("可以保存了")
+				this.customErrors = {
+					birthDay: '',
+					phoneNumber: ''
+				};
+				let isValid = true;
+				if (!this.validateBirthDay(this.material.birthDay)) {
+					this.customErrors.birthDay = '錯誤!! 生日格式為: 西元年-月-日';
+					isValid = false;
+				}
+				if (!this.validatePhoneNumber(this.material.phoneNumber)) {
+					this.customErrors.phoneNumber = '請填寫正確電話號碼! 格式為: +886-xxx-xxxxxx';
+					isValid = false;
+				}
+				// 如果有錯誤，停止保存
+				if (!isValid) {
+					return;
+				}
 				let formData = new FormData();
 				formData.append('Id', this.material.id);
 				formData.append('Name', this.material.name);
 				formData.append('Address', this.material.address);
 				formData.append('PhoneNumber', this.material.phoneNumber);
-				formData.append('Gender', this.material.gender);
+				// formData.append('Gender', this.material.gender);
 				formData.append('BirthDay', this.material.birthDay);
 				formData.append('Introduction', this.material.introduction);
-				formData.append('Password', this.material.password);
+				// formData.append('Password', this.material.password);
 				let blob = null;
 				if (this.profilePicture) {
 					blob = new Blob([this.profilePicture], { type: "image/*" });
@@ -266,17 +304,21 @@
 						this.profilePicture = null; // 重置圖片
 						this.imagePreview = ""; // 清除圖片預覽
 					})
-					.catch(error => { console.error(error); alert("儲存錯誤"); }
-					);
+					.catch(error => { console.error(error); alert("儲存錯誤.請檢查"); });
 			},
 			fetchData() {									/* 呼叫資料 */
-				axios.get(`${baseAddress}/api/UserInfo/GetUserinfos/2`)
+				axios.get(`${baseAddress}/api/UserInfo/GetUserinfos/${@ViewBag.UserId}`)
 					.then(response => {
 						this.material = response.data;
 						// 初始化圖片 URL
 						this.profilePictureUri = `${baseAddress}/api/UserInfo/GetPicture/${this.material.id}?t=${new Date().getTime()}`;
 						// 確認是否為本人的邏輯
 						this.isLoggedIn = this.material.id === this.material.id;
+
+						// 處理 birthDay 的格式，只保留日期部分
+						if (this.material.birthDay) {
+							this.material.birthDay = this.material.birthDay.split('T')[0];
+						}
 					})
 					.catch(err => { alert(err); });
 			},
@@ -284,7 +326,14 @@
 				this.material = JSON.parse(JSON.stringify(this.originalMaterial));
 				$("#saveModal").modal("hide");
 			},
-
+			validateBirthDay(dateString) {
+				// 檢查生日格式是否為 YYYY-MM-DD
+				return /^\d{4}-\d{2}-\d{2}$/.test(dateString);
+			},
+			validatePhoneNumber(phoneNumber) {
+				// 檢查電話號碼是否有效 (假設台灣電話號碼格式)
+				return /^(\+886-)?(\d{2,4}-)?\d{6,8}$/.test(phoneNumber);
+			},
 		},
 		mounted() {
 			this.fetchData();
@@ -295,7 +344,8 @@
 			return {
 				userId: 2,
 				availableLabels: [], /* 從後端獲取所有可用標籤 */
-				selectedLabels: [], /* 用戶選擇的標籤ID */
+				selectedLabels: [], /* 用戶選擇的標籤ID */	
+				errorMessage: null  // 用於存儲錯誤訊息
 			}
 		},
 		methods: {
@@ -303,6 +353,11 @@
 				axios.get(`${baseAddress}/api/LabelsApi/GetLabels`)
 					.then(response => { this.availableLabels = response.data; })
 					.catch(error => { console.error('獲取標籤時出錯', error); });
+			},
+			fetchUserLabels() {
+				axios.get(`${baseAddress}/api/MemberLabelsApi/getLabelsForUser/${this.userId}`)
+					.then(response => { this.selectedLabels = response.data; })
+					.catch(error => console.error("獲得標籤時出錯", error));				
 			},
 			toggleLabel(labelId) {
 				const index = this.selectedLabels.indexOf(labelId);
@@ -325,20 +380,19 @@
 					}
 				})
 				.then(response => {
-						console.log("標籤選取成功:", response);
+						console.log("標籤選取成功:", response); alert("保存成功");
+						this.errorMessage = null;
 						// 保存成功後更新界面或重新獲取數據
-						this.fetchAvailableLabels();
+						this.fetchUserLabels();
 				})
 				.catch(error => {
 					console.error('標籤選取時出錯', error);
 					if (error.response) {
-						console.error('響應數據:', error.response.data);
-						console.error('響應狀態:', error.response.status);
-						console.error('響應Head:', error.response.headers);
+						this.errorMessage = `保存失敗：${error.response.data}`;
 					} else if (error.request) {
-						console.error('请求數據:', error.request);
+						this.errorMessage = '未收到響應，請檢查網絡連接。';
 					} else {
-						console.error('錯誤信息:', error.message);
+						this.errorMessage = `錯誤信息：${error.message}`;
 					}
 				});
 			},
@@ -351,6 +405,7 @@
 		},
 		mounted() {
 			this.fetchAvailableLabels();
+			this.fetchUserLabels(); //User標籤
 		},
 	}).mount("#app_MemberLable");
 </script>
