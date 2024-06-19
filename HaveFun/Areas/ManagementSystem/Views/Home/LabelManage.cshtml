@@ -91,7 +91,7 @@
                             <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-success">{{ isEditingLabel ? '更新' : '新增' }}</button>
+                        <button type="submit" class="btn btn-success" @@click="submitLabelForm">{{ isEditingLabel ? '更新' : '新增' }}</button>
                         <button type="button" class="btn btn-secondary" @@click="hideLabelForm">取消</button>
                     </div>
                     </div>
@@ -117,7 +117,7 @@
                             <label for="category-name" class="form-label">種類名稱</label>
                             <input type="text" id="category-name" v-model="categoryForm.name" class="form-content" required />
                         </div>
-                        <button type="submit" class="btn btn-success">{{ isEditingCategory ? '更新' : '新增' }}</button>
+                        <button type="submit" class="btn btn-success" @@click="submitCategoryForm">{{ isEditingCategory ? '更新' : '新增' }}</button>
                         <button type="button" class="btn btn-secondary" @@click="hideCategoryForm">取消</button>
                     </div>
                 </div>
@@ -201,7 +201,7 @@
             },
             submitLabelForm() {
                 if (this.isEditingLabel) {
-                    axios.put(`${baseAddress}/api/labelsManageApi/${this.labelForm.id}`, this.labelForm)
+                    axios.put(`${baseAddress}/api/LabelsManageApi/${this.labelForm.id}`, this.labelForm)
                         .then(response => {
                             const index = this.labels.findIndex(label => label.id === this.labelForm.id);
                             if (index !== -1) {
@@ -213,9 +213,9 @@
                             console.error("更新標籤時發生錯誤:", error);
                         });
                 } else {
-                    const newLabel = { ...this.labelForm };
-                    delete newLabel.id;
-                    axios.post(`${baseAddress}/api/labelsManageApi`, newLabel)
+                    // const newLabel = { ...this.labelForm };
+                    // delete newLabel.id;
+                    axios.post(`${baseAddress}/api/LabelsManageApi`, this.labelForm)
                         .then(response => {
                             this.labels.push(response.data);
                             this.hideLabelForm();
@@ -267,9 +267,9 @@
                             console.error("更新標籤種類時發生錯誤:", error);
                         });
                 } else {
-                    const newCategory = { ...this.categoryForm };
-                    delete newCategory.id;
-                    axios.post(`${baseAddress}/api/labelCategoriesManageApi`, newCategory)
+                    // const newCategory = { ...this.categoryForm };
+                    // delete newCategory.id;
+                    axios.post(`${baseAddress}/api/labelCategoriesManageApi`, this.categoryForm)
                         .then(response => {
                             this.categories.push(response.data);
                             this.hideCategoryForm();
