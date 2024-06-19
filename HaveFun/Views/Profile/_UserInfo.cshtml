@@ -31,11 +31,7 @@
 						<li>
 							<p class="info-name">所在地</p>
 							<p class="info-details">{{ material.address }}</p>
-						</li>
-						<li>
-							<p class="info-name">密碼</p>
-							<p class="info-details">{{ maskedPassword }}</p>
-						</li>
+						</li>		
 					</ul>
 				</div>
 			</div>
@@ -72,9 +68,7 @@
 							<div style="border-style:groove"><input v-model="material.address" placeholder="請輸入居住地" /></div>							
 							<label form-label>電話:</label>
 							<div style="border-style:groove"><input v-model="material.phoneNumber" placeholder="請輸入您的電話號碼" /></div>
-							<div><span v-if="customErrors.phoneNumber" class="error">{{ customErrors.phoneNumber }}</span></div>
-							<label form-label>密碼:</label>
-							<div style="border-style:groove"><input v-model="material.password" placeholder="請輸入您的新密碼" /></div>
+							<div><span v-if="customErrors.phoneNumber" class="error">{{ customErrors.phoneNumber }}</span></div>							
 							<label form-label>自我介紹:</label>
 							<textarea v-model="material.introduction" placeholder="請開始介紹自己"></textarea>
 							<div class="form-group">
@@ -106,13 +100,16 @@
 						</span>
 					</div>
 				</div>
+				<div v-if="errorMessage" class="error-message">
+					<p>{{ errorMessage }}</p>
+				</div>
 				<button type="button" class="default-btn" @@click="submitLabels">保存選擇</button>
 				<button type="button" class="default-btn" @@click="clearSelection">重新選擇</button>
 				<div v-else class="info-card-title">
 					<h6>標籤選取</h6>
 					<div class="info-card-content">
-						<div v-for="label in availableLabels" :key="label.id"
-							 :class="{ 'label-item': true, 'selected': selectedLabels.includes(label.id) }"
+						<div v-for="label in availableLabels" :key="label.id" class="label-item"
+							 :class="{ 'selected': selectedLabels.includes(label.id) }"
 							 @@click="toggleLabel(label.id)">
 							{{ label.name }}
 						</div>
@@ -293,7 +290,7 @@
 				// formData.append('Gender', this.material.gender);
 				formData.append('BirthDay', this.material.birthDay);
 				formData.append('Introduction', this.material.introduction);
-				formData.append('Password', this.material.password);
+				// formData.append('Password', this.material.password);
 				let blob = null;
 				if (this.profilePicture) {
 					blob = new Blob([this.profilePicture], { type: "image/*" });
@@ -347,7 +344,8 @@
 			return {
 				userId: 2,
 				availableLabels: [], /* 從後端獲取所有可用標籤 */
-				selectedLabels: [], /* 用戶選擇的標籤ID */
+				selectedLabels: [], /* 用戶選擇的標籤ID */	
+				errorMessage: null  // 用於存儲錯誤訊息
 			}
 		},
 		methods: {
@@ -355,6 +353,11 @@
 				axios.get(`${baseAddress}/api/LabelsApi/GetLabels`)
 					.then(response => { this.availableLabels = response.data; })
 					.catch(error => { console.error('獲取標籤時出錯', error); });
+			},
+			fetchUserLabels() {
+				axios.get(`${baseAddress}/api/MemberLabelsApi/getLabelsForUser/${this.userId}`)
+					.then(response => { this.selectedLabels = response.data; })
+					.catch(error => console.error("獲得標籤時出錯", error));				
 			},
 			toggleLabel(labelId) {
 				const index = this.selectedLabels.indexOf(labelId);
@@ -377,20 +380,19 @@
 					}
 				})
 				.then(response => {
-						console.log("標籤選取成功:", response); alert("已儲存");
+						console.log("標籤選取成功:", response); alert("保存成功");
+						this.errorMessage = null;
 						// 保存成功後更新界面或重新獲取數據
-						this.fetchAvailableLabels();
+						this.fetchUserLabels();
 				})
 				.catch(error => {
 					console.error('標籤選取時出錯', error);
 					if (error.response) {
-						console.error('響應數據:', error.response.data);
-						console.error('響應狀態:', error.response.status);
-						console.error('響應Head:', error.response.headers);
+						this.errorMessage = `保存失敗：${error.response.data}`;
 					} else if (error.request) {
-						console.error('请求數據:', error.request);
+						this.errorMessage = '未收到響應，請檢查網絡連接。';
 					} else {
-						console.error('錯誤信息:', error.message);
+						this.errorMessage = `錯誤信息：${error.message}`;
 					}
 				});
 			},
@@ -403,6 +405,7 @@
 		},
 		mounted() {
 			this.fetchAvailableLabels();
+			this.fetchUserLabels(); //User標籤
 		},
 	}).mount("#app_MemberLable");
 </script>
