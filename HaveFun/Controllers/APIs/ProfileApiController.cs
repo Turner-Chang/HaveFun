@@ -274,6 +274,7 @@ namespace HaveFun.Controllers.APIs
             var result = await _context.ComplaintCategories.ToListAsync();
             return new JsonResult(result);
         }
+
         //檢舉貼文
         // POST: api/Profile/RatPostReview
         [HttpPost]
@@ -311,6 +312,20 @@ namespace HaveFun.Controllers.APIs
             {
                 return new JsonResult($"伺服器錯誤：{ex.Message}");
             }
+        }
+
+        // 刪除貼文(改為下架狀態)
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Unpost(int id)
+        {
+            var post = await _context.Posts.FindAsync(id);
+            if (post == null)
+            {
+                return NotFound("查無此貼文");
+            }
+            post.Status = 1;
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
 
         [HttpGet]
