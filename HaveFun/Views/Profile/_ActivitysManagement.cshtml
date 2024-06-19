@@ -6,28 +6,33 @@
 				<button class="default-btn" @@click="switchType('commingup')">{{ buttonText('commingup', '即將舉辦活動') }}</button>
 			</li>
 			<li>
-				<button class="default-btn" @@click="switchType('edit')">{{ buttonText('edit', '修改主辦活度內容') }}</button>
+				<button class="default-btn" @@click="switchType('host')">{{ buttonText('host', '修改主辦活度內容') }}</button>
 			</li>
 			<li>
 				<button class="default-btn" @@click="switchType('past')">{{ buttonText('past', '已結束的活動') }}</button>
 			</li>
 		</ul>
 		<!-- ================> 即將發生的活動 <================== -->
-		<div v-if="currentType === 'commingup'" v-for="act in allActivities" class="blog__item">
+		<div v-if="currentType === 'commingup'" v-for="act in commingupActivities" class="blog__item">
 			<div class="blog__inner">
 				<img src="assets/images/blog/10.jpg" alt="blog">
 				<div class="blog__content">
 					<h3>{{act.title}}</h3>
 					<ul class="lab-ul blog__date">
-						<li><span><i class="fa-solid fa-calendar-days"></i> 活動時間:{{act.activityTime}} </span></li>
+						<li><span><i class="fa-solid fa-calendar-days"></i> 活動時間：{{act.activityTime}} </span></li>
 						<li><span><i class="fa-solid fa-user"></i> 主辦者：{{act.host}}</span> </li>
 						<li><span><i class="fa-solid fa-users"></i> {{act.participant.length}} 位參加者</span></li>
+						<li><span><i class="fa-solid fa-map-location-dot"></i> 活動地點：{{act.location}}</span></li>
 					</ul>
 					<details @@toggle ="act.expandState = !act.expandState">
 						<summary>{{act.expandState? '隱藏詳細內容' : '展開詳細內容'}}</summary>
 					<div>
 						<span class="infoTitle">活動類型：</span>
 						{{act.type}}<br>
+						<span class="infoTitle">活動費用：</span>
+						{{act.amount}}元<br>
+						<span class="infoTitle">報名人數上限：</span>
+						{{act.max}}<br>
 						<span class="infoTitle">活動內容：</span><br>
 						{{act.content}}<br>
 						<span class="infoTitle">注意事項：</span><br>
@@ -38,36 +43,62 @@
 			</div>
 		</div>
 		<!-- ================> 編輯主辦活動內容 <================== -->
-		<div v-if="currentType === 'edit'" class="blog__item">
+		<div v-if="currentType === 'host'" v-for="act in hostActivities" class="blog__item">
 			<div class="blog__inner">
 				<img src="assets/images/blog/10.jpg" alt="blog">
 				<div class="blog__content">
-					<h3>爬合歡山</h3>
+					<h3>{{act.title}}</h3>
 					<ul class="lab-ul blog__date">
-						<li><span><i class="fa-solid fa-calendar-days"></i> 活動時間:2024/4/13 10:00</span></li>
-						<li><span><i class="fa-solid fa-user"></i> 主辦者：安安</span> </li>
-						<li><span><i class="fa-solid fa-users"></i> 3 位參加者</span></li>
+						<li><span><i class="fa-solid fa-calendar-days"></i> 活動時間：{{act.activityTime}} </span></li>
+						<li><span><i class="fa-solid fa-user"></i> 主辦者：{{act.host}}</span> </li>
+						<li><span><i class="fa-solid fa-users"></i> {{act.participant.length}} 位參加者</span></li>
+						<li><span><i class="fa-solid fa-map-location-dot"></i> 活動地點：{{act.location}}</span></li>
 					</ul>
-					<p>
-						測試測試
-					</p>
+					<details @@toggle="act.expandState = !act.expandState">
+						<summary>{{act.expandState? '隱藏詳細內容' : '展開詳細內容'}}</summary>
+						<div>
+							<span class="infoTitle">活動類型：</span>
+							{{act.type}}<br>
+							<span class="infoTitle">活動費用：</span>
+							{{act.amount}}元<br>
+							<span class="infoTitle">報名人數上限：</span>
+							{{act.max}}<br>
+							<span class="infoTitle">活動內容：</span><br>
+							{{act.content}}<br>
+							<span class="infoTitle">注意事項：</span><br>
+							{{act.notes}}
+						</div>
+					</details>
 				</div>
 			</div>
 		</div>
 		<!-- ================> 已經結束的活動 <================== -->
-		<div v-if="currentType === 'past'" class="blog__item">
+		<div v-if="currentType === 'past'" v-for="act in pastActivities" class="blog__item">
 			<div class="blog__inner">
 				<img src="assets/images/blog/10.jpg" alt="blog">
 				<div class="blog__content">
-					<h3>念書</h3>
+					<h3>{{act.title}}</h3>
 					<ul class="lab-ul blog__date">
-						<li><span><i class="fa-solid fa-calendar-days"></i> 活動時間:2023/12/13 10:00</span></li>
-						<li><span><i class="fa-solid fa-user"></i> 主辦者：安安</span> </li>
-						<li><span><i class="fa-solid fa-users"></i> 2 位參加者</span></li>
+						<li><span><i class="fa-solid fa-calendar-days"></i> 活動時間：{{act.activityTime}} </span></li>
+						<li><span><i class="fa-solid fa-user"></i> 主辦者：{{act.host}}</span> </li>
+						<li><span><i class="fa-solid fa-users"></i> {{act.participant.length}} 位參加者</span></li>
+						<li><span><i class="fa-solid fa-map-location-dot"></i> 活動地點：{{act.location}}</span></li>
 					</ul>
-					<p>
-						測試測試
-					</p>
+					<details @@toggle="act.expandState = !act.expandState">
+						<summary>{{act.expandState? '隱藏詳細內容' : '展開詳細內容'}}</summary>
+						<div>
+							<span class="infoTitle">活動類型：</span>
+							{{act.type}}<br>
+							<span class="infoTitle">活動費用：</span>
+							{{act.amount}}元<br>
+							<span class="infoTitle">報名人數上限：</span>
+							{{act.max}}<br>
+							<span class="infoTitle">活動內容：</span><br>
+							{{act.content}}<br>
+							<span class="infoTitle">注意事項：</span><br>
+							{{act.notes}}
+						</div>
+					</details>
 				</div>
 			</div>
 		</div>
@@ -79,28 +110,51 @@
 			return {
 				//先寫死的部分
 				baseAddress: "https://localhost:7152",
-				loginUserId: 8,
+				loginUserId: @ViewBag.UserId,
 				//先寫死的部分
 				currentType: "commingup",
-				allActivities:[],
 				commingupActivities: [],
-				editActivities: [],
+				hostActivities: [],
 				pastActivities: [],
 				activitiyType: [],
 			}
 		},
 		methods: {
-			//取得登入者所有活動
-			getActivitiesList(userId){
-				fetch(`api/personalActivities/GetActivities/${this.loginUserId}`)
+			//取得登入者即將發生活動
+			getCommingupList(userId){
+				fetch(`api/personalActivities/GetCommingupActivities/${this.loginUserId}`)
 					.then(res => res.json())
 					.then(data => {
-						this.allActivities = data.map(activity => ({
+						this.commingupActivities = data.map(activity => ({
 						...activity,
 						expandState: false
 						})); 
 					})
-					.catch(error => { console.log('fetch allActivities failed!') });
+					.catch(error => { console.log('fetch commingupActivities failed!') });
+			},
+			//取得登入者主辦活動
+			getHostList(userId) {
+				fetch(`api/personalActivities/GetHostActivities/${this.loginUserId}`)
+					.then(res => res.json())
+					.then(data => {
+						this.hostActivities = data.map(activity => ({
+							...activity,
+							expandState: false
+						}));
+					})
+					.catch(error => { console.log('fetch hostActivities failed!') });
+			},
+			//取得已結束活動
+			getPastList(userId) {
+				fetch(`api/personalActivities/GetPastActivities/${this.loginUserId}`)
+					.then(res => res.json())
+					.then(data => {
+						this.pastActivities = data.map(activity => ({
+							...activity,
+							expandState: false
+						}));
+					})
+					.catch(error => { console.log('fetch pastActivities failed!') });
 			},
 			//取得所有活動類型
 			getActivityTypeList(){
@@ -111,13 +165,6 @@
 					})
 					.catch(error => { console.log('fetch activityType failed!') });
 			},
-			//將請求的個人所有活動分類到不同時態的陣列
-			// PackActivitiesToArray() {
-			// 	const Now = new Date();
-			// 	this.commingupActivities = this.allActivities.filter(activity => 
-			// 		const activityTime = new Date(activity.T);
-			// 		return activityTime > Now);
-			// },
 			//切換狀態顯示活動
 			switchType(type) {
 				this.currentType = type;
@@ -127,9 +174,10 @@
 			},
         },
         mounted() {
-			this.getActivitiesList(this.loginUserId);
+			this.getCommingupList(this.loginUserId);
+			this.getHostList(this.loginUserId);
+			this.getPastList(this.loginUserId);
 			this.getActivityTypeList();
-			// this.PackActivitiesToArray();
         },
     })
         .mount('#activityPlatform');

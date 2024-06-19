@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HaveFun.Models;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace HaveFun.Controllers
 {
@@ -14,17 +15,39 @@ namespace HaveFun.Controllers
     {
         private readonly HaveFunDbContext _context;
         //這是類別的建構函式,它接受一個 HaveFunDbContext 類型的參數並將它賦值給 _context 欄位。
+        private int _Id;
+
         public ChatRoomsController(HaveFunDbContext context)
         {
             _context = context;
+           
         }
         //
         public async Task<IActionResult> Main()
         {
             var haveFunDbContext = _context.ChatRooms.Include(c => c.Receiver).Include(c => c.Sender);
-            return View(await haveFunDbContext.ToListAsync());
+               return View(await haveFunDbContext.ToListAsync());
+        }
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            base.OnActionExecuting(context);
+
+            //檢查Cookie 是否存在並嘗試獲取其值
+            if (Request.Cookies.TryGetValue("Id", out string IdString) && int.TryParse(IdString, out int Id))
+            {
+                _Id = Id;
+            }
+            else
+            {
+                Id = -1; //默認值或其他處理
+            }
         }
 
+        public IActionResult TRY()
+        {
+            ViewBag.Id = _Id;
+            return View();
+        }
         // GET: ChatRooms
         public async Task<IActionResult> Index()
         {
@@ -185,33 +208,6 @@ namespace HaveFun.Controllers
         }
 
 
-        //[HttpGet("users")]
-        //public async Task<IActionResult> GetUsers()
-        //{
-        //    var users = await _context.UserInfos.ToListAsync();
-        //    return Ok(users);
-        //}
-
-        //[HttpGet("messages/{userId}")]
-        //public async Task<IActionResult> GetMessages(int userId)
-        //{
-        //    var messages = await _context.ChatRooms
-        //        .Where(c => c.User1Id == userId || c.User2Id == userId)
-        //        .ToListAsync();
-        //    return Ok(messages);
-        //}
-
-        //[HttpPost("send")]
-        //public async Task<IActionResult> SendMessage([FromBody] ChatRoom chatRoom)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.ChatRooms.Add(chatRoom);
-        //        await _context.SaveChangesAsync();
-        //        return Ok();
-        //    }
-        //    return BadRequest(ModelState);
-        //}
 
         private bool ChatRoomExists(int id)
         {
