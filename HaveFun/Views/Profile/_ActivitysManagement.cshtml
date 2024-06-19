@@ -1,6 +1,6 @@
 ﻿<link href="~/assets/css/profile_activitiesmanagement.css" rel="stylesheet" />
-<div class="tab-pane fade show active" id="gt3" role="tabpanel" aria-labelledby="gt3-tab">
-    <div id="activityPlatform">
+<div class="tab-pane fade" id="gt3" role="tabpanel" aria-labelledby="gt3-tab">
+	<div id="activityPlatform">
 		<ul class="tags lab-ul justify-content-center">
 			<li>
 				<button class="default-btn" @@click="switchType('commingup')">{{ buttonText('commingup', '即將舉辦活動') }}</button>
@@ -31,24 +31,24 @@
 						<li><span><i class="fa-solid fa-users"></i> {{act.participant.length}} 位參加者</span></li>
 						<li><span><i class="fa-solid fa-map-location-dot"></i> 活動地點：{{act.location}}</span></li>
 					</ul>
-					<details @@toggle ="act.expandState = !act.expandState">
+					<details @@toggle="act.expandState = !act.expandState">
 						<summary>{{act.expandState? '隱藏詳細內容' : '展開詳細內容'}}</summary>
-					<div>
-						<span class="infoTitle">活動類型：</span>
-						{{act.type}}<br>
-						<span class="infoTitle">活動費用：</span>
-						{{act.amount}}元<br>
-						<span class="infoTitle">報名人數上限：</span>
-						{{act.max}}<br>
-						<span class="infoTitle">活動內容：</span><br>
-						{{act.content}}<br>
-						<span class="infoTitle">注意事項：</span><br>
-						{{act.notes}}<br><br>
+						<div>
+							<span class="infoTitle">活動類型：</span>
+							{{act.type}}<br>
+							<span class="infoTitle">活動費用：</span>
+							{{act.amount}}元<br>
+							<span class="infoTitle">報名人數上限：</span>
+							{{act.max}}<br>
+							<span class="infoTitle">活動內容：</span><br>
+							{{act.content}}<br>
+							<span class="infoTitle">注意事項：</span><br>
+							{{act.notes}}<br><br>
 							<!-- Host與登入會員不相同才有取消參加活動按鈕 -->
 							<button v-if="act.hostId != loginUserId" class="default-btn" id="cancelAttend" @@click="showCancelAttend(act.id)">
 								取消參加活動
 							</button>
-					</div>
+						</div>
 					</details>
 				</div>
 			</div>
@@ -113,7 +113,7 @@
 				</div>
 			</div>
 		</div>
-    </div>
+	</div>
 </div>
 <script>
 	const activityPlatform = Vue.createApp({
@@ -130,7 +130,7 @@
 				activitiyType: [],
 				editActType: 0,
 				editActContent: "",
-				waitingToCancel:0,
+				waitingToCancel: 0,
 			}
 		},
 		methods: {
@@ -199,7 +199,7 @@
 				this.waitingToCancel = 0;
 			},
 			//取消參加活動
-			cancelAttendActivity(){
+			cancelAttendActivity() {
 				event.preventDefault();
 				let request = {
 					"Id": 0,
@@ -223,14 +223,14 @@
 					});
 				$('.canelAttendBox').css("display", "none");
 			},
-		
-        },
-        mounted() {
+
+		},
+		mounted() {
 			this.getCommingupList(this.loginUserId);
 			this.getHostList(this.loginUserId);
 			this.getPastList(this.loginUserId);
 			this.getActivityTypeList();
-        },
-    })
-        .mount('#activityPlatform');
+		},
+	})
+		.mount('#activityPlatform');
 </script>

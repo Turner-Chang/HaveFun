@@ -21,6 +21,15 @@ namespace HaveFun.Controllers.APIs
             _context = context;
         }
 
+        // Put: api/Profile/GetUserInforList
+        [HttpPut("{loginUserId}")]
+        public async Task<IEnumerable<UserInfo>> GetUserInfor(int loginUserId)
+        {
+            var userInfoData = await _context.UserInfos
+                .Where(u => u.Id == loginUserId)
+                .ToListAsync();
+            return userInfoData;
+        }
         // GET: api/Profile/GetWhoLikeList
         [HttpGet]
         public async Task<IEnumerable<WhoLikeListDTO>> GetWhoLikeList()

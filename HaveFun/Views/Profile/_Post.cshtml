@@ -96,8 +96,7 @@
                                         </div>
                                         <div class="lab-content">
                                             <form class="post-form">
-                                                @* <input v-model="postContent" type="text" placeholder="Whats on your mind, William?"> *@
-                                                <textarea v-model="postContent" placeholder="What's on your mind, William?" rows="4"></textarea>
+                                                <textarea v-model="postContent" :placeholder="placeholderText" rows="4"></textarea>
                                                 <div class="content-type">
                                                     <ul class="content-list">
                                                         <li class="text"><a href="#"><i class="fa-solid fa-pen-to-square"></i>Text</a></li>
@@ -254,25 +253,16 @@
                 <button class="btn btn-outline-secondary" @@click="cancelRatBox">取消</button>
             </div>
         </div>
-@*         <!-- 刪除貼文視窗 -->
-        <div v-if="showDeleteBox" class="deleteBox">
-            <span>確定要刪除貼文嗎？</span><br><br>
-            <button class="btn btn-danger" @@click="deletePost">確定</button>
-            <button class="btn btn-outline-secondary" @@click="cancleDeleteBox" @@keyup.esc="cancleDeleteBox()">取消</button>
-        </div> *@
         <!-- 刪除貼文視窗 -->
         <div v-if="showDeleteBox" class="deleteBox-overlay">
             <div class="deleteBox">
                 <span>確定要刪除貼文嗎？</span><br><br>
                 <button class="btn btn-danger" @@click="deletePost">確定</button>
-                <button class="btn btn-outline-secondary" @@click="cancleDeleteBox" @@keyup.esc="cancleDeleteBox()">取消</button>
+                <button class="btn btn-outline-secondary" @@click="cancleDeleteBox">取消</button>
             </div>
         </div>
     </div>
 </div>
-
-
-
 
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -281,10 +271,12 @@
         data() {
             return {
                 postContent: '',
+                placeholderText: '',
                 postPrivacy: 'Public',
                 posts: [],
                 userName: '',
                 loginUserId: @ViewBag.UserId, // 使用者ID
+                userInfo:[],    // 使用者資料
                 showRatBox: false, // 顯示檢舉視窗
                 ratContent: "",
                 ratReason: "",
@@ -294,9 +286,6 @@
                 deletePostId: null,
             };
         },
-        created() {
-            this.getPosts();
-        },
         computed: {
             postsWithLikeStatus() {
                 return this.posts.map(post => {
@@ -305,9 +294,28 @@
                     post.likedByUser = userIds.includes(this.loginUserId);
                     return post;
                 });
-            }
+            },
         },
         methods: {
+            // 登入者資料
+            async getUserInfo() {
+                axios.put(`/api/Profile/GetUserInfor/${this.loginUserId}`)
+                    .then(response => {
+                        console.log("getUserInfo response:",response.data);
+                        this.userInfo = response.data;
+                        this.setUserInfo();
+                    })
+                    .catch(error => {
+                        console.error('Error getUserInfo:', error);
+                    });
+            },
+
+            // 設置基本資料
+            setUserInfo() {
+                this.userName = this.useInfo[0].name;
+                this.placeholderText = `What's on your mind, ${this.userInfo[0].name}?`;
+            },
+
             // 查詢貼文
             async getPosts() {
                 try {
@@ -495,9 +503,6 @@
                 const files = event.target.files;
                 console.log(files);
             },
-            showCommentsAlert(post) {
-                alert("Show Comments");
-            },
 
             // Like 圖示變化
             clickLikeOrNot(post) {
@@ -680,6 +685,8 @@
             }
         },
         mounted() {
+            this.getUserInfo();
+            this.getPosts();
             this.getRatItemsList();
         }
     }).mount('#post');
