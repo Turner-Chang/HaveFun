@@ -1,4 +1,5 @@
-﻿using HaveFun.Common;
+﻿using HaveFun.Areas.ManagementSystem.DTOs;
+using HaveFun.Common;
 using HaveFun.DTOs;
 using HaveFun.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -110,17 +111,29 @@ namespace HaveFun.Controllers.APIs
 		}
 
 		[HttpPost("Dislike")]
-		public string Dislike(MatchRequestDTO request)
+		public IActionResult Dislike(MatchRequestDTO request)
 		{
-			FriendList fl = new FriendList
+            if (request == null)
+            {
+                return BadRequest("Invalid request.");
+            }
+
+            FriendList fl = new FriendList
 			{
 				Clicked = request.Clicked,
 				BeenClicked = request.BeenClicked,
 				state = 2
 			};
-			_context.FriendLists.Add(fl);
-			_context.SaveChanges();
-			return "";
+			try
+			{
+				_context.FriendLists.Add(fl);
+				_context.SaveChanges();
+			}
+			catch (DbUpdateException ex)
+			{
+                return Content($"資料庫錯誤：{ex.Message}");
+            }
+			return Ok("不喜歡成功!");
 		}
 
 		[HttpGet("CanUserSwipe/{userId}")]
