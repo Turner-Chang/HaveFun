@@ -25,7 +25,6 @@
                                 </div>
                                 <div class="right">
                                     <a href="member-single.html"><h6>LBJ</h6></a>
-                                    <span>2 years ago</span>
                                     <button class="btn btn-danger block-btn">封鎖</button>
                                 </div>
                             </div>
@@ -40,7 +39,6 @@
                                 </div>
                                 <div class="right">
                                     <a href="member-single.html"><h6>Allen</h6></a>
-                                    <span>2 years ago</span>
                                     <button class="btn btn-danger block-btn">封鎖</button>
                                 </div>
                             </div>
@@ -55,7 +53,6 @@
                                 </div>
                                 <div class="right">
                                     <a href="member-single.html"><h6>Sean</h6></a>
-                                    <span>2 years ago</span>
                                     <button class="btn btn-danger block-btn">封鎖</button>
                                 </div>
                             </div>
@@ -70,7 +67,6 @@
                                 </div>
                                 <div class="right">
                                     <a href="member-single.html"><h6>Bieber</h6></a>
-                                    <span>2 years ago</span>
                                     <button class="btn btn-danger block-btn">封鎖</button>
                                 </div>
                             </div>
@@ -85,7 +81,6 @@
                                 </div>
                                 <div class="right">
                                     <a href="member-single.html"><h6>Klein</h6></a>
-                                    <span>2 years ago</span>
                                     <button class="btn btn-danger block-btn">封鎖</button>
                                 </div>
                             </div>
@@ -104,7 +99,6 @@
                                 </div>
                                 <div class="right">
                                     <a href="member-single.html"><h6>Leon</h6></a>
-                                    <span>2 years ago</span>
                                     <button class="btn btn-success unblock-btn">解鎖</button>
                                 </div>
                             </div>
@@ -119,7 +113,6 @@
                                 </div>
                                 <div class="right">
                                     <a href="member-single.html"><h6>Schmid</h6></a>
-                                    <span>2 years ago</span>
                                     <button class="btn btn-success unblock-btn">解鎖</button>
                                 </div>
                             </div>
@@ -134,7 +127,6 @@
                                 </div>
                                 <div class="right">
                                     <a href="member-single.html"><h6>Chloe</h6></a>
-                                    <span>2 years ago</span>
                                     <button class="btn btn-success unblock-btn">解鎖</button>
                                 </div>
                             </div>
@@ -149,7 +141,6 @@
                                 </div>
                                 <div class="right">
                                     <a href="member-single.html"><h6>Jennie</h6></a>
-                                    <span>2 years ago</span>
                                     <button class="btn btn-success unblock-btn">解鎖</button>
                                 </div>
                             </div>
@@ -164,7 +155,6 @@
                                 </div>
                                 <div class="right">
                                     <a href="member-single.html"><h6>Jeans</h6></a>
-                                    <span>2 years ago</span>
                                     <button class="btn btn-success unblock-btn">解鎖</button>
                                 </div>
                             </div>
@@ -189,6 +179,10 @@
             align-items: center;
             justify-content: space-between;
         }
+
+        .member__activity {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -197,7 +191,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const userId = 1; // 替換為實際的用戶ID
+            const userId = 1; 
 
             // 從API獲取好友列表數據
             fetch(`/api/FriendApi/GetFriend/${userId}`)
@@ -211,8 +205,8 @@
         function renderFriendList(data) {
             const friendListContainer = document.getElementById('Newest');
             const blackListContainer = document.getElementById('BlackList');
-            friendListContainer.innerHTML = ''; // 清空當前列表
-            blackListContainer.innerHTML = ''; // 清空當前黑名單
+            friendListContainer.innerHTML = ''; 
+            blackListContainer.innerHTML = '';
 
             data.forEach(FriendDTO => {
                 const listItem = document.createElement('li');
@@ -227,9 +221,7 @@
                                     </div>
                                 </div>
                                 <div class="right">
-                                    <a href="member-single.html"><h6>${FriendDTO.Name}</h6></a>
-                                    <span>${FriendDTO.ActivityTime}</span>
-                                    <button class="btn ${FriendDTO.State === 3 ? 'btn-success unblock-btn' : 'btn-danger block-btn'}">
+                                    <a href="member-single.html"><h6>${FriendDTO.Name}</h6></a><button class="btn ${FriendDTO.State === 3 ? 'btn-success unblock-btn' : 'btn-danger block-btn'}">
                                         ${FriendDTO.State === 3 ? '解鎖' : '封鎖'}
                                     </button>
                                 </div>
