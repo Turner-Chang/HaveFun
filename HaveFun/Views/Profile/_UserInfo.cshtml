@@ -270,7 +270,7 @@
 					);
 			},
 			fetchData() {									/* 呼叫資料 */
-				axios.get(`${baseAddress}/api/UserInfo/GetUserinfos/${id}`)
+				axios.get(`${baseAddress}/api/UserInfo/GetUserinfos/${@ViewBag.UserId}`)
 					.then(response => {
 						this.material = response.data;
 						// 初始化圖片 URL
@@ -325,7 +325,7 @@
 					}
 				})
 				.then(response => {
-						console.log("標籤選取成功:", response);
+						console.log("標籤選取成功:", response); alert("已儲存");
 						// 保存成功後更新界面或重新獲取數據
 						this.fetchAvailableLabels();
 				})

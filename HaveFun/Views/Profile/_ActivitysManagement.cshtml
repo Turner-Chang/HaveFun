@@ -12,6 +12,13 @@
 				<button class="default-btn" @@click="switchType('past')">{{ buttonText('past', '已結束的活動') }}</button>
 			</li>
 		</ul>
+		<!-- 彈出視窗們 -->
+		<!-- 取消參加活動視窗 -->
+		<div class="canelAttendBox">
+			<span>確定要退出活動嗎？</span><br><br>
+			<button class="btn btn-danger" @@click="cancelAttendActivity">是</button>
+			<button class="btn btn-outline-secondary" @@click="escCancelAttendBox">否</button>
+		</div>
 		<!-- ================> 即將發生的活動 <================== -->
 		<div v-if="currentType === 'commingup'" v-for="act in commingupActivities" class="blog__item">
 			<div class="blog__inner">
@@ -36,7 +43,11 @@
 						<span class="infoTitle">活動內容：</span><br>
 						{{act.content}}<br>
 						<span class="infoTitle">注意事項：</span><br>
-						{{act.notes}}
+						{{act.notes}}<br><br>
+							<!-- Host與登入會員不相同才有取消參加活動按鈕 -->
+							<button v-if="act.hostId != loginUserId" class="default-btn" id="cancelAttend" @@click="showCancelAttend(act.id)">
+								取消參加活動
+							</button>
 					</div>
 					</details>
 				</div>
@@ -117,18 +128,21 @@
 				hostActivities: [],
 				pastActivities: [],
 				activitiyType: [],
+				editActType: 0,
+				editActContent: "",
+				waitingToCancel:0,
 			}
 		},
 		methods: {
 			//取得登入者即將發生活動
-			getCommingupList(userId){
+			getCommingupList(userId) {
 				fetch(`api/personalActivities/GetCommingupActivities/${this.loginUserId}`)
 					.then(res => res.json())
 					.then(data => {
 						this.commingupActivities = data.map(activity => ({
-						...activity,
-						expandState: false
-						})); 
+							...activity,
+							expandState: false
+						}));
 					})
 					.catch(error => { console.log('fetch commingupActivities failed!') });
 			},
@@ -157,10 +171,10 @@
 					.catch(error => { console.log('fetch pastActivities failed!') });
 			},
 			//取得所有活動類型
-			getActivityTypeList(){
+			getActivityTypeList() {
 				fetch(`api/personalActivities/GetActivityType`)
 					.then(res => res.json())
-					.then(data => { 
+					.then(data => {
 						this.activitiyType = data;
 					})
 					.catch(error => { console.log('fetch activityType failed!') });
@@ -172,6 +186,44 @@
 			buttonText(type, text) {
 				return this.currentType === type ? '● ' + text : text;
 			},
+			//顯示退出活動視窗
+			showCancelAttend(id) {
+				event.preventDefault();
+				$('.canelAttendBox').css("display", "block");
+				this.waitingToCancel = id;
+			},
+			//取消刪除貼文視窗
+			escCancelAttendBox() {
+				event.preventDefault();
+				$('.canelAttendBox').css("display", "none");
+				this.waitingToCancel = 0;
+			},
+			//取消參加活動
+			cancelAttendActivity(){
+				event.preventDefault();
+				let request = {
+					"Id": 0,
+					"ActivityId": this.waitingToCancel,
+					"UserId": this.loginUserId
+				};
+				fetch(`api/personalActivities/NotAttending`, {
+					method: 'Delete',
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify(request)
+				})
+					.then(response => response.json())
+					.then(data => {
+						console.log(data);
+						this.getCommingupList(this.loginUserId);
+					})
+					.catch(error => {
+						console.log('fetch cancel attend activity failed!', error)
+					});
+				$('.canelAttendBox').css("display", "none");
+			},
+		
         },
         mounted() {
 			this.getCommingupList(this.loginUserId);
