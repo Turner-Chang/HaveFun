@@ -1,5 +1,4 @@
-﻿ @model IEnumerable<HaveFun.Models.ChatRoom>
-@section Styles
+﻿@section Styles
 {
     <style>
     body {
@@ -130,62 +129,110 @@
         padding-left: 6px;
     }
 
-    .chat .chat-history .message {
-        color: #444;
-        padding: 18px 20px;
-        line-height: 26px;
-        font-size: 16px;
-        border-radius: 7px;
-        display: inline-block;
-        position: relative;
-    }
+            .chat .chat-history .message {
+                color: #444;
+                padding: 18px 20px;
+                line-height: 26px;
+                font-size: 16px;
+                border-radius: 7px;
+                display: inline-block;
+                position: relative
+            }
 
-    .chat .chat-history .message:after {
-        bottom: 100%;
-        left: 7%;
-        border: solid transparent;
-        content: " ";
-        height: 0;
-        width: 0;
-        position: absolute;
-        pointer-events: none;
-        border-bottom-color: #fff;
-        border-width: 10px;
-        margin-left: -10px;
-    }
+                .chat .chat-history .message:after {
+                    bottom: 100%;
+                    left: 7%;
+                    border: solid transparent;
+                    content: " ";
+                    height: 0;
+                    width: 0;
+                    position: absolute;
+                    pointer-events: none;
+                    border-bottom-color: #fff;
+                    border-width: 10px;
+                    margin-left: -10px
+                }
 
-    .chat .chat-history .my-message {
-        background: #efefef;
-    }
+            .chat .chat-history .my-message {
+                background: #efefef;
+                float:right;
+                text-align: right;
+            }
 
-    .chat .chat-history .my-message:after {
-        bottom: 100%;
-        left: 30px;
-        border: solid transparent;
-        content: " ";
-        height: 0;
-        width: 0;
-        position: absolute;
-        pointer-events: none;
-        border-bottom-color: #efefef;
-        border-width: 10px;
-        margin-left: -10px;
-    }
+                .chat .chat-history .my-message img {
+                    float: right;
+                    margin-left: 10px;
+                }
 
-    .chat .chat-history .other-message {
-        background: #e8f1f3;
-        text-align: right;
-    }
+            .chat .chat-history .other-message {
+                background: #e8f1f3;
+                float:left;
+                text-align: left;
+            }
 
-    .chat .chat-history .other-message:after {
-        border-bottom-color: #e8f1f3;
-        left: 93%;
-    }
+                .chat .chat-history .other-message img {
+                    float: left;
+                    margin-right: 10px;
+                }
+                .chat .chat-history .my-message:after {
+                    bottom: 100%;
+                    left: 30px;
+                    border: solid transparent;
+                    content: " ";
+                    height: 0;
+                    width: 0;
+                    position: absolute;
+                    pointer-events: none;
+                    border-bottom-color: #efefef;
+                    border-width: 10px;
+                    margin-left: -10px
+                }
 
-    .chat .chat-message {
-        padding: 20px;
-    }
+                .chat .chat-history .other-message:after {
+                    border-bottom-color: #e8f1f3;
+                    left: 93%
+                }
 
+        .chat .chat-message {
+            padding: 20px
+        }
+
+        .online,
+        .offline,
+        .me {
+            margin-right: 2px;
+            font-size: 8px;
+            vertical-align: middle
+        }
+
+        .online {
+            color: #86c541
+        }
+
+        .offline {
+            color: #e47297
+        }
+
+        .me {
+            color: #1d8ecd
+        }
+
+        .float-right {
+            float: right
+        }
+
+        .clearfix:after {
+            visibility: hidden;
+            display: block;
+            font-size: 0;
+            content: " ";
+            clear: both;
+            height: 0
+        }
+
+        .text-right {
+            text-align: right !important;
+        }
     .online,
     .offline,
     .me {
@@ -269,6 +316,26 @@
             height: calc(100vh - 350px);
             overflow-x: auto;
         }
+
+            .chat .chat-history .my-message {
+                background: #efefef;
+                text-align: right;
+            }
+
+            .chat .chat-history .my-message img {
+                    float: right;
+                    margin-left: 10px;
+             }
+
+            .chat .chat-history .other-message {
+                background: #efefef;
+                text-align: left;
+            }
+
+                .chat .chat-history .other-message img {
+                    float: right;
+                    margin-left: 10px;
+                }
     }
     </style>
 }
@@ -394,26 +461,8 @@
 
 @section Scripts
 {
-    <script>
+   @*  <script>
     var chatHistory = [
-        {
-            time: "10:10 AM, Today",
-                img: "/api/UserInfo/GetPicture/1",
-            message: "Hi Aiden, how are you? How is the project coming along?",
-            type: "other"
-        },
-        {
-            time: "10:12 AM, Today",
-            img: "",
-            message: "Are we meeting today?",
-            type: "my"
-        },
-        {
-            time: "10:15 AM, Today",
-            img: "",
-            message: "Project has been already finished and I have results to show you.",
-            type: "my"
-        }
     ];
 
     // Function to update chat history
@@ -437,6 +486,42 @@
         });
     }
 
+    //user2 對  user1的聊天紀錄
+
+        fetch('/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/2/1')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(message => {
+                    const newChatMessage = {
+                        time: moment(message.createTime).format("h:mm A, MMMM D"),
+                        img: `/api/UserInfo/GetPicture/${message.user1Id}`,
+                        message: message.messageText,
+                        type: message.user1Id === 2 ? "my" : "other"
+                    };
+                    chatHistory.push(newChatMessage);
+                });
+                updateChatHistory();
+            })
+            .catch(error => console.error('Error fetching chat history:', error));
+     // user1 to user2
+
+        fetch('/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/1/2')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(message => {
+                    const newChatMessage = {
+                        time: moment(message.createTime).format("h:mm A, MMMM D"),
+                        img: `/api/UserInfo/GetPicture/${message.user1Id}`,
+                        message: message.messageText,
+                        type: message.user1Id === 1? "my" : "other"
+                    };
+                    chatHistory.push(newChatMessage);
+                });
+                updateChatHistory();
+            })
+            .catch(error => console.error('Error fetching chat history:', error));
+   
+
     // Initial call to update chat history
     updateChatHistory();
 
@@ -446,7 +531,7 @@
         .build();
 
     connection.on("ReceiveMessage", function (user, message) {
-        const msg = user + " says " + message;
+        const msg =  message;
         const chat = {
             time: moment().format("h:mm A, MMMM D"),
                 img:"/api/UserInfo/GetPicture/1",
@@ -466,14 +551,186 @@
         });
         connection.start().catch(err => console.error(err.toString()));
 
+     //    document.getElementById("sendButton").addEventListener("click", event => {
+     //        const user = ""; //select UserInfos.Name where (UserInfos.Id==this.user1Id);
+     // ; // Replace with the dynamic user data if needed
+     //        const message = document.getElementById("messageInput").value;
+     //        connection.invoke("SendMessage", user, message).catch(err => console.error(err.toString()));
+     //        document.getElementById("messageInput").value = '';
+     //        event.preventDefault();
+     //    });
         document.getElementById("sendButton").addEventListener("click", event => {
-            const user = "Aiden Chavez"; // Replace with the dynamic user data if needed
+            const user1Id = 2; // 替換為當前使用者的 ID
+            const user2Id = 1; // 替換為收件者的 ID
+            const messageText = document.getElementById("messageInput").value;
+            const user = "";
             const message = document.getElementById("messageInput").value;
             connection.invoke("SendMessage", user, message).catch(err => console.error(err.toString()));
-            document.getElementById("messageInput").value = '';
+             document.getElementById("messageInput").value = '';
+            // 建立 POST 請求的資料物件
+            const data = {
+                User1Id: user1Id,
+                User2Id: user2Id,
+                MessageText: messageText,
+                CreateTime: new Date(),
+                IsRead: false
+            };
+
+            // 送出 POST 請求到伺服器
+            fetch('/api/ChatRoom/ChatRoomsApi', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.text();
+                    } else {
+                        throw new Error('Network response was not ok.');
+                    }
+                })
+                .then(responseText => {
+                    console.log(responseText); // 處理伺服器回應（如果需要）
+                    document.getElementById("messageInput").value = ''; // 清空輸入欄位
+                })
+                .catch(error => {
+                    console.error('Error saving message:', error);
+                });
             event.preventDefault();
         });
-    </script>
+    </script> *@
+
+    <script>
+        var chatHistory = [];
+       // Function to update chat history
+       function updateChatHistory() {
+           var chatHistoryContainer = document.querySelector('.chat-history ul');
+           chatHistoryContainer.innerHTML = '';
+           chatHistory.forEach(chat => {
+               var chatItem = document.createElement('li');
+               chatItem.className = 'clearfix';
+               var chatContent = `
+    <div class="message-data ${chat.type === 'my' ? 'text-right' : ''}">
+        <span class="message-data-time">${chat.time}</span>
+        ${chat.img ? `<img src="${chat.img}" alt="avatar">` : ''}
+    </div>
+    <div class="message ${chat.type === 'my' ? 'my-message' : 'other-message float-right'}">
+        ${chat.message}
+    </div>
+               `;
+               chatItem.innerHTML = chatContent;
+               chatHistoryContainer.appendChild(chatItem);
+           });
+       }
+
+       // Fetch chat history from API
+       fetch('/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/2/1')
+           .then(response => response.json())
+           .then(data => {
+               data.forEach(message => {
+                   const newChatMessage = {
+                       time: moment(message.createTime).format("h:mm A, MMMM D"),
+                       img: `/api/UserInfo/GetPicture/${message.user1Id}`,
+                       message: message.messageText,
+                       type: message.user1Id === 2 ? "other" : "my" // Set type based on user1Id
+                   };
+                   chatHistory.push(newChatMessage);
+               });
+               updateChatHistory();
+           })
+           .catch(error => console.error('Error fetching chat history:', error));
+
+       fetch('/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/1/2')
+           .then(response => response.json())
+           .then(data => {
+               data.forEach(message => {
+                   const newChatMessage = {
+                       time: moment(message.createTime).format("h:mm A, MMMM D"),
+                       img: `/api/UserInfo/GetPicture/${message.user1Id}`,
+                       message: message.messageText,
+                       type: message.user1Id === 1 ? "my" : "other" // Set type based on user1Id
+                   };
+                   chatHistory.push(newChatMessage);
+               });
+               updateChatHistory();
+           })
+           .catch(error => console.error('Error fetching chat history:', error));
+
+       // Initial call to update chat history
+       updateChatHistory();
+
+       // SignalR connection setup
+       const connection = new signalR.HubConnectionBuilder()
+           .withUrl("/chatHub")
+           .build();
+
+       connection.on("ReceiveMessage", function (user, message) {
+           const msg = message;
+           const chat = {
+               time: moment().format("h:mm A, MMMM D"),
+               img: "/api/UserInfo/GetPicture/1",
+               message: msg,
+               type: "my"
+           };
+           chatHistory.push(chat);
+           updateChatHistory();
+       });
+
+       connection.on("SomeOneOnline", (connid) => {
+           console.log(`Someone connected with ID: ${connid}`);
+       });
+
+       connection.on("SomeOneOffline", (connid) => {
+           console.log(`Someone disconnected with ID: ${connid}`);
+       });
+
+       connection.start().catch(err => console.error(err.toString()));
+
+       document.getElementById("sendButton").addEventListener("click", event => {
+           const user1Id = 2; // Replace with the current user's ID
+           const user2Id = 1; // Replace with the recipient's ID
+           const messageText = document.getElementById("messageInput").value;
+           const user = "";
+           const message = document.getElementById("messageInput").value;
+           connection.invoke("SendMessage", user, message).catch(err => console.error(err.toString()));
+           document.getElementById("messageInput").value = '';
+
+           // Create data object for POST request
+           const data = {
+               User1Id: user1Id,
+               User2Id: user2Id,
+               MessageText: messageText,
+               CreateTime: new Date(),
+               IsRead: false
+           };
+
+           // Send POST request to the server
+           fetch('/api/ChatRoom/ChatRoomsApi', {
+               method: 'POST',
+               headers: {
+                   'Content-Type': 'application/json'
+               },
+               body: JSON.stringify(data)
+           })
+               .then(response => {
+                   if (response.ok) {
+                       return response.text();
+                   } else {
+                       throw new Error('Network response was not ok.');
+                   }
+               })
+               .then(responseText => {
+                   console.log(responseText); // Handle server response (if needed)
+                   document.getElementById("messageInput").value = ''; // Clear input field
+               })
+               .catch(error => {
+                   console.error('Error saving message:', error);
+               });
+           event.preventDefault();
+       });
+       </script>
 }
 
     

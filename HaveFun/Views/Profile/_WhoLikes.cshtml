@@ -1,7 +1,9 @@
-﻿<div class="tab-pane fade" id="gt5" role="tabpanel" aria-labelledby="gt5-tab">
+﻿<link href="~/assets/css/profile_wholikes.css" rel="stylesheet" />
+
+<div class="tab-pane fade" id="gt5" role="tabpanel" aria-labelledby="gt5-tab">
 <div id="whoLikesApp">
         <div class="group__bottom--area">
-            <div class="group__bottom--head">
+            <!-- <div class="group__bottom--head">
                 <div class="left">
                     <form action="#">
                         <input type="text" name="search" placeholder="search">
@@ -20,7 +22,7 @@
                         </select>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <div class="group__bottom--body">
                 <div class="member">
                     <div class="row g-3 row-cols-lg-3 row-cols-sm-2 row-cols-1" id="memberContainer">
@@ -28,8 +30,8 @@
                             <div class="member__item w-100">
                                 <div class="member__inner m-0">
                                     <div class="member__thumb">
-                                        <img :src="member.profilePicture" alt="member-img">
-                                        <span class="member__activity">Online</span>
+                                        <img :src="member.profilePicture" alt="member-img" class="fixed-size-img">
+                                        @* <span class="member__activity">Online</span> *@
                                     </div>
                                     <div class="member__content">
                                         <a href="member-single.html"><h6>{{ member.name }}</h6></a>
@@ -60,9 +62,16 @@
         },
         methods: {
             getMembers() {
-                axios.get('https://localhost:7152/api/Profile/GetWhoLikeList')
+                axios.get('/api/Profile/GetWhoLikeList')
                     .then(response => {
-                        this.members = response.data;
+                        this.members = response.data.map(member => {
+                            return {
+                                name: member.name,
+                                age: member.age,
+                                gender: member.gender,
+                                profilePicture: member.profilePicture
+                            };
+                        });
                     })
                     .catch(err => {
                         alert(err);
