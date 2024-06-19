@@ -17,6 +17,10 @@ summary {
 .blog__item{
     margin: 20px;
 }
+.empty{
+    text-align:center;
+    font-style:italic;
+}
 #cancelAttend{
     display: block;
     margin:0 auto;
@@ -39,3 +43,21 @@ summary {
  .canelAttendBox > button {
     margin: 20px;
  }
+.deleteActBox {
+    display: none;
+    width: 250px;
+    height: 300px;
+    background-color: white;
+    position: sticky;
+    left: 40%;
+    top: 40%;
+    border-radius: 10%;
+    box-shadow: 0 3px 10px #888888;
+    z-index: 2;
+    align-content: center;
+    text-align: center;
+}
+
+    .deleteActBox > button {
+        margin: 20px;
+    }
