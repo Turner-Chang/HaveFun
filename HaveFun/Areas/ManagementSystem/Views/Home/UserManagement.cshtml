@@ -1,10 +1,10 @@
 ﻿
 <div id="UserManagementApp" class="container row  p-5 pt-5 text-center border-2">
 	<div class="col-12">
-		<span class="col-2 ">處理狀態示意: </span>
-		<label class="text-bg-warning  col-2 m-2">申訴中-0</label>
-		<label class="text-bg-secondary col-2 m-2">已刪除-1</label>
-		<label class="text-bg-success col-2 m-2">無須刪除-2</label>
+		<span class="col-12 col-md-2  m-2 ">處理狀態示意: </span>
+		<label class="text-bg-warning  col-12 col-md-2  m-2">申訴中-0</label>
+		<label class="text-bg-secondary col-12 col-md-2  m-2">已封鎖--1</label>
+		<label class="text-bg-success col-12 col-md-2  m-2">無須封鎖--2</label>
 	</div>
 	<hr />
 	<div class="table-responsive">
@@ -16,7 +16,7 @@
 					<th scope="col">檢舉時間</th>
 					<th scope="col">檢舉項目</th>
 					<th scope="col">處理按鈕</th>
-					<th scope="col">處理狀態</th>
+					
 
 
 				</tr>
@@ -31,10 +31,10 @@
 						<button class="btn " 
 							:class="btnColor(r.status)"
 								@@click="UserCheck(r.beReportedUserId,r.id)">
-							處理
+							{{this.ReviewStatusToString(r.status)}}
 						</button>
 					</td>
-					<td>{{this.ReviewStatusToString(r.status)}}</td>
+					
 				</tr>
 
 			</tbody>
@@ -259,8 +259,8 @@
 				},
 				ReviewStatusToString(s) {
 					if (s == 0) { return "申訴中"; }
-					else if (s == 1) { return "已刪除"; }
-					else { return "無須刪除"; }
+					else if (s == 1) { return "已封鎖"; }
+					else { return "無須封鎖"; }
 				},
 				UserStatusToString(s) {
 					if (s == 0) { return "未封鎖"; }
