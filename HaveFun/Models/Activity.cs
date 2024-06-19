@@ -39,7 +39,7 @@ namespace HaveFun.Models
         [Required(ErrorMessage = "此項為必填")]
         [MaxLength(10)]
         [Display(Name ="活動預算")]
-        public string Amount { get; set; }
+        public int Amount { get; set; }
 
         [Required(ErrorMessage = "此項為必填")]
         [Range(1, int.MaxValue, ErrorMessage = "活動最大人數必須大於 0")]
