@@ -6,8 +6,10 @@
         <div class="col-12">
             <span class="col-12 col-md-2  m-2 ">處理狀態示意: </span>
             <label class=" text-bg-warning  col-12 col-md-2  m-2">申訴中-0</label>
-            <label class="text-bg-secondary col-12 col-md-2  m-2">已刪除-1</label>
-            <label class="text-bg-success col-12 col-md-2  m-2">無須刪除-2</label>
+
+            <label class="text-bg-secondary col-12 col-md-2  m-2">已封鎖--1</label>
+            <label class="text-bg-success col-12 col-md-2  m-2">無須封鎖-2</label>
+
         </div>
         <hr />
         <div class="table-responsive-md">
@@ -19,8 +21,8 @@
                         <th scope="col">被檢舉項目</th>
                         <th scope="col">被檢舉理由</th>
                         <th scope="col">被檢舉時間</th>
-                        <th scope="col">處理</th>
-                        <th scope="col">活動狀態</th>
+                        <th scope="col">處理按鈕</th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -33,10 +35,11 @@
                         <td>
                             <button :id="r.postReviewId" class="btn " :class="btnColor(r.processingStstus)"
                                     @@click="check(r.activityId,r.activityReviewId)">
-                                處理
+                                {{this.ReviewStatusToString(r.processingStstus)}}
                             </button>
                         </td>
-                        <td>{{this.ReviewStatusToString(r.processingStstus)}}</td>
+                        
+
                     </tr>
                 </tbody>
             </table>
@@ -335,8 +338,9 @@
                 },
                 ReviewStatusToString(s) {
                     if (s == 0) { return "申訴中"; }
-                    else if (s == 1) { return "已刪除"; }
-                    else { return "無須刪除"; }
+                    else if (s == 1) { return "已封鎖"; }
+                    else { return "無須封鎖"; }
+
                 },
                 PostStatusToString(s) {
                     if (s == 0) { return "未下架貼文"; }

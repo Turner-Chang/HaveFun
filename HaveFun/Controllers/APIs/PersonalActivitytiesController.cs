@@ -33,7 +33,7 @@ namespace HaveFun.Controllers.APIs
                 .Where(activity => activity.Status == 0)
                 .Include(user => user.ActivityParticipants)
                 .ThenInclude(member => member.User)
-                .OrderByDescending(activity => activity.ActivityTime)
+                .OrderBy(activity => activity.ActivityTime)
                 .Select(data => new
                 {
                     Id = data.Id,
