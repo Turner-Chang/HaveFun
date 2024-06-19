@@ -1,18 +1,20 @@
 ﻿
 <div id="UserManagementApp" class="container row  p-5 pt-5 text-center border-2">
+	<h1>個人資料管理</h1>
+	<hr />
 	<div class="col-12">
-		<span class="col-2 ">處理狀態示意: </span>
-		<label class="text-bg-warning  col-2 m-2">申訴中-0</label>
-		<label class="text-bg-secondary col-2 m-2">已刪除-1</label>
-		<label class="text-bg-success col-2 m-2">無須刪除-2</label>
+		<span class="col-12 col-md-2  m-2 ">處理狀態示意: </span>
+		<label class="text-bg-warning  col-12 col-md-2  m-2">申訴中-0</label>
+		<label class="text-bg-secondary col-12 col-md-2  m-2">已刪除-1</label>
+		<label class="text-bg-success col-12 col-md-2  m-2">無須刪除-2</label>
 	</div>
 	<hr />
 	<div class="table-responsive">
 		<table class="table table-secondary">
 			<thead>
 				<tr>
-					<th scope="col">被檢舉使用者Id</th>
-					<th scope="col">檢舉使用者Id</th>
+					<th scope="col">被檢舉人Id</th>
+					<th scope="col">檢舉人Id</th>
 					<th scope="col">檢舉時間</th>
 					<th scope="col">檢舉項目</th>
 					<th scope="col">處理按鈕</th>
@@ -25,7 +27,7 @@
 				<tr v-for="r in reviews.slice(tableStart,tableEnd)" class="">
 					<td>{{r.beReportedUserId}}</td>
 					<td>{{r.reportUserId}}</td>
-					<td>{{r.reportTime}}</td>
+					<td>{{this.TimeSplit(r.reportTime)}}</td>
 					<td>{{this.ComplaintToString(r.complaintCategoryId)}}</td>
 					<td>
 						<button class="btn " 
@@ -60,8 +62,9 @@
 		<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered "
 			 role="document" style="width:450px">
 			<div class="modal-content">
-				<div class="modal-header bg-info">
-					<h5 class="modal-title" id="modalTitleId">
+				<div class="modal-header "style="background-color:coral;">
+					<span style="width:150px;"></span>
+					<h5 class="modal-title " id="modalTitleId"  >
 						檢舉使用者
 					</h5>
 					<button type="button"
@@ -70,8 +73,8 @@
 							aria-label="Close">
 					</button>
 				</div>
-				<div class="modal-body row lh-lg">
-					<div>
+				<div class="modal-body row lh-lg ">
+					<div >
 						<label class="col-4 text-decoration-underline">
 							被檢舉人名稱:
 						</label>
@@ -112,7 +115,7 @@
 							被檢舉人生日:
 						</label>
 						<label class="col-8 text-start">
-							{{userInfos.birthDay}}
+							{{this.TimeSplit(userInfos.birthDay)}}
 						</label>
 						<label class="col-4 text-decoration-underline">
 							被檢舉人註冊時間:
@@ -174,7 +177,7 @@
 					userInfos: [],
 					complaint: [],
 					UserReviewid: 0,
-					baseAdress:"https://localhost:7152",
+					baseAdress: "",		/*"https://localhost:7152" */
 					// complaintArr:[],
 				};
 			},
@@ -271,8 +274,13 @@
 						return this.complaint[parseInt(id) - 1].complaintCategoryName
 					else
 						return "null";
-				}
-				
+				},
+				TimeSplit(timeStr) {
+					if (timeStr != null) {
+						var timeArr = timeStr.split('T').join('-').split('-').join(':').split(":");
+						return `${timeArr[0]}年 ${timeArr[1]}月 ${timeArr[2]}日 ${timeArr[3]}時 ${timeArr[4]}分`;
+					}
+				},
 			},
 			Computed: {
 				

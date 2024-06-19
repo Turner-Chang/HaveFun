@@ -75,6 +75,7 @@ namespace HaveFun.Controllers.APIs
         public async Task<FileResult> GetPicture(int id)
         {
             UserInfo? user = await _context.UserInfos.FindAsync(id);
+            if (user == null) { return null; }
             string path = user.ProfilePicture;
             byte[] ImageContent = System.IO.File.ReadAllBytes(path);
             return File(ImageContent, "image/*");

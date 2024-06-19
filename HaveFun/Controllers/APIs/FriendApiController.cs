@@ -23,5 +23,38 @@ namespace HaveFun.Controllers.APIs
             var friendList = await _dbContext.FriendLists.ToListAsync();
             return Ok(friendList);
         }
+
+        [HttpPost("BlockUser")]
+        public async Task<IActionResult> BlockUser([FromBody] int friendId)
+        {
+            var friend = await _dbContext.FriendLists.FindAsync(friendId);
+            if (friend == null)
+            {
+                return NotFound("找不到好友");
+            }
+
+            friend.state = 3; // 假設 3 表示已封鎖
+            _dbContext.FriendLists.Update(friend);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok("封鎖成功");
+        }
+
+        [HttpPost("UnblockUser")]
+        public async Task<IActionResult> UnblockUser([FromBody] int friendId)
+        {
+            var friend = await _dbContext.FriendLists.FindAsync(friendId);
+            if (friend == null)
+            {
+                return NotFound("找不到好友");
+            }
+
+            friend.state = 0; // 假設 0 表示正常狀態
+            _dbContext.FriendLists.Update(friend);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok("解鎖成功");
+        }
     }
 }
+
