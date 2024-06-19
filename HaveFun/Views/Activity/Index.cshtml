@@ -42,7 +42,7 @@
 						</div>
 						<div class="member__info--count">
 							<div class="default-btn"><span>All Activities</span></div>
-							<p>20365587</p>
+							<p>{{activities.length}}</p>
 						</div>
 					</div>
 					<div class="member__info--right">
@@ -60,170 +60,7 @@
 					</div>
 				</div>
 				<div class="row g-4 justify-content-left row-cols-lg-4 row-cols-sm-2 row-cols-1">
-					<div class="col">
-						<div class="story__item style2 story--theme-color">
-							<div class="story__inner">
-								<div class="story__thumb position-relative">
-									<a href="group-single.html"><img src="assets/images/group/01.jpg" alt="dating thumb"></a>
-									<span class="member__activity member__activity--ofline">2 days ago</span>
-								</div>
-								<div class="story__content px-0 pb-0">
-									<a href="group-single.html"><h4>Be young, love life</h4></a>
-									<p>You become what you believe. –Oprah Winfrey</p>
-									<div class="story__content--author justify-content-between border-top pt-3">
-										<div class="story__content--content">
-											<p><i class="fa-solid fa-earth-africa"></i> Public Group</p>
-										</div>
-										<ul class="img-stack">
-											<li>
-												<a href="#">
-													<img src="assets/images/group/icon/01.png" alt="member-img">
-													<div class="time-tooltip">
-														<div class="time-tooltip-holder">
-															<span class="tooltip-info">Klaus Klug</span>
-														</div>
-													</div>
-												</a>
-											</li>
-											<li>
-												<a href="#">
-													<img src="assets/images/group/icon/02.png" alt="member-img">
-													<div class="time-tooltip">
-														<div class="time-tooltip-holder">
-															<span class="tooltip-info">Mary C. Shen</span>
-														</div>
-													</div>
-												</a>
-											</li>
-											<li>
-												<a href="#">
-													<img src="assets/images/group/icon/03.png" alt="member-img">
-													<div class="time-tooltip">
-														<div class="time-tooltip-holder">
-															<span class="tooltip-info">Lucas Vogler</span>
-														</div>
-													</div>
-												</a>
-											</li>
-											<li>
-												<a href="#">
-													<img src="assets/images/group/icon/04.png" alt="member-img">
-													<div class="time-tooltip">
-														<div class="time-tooltip-holder">
-															<span class="tooltip-info">Manuela Moench</span>
-														</div>
-													</div>
-												</a>
-											</li>
-											<li>
-												<a href="#">
-													<img src="assets/images/group/icon/05.png" alt="member-img">
-													<div class="time-tooltip">
-														<div class="time-tooltip-holder">
-															<span class="tooltip-info">Matthias Propst</span>
-														</div>
-													</div>
-												</a>
-											</li>
-											<li class="bg-theme">
-												<a href="#">
-													12+
-													<div class="time-tooltip">
-														<div class="time-tooltip-holder">
-															<span class="tooltip-info">More</span>
-														</div>
-													</div>
-												</a>
-											</li>
-										</ul>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="story__item style2 story--theme-color2">
-							<div class="story__inner">
-								<div class="story__thumb position-relative">
-									<a href="group-single.html"><img src="assets/images/group/02.jpg" alt="dating thumb"></a>
-									<span class="member__activity member__activity--ofline">4 days ago</span>
-								</div>
-								<div class="story__content px-0 pb-0">
-									<a href="group-single.html"><h4>Learn how to love</h4></a>
-									<p>Fall seven times and stand up eight. –Japanese Proverb</p>
-									<div class="story__content--author justify-content-between border-top pt-3">
-										<div class="story__content--content">
-											<p><i class="fa-solid fa-earth-africa"></i> Public Group</p>
-										</div>
-										<ul class="img-stack">
-											<li>
-												<a href="#">
-													<img src="assets/images/group/icon/06.png" alt="member-img">
-													<div class="time-tooltip">
-														<div class="time-tooltip-holder">
-															<span class="tooltip-info">Klaus Klug</span>
-														</div>
-													</div>
-												</a>
-											</li>
-											<li>
-												<a href="#">
-													<img src="assets/images/group/icon/07.png" alt="member-img">
-													<div class="time-tooltip">
-														<div class="time-tooltip-holder">
-															<span class="tooltip-info">Mary C. Shen</span>
-														</div>
-													</div>
-												</a>
-											</li>
-											<li>
-												<a href="#">
-													<img src="assets/images/group/icon/08.png" alt="member-img">
-													<div class="time-tooltip">
-														<div class="time-tooltip-holder">
-															<span class="tooltip-info">Lucas Vogler</span>
-														</div>
-													</div>
-												</a>
-											</li>
-											<li>
-												<a href="#">
-													<img src="assets/images/group/icon/09.png" alt="member-img">
-													<div class="time-tooltip">
-														<div class="time-tooltip-holder">
-															<span class="tooltip-info">Manuela Moench</span>
-														</div>
-													</div>
-												</a>
-											</li>
-											<li>
-												<a href="#">
-													<img src="assets/images/group/icon/10.png" alt="member-img">
-													<div class="time-tooltip">
-														<div class="time-tooltip-holder">
-															<span class="tooltip-info">Matthias Propst</span>
-														</div>
-													</div>
-												</a>
-											</li>
-											<li class="bg-theme">
-												<a href="#">
-													12+
-													<div class="time-tooltip">
-														<div class="time-tooltip-holder">
-															<span class="tooltip-info">More</span>
-														</div>
-													</div>
-												</a>
-											</li>
-										</ul>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="col" v-for="activity in activities" :id="activity.id">
+					<div class="col" v-for="activity in activities.slice(pageStart,pageEnd)" :id="activity.id">
 						<div class="story__item style2 story--theme-color">
 							<div class="story__inner">
 								<div class="story__thumb position-relative">
@@ -251,7 +88,7 @@
 											
 											<li v-if="remainingParticipants(activity.participants) > 0" class="bg-theme">
 												<a href="#">
-													{{ this.remaining }}+
+													{{ remainingParticipants(activity.participants) }}+
 													<div class="time-tooltip">
 														<div class="time-tooltip-holder">
 															<span class="tooltip-info">More</span>
@@ -269,24 +106,18 @@
 				</div>
 				<div class="member__pagination mt-4">
 					<div class="member__pagination--left">
-						<p>Viewing 1 - 20 of 12,345 Members</p>
+						<p>Viewing {{pageStart + 1}} - {{pageEnd + 1}} of {{activities.length}} Activities</p>
 					</div>
 					<div class="member__pagination--right">
 						<ul class="default-pagination">
 							<li>
-								<a href="#"><i class="fas fa-chevron-left"></i></a>
+								<a href="#" @@click.prevent="setPage(currentPage-1)"><i class="fas fa-chevron-left"></i></a>
 							</li>
 							<li>
-								<a href="#">01</a>
+								<a href="#" v-for="(n, index) in totalPage" :key="index" @@click.prevent="setPage(n)" :class="{'active': (currentPage === (n))}">{{n}}</a>
 							</li>
 							<li>
-								<a href="#" class="active">02</a>
-							</li>
-							<li>
-								<a href="#">03</a>
-							</li>
-							<li>
-								<a href="#"><i class="fas fa-chevron-right"></i></a>
+								<a href="#" @@click.prevent="setPage(currentPage+1)"><i class="fas fa-chevron-right"></i></a>
 							</li>
 						</ul>
 					</div>
@@ -399,11 +230,23 @@
 				return {
 					baseAddress: "https://localhost:7152",
 					activities:[],
-					remaining: 0,
+					perpage: 4,
+					currentPage: 1,
 				}
 			},
 			computed: {
-				
+				totalPage() {
+					return Math.ceil(this.activities.length / this.perpage)
+					//Math.ceil()取最小整數
+				},
+				pageStart() {
+					return (this.currentPage - 1) * this.perpage
+					//取得該頁第一個值的index
+				},
+				pageEnd() {
+					return this.currentPage * this.perpage
+					//取得該頁最後一個值的index
+				}
 			},
 			methods: {
 				getActivities()
@@ -435,7 +278,13 @@
 					return participants.slice(0, 5);
 				},
 				remainingParticipants(participants) {
-					return this.remaining = participants.length > 5 ? participants.length - 5 : 0;
+					return participants.length > 5 ? participants.length - 5 : 0;
+				},
+				setPage(page) {
+					if (page <= 0 || page > this.totalPage) {
+						return
+					}
+					this.currentPage = page
 				}
 			},
 			watch: {
