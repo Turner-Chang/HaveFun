@@ -12,13 +12,10 @@ namespace HaveFun.Controllers.APIs
         [HttpGet]
         public string getLoginId (){
             string userId = Request.Cookies["userId"];
-            if (userId == null) { return ""; }
+
+            if (userId == null || userId.Length>500) { return null; }
             return userId;
         }
-        [HttpGet]
-        public string LogOut() {
-
-            return "";
-        }
+      
     }
 }
