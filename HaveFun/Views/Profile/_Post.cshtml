@@ -1,4 +1,31 @@
 ﻿<link href="~/assets/css/profile_poststyle.css" rel="stylesheet" />
+<style>
+    /* 確保視窗在畫面中央且有遮罩效果 */
+    .ratBox-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1050; /* 確保在所有內容上方 */
+    }
+
+    .ratBox {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        width: 100%;
+        box-sizing: border-box;
+        z-index: 1060; /* 確保在遮罩之上 */
+    }
+
+</style>
 <div class="tab-pane fade show active" id="gt1" role="tabpanel" aria-labelledby="gt1-tab">
     <div id="post">
         <div class="group__bottom--area group__bottom--memberactivity">
@@ -53,7 +80,7 @@
                                 </div>
 
                                 @* 顯示貼文 *@
-                                <div v-for="post in posts" :key="post.id" class="post-item mb-4">
+                                <div v-for="post in postsWithLikeStatus" :key="post.id" class="post-item mb-4">
                                     @* 貼文內容 *@
                                     <div class="post-content">
                                         <div class="post-author">
@@ -69,6 +96,15 @@
                                                     </ul>
                                                 </div>
                                             </div>
+                                            <div class="post-review-dropdown">
+                                                <button type="button" id="btnMore" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="fa-solid fa-ellipsis"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li @@click.prevent="showDelete(post)"><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop">刪除貼文</a></li>
+                                                    <li @@click.prevent="showRat(post)"><a class="dropdown-item" href="#">檢舉貼文</a></li>
+                                                </ul>
+                                            </div>
                                         </div>
                                         <div class="post-description">
                                             <p>{{ post.Contents }}</p>
@@ -78,11 +114,15 @@
                                     <div class="post-meta">
                                         <div class="post-meta-top">
                                             <p><a href="#"><i class="fa-solid fa-thumbs-up"></i> <i class="fa-solid fa-heart"></i> <i class="fa-solid fa-face-laugh"></i> <span>Julia, Petrova and 306 like this</span></a></p>
-                                            <p><a href="#" @@click.prevent="showCommentsAlert">Show Comments</a></p>
+                                            @* <p><a href="#" @@click.prevent="showCommentsAlert">Show Comments</a></p> *@
                                         </div>
                                         <div class="post-meta-bottom">
                                             <ul class="react-list">
-                                                <li class="react"><a href="#" @@click.prevent="likePost"><i class="fa-solid fa-thumbs-up"></i>Like</a></li>
+                                                <li class="react">
+                                                    <a href="#" @@click.prevent="clickLike(post)">
+                                                        <i v-if="clickLikeOrNot(post)" class="fa-heart fa-solid"></i>
+                                                        <i v-else class="fa-heart fa-regular"></i> Like
+                                                    </a>
                                                 <li class="react"><a href="#" @@click.prevent="commentOnPost(post)"><i class="fa-solid fa-comment"></i>Comment</a></li>
                                                 <li class="react"><a href="#"><i class="fa-solid fa-share-nodes"></i>Share</a></li>
                                             </ul>
@@ -159,8 +199,23 @@
                 </div>
             </div>
         </div>
+        <!-- 檢舉視窗 -->
+        <div v-if="showRatBox" class="ratBox-overlay">
+            <div class="ratBox">
+                <span>檢舉事由：</span><br>
+                <select class="form-select" id="inputState" v-model="ratReason">
+                    <option selected value="">CHOOSE....</option>
+                    <option v-for="item in ratItems" :value="item.complaintCategoryId">{{ item.complaintCategoryName }}</option>
+                </select>
+                <input type="text" class="form-control" v-model="ratContent" placeholder="詳細說明..." />
+                <button class="btn btn-danger" @@click="ratPost">確定</button>
+                <button class="btn btn-outline-secondary" @@click="displayRatBox">取消</button>
+            </div>
+        </div>
     </div>
 </div>
+
+
 
 
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -172,13 +227,26 @@
                 postContent: '',
                 postPrivacy: 'Public',
                 posts: [],
-                postIdCounter: 1,
                 userName: '',
-                userId: 2 // 假設使用者ID為2
+                loginUserId: 8, // 假設使用者ID為2
+                showRatBox: false,
+                ratContent: "",
+                ratReason: "",
+                ratItems: [], // 檢舉項目
+                watingToRatPost: null,
             };
         },
         created() {
             this.getPosts();
+        },
+        computed: {
+            postsWithLikeStatus() {
+                return this.posts.map(post => {
+                    const userIds = post.Like.map(like => like.userId);
+                    post.likedByUser = userIds.includes(this.loginUserId);
+                    return post;
+                });
+            }
         },
         methods: {
             // 查詢貼文
@@ -192,6 +260,7 @@
                         Contents: post.contents,
                         Time: post.time,
                         Pictures: post.pictures,
+                        Like: post.like,
                         Replies: (post.replies || []).map(reply => ({
                             Id: reply.id,
                             UserId: reply.userId,
@@ -221,6 +290,7 @@
                 }
             },
 
+            // 新增貼文
             async addPost() {
                 if (this.postContent.trim() === '') {
                     alert('貼文不可空白');
@@ -231,11 +301,12 @@
                 }
 
                 const newPost = {
-                    UserId: this.userId,
+                    UserId: this.loginUserId,
                     UserName: this.userName,
                     Contents: this.postContent,
                     Time: '',
                     Pictures: '',
+                    Like: [],
                     Replies: []
                 };
 
@@ -249,6 +320,7 @@
                         Contents: createdPost.contents,
                         Time: createdPost.time,
                         Pictures: createdPost.pictures,
+                        Like: createdPost.like || [],
                         Replies: createdPost.replies || [],
                         showComments: false,
                         showReplyForm: false,
@@ -367,6 +439,89 @@
                 alert("Show Comments");
             },
 
+            // Like 圖示變化
+            clickLikeOrNot(post) {
+                console.log('clickLikeOrNot')
+                return post.likedByUser || false;
+            },
+
+            // 貼文Like
+            clickLike(post) {
+                console.log('clickLike')
+                const Like = event.target;
+                let like = {
+                    "PostId": post.Id,
+                    "UserId": this.loginUserId
+                };
+                axios.post('/api/Profile/AddLike', like)
+                    .then(response => response.data)
+                    .then(data => {
+                        // console.log(data);
+                        if (data === 'CancelLike') {
+                            post.likedByUser = false;
+                            // Like.firstChild.classList.add('fa-regular');
+                            // Like.firstChild.classList.remove('fa-solid');
+                        } else if (data === 'Like') {
+                            post.likedByUser = true;
+                            // Like.firstChild.classList.remove('fa-regular');
+                            // Like.firstChild.classList.add('fa-solid');
+                        }
+                        console.log("post" + post);
+                    })
+                    .catch(error => {
+                        console.log('Error clickLike:', error);
+                    });
+            },
+
+            showRat(post) {
+                this.showRatBox = true;
+                this.watingToRatPost = post.Id; // 保存待檢舉的貼文ID
+                this.$nextTick(() => {
+                    document.querySelector('.ratBox-overlay').focus();
+                });
+            },
+            ratPost() {
+                let ratpost = {
+                    "PostId": this.watingToRatPost,
+                    "UserId": this.loginUserId,
+                    "ReportItems": this.ratReason,
+                    "Reason": this.ratContent,
+                    "ProcessingStstus": 0
+                };
+
+                axios.post('/api/Profile/RatPostReview', ratpost)
+                    .then(response => {
+                        console.log(response.data);
+                        // 清空檢舉表單並關閉檢舉視窗
+                        this.resetRatBox();
+                    })
+                    .catch(error => {
+                        console.error('Error ratPost:', error);
+                    });
+            },
+            displayRatBox() {
+                this.showRatBox = !this.showRatBox;
+            },
+            resetRatBox() {
+                this.ratReason = "";
+                this.ratContent = "";
+                this.watingToRatPost = null;
+                this.showRatBox = false;
+            },
+
+            // 檢舉項目
+            getRatItemsList() {
+                axios.get('/api/Profile/GetComplaintCategory')
+                    .then(response => {
+                        this.ratItems = response.data;
+                    })
+                    .catch(error => {
+                        console.error('Error getRatItemsList:', error);
+                    });
+            },
+
+
+
             // 顯示/隱藏 回覆內容與輸入框
             commentOnPost(post) {
                 post.showReplyForm = !post.showReplyForm;
@@ -378,9 +533,6 @@
                         textarea.focus(); // 聚焦到 reply-input
                     }
                 });
-            },
-            likePost(post) {
-                alert('Liked!');
             },
 
             // 顯示/隱藏 貼文回覆的回覆輸入框 
@@ -413,7 +565,7 @@
             handleEnter(event) {
                 const textarea = event.target;
                 if (event.key === 'Enter') {
-                    event.preventDefault(); 
+                    event.preventDefault();
                     const start = textarea.selectionStart;
                     const end = textarea.selectionEnd;
                     const value = textarea.value;
@@ -422,11 +574,16 @@
                     this.autoResize(event); // 调整高度
                 }
             },
+
+            // 重置高度
             resetTextarea(name) {
                 const textarea = document.querySelector(`.${name}`);
                 textarea.value = "";
                 textarea.style.height = '24px'; // 初始化原始高度
             }
+        },
+        mounted(){
+            this.getRatItemsList();
         }
     }).mount('#post');
 </script>
