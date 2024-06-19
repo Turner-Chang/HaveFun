@@ -157,7 +157,7 @@ namespace HaveFun.Controllers.APIs
                                     </html>
                                     ";
                     _sendEmail.Send();
-                    
+                    //HttpContext.Session.SetString("ChangePassword", encryptToken);
                     return true;
                 }
                 catch (Exception)
@@ -178,6 +178,11 @@ namespace HaveFun.Controllers.APIs
                 {
                     return false;
                 }
+
+                //if(token != HttpContext.Session.GetString("ChangePassword")){
+                //    return false;
+                //}
+
                 string[] encryptToken = _desSecure.Decrypt(token).Split('|');
                 int userId = Convert.ToInt32(encryptToken[0]);
                 DateTime tokenDate = Convert.ToDateTime(encryptToken[1]);
@@ -191,6 +196,7 @@ namespace HaveFun.Controllers.APIs
                 {
                     return false;
                 }
+                //HttpContext.Session.Remove("");
                 return true;
             }
             catch (Exception)
