@@ -106,7 +106,7 @@ namespace HaveFun.Controllers.APIs
                 try
                 {
                     // 設定唯一性的token跟更改密碼的連結
-                    string decryptToken = $"{user.Id}/{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}";
+                    string decryptToken = $"{user.Id}|{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}";
                     string encryptToken = _desSecure.Encrypt(decryptToken);
                     string? link = Url.Action("ChangePassword", "Login", new { token = encryptToken }, protocol: HttpContext.Request.Scheme);
 
@@ -169,8 +169,8 @@ namespace HaveFun.Controllers.APIs
 
         }
 
-        [HttpGet("{token}")]
-        public async Task<bool> CheckToken(string token)
+        [HttpPost]
+        public async Task<bool> CheckToken([FromBody] string token)
         {
             try
             {
@@ -178,7 +178,7 @@ namespace HaveFun.Controllers.APIs
                 {
                     return false;
                 }
-                string[] encryptToken = _desSecure.Decrypt(token).Split('/');
+                string[] encryptToken = _desSecure.Decrypt(token).Split('|');
                 int userId = Convert.ToInt32(encryptToken[0]);
                 DateTime tokenDate = Convert.ToDateTime(encryptToken[1]);
                 TimeSpan time = DateTime.Now - tokenDate;
@@ -212,7 +212,7 @@ namespace HaveFun.Controllers.APIs
             try
             {
                 // 獲取token並解密
-                string[] encryptToken = _desSecure.Decrypt(resetPasswordDTO.EncryptToken).Split('/');
+                string[] encryptToken = _desSecure.Decrypt(resetPasswordDTO.EncryptToken).Split('|');
 
                 // 獲取userId跟token產生時間
                 int userId = Convert.ToInt32(encryptToken[0]);
