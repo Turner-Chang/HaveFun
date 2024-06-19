@@ -11,7 +11,7 @@ namespace HaveFun.Controllers.APIs
 {
     [Route("api/personalActivities/[action]")]
     [ApiController]
-    
+
     public class PersonalActivitytiesController : ControllerBase
     {
         HaveFunDbContext _context;
@@ -26,14 +26,14 @@ namespace HaveFun.Controllers.APIs
         {
             var now = DateTime.Now;
             var commingupActivities = await _context.Activities
-                .Where(activity => 
-                (activity.UserId == loginUserId || 
+                .Where(activity =>
+                (activity.UserId == loginUserId ||
                 activity.ActivityParticipants.Any(member => member.UserId == loginUserId)) &&
                 activity.ActivityTime > now)
                 .Where(activity => activity.Status == 0)
                 .Include(user => user.ActivityParticipants)
                 .ThenInclude(member => member.User)
-                .OrderByDescending(activity => activity.ActivityTime)
+                .OrderBy(activity => activity.ActivityTime)
                 .Select(data => new
                 {
                     Id = data.Id,
@@ -64,11 +64,11 @@ namespace HaveFun.Controllers.APIs
         {
             var now = DateTime.Now;
             var hostActivities = await _context.Activities
-                .Where(activity =>activity.UserId == loginUserId  && activity.ActivityTime > now)
+                .Where(activity => activity.UserId == loginUserId && activity.ActivityTime > now)
                 .Where(activity => activity.Status == 0)
                 .Include(user => user.ActivityParticipants)
                 .ThenInclude(member => member.User)
-                .OrderByDescending(activity => activity.ActivityTime)
+                .OrderBy(activity => activity.ActivityTime)
                 .Select(data => new
                 {
                     Id = data.Id,
@@ -133,36 +133,53 @@ namespace HaveFun.Controllers.APIs
         //查詢檢舉項目
         // GET : api/personalActivities/GetActivityType
         [HttpGet]
-		public async Task<JsonResult> GetActivityType()
-		{
-			var result = await _context.ActivityTypes.ToListAsync();
-			return new JsonResult(result);
-		}
-		// 取消參加活動
-		// Delete: api/personalActivities/NotAttending
-		[HttpDelete]
-		public async Task<JsonResult> NotAttending(ActivityParticipantDTO user)
-		{
+        public async Task<JsonResult> GetActivityType()
+        {
+            var result = await _context.ActivityTypes.ToListAsync();
+            return new JsonResult(result);
+        }
+        // 取消參加活動
+        // DELETE: api/personalActivities/NotAttending
+        [HttpDelete]
+        public async Task<JsonResult> NotAttending(ActivityParticipantDTO user)
+        {
             if (!ModelState.IsValid)
             {
                 return new JsonResult(ModelState);
             }
             try
-			{
-				var record = await _context.ActivityParticipantes.FirstOrDefaultAsync(record => record.ActivityId == user.ActivityId && record.UserId == user.UserId);
-			    _context.ActivityParticipantes.Remove(record);
-				await _context.SaveChangesAsync();
-				return new JsonResult("退出活動成功");
-				
-			}
-			catch (DbException ex)
-			{
-				return new JsonResult($"資料庫錯誤：{ex.Message}");
-			}
-			catch (Exception ex)
-			{
-				return new JsonResult($"伺服器錯誤：{ex.Message}");
-			}
+            {
+                var record = await _context.ActivityParticipantes.FirstOrDefaultAsync(record => record.ActivityId == user.ActivityId && record.UserId == user.UserId);
+                _context.ActivityParticipantes.Remove(record);
+                await _context.SaveChangesAsync();
+                return new JsonResult("退出活動成功");
+
+            }
+            catch (DbException ex)
+            {
+                return new JsonResult($"資料庫錯誤：{ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult($"伺服器錯誤：{ex.Message}");
+            }
+        }
+		// PUT: api/personalActivities/DeleteActivity/5
+		[HttpPut("{id}")]
+        public async Task<JsonResult> DeleteActivity(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return new JsonResult (new { state = "前端未輸入有效值" });
+            }
+            var record = await _context.Activities.FindAsync(id);
+            if (record == null)
+            {
+                return new JsonResult(new { result = "此活動不存在" });
+            }
+            record.Status = 2;
+            await _context.SaveChangesAsync();
+            return new JsonResult(new { result = "成功刪除活動" });
 		}
 	}
 }
