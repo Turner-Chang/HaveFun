@@ -289,7 +289,7 @@
             data() {
                 return {
                     //先寫死的部分
-                    baseAddress: "https://localhost:7152",
+                    baseAddress: window.location.origin,
                     //先寫死的部分
                     loginUserId: @ViewBag.UserId,
                     loginUserInfo: [],
@@ -486,7 +486,7 @@
                 // share鍵觸發的分享貼文到第三方(目前以臉書為例) 目前只弄到登入還不成功
                 shareToFacebook(post) {
                     event.preventDefault();
-                    const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(this.baseAddress + '/post/' + post.postId)}&quote=${encodeURIComponent(post.contents)}`;
+                    const shareUrl = `https://www.facebook.com/share.php?u=${this.baseAddress + '/post/' + post.postId}&quote=${post.contents}`;
                     window.open(shareUrl, 'facebook-share-dialog', 'width=800,height=600');
                 },
                 //發文預覽圖片
