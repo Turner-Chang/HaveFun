@@ -7,5 +7,7 @@
         public string Image { get; set; }
         public bool IsBlocked { get; set; }
         public int ActivityTime { get; set; }
+        public int ClickedUser { get; set; }
+        public int BeenClickedUser { get; set; }
     }
 }

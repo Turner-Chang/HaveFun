@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Converters;
+﻿using HaveFun.Models;
+using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Runtime.Serialization;
@@ -24,6 +25,7 @@ namespace HaveFun.DTOs
         public string Time { get; set; }
         public string Pictures { get; set; }
         public int Status { get; set; } = 0;
+        public virtual ICollection<Like> Like { get; set; }
         public List<CommentsDTO> Replies { get; set; } // 新增 Replies 屬性
 
     }
