@@ -37,7 +37,6 @@ namespace HaveFun.Models
         public string Notes { get; set; }
 
         [Required(ErrorMessage = "此項為必填")]
-        [MaxLength(10)]
         [Display(Name ="活動預算")]
         public int Amount { get; set; }
 
