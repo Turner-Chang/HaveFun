@@ -1,9 +1,11 @@
-﻿using HaveFun.Models;
+﻿using HaveFun.DTOs;
+using HaveFun.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data.Common;
 
 namespace HaveFun.Controllers.APIs
 {
@@ -31,7 +33,7 @@ namespace HaveFun.Controllers.APIs
                 .Where(activity => activity.Status == 0)
                 .Include(user => user.ActivityParticipants)
                 .ThenInclude(member => member.User)
-                .OrderByDescending(activity => activity.ActivityTime)
+                .OrderBy(activity => activity.ActivityTime)
                 .Select(data => new
                 {
                     Id = data.Id,
@@ -135,6 +137,32 @@ namespace HaveFun.Controllers.APIs
 		{
 			var result = await _context.ActivityTypes.ToListAsync();
 			return new JsonResult(result);
+		}
+		// 取消參加活動
+		// Delete: api/personalActivities/NotAttending
+		[HttpDelete]
+		public async Task<JsonResult> NotAttending(ActivityParticipantDTO user)
+		{
+            if (!ModelState.IsValid)
+            {
+                return new JsonResult(ModelState);
+            }
+            try
+			{
+				var record = await _context.ActivityParticipantes.FirstOrDefaultAsync(record => record.ActivityId == user.ActivityId && record.UserId == user.UserId);
+			    _context.ActivityParticipantes.Remove(record);
+				await _context.SaveChangesAsync();
+				return new JsonResult("退出活動成功");
+				
+			}
+			catch (DbException ex)
+			{
+				return new JsonResult($"資料庫錯誤：{ex.Message}");
+			}
+			catch (Exception ex)
+			{
+				return new JsonResult($"伺服器錯誤：{ex.Message}");
+			}
 		}
 	}
 }

@@ -148,7 +148,7 @@ namespace HaveFun.Controllers.APIs
         }
 
         // 傳送Email的Api
-        [HttpGet("{id}")]
+        [HttpGet("{userid}")]
         public async Task<JsonResult> SendCheckEmail(int userid)
         {
             string? link = Url.Action("Verification", "Register", new { id = userid }, protocol: HttpContext.Request.Scheme);
