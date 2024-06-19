@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
 	<meta charset="utf-8">
 	<title>@ViewData["Title"] - HaveFun</title>
@@ -70,41 +70,47 @@
 									<a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">首頁</a>
 								</li>
 								<li>
-									@* <a class="nav-link" @@click="MatchPage">配對</a> *@
-									<a class="nav-link" asp-area="" asp-controller="Match" asp-action="Index">配對</a>
+									<a class="nav-link" @@click="ToPageOrToLoginPage('Match')">
+										配對
+									</a>
 								</li>
 								<li>
-									@* <a class="nav-link" @@click="ActivityPage">糾團</a> *@
-									<a class="nav-link" asp-controller="Activity" asp-action="Index">糾團</a>
+									<a class="nav-link" @@click="ToPageOrToLoginPage('Activity')">
+										糾團
+									</a>	
 								</li>
 								<li>
-									@* <a class="nav-link" @@click="ChatRoomPage">好友聊天室</a> *@
-
-									<a class="nav-link" asp-area="" asp-controller="ChatRooms" asp-action="Main">好友聊天室</a>
+									<a class="nav-link" @@click="ToPageOrToLoginPage('ChatRooms/Main')">			好友聊天室
+									</a>
 								</li>
 								<li>
-									@* <a class="nav-link" @@click="ProfilePage">個人主頁</a> *@
-									<a class="nav-link" asp-area="" asp-controller="Profile" asp-action="Index">個人主頁</a>
-
+									<a class="nav-link" @@click="ToPageOrToLoginPage('Profile')">
+										個人主頁
+									</a>			
 								</li>
 								<li>
-									@* <a class="nav-link" @@click="PostPage">POST</a> *@
-									<a class="nav-link" asp-area="" asp-controller="POST" asp-action="Index">POST</a>
-
+									<a class="nav-link" @@click="ToPageOrToLoginPage('POST')">
+										個人貼文
+									</a>
+									
 								</li>
 								<template v-if="Login">
 									<li>
 										<a class="nav-link btn  bg-warning" @@click="out()" >
-										登出
+											登出
 										</a>
 									</li>
 								</template>
 								<template v-else>
 								<li>
-									<a class="nav-link" asp-area="" asp-controller="Register" asp-action="Index">註冊</a>
+									<a class="nav-link" asp-area="" asp-controller="Register" asp-action="Index">
+										註冊
+									</a>
 								</li>
 								<li>
-									<a class="nav-link" asp-area="" asp-controller="Login" asp-action="Index">登入</a>
+									<a class="nav-link" asp-area="" asp-controller="Login" asp-action="Index">
+										登入
+									</a>
 								</li>		
 								</template>
 							</ul>
@@ -218,65 +224,30 @@
 				},
 				out() {
 					if (confirm("確定登出?") == true) {
-					fetch('/api/logout/Logout', { method: "post" }).then(res => res.text()).then(d => console.log(d));
-						window.location.href = '/';
+						fetch('/api/logout/Logout', { method: "post" }).then(res => res.text()).then(d => this.Login = false).then(d => window.location.href = '/');
+						
 					}
 				}
-				// ,
-				// MatchPage() {
-				// 	if (!this.Login) {
-				// 		window.location.href = './Login';
-				// 	}
-				// 	else { 
-				// 		if (window.location.href.includes ('/ChatRooms/Main'))
-				// 			window.location.href = '../Match';
-				// 		window.location.href = './Match';
-				// 		console.log(aa);
-				// 	}
-					
-				// },
-				// ChatRoomPage() {
-				// 	if (!this.Login) {
-				// 		window.location.href = './Login';
-				// 	}
-				// 	else {
-				// 		window.location.href = '/';
-				// 	window.location.href = './ChatRooms/Main';
-				// 	}
-				// },
-				// ActivityPage() {
-				// 	if (!this.Login) {
-				// 		window.location.href = './Login';
-				// 	}
-				// 	else {
-				// 		window.location.href = '/';
-				// 		window.location.href = './Activity';
-				// 	}
-				// },
-				// ProfilePage() {
-				// 	if (!this.Login) {
+				,
+				ToPageOrToLoginPage(href) {
+					if (!this.Login) {
+						window.location.href = './Login';
+					}
+					else if (window.location.href.includes('ChatRooms') || window.location.href.includes('Activity/Create')) {
+						window.location.href =`../${href}`;
+					}
+					else {
+						window.location.href = `./${href}`;
+					}
+				},
+			
 
-				// 		window.location.href = './Login';
-				// 	}
-				// 	else {
-				// 		window.location.href = '/';
-				// 	window.location.href = './Profile';
-				// 	}
-				// },
-				// PostPage() {
-				// 	if (!this.Login) {
-				// 		window.location.href = './Login';
-				// 	}
-				// 	else {
-				// 		window.location.href = '/';
-				// 	window.location.href = '/POST';
-				// 	}
-				//},
 
 				
 
 			}, mounted() {
-				fetch('https://localhost:7152/api/layout/getLoginId', { method: "get" }).then(res => res.text()).then(d => this.isLogin(d));
+				/*  https://localhost:7152 */
+				fetch('/api/layout/getLoginId', { method: "get" }).then(res => res.text()).then(d => this.isLogin(d));
 			}
 		}).mount("#app_Layout");
 
