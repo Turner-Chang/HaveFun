@@ -233,7 +233,7 @@
 					if (!this.Login) {
 						window.location.href = './Login';
 					}
-					else if (window.location.href.includes('ChatRooms')) {
+					else if (window.location.href.includes('ChatRooms') || window.location.href.includes('Activity/Create')) {
 						window.location.href =`../${href}`;
 					}
 					else {
