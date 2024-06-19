@@ -1,6 +1,16 @@
 ﻿@section Styles
 {
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+	<style>
+		.card-text {
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+			-webkit-line-clamp: 3;
+		}
+	</style>
+	
 }	
 
 <div id="activityApp">
@@ -222,7 +232,7 @@
 								</div>
 								<div class="story__content px-0 pb-0">
 									<a href="group-single.html"><h4>{{activity.title}}</h4></a>
-									<p>{{activity.content}}</p>
+									<p class="card-text">{{activity.content}}</p>
 									<div class="story__content--author justify-content-between border-top pt-3">
 										<div class="story__content--content">
 											<p><i class="fa-solid fa-earth-africa"></i> Public Group</p>
