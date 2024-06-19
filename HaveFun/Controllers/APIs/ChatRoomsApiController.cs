@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using HaveFun.Models;
 using Microsoft.EntityFrameworkCore;
 using HaveFun.DTOs;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace HaveFun.Controllers.APIs
 {
@@ -11,11 +14,12 @@ namespace HaveFun.Controllers.APIs
     public class ChatRoomsApiController : ControllerBase
     {
         private readonly HaveFunDbContext _context;
-        //建構函式
+
         public ChatRoomsApiController(HaveFunDbContext context)
         {
             _context = context;
         }
+
 
         public static ChatRoomDTO MapToChatRoomDTO(ChatRoom chatRoom, UserInfo sender, UserInfo receiver)
         {
@@ -26,7 +30,7 @@ namespace HaveFun.Controllers.APIs
                 CreateTime = chatRoom.CreateTime,
                 User1Id = chatRoom.User1Id,
                 User2Id = chatRoom.User2Id,
-                IsRead = chatRoom.IsRead,  
+                IsRead = chatRoom.IsRead,
             };
         }
 
@@ -44,14 +48,18 @@ namespace HaveFun.Controllers.APIs
             return Ok(chatRoomDTOs);
         }
 
-
+        // POST: api/ChatRooms
         [HttpPost]
         public async Task<ActionResult<string>> PostChatRoom(ChatRoomDTO chatRoomDTO)
         {
+            if (chatRoomDTO.User1Id == chatRoomDTO.User2Id)
+            {
+                return BadRequest("User1Id 和 User2Id 不能相同");
+            }
             var chatRoom = new ChatRoom
             {
                 MessageText = chatRoomDTO.MessageText,
-                CreateTime = chatRoomDTO.CreateTime,
+                CreateTime = DateTime.UtcNow.AddHours(8),// Assume the creation time is now, in UTC
                 User1Id = chatRoomDTO.User1Id,
                 User2Id = chatRoomDTO.User2Id,
                 IsRead = chatRoomDTO.IsRead
@@ -62,6 +70,7 @@ namespace HaveFun.Controllers.APIs
 
             return CreatedAtAction(nameof(GetChatRoom), new { id = chatRoom.Id }, $"聊天室編號:{chatRoom.Id}");
         }
+
         // GET: api/ChatRooms/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ChatRoomDTO>> GetChatRoom(int id)
@@ -79,6 +88,8 @@ namespace HaveFun.Controllers.APIs
             var chatRoomDTO = MapToChatRoomDTO(chatRoom, chatRoom.Sender, chatRoom.Receiver);
             return Ok(chatRoomDTO);
         }
+
+        // GET: api/ChatRooms/GetByUser1IdAndUser2Id/1/2
         [HttpGet("GetByUser1IdAndUser2Id/{User1Id}/{User2Id}")]
         public async Task<ActionResult<IEnumerable<ChatRoomDTO>>> GetByUser1IdAndUser2Id(int User1Id, int User2Id)
         {
@@ -96,6 +107,7 @@ namespace HaveFun.Controllers.APIs
             var chatRoomDTOs = chatRooms.Select(chatRoom => MapToChatRoomDTO(chatRoom, chatRoom.Sender, chatRoom.Receiver));
             return Ok(chatRoomDTOs);
         }
+
         // PUT: api/ChatRooms/5
         [HttpPut("{id}")]
         public async Task<ActionResult<string>> PutChatRoom(int id, ChatRoomDTO chatRoomDTO)
@@ -112,7 +124,7 @@ namespace HaveFun.Controllers.APIs
             }
 
             chatRoom.MessageText = chatRoomDTO.MessageText;
-            chatRoom.CreateTime = chatRoomDTO.CreateTime;
+            chatRoom.CreateTime = chatRoomDTO.CreateTime.AddHours(8);
             chatRoom.User1Id = chatRoomDTO.User1Id;
             chatRoom.User2Id = chatRoomDTO.User2Id;
             chatRoom.IsRead = chatRoomDTO.IsRead;
@@ -137,6 +149,7 @@ namespace HaveFun.Controllers.APIs
 
             return Ok("修改聊天室紀錄成功");
         }
+
         // DELETE: api/ChatRooms/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteChatRoom(int id)
@@ -152,7 +165,7 @@ namespace HaveFun.Controllers.APIs
 
             return NoContent();
         }
-       
+
         private bool ChatRoomExists(int id)
         {
             return _context.ChatRooms.Any(e => e.Id == id);
