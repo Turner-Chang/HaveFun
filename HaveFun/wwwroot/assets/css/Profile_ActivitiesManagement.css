@@ -1,5 +1,9 @@
 ﻿body {
 }
+.blog__content{
+    line-height: 1.6;
+    margin:10px;
+}
 summary {
     list-style: none;
     margin: 5px;
