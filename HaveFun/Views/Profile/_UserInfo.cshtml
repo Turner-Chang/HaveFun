@@ -270,7 +270,7 @@
 					);
 			},
 			fetchData() {									/* 呼叫資料 */
-				axios.get(`${baseAddress}/api/UserInfo/GetUserinfos/${id}`)
+				axios.get(`${baseAddress}/api/UserInfo/GetUserinfos/${@ViewBag.UserId}`)
 					.then(response => {
 						this.material = response.data;
 						// 初始化圖片 URL
