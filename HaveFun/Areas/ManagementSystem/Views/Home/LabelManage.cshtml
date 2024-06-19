@@ -155,7 +155,7 @@
             },
             deleteLabel(id) {
                 if (!confirm("確定要刪除此標籤嗎？")) return;
-                axios.delete(`/api/labelsManageApi/${id}`)
+                axios.delete(`${baseAddress}/api/labelsManageApi/${id}`)
                     .then(() => {
                         this.labels = this.labels.filter(label => label.id !== id);
                         this.resetLabelForm();
@@ -166,7 +166,7 @@
             },
             submitLabelForm() {
                 if (this.isEditingLabel) {
-                    axios.put(`/api/labelsManageApi/${this.labelForm.id}`, this.labelForm)
+                    axios.put(`${baseAddress}/api/labelsManageApi/${this.labelForm.id}`, this.labelForm)
                         .then(response => {
                             const index = this.labels.findIndex(label => label.id === this.labelForm.id);
                             if (index !== -1) {
@@ -178,7 +178,7 @@
                             console.error("更新標籤時發生錯誤:", error);
                         });
                 } else {
-                    axios.post('/api/labelsManageApi', this.labelForm)
+                    axios.post(`${baseAddress}/api/labelsManageApi`, this.labelForm)
                         .then(response => {
                             this.labels.push(response.data);
                             this.resetLabelForm();
@@ -198,7 +198,7 @@
             },
             deleteCategory(id) {
                 if (!confirm("確定要刪除此標籤種類嗎？")) return;
-                axios.delete(`/api/labelCategoriesManageApi/${id}`)
+                axios.delete(`${baseAddress}/api/labelCategoriesManageApi/${id}`)
                     .then(() => {
                         this.categories = this.categories.filter(category => category.id !== id);
                         this.labels = this.labels.filter(label => label.categoryId !== id);
@@ -210,7 +210,7 @@
             },
             submitCategoryForm() {
                 if (this.isEditingCategory) {
-                    axios.put(`/api/labelCategoriesManageApi/${this.categoryForm.id}`, this.categoryForm)
+                    axios.put(`${baseAddress}/api/labelCategoriesManageApi/${this.categoryForm.id}`, this.categoryForm)
                         .then(response => {
                             const index = this.categories.findIndex(category => category.id === this.categoryForm.id);
                             if (index !== -1) {
@@ -222,7 +222,7 @@
                             console.error("更新標籤種類時發生錯誤:", error);
                         });
                 } else {
-                    axios.post('/api/labelCategoriesManageApi', this.categoryForm)
+                    axios.post(`${baseAddress}/api/labelCategoriesManageApi`, this.categoryForm)
                         .then(response => {
                             this.categories.push(response.data);
                             this.resetCategoryForm();
