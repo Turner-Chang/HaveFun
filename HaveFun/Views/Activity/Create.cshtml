@@ -47,7 +47,7 @@
         <div class="row">
             <div class="col-md-8 mb-3">
                 <label asp-for="Activity.Location" class="form-label"></label>
-                <input asp-for="Activity.Location" class="form-control" />
+                <input asp-for="Activity.Location" id="autocomplete" type="text" placeholder="Enter a place" class="form-control" />
                 <span asp-validation-for="Activity.Location" class="text-danger"></span>
             </div>
             <div class="col-md-4 mb-3">
@@ -106,6 +106,22 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
+        let autocomplete;
+        function initAutocomplete() {
+            autocomplete = new google.maps.places.Autocomplete(
+                document.getElementById('autocomplete'),
+                {
+                    types: ['establishment'],
+                    componentRestrctions: { 'country': ['TW'] },
+                    fields: ['place_id', 'geometry', 'name']
+                }
+            );
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdtbEsD7WwvYlwDGF1Gz04zJnHXlIwBEs&libraries=places&callback=initAutocomplete" async defer>
+    </script>
+
+    <script>
         //箭頭函式的this和function()的this定義不一樣，這不能用箭頭函式
         $("#UploadedPicture").on("change", function () {
             //alert("change");
@@ -134,5 +150,7 @@
                 }
             }
         };
+
+        
     </script>
 }

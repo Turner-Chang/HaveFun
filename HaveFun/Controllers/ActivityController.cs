@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Newtonsoft.Json.Linq;
+using System.Security.Policy;
 
 namespace HaveFun.Controllers
 {
@@ -13,12 +15,13 @@ namespace HaveFun.Controllers
 
         private int _userId;
 
-		public ActivityController(HaveFunDbContext context)
-		{
-			_context = context;
-		}
 
-		public override void OnActionExecuting(ActionExecutingContext context)
+        public ActivityController(HaveFunDbContext context)
+        {
+            _context = context;
+        }
+
+        public override void OnActionExecuting(ActionExecutingContext context)
 		{
 			base.OnActionExecuting(context);
 
@@ -91,5 +94,6 @@ namespace HaveFun.Controllers
                 model.Activity.Picture = br.ReadBytes((int)Request.Form.Files["UploadedPicture"].Length);
             }
         }
+
     }
 }

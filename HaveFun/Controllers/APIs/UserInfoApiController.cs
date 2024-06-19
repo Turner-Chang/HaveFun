@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace HaveFun.Controllers.APIs
 {
-	[Authorize(AuthenticationSchemes = "Bearer,Cookies")]
+	//[Authorize(AuthenticationSchemes = "Bearer,Cookies")]
 	[Route("api/UserInfo/[action]")]
     [ApiController]
     public class UserInfoApiController : ControllerBase
@@ -32,7 +32,7 @@ namespace HaveFun.Controllers.APIs
         //拿資料
         public async Task<UserIfDTO> GetUserInfos(int id)
         {
-			string userId = Request.Cookies["userId"];
+			//string userId = Request.Cookies["userId"];
 			var userInf = await _context.UserInfos
             .Where(u => u.Id == id) // 使用 Where 來過濾資料
             .Select(u => new UserIfDTO
@@ -75,7 +75,6 @@ namespace HaveFun.Controllers.APIs
         public async Task<FileResult> GetPicture(int id)
         {
             UserInfo? user = await _context.UserInfos.FindAsync(id);
-            if (user == null) { return null; }
             string path = user.ProfilePicture;
             byte[] ImageContent = System.IO.File.ReadAllBytes(path);
             return File(ImageContent, "image/*");
