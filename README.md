@@ -1,69 +1,209 @@
 # HaveFun
 HaveFunDev
-# ¨Ï¥ÎªÌ¥\¯à
-1. **µù¥U/µn¤J**
-  * ¤@¯ë¨Ï¥ÎªÌµn¤J¡]¥i²Ä¤T¤èµn¤J¡^
-  * §Ñ°O±K½X
+# ï¿½Ï¥ÎªÌ¥\ï¿½ï¿½
+1. **ï¿½ï¿½ï¿½U/ï¿½nï¿½J**
+  * ï¿½@ï¿½ï¿½Ï¥ÎªÌµnï¿½Jï¿½]ï¿½iï¿½Ä¤Tï¿½ï¿½nï¿½Jï¿½^
+  * ï¿½Ñ°Oï¿½Kï¿½X
 
-2. **­Ó¤H¥D­¶**
-  * ­Ó¤H¸ê®Æ
-    - §ï¼ÐÅÒ
-    - §ï±K½X
-    - §ï¤jÀY¶K
-    - §ï­Ó¤H¸ê®Æ
-  * ½Ö³ßÅw§Ú¡]¤@¯ë·|­û¼Ò½kÅã¥Ü¡^
-  * ­Ó¤H¶K¤å
-    - ÂIÆg¡B¦^ÂÐ¡B¤À¨É
-    - ÀËÁ|¡B§R°£
-    - ¥i¤W¶Ç¹Ï¤ù
-  * ¦n¤Í²M³æ¡G«ÊÂê/¸Ñ«Ê
-  * ¬¡°ÊºÞ²z
-    - °Ñ»Pªº¬¡°Ê
-    - µo°_ªº¬¡°Ê
-  * ¥I´Ú¬ö¿ý
-    - ¬d¸ß
-    - °h´Ú¡]³Ì«á¦A°µ¡^
+2. **ï¿½Ó¤Hï¿½Dï¿½ï¿½**
+  * ï¿½Ó¤Hï¿½ï¿½ï¿½
+    - ï¿½ï¿½ï¿½ï¿½ï¿½
+    - ï¿½ï¿½Kï¿½X
+    - ï¿½ï¿½jï¿½Yï¿½K
+    - ï¿½ï¿½Ó¤Hï¿½ï¿½ï¿½
+  * ï¿½Ö³ï¿½ï¿½wï¿½Ú¡]ï¿½@ï¿½ï¿½|ï¿½ï¿½ï¿½Ò½kï¿½ï¿½Ü¡^
+  * ï¿½Ó¤Hï¿½Kï¿½ï¿½
+    - ï¿½Iï¿½gï¿½Bï¿½^ï¿½Ð¡Bï¿½ï¿½ï¿½ï¿½
+    - ï¿½ï¿½ï¿½|ï¿½Bï¿½Rï¿½ï¿½
+    - ï¿½iï¿½Wï¿½Ç¹Ï¤ï¿½
+  * ï¿½nï¿½Í²Mï¿½ï¿½Gï¿½ï¿½ï¿½ï¿½/ï¿½Ñ«ï¿½
+  * ï¿½ï¿½ï¿½ÊºÞ²z
+    - ï¿½Ñ»Pï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    - ï¿½oï¿½_ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  * ï¿½Iï¿½Ú¬ï¿½ï¿½ï¿½
+    - ï¿½dï¿½ï¿½
+    - ï¿½hï¿½Ú¡]ï¿½Ì«ï¿½Aï¿½ï¿½ï¿½^
 
-3. **°t¹ï**
-  * ¿z¿ï
-  * ¥ª/¥k·Æ
-  * Àu¥ý±ÀÂË
-  * ÀËÁ|
+3. **ï¿½tï¿½ï¿½**
+  * ï¿½zï¿½ï¿½
+  * ï¿½ï¿½/ï¿½kï¿½ï¿½
+  * ï¿½uï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  * ï¿½ï¿½ï¿½|
 
-4. **­Ó¤H²á¤Ñ«Ç**
-  * ¤@¹ï¤@²á¤Ñ
-  * °ÝÃD¦^³ø
+4. **ï¿½Ó¤Hï¿½ï¿½Ñ«ï¿½**
+  * ï¿½@ï¿½ï¿½@ï¿½ï¿½ï¿½
+  * ï¿½ï¿½ï¿½Dï¿½^ï¿½ï¿½
 
-5. **¬¡°Ê´ª¹Î**
-  * ³ø¦W¥\¯à
+5. **ï¿½ï¿½ï¿½Ê´ï¿½ï¿½ï¿½**
+  * ï¿½ï¿½ï¿½Wï¿½\ï¿½ï¿½
 
-6. **·|­ûµ¥¯Å**
-  * ÁÊ¶R¥Õª÷·|­û
+6. **ï¿½|ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½**
+  * ï¿½Ê¶Rï¿½Õªï¿½ï¿½|ï¿½ï¿½
 
-# «á»O¥\¯à
-1. **¨Ï¥ÎªÌºÞ²z**
-  * «ÊÂê/¸Ñ«Ê
-  * «H½cÅçÃÒ
+# ï¿½ï¿½Oï¿½\ï¿½ï¿½
+1. **ï¿½Ï¥ÎªÌºÞ²z**
+  * ï¿½ï¿½ï¿½ï¿½/ï¿½Ñ«ï¿½
+  * ï¿½Hï¿½cï¿½ï¿½ï¿½ï¿½
 
-2. **¶K¤å¼f®Ö**
+2. **ï¿½Kï¿½ï¿½fï¿½ï¿½**
 
-3. **¬¡°Ê¼f®Ö**
+3. **ï¿½ï¿½ï¿½Ê¼fï¿½ï¿½**
 
-4. **¥Î¤á¼f®Ö**
+4. **ï¿½Î¤ï¿½fï¿½ï¿½**
 
-5. **¼ÐÅÒ±±ºÞ**
-  * ·s¼W¼ÐÅÒ»P¼ÐÅÒ¸s²Õ
-  * §R°£¼ÐÅÒ»P¼ÐÅÒ¸s²Õ
+5. **ï¿½ï¿½ï¿½Ò±ï¿½ï¿½ï¿½**
+  * ï¿½sï¿½Wï¿½ï¿½ï¿½Ò»Pï¿½ï¿½ï¿½Ò¸sï¿½ï¿½
+  * ï¿½Rï¿½ï¿½ï¿½ï¿½ï¿½Ò»Pï¿½ï¿½ï¿½Ò¸sï¿½ï¿½
 
-6. **ª÷¬y±±ºÞ**¡]³Ì«á¦A°µ¡^
-  * ·|­û¥I´Ú¬ö¿ý
-  * ­×§ï»ù®æ
+6. **ï¿½ï¿½ï¿½yï¿½ï¿½ï¿½ï¿½**ï¿½]ï¿½Ì«ï¿½Aï¿½ï¿½ï¿½^
+  * ï¿½|ï¿½ï¿½ï¿½Iï¿½Ú¬ï¿½ï¿½ï¿½
+  * ï¿½×§ï¿½ï¿½ï¿½ï¿½
 
-7. **¹Ïªí¤ÀªR**¡]³Ì«á¦A°µ¡^
+7. **ï¿½Ïªï¿½ï¿½ï¿½ï¿½R**ï¿½]ï¿½Ì«ï¿½Aï¿½ï¿½ï¿½^
 
-8. **¤½§iºÞ²z**¡]³Ì«á¦A°µ¡^
+8. **ï¿½ï¿½ï¿½iï¿½Þ²z**ï¿½]ï¿½Ì«ï¿½Aï¿½ï¿½ï¿½^
 
-9. **°ÝÃD¦^³ø**
-  * ²á¤Ñ«Ç¤è¦¡§e²{
+9. **ï¿½ï¿½ï¿½Dï¿½^ï¿½ï¿½**
+  * ï¿½ï¿½Ñ«Ç¤è¦¡ï¿½eï¿½{
 
-10. **ºÞ²zªÌ«Ý¿ì¨Æ¶µ´£¿ô**
+10. **ï¿½Þ²zï¿½Ì«Ý¿ï¿½Æ¶ï¿½ï¿½ï¿½ï¿½ï¿½**
+11. @*  <script>
+  var chatHistory = [
+  ];
+
+  // Function to update chat history
+  function updateChatHistory() {
+      var chatHistoryContainer = document.querySelector('.chat-history ul');
+      chatHistoryContainer.innerHTML = '';
+      chatHistory.forEach(chat => {
+          var chatItem = document.createElement('li');
+          chatItem.className = 'clearfix';
+          var chatContent = `
+              <div class="message-data ${chat.type === 'other' ? 'text-right' : ''}">
+                  <span class="message-data-time">${chat.time}</span>
+                  ${chat.img ? `<img src="${chat.img}" alt="avatar">` : ''}
+              </div>
+              <div class="message ${chat.type === 'other' ? 'other-message float-right' : 'my-message'}">
+                  ${chat.message}
+              </div>
+          `;
+          chatItem.innerHTML = chatContent;
+          chatHistoryContainer.appendChild(chatItem);
+      });
+  }
+
+  //user2 å°  user1çš„èŠå¤©ç´€éŒ„
+
+      fetch('/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/2/1')
+          .then(response => response.json())
+          .then(data => {
+              data.forEach(message => {
+                  const newChatMessage = {
+                      time: moment(message.createTime).format("h:mm A, MMMM D"),
+                      img: `/api/UserInfo/GetPicture/${message.user1Id}`,
+                      message: message.messageText,
+                      type: message.user1Id === 2 ? "my" : "other"
+                  };
+                  chatHistory.push(newChatMessage);
+              });
+              updateChatHistory();
+          })
+          .catch(error => console.error('Error fetching chat history:', error));
+   // user1 to user2
+
+      fetch('/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/1/2')
+          .then(response => response.json())
+          .then(data => {
+              data.forEach(message => {
+                  const newChatMessage = {
+                      time: moment(message.createTime).format("h:mm A, MMMM D"),
+                      img: `/api/UserInfo/GetPicture/${message.user1Id}`,
+                      message: message.messageText,
+                      type: message.user1Id === 1? "my" : "other"
+                  };
+                  chatHistory.push(newChatMessage);
+              });
+              updateChatHistory();
+          })
+          .catch(error => console.error('Error fetching chat history:', error));
+ 
+
+  // Initial call to update chat history
+  updateChatHistory();
+
+  // SignalR connection setup
+  const connection = new signalR.HubConnectionBuilder()
+      .withUrl("/chatHub")
+      .build();
+
+  connection.on("ReceiveMessage", function (user, message) {
+      const msg =  message;
+      const chat = {
+          time: moment().format("h:mm A, MMMM D"),
+              img:"/api/UserInfo/GetPicture/1",
+          message: msg,
+          type: "other"
+      };
+      chatHistory.push(chat);
+      updateChatHistory();
+  });
+
+ 
+      connection.on("SomeOneOnline", (connid) => {
+          console.log(`æœ‰äººé€£ç·šäº†,Id:${connid}`)
+      });
+      connection.on("SomeOneOffline", (connid) => {
+          console.log(`æœ‰äººé›¢ç·šäº†,Id:${connid}`)
+      });
+      connection.start().catch(err => console.error(err.toString()));
+
+   //    document.getElementById("sendButton").addEventListener("click", event => {
+   //        const user = ""; //select UserInfos.Name where (UserInfos.Id==this.user1Id);
+   // ; // Replace with the dynamic user data if needed
+   //        const message = document.getElementById("messageInput").value;
+   //        connection.invoke("SendMessage", user, message).catch(err => console.error(err.toString()));
+   //        document.getElementById("messageInput").value = '';
+   //        event.preventDefault();
+   //    });
+      document.getElementById("sendButton").addEventListener("click", event => {
+          const user1Id = 2; // æ›¿æ›ç‚ºç•¶å‰ä½¿ç”¨è€…çš„ ID
+          const user2Id = 1; // æ›¿æ›ç‚ºæ”¶ä»¶è€…çš„ ID
+          const messageText = document.getElementById("messageInput").value;
+          const user = "";
+          const message = document.getElementById("messageInput").value;
+          connection.invoke("SendMessage", user, message).catch(err => console.error(err.toString()));
+           document.getElementById("messageInput").value = '';
+          // å»ºç«‹ POST è«‹æ±‚çš„è³‡æ–™ç‰©ä»¶
+          const data = {
+              User1Id: user1Id,
+              User2Id: user2Id,
+              MessageText: messageText,
+              CreateTime: new Date(),
+              IsRead: false
+          };
+
+          // é€å‡º POST è«‹æ±‚åˆ°ä¼ºæœå™¨
+          fetch('/api/ChatRoom/ChatRoomsApi', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(data)
+          })
+              .then(response => {
+                  if (response.ok) {
+                      return response.text();
+                  } else {
+                      throw new Error('Network response was not ok.');
+                  }
+              })
+              .then(responseText => {
+                  console.log(responseText); // è™•ç†ä¼ºæœå™¨å›žæ‡‰ï¼ˆå¦‚æžœéœ€è¦ï¼‰
+                  document.getElementById("messageInput").value = ''; // æ¸…ç©ºè¼¸å…¥æ¬„ä½
+              })
+              .catch(error => {
+                  console.error('Error saving message:', error);
+              });
+          event.preventDefault();
+      });
+  </script> *@

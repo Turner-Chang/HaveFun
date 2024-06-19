@@ -12,7 +12,7 @@ namespace HaveFun.DTOs
 		public string Title { get; set; }
 		public string Content { get; set; }
 		public string Notes { get; set; }
-		public string Amount { get; set; } 
+		public int Amount { get; set; } 
 		public int MaxParticipants { get; set; }
 		public string Location { get; set; } 
 		public DateTime InitiationTime { get; set; }

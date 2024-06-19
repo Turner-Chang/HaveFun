@@ -1,5 +1,5 @@
 ﻿<link href="~/assets/css/profile_activitiesmanagement.css" rel="stylesheet" />
-<div class="tab-pane fade show active" id="gt3" role="tabpanel" aria-labelledby="gt3-tab">
+<div class="tab-pane fade" id="gt3" role="tabpanel" aria-labelledby="gt3-tab">
     <div id="activityPlatform">
 		<ul class="tags lab-ul justify-content-center">
 			<li>
@@ -12,6 +12,19 @@
 				<button class="default-btn" @@click="switchType('past')">{{ buttonText('past', '已結束的活動') }}</button>
 			</li>
 		</ul>
+		<!-- 彈出視窗們 -->
+		<!-- 取消參加活動視窗 -->
+		<div class="canelAttendBox">
+			<span>確定要退出活動嗎？</span><br><br>
+			<button class="btn btn-danger" @@click="cancelAttendActivity">是</button>
+			<button class="btn btn-outline-secondary" @@click="escCancelAttendBox">否</button>
+		</div>
+		<!-- 取消參加活動視窗 -->
+		<div class="deleteActBox">
+			<span>確定要刪除活動嗎？</span><br><br>
+			<button class="btn btn-danger" @@click="deleteActivity">是</button>
+			<button class="btn btn-outline-secondary" @@click="escdeleteActBox">否</button>
+		</div>
 		<!-- ================> 即將發生的活動 <================== -->
 		<div v-if="currentType === 'commingup'" v-for="act in commingupActivities" class="blog__item">
 			<div class="blog__inner">
@@ -36,11 +49,18 @@
 						<span class="infoTitle">活動內容：</span><br>
 						{{act.content}}<br>
 						<span class="infoTitle">注意事項：</span><br>
-						{{act.notes}}
+						{{act.notes}}<br><br>
+							<!-- Host與登入會員不相同才有取消參加活動按鈕 -->
+							<button v-if="act.hostId != loginUserId" class="default-btn" id="cancelAttend" @@click="showCancelAttend(act.id)">
+								取消參加活動
+							</button>
 					</div>
 					</details>
 				</div>
 			</div>
+		</div>
+		<div v-if="currentType === 'commingup' && commingupActivities.length === 0">
+			<p class="empty">目前沒有即將發生的活動</p>
 		</div>
 		<!-- ================> 編輯主辦活動內容 <================== -->
 		<div v-if="currentType === 'host'" v-for="act in hostActivities" class="blog__item">
@@ -66,11 +86,16 @@
 							<span class="infoTitle">活動內容：</span><br>
 							{{act.content}}<br>
 							<span class="infoTitle">注意事項：</span><br>
-							{{act.notes}}
+							{{act.notes}}<br></br>
+							<button class="default-btn" @@click="showDeleteAct(act.id)">刪除活動</button>
+							<button class="default-btn">修改活動內容</button>
 						</div>
 					</details>
 				</div>
 			</div>
+		</div>
+		<div v-if="currentType === 'host' && hostActivities.length === 0">
+			<p class="empty">目前沒有主辦活動可以顯示</p>
 		</div>
 		<!-- ================> 已經結束的活動 <================== -->
 		<div v-if="currentType === 'past'" v-for="act in pastActivities" class="blog__item">
@@ -102,6 +127,9 @@
 				</div>
 			</div>
 		</div>
+		<div v-if="currentType === 'past' && pastActivities.length === 0">
+			<p class="empty">目前沒有歷史活動可以顯示</p>
+		</div>
     </div>
 </div>
 <script>
@@ -110,25 +138,30 @@
 			return {
 				//先寫死的部分
 				baseAddress: "https://localhost:7152",
-				loginUserId: @ViewBag.UserId,
 				//先寫死的部分
+				loginUserId: @ViewBag.UserId,
 				currentType: "commingup",
 				commingupActivities: [],
 				hostActivities: [],
 				pastActivities: [],
 				activitiyType: [],
+				editActType: 0,
+				editActContent: "",
+				editTime:'',
+				waitingToCancel:0,
+				waitingToDelete:0,
 			}
 		},
 		methods: {
 			//取得登入者即將發生活動
-			getCommingupList(userId){
+			getCommingupList(userId) {
 				fetch(`api/personalActivities/GetCommingupActivities/${this.loginUserId}`)
 					.then(res => res.json())
 					.then(data => {
 						this.commingupActivities = data.map(activity => ({
-						...activity,
-						expandState: false
-						})); 
+							...activity,
+							expandState: false
+						}));
 					})
 					.catch(error => { console.log('fetch commingupActivities failed!') });
 			},
@@ -157,10 +190,10 @@
 					.catch(error => { console.log('fetch pastActivities failed!') });
 			},
 			//取得所有活動類型
-			getActivityTypeList(){
+			getActivityTypeList() {
 				fetch(`api/personalActivities/GetActivityType`)
 					.then(res => res.json())
-					.then(data => { 
+					.then(data => {
 						this.activitiyType = data;
 					})
 					.catch(error => { console.log('fetch activityType failed!') });
@@ -172,6 +205,75 @@
 			buttonText(type, text) {
 				return this.currentType === type ? '● ' + text : text;
 			},
+			//顯示退出活動視窗
+			showCancelAttend(id) {
+				event.preventDefault();
+				$('.canelAttendBox').css("display", "block");
+				this.waitingToCancel = id;
+			},
+			//取消顯示退出活動視窗
+			escCancelAttendBox() {
+				event.preventDefault();
+				$('.canelAttendBox').css("display", "none");
+				this.waitingToCancel = 0;
+			},
+			//取消參加活動
+			cancelAttendActivity(){
+				event.preventDefault();
+				let request = {
+					"Id": 0,
+					"ActivityId": this.waitingToCancel,
+					"UserId": this.loginUserId
+				};
+				fetch(`api/personalActivities/NotAttending`, {
+					method: 'DELETE',
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify(request)
+				})
+					.then(response => response.json())
+					.then(data => {
+						console.log(data);
+						this.getCommingupList(this.loginUserId);
+					})
+					.catch(error => {
+						console.log('fetch cancel attend activity failed!', error)
+					});
+				$('.canelAttendBox').css("display", "none");
+			},
+			//顯示刪除活動視窗
+			showDeleteAct(id) {
+				event.preventDefault();
+				$('.deleteActBox').css("display", "block");
+				this.waitingToDelete = id;
+			},
+			//取消顯示刪除活動視窗
+			escdeleteActBox() {
+				event.preventDefault();
+				$('.deleteActBox').css("display", "none");
+				this.waitingToDelete = 0;
+			},
+			//刪除活動
+			deleteActivity() {
+				event.preventDefault();
+				fetch(`api/personalActivities/DeleteActivity/${this.waitingToDelete}`, {
+					method: 'PUT',
+					headers: {
+						"Content-Type": "application/json"
+					}
+				})
+					.then(response => response.json())
+					.then(data => {
+						console.log(data);
+						this.getCommingupList(this.loginUserId);
+						this.getHostList(this.loginUserId);
+					})
+					.catch(error => {
+						console.log('fetch delete activity failed!', error)
+					});
+				$('.deleteActBox').css("display", "none");
+			},
         },
         mounted() {
 			this.getCommingupList(this.loginUserId);
@@ -179,6 +281,5 @@
 			this.getPastList(this.loginUserId);
 			this.getActivityTypeList();
         },
-    })
-        .mount('#activityPlatform');
+    }).mount('#activityPlatform');
 </script>

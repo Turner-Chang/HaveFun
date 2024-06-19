@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Profile\_Post - Dev_Back.cshtml" />
+    <Content Remove="Views\Profile\_Post - Dev_比對.cshtml" />
     <Content Remove="wwwroot\images\headshots\AVB%40gmail.comnousaki.jpg" />
   </ItemGroup>
 
