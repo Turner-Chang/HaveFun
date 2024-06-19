@@ -111,6 +111,7 @@
 <script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
 
 <script>
+    const baseAddress = 'https://localhost:7152';
     const app_TagManage = Vue.createApp({
         data() {
             return {
@@ -154,7 +155,7 @@
             },
             deleteLabel(id) {
                 if (!confirm("確定要刪除此標籤嗎？")) return;
-                axios.delete(`/api/labels/${id}`)
+                axios.delete(`/api/labelsManageApi/${id}`)
                     .then(() => {
                         this.labels = this.labels.filter(label => label.id !== id);
                         this.resetLabelForm();
@@ -165,7 +166,7 @@
             },
             submitLabelForm() {
                 if (this.isEditingLabel) {
-                    axios.put(`/api/labels/${this.labelForm.id}`, this.labelForm)
+                    axios.put(`/api/labelsManageApi/${this.labelForm.id}`, this.labelForm)
                         .then(response => {
                             const index = this.labels.findIndex(label => label.id === this.labelForm.id);
                             if (index !== -1) {
@@ -177,7 +178,7 @@
                             console.error("更新標籤時發生錯誤:", error);
                         });
                 } else {
-                    axios.post('/api/labels', this.labelForm)
+                    axios.post('/api/labelsManageApi', this.labelForm)
                         .then(response => {
                             this.labels.push(response.data);
                             this.resetLabelForm();
@@ -197,7 +198,7 @@
             },
             deleteCategory(id) {
                 if (!confirm("確定要刪除此標籤種類嗎？")) return;
-                axios.delete(`/api/categories/${id}`)
+                axios.delete(`/api/labelCategoriesManageApi/${id}`)
                     .then(() => {
                         this.categories = this.categories.filter(category => category.id !== id);
                         this.labels = this.labels.filter(label => label.categoryId !== id);
@@ -209,7 +210,7 @@
             },
             submitCategoryForm() {
                 if (this.isEditingCategory) {
-                    axios.put(`/api/categories/${this.categoryForm.id}`, this.categoryForm)
+                    axios.put(`/api/labelCategoriesManageApi/${this.categoryForm.id}`, this.categoryForm)
                         .then(response => {
                             const index = this.categories.findIndex(category => category.id === this.categoryForm.id);
                             if (index !== -1) {
@@ -221,7 +222,7 @@
                             console.error("更新標籤種類時發生錯誤:", error);
                         });
                 } else {
-                    axios.post('/api/categories', this.categoryForm)
+                    axios.post('/api/labelCategoriesManageApi', this.categoryForm)
                         .then(response => {
                             this.categories.push(response.data);
                             this.resetCategoryForm();
@@ -237,14 +238,14 @@
             }
         },
         mounted() {
-            axios.get('/api/labels')
+            axios.get(`${baseAddress}/api/labelsManageApi`)
                 .then(response => {
                     this.labels = response.data;
                 })
                 .catch(error => {
                     console.error("加載標籤數據時發生錯誤:", error);
                 });
-            axios.get('/api/categories')
+            axios.get(`${baseAddress}/api/labelCategoriesManageApi`)
                 .then(response => {
                     this.categories = response.data;
                 })

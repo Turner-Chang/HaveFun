@@ -8,10 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using HaveFun.Models;
 using HaveFun.Common;
 using HaveFun.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HaveFun.Controllers.APIs
 {
-    [Route("api/UserInfo/[action]")]
+	[Authorize(AuthenticationSchemes = "Bearer,Cookies")]
+	[Route("api/UserInfo/[action]")]
     [ApiController]
     public class UserInfoApiController : ControllerBase
     {
@@ -30,7 +32,8 @@ namespace HaveFun.Controllers.APIs
         //拿資料
         public async Task<UserIfDTO> GetUserInfos(int id)
         {
-            var userInf = await _context.UserInfos
+			string userId = Request.Cookies["userId"];
+			var userInf = await _context.UserInfos
             .Where(u => u.Id == id) // 使用 Where 來過濾資料
             .Select(u => new UserIfDTO
             {
@@ -47,12 +50,32 @@ namespace HaveFun.Controllers.APIs
 
             return userInf;
         }
+        //GetUserInfo 找全部的user 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<UserIfDTO>>> GetUserInfo()
+        {
+            var userInfos = await _context.UserInfos
+                .Select(u => new UserIfDTO
+                {
+                    Id = u.Id, // Include the Id property
+                    Name = u.Name,
+                    Address = u.Address,
+                    PhoneNumber = u.PhoneNumber,
+                    Gender = u.Gender,
+                    BirthDay = u.BirthDay,
+                    Introduction = u.Introduction,
+                    Password = u.Password
+                })
+                .ToListAsync();
+            return userInfos;
+        }
 
         //GET: api/UserInfo/GetPicture/2
         [HttpGet("{id}")]
         public async Task<FileResult> GetPicture(int id)
         {
             UserInfo? user = await _context.UserInfos.FindAsync(id);
+            if (user == null) { return null; }
             string path = user.ProfilePicture;
             byte[] ImageContent = System.IO.File.ReadAllBytes(path);
             return File(ImageContent, "image/*");
