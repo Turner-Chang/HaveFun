@@ -247,7 +247,7 @@
             async getUserInfo() {
                 axios.post(`/api/Profile/GetUserInfor/${this.loginUserId}`)
                     .then(response => {
-                        console.log("getUserInfo response:", response.data);
+                        // console.log("getUserInfo response:", response.data);
                         this.userInfo = response.data;
                         this.setUserInfo();
                     })
