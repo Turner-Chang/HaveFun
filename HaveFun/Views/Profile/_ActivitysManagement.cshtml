@@ -1,6 +1,6 @@
 ﻿<link href="~/assets/css/profile_activitiesmanagement.css" rel="stylesheet" />
 <div class="tab-pane fade" id="gt3" role="tabpanel" aria-labelledby="gt3-tab">
-    <div id="activityPlatform">
+	<div id="activityPlatform">
 		<ul class="tags lab-ul justify-content-center">
 			<li>
 				<button class="default-btn" @@click="switchType('commingup')">{{ buttonText('commingup', '即將舉辦活動') }}</button>
@@ -19,12 +19,6 @@
 			<button class="btn btn-danger" @@click="cancelAttendActivity">是</button>
 			<button class="btn btn-outline-secondary" @@click="escCancelAttendBox">否</button>
 		</div>
-		<!-- 取消參加活動視窗 -->
-		<div class="deleteActBox">
-			<span>確定要刪除活動嗎？</span><br><br>
-			<button class="btn btn-danger" @@click="deleteActivity">是</button>
-			<button class="btn btn-outline-secondary" @@click="escdeleteActBox">否</button>
-		</div>
 		<!-- ================> 即將發生的活動 <================== -->
 		<div v-if="currentType === 'commingup'" v-for="act in commingupActivities" class="blog__item">
 			<div class="blog__inner">
@@ -37,30 +31,27 @@
 						<li><span><i class="fa-solid fa-users"></i> {{act.participant.length}} 位參加者</span></li>
 						<li><span><i class="fa-solid fa-map-location-dot"></i> 活動地點：{{act.location}}</span></li>
 					</ul>
-					<details @@toggle ="act.expandState = !act.expandState">
+					<details @@toggle="act.expandState = !act.expandState">
 						<summary>{{act.expandState? '隱藏詳細內容' : '展開詳細內容'}}</summary>
-					<div>
-						<span class="infoTitle">活動類型：</span>
-						{{act.type}}<br>
-						<span class="infoTitle">活動費用：</span>
-						{{act.amount}}元<br>
-						<span class="infoTitle">報名人數上限：</span>
-						{{act.max}}<br>
-						<span class="infoTitle">活動內容：</span><br>
-						{{act.content}}<br>
-						<span class="infoTitle">注意事項：</span><br>
-						{{act.notes}}<br><br>
+						<div>
+							<span class="infoTitle">活動類型：</span>
+							{{act.type}}<br>
+							<span class="infoTitle">活動費用：</span>
+							{{act.amount}}元<br>
+							<span class="infoTitle">報名人數上限：</span>
+							{{act.max}}<br>
+							<span class="infoTitle">活動內容：</span><br>
+							{{act.content}}<br>
+							<span class="infoTitle">注意事項：</span><br>
+							{{act.notes}}<br><br>
 							<!-- Host與登入會員不相同才有取消參加活動按鈕 -->
 							<button v-if="act.hostId != loginUserId" class="default-btn" id="cancelAttend" @@click="showCancelAttend(act.id)">
 								取消參加活動
 							</button>
-					</div>
+						</div>
 					</details>
 				</div>
 			</div>
-		</div>
-		<div v-if="currentType === 'commingup' && commingupActivities.length === 0">
-			<p class="empty">目前沒有即將發生的活動</p>
 		</div>
 		<!-- ================> 編輯主辦活動內容 <================== -->
 		<div v-if="currentType === 'host'" v-for="act in hostActivities" class="blog__item">
@@ -86,16 +77,11 @@
 							<span class="infoTitle">活動內容：</span><br>
 							{{act.content}}<br>
 							<span class="infoTitle">注意事項：</span><br>
-							{{act.notes}}<br></br>
-							<button class="default-btn" @@click="showDeleteAct(act.id)">刪除活動</button>
-							<button class="default-btn">修改活動內容</button>
+							{{act.notes}}
 						</div>
 					</details>
 				</div>
 			</div>
-		</div>
-		<div v-if="currentType === 'host' && hostActivities.length === 0">
-			<p class="empty">目前沒有主辦活動可以顯示</p>
 		</div>
 		<!-- ================> 已經結束的活動 <================== -->
 		<div v-if="currentType === 'past'" v-for="act in pastActivities" class="blog__item">
@@ -127,10 +113,7 @@
 				</div>
 			</div>
 		</div>
-		<div v-if="currentType === 'past' && pastActivities.length === 0">
-			<p class="empty">目前沒有歷史活動可以顯示</p>
-		</div>
-    </div>
+	</div>
 </div>
 <script>
 	const activityPlatform = Vue.createApp({
@@ -138,8 +121,8 @@
 			return {
 				//先寫死的部分
 				baseAddress: "https://localhost:7152",
-				//先寫死的部分
 				loginUserId: @ViewBag.UserId,
+				//先寫死的部分
 				currentType: "commingup",
 				commingupActivities: [],
 				hostActivities: [],
@@ -147,9 +130,7 @@
 				activitiyType: [],
 				editActType: 0,
 				editActContent: "",
-				editTime:'',
-				waitingToCancel:0,
-				waitingToDelete:0,
+				waitingToCancel: 0,
 			}
 		},
 		methods: {
@@ -211,14 +192,14 @@
 				$('.canelAttendBox').css("display", "block");
 				this.waitingToCancel = id;
 			},
-			//取消顯示退出活動視窗
+			//取消刪除貼文視窗
 			escCancelAttendBox() {
 				event.preventDefault();
 				$('.canelAttendBox').css("display", "none");
 				this.waitingToCancel = 0;
 			},
 			//取消參加活動
-			cancelAttendActivity(){
+			cancelAttendActivity() {
 				event.preventDefault();
 				let request = {
 					"Id": 0,
@@ -226,7 +207,7 @@
 					"UserId": this.loginUserId
 				};
 				fetch(`api/personalActivities/NotAttending`, {
-					method: 'DELETE',
+					method: 'Delete',
 					headers: {
 						"Content-Type": "application/json"
 					},
@@ -242,44 +223,14 @@
 					});
 				$('.canelAttendBox').css("display", "none");
 			},
-			//顯示刪除活動視窗
-			showDeleteAct(id) {
-				event.preventDefault();
-				$('.deleteActBox').css("display", "block");
-				this.waitingToDelete = id;
-			},
-			//取消顯示刪除活動視窗
-			escdeleteActBox() {
-				event.preventDefault();
-				$('.deleteActBox').css("display", "none");
-				this.waitingToDelete = 0;
-			},
-			//刪除活動
-			deleteActivity() {
-				event.preventDefault();
-				fetch(`api/personalActivities/DeleteActivity/${this.waitingToDelete}`, {
-					method: 'PUT',
-					headers: {
-						"Content-Type": "application/json"
-					}
-				})
-					.then(response => response.json())
-					.then(data => {
-						console.log(data);
-						this.getCommingupList(this.loginUserId);
-						this.getHostList(this.loginUserId);
-					})
-					.catch(error => {
-						console.log('fetch delete activity failed!', error)
-					});
-				$('.deleteActBox').css("display", "none");
-			},
-        },
-        mounted() {
+
+		},
+		mounted() {
 			this.getCommingupList(this.loginUserId);
 			this.getHostList(this.loginUserId);
 			this.getPastList(this.loginUserId);
 			this.getActivityTypeList();
-        },
-    }).mount('#activityPlatform');
+		},
+	})
+		.mount('#activityPlatform');
 </script>
