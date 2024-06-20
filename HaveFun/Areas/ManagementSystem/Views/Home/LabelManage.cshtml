@@ -119,6 +119,7 @@
                                 <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
                             </select>
                         </div>
+                        <div v-if="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
                         <button type="submit" class="btn btn-success" @@click="submitLabelForm">新增</button>
                         <button type="button" class="btn btn-secondary" @@click="hideLabelForm">取消</button>
                     </div>
@@ -141,6 +142,7 @@
                             <label for="category-name" class="form-label">種類名稱</label>
                             <input type="text" id="category-name" v-model="categoryForm.name" class="form-control" required />
                         </div>
+                        <div v-if="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
                         <button type="submit" class="btn btn-success" @@click="submitCategoryForm">新增</button>
                         <button type="button" class="btn btn-secondary" @@click="hideCategoryForm">取消</button>
                     </div>
@@ -175,7 +177,8 @@
                 showCategoryModal: false,
                 currentLabelPage: 1,
                 currentCategoryPage: 1,
-                itemsPerPage: 10
+                itemsPerPage: 10,
+                errorMessage: '', //儲存錯誤訊息
             };
         },
         computed: {
@@ -229,13 +232,18 @@
                     });
             },
             submitLabelForm() {
+                this.errorMessage = '';
                 axios.post(`${baseAddress}/api/LabelsManageApi`, this.labelForm)
                     .then(response => {
                         this.labels.push(response.data);
                         this.hideLabelForm();
                     })
                     .catch(error => {
-                        console.error("新增標籤時發生錯誤:", error);
+                        if (error.response && error.response.status === 409) {
+                            this.errorMessage = error.response.data.message;
+                        } else {
+                            console.error('新增標籤時發生錯誤', error);
+                        }
                     });
             },
             resetLabelForm() {
@@ -260,13 +268,16 @@
                     });
             },
             submitCategoryForm() {
+                this.errorMessage = '';
                 axios.post(`${baseAddress}/api/LabelCategoriesManageApi`, this.categoryForm)
                     .then(response => {
                         this.categories.push(response.data);
                         this.hideCategoryForm();
                     })
                     .catch(error => {
-                        console.error("新增標籤種類時發生錯誤:", error);
+                        if (error.response && error.response.status === 409) {
+                            this.errorMessage = error.response.data.message;
+                        } else { console.error("新增標籤種類時發生錯誤:", error); }                        
                     });
             },
             resetCategoryForm() {
