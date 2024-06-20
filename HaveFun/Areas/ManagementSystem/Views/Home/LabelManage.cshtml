@@ -1,136 +1,156 @@
 ﻿<div id="app_TagManage" class="container">
-        <h1 class="my-4">標籤和標籤種類管理</h1>
-        <div>
-        <button class="btn btn-success" @@click="showLabelForm('新增')">新增標籤</button>
-        <button class="btn btn-success" @@click="showCategoryForm('新增')">新增標籤種類</button>
-        </div>
-        
-        <!-- 標籤查詢 -->
-        <div class="mb-3">
-            <label for="label-query" class="form-label">查詢標籤</label>
-            <input type="text" id="label-query" v-model="labelQuery" class="form-control" placeholder="輸入標籤名稱">
-        </div>
-        
-        <!-- 標籤顯示 -->
-        <div class="table-responsive">
-            <h2>標籤</h2>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>名稱</th>
-                        <th>種類</th>
-                        <th>操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="label in filteredLabels" :key="label.id">
-                        <td>{{ label.id }}</td>
-                        <td>{{ label.name }}</td>
-                        <td>{{ getLabelCategoryName(label.categoryId) }}</td>
-                        <td>
-                            <button class="btn btn-primary" @@click="editLabel(label)">編輯</button>
-                            <button class="btn btn-danger" @@click="deleteLabel(label.id)">刪除</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        
-        <!-- 標籤種類查詢 -->
-        <div class="mb-3">
-            <label for="category-query" class="form-label">查詢標籤種類</label>
-            <input type="text" id="category-query" v-model="categoryQuery" class="form-control" placeholder="輸入標籤種類名稱">
-        </div>
-        
-        <!-- 標籤種類顯示 -->
-        <div class="table-responsive">
-            <h2>標籤種類</h2>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>名稱</th>
-                        <th>操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="category in filteredCategories" :key="category.id">
-                        <td>{{ category.id }}</td>
-                        <td>{{ category.name }}</td>
-                        <td>
-                            <button class="btn btn-primary" @@click="editCategory(category)">編輯</button>
-                            <button class="btn btn-danger" @@click="deleteCategory(category.id)">刪除</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-       
-        <!-- 新增/編輯標籤表單 -->
-        <div v-if="showLabelModal" class="modal show d-block" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div modal-header>
-                        <h2>{{ isEditingLabel ? '編輯標籤':'新增標籤'}}</h2>
-                        <button type="button" class="btn-close" @@click="hideLabelForm" ></button>
-                    </div>
-                    <div class="modal-body" >
-                    <div @@submit.prevent="submitLabelForm">
-                        <div class="mb-3" v-if="isEditingLabel">
-                            <label for="label-id" class="form-label">ID</label>
-                            <input type="text" id="label-id" v-model="labelForm.id" class="form-control" readonly>
-                        </div>
+    <h1 class="my-4">標籤和標籤種類管理</h1>
+
+    <!-- 標籤查詢 -->
+    <div class="mb-3">
+        <label for="label-query" class="form-label">查詢標籤</label>
+        <input type="text" id="label-query" v-model="labelQuery" class="form-control" placeholder="輸入標籤名稱">
+    </div>
+
+    <!-- 標籤顯示 -->
+    <div class="table-responsive">
+        <h2>標籤</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>名稱</th>
+                    <th>種類</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="label in paginatedLabels" :key="label.id">
+                    <td>{{ label.id }}</td>
+                    <td>{{ label.name }}</td>
+                    <td>{{ getLabelCategoryName(label.categoryId) }}</td>
+                    <td>
+                        <button class="btn btn-danger" @@click="deleteLabel(label.id)">刪除</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 分頁按鈕 -->
+        <nav aria-label="標籤分頁">
+            <ul class="pagination">
+                <li class="page-item" :class="{ disabled: currentLabelPage === 1 }">
+                    <button class="page-link" @@click="previousLabelPage" aria-label="上一頁">
+                        <span aria-hidden="true">&laquo; 上一頁</span>
+                    </button>
+                </li>
+                <li class="page-item" :class="{ disabled: currentLabelPage === totalLabelPages }">
+                    <button class="page-link" @@click="nextLabelPage" aria-label="下一頁">
+                        <span aria-hidden="true">下一頁 &raquo;</span>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- 新增標籤按鈕 -->
+        <button class="btn btn-success mt-3" @@click="showLabelForm">新增標籤</button>
+    </div>
+
+    <!-- 標籤種類查詢 -->
+    <div class="mb-3">
+        <label for="category-query" class="form-label">查詢標籤種類</label>
+        <input type="text" id="category-query" v-model="categoryQuery" class="form-control" placeholder="輸入標籤種類名稱">
+    </div>
+
+    <!-- 標籤種類顯示 -->
+    <div class="table-responsive">
+        <h2>標籤種類</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>名稱</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="category in paginatedCategories" :key="category.id">
+                    <td>{{ category.id }}</td>
+                    <td>{{ category.name }}</td>
+                    <td>
+                        <button class="btn btn-danger" @@click="deleteCategory(category.id)">刪除</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 分頁按鈕 -->
+        <nav aria-label="標籤種類分頁">
+            <ul class="pagination">
+                <li class="page-item" :class="{ disabled: currentCategoryPage === 1 }">
+                    <button class="page-link" @@click="previousCategoryPage" aria-label="上一頁">
+                        <span aria-hidden="true">&laquo; 上一頁</span>
+                    </button>
+                </li>
+                <li class="page-item" :class="{ disabled: currentCategoryPage === totalCategoryPages }">
+                    <button class="page-link" @@click="nextCategoryPage" aria-label="下一頁">
+                        <span aria-hidden="true">下一頁 &raquo;</span>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- 新增標籤種類按鈕 -->
+        <button class="btn btn-success mt-3" @@click="showCategoryForm">新增標籤種類</button>
+    </div>
+
+    <!-- 新增標籤表單 -->
+    <div v-if="showLabelModal" class="modal show d-block" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>新增標籤</h2>
+                    <button type="button" class="btn-close" @@click="hideLabelForm"></button>
+                </div>
+                <div class="modal-body">
+                    <div>
                         <div class="mb-3">
                             <label for="label-name" class="form-label">名稱</label>
                             <input type="text" id="label-name" v-model="labelForm.name" class="form-control" required />
                         </div>
                         <div class="mb-3">
                             <label for="label-category" class="form-label">種類</label>
-                            <select id="label-category" v-model="labelForm.categoryId" class="form-control" required >
-                            <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
+                            <select id="label-category" v-model="labelForm.categoryId" class="form-control" required>
+                                <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-success" @@click="submitLabelForm">{{ isEditingLabel ? '更新' : '新增' }}</button>
+                        <button type="submit" class="btn btn-success" @@click="submitLabelForm">新增</button>
                         <button type="button" class="btn btn-secondary" @@click="hideLabelForm">取消</button>
                     </div>
-                    </div>
                 </div>
-            </div>            
+            </div>
         </div>
-        
-        <!-- 新增/編輯標籤種類表單 -->
+    </div>
+
+    <!-- 新增標籤種類表單 -->
     <div v-if="showCategoryModal" class="modal show d-block" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2>{{ isEditingCategory ? '編輯種類標籤':'新增種類標籤' }}</h2>
-                    <button type="button" class="btn-close" @@click="hideCategoryForm" ></button>
+                    <h2>新增標籤種類</h2>
+                    <button type="button" class="btn-close" @@click="hideCategoryForm"></button>
                 </div>
                 <div class="modal-body">
-                    <div @@submit.prevent="submitCategoryForm">
-                        <div class="mb-3" v-if="isEditingCategory">
-                            <label for="category-id" class="form-label">ID</label>
-                            <input type="text" id="category-id" v-model="categoryForm.id" class="form-content" readonly />
-                        </div>
+                    <div>
                         <div class="mb-3">
                             <label for="category-name" class="form-label">種類名稱</label>
-                            <input type="text" id="category-name" v-model="categoryForm.name" class="form-content" required />
+                            <input type="text" id="category-name" v-model="categoryForm.name" class="form-control" required />
                         </div>
-                        <button type="submit" class="btn btn-success" @@click="submitCategoryForm">{{ isEditingCategory ? '更新' : '新增' }}</button>
+                        <button type="submit" class="btn btn-success" @@click="submitCategoryForm">新增</button>
                         <button type="button" class="btn btn-secondary" @@click="hideCategoryForm">取消</button>
                     </div>
                 </div>
             </div>
-        </div>  
+        </div>
     </div>
 </div>
 
-<style>
-    .button + .button {
-        margin-left: 12px;
-    }
-</style>
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
@@ -143,21 +163,20 @@
                 labels: [],
                 categories: [],
                 labelForm: {
-                    id: '',
                     name: '',
                     categoryId: ''
                 },
                 categoryForm: {
-                    id: '',
                     name: ''
                 },
-                isEditingLabel: false,
-                isEditingCategory: false,
                 labelQuery: '',
                 categoryQuery: '',
                 showLabelModal: false,
-                showCategoryModal: false
-            }
+                showCategoryModal: false,
+                currentLabelPage: 1,
+                currentCategoryPage: 1,
+                itemsPerPage: 10
+            };
         },
         computed: {
             filteredLabels() {
@@ -169,6 +188,22 @@
                 return this.categories.filter(category =>
                     category.name.toLowerCase().includes(this.categoryQuery.toLowerCase())
                 );
+            },
+            paginatedLabels() {
+                const start = (this.currentLabelPage - 1) * this.itemsPerPage;
+                const end = start + this.itemsPerPage;
+                return this.filteredLabels.slice(start, end);
+            },
+            paginatedCategories() {
+                const start = (this.currentCategoryPage - 1) * this.itemsPerPage;
+                const end = start + this.itemsPerPage;
+                return this.filteredCategories.slice(start, end);
+            },
+            totalLabelPages() {
+                return Math.ceil(this.filteredLabels.length / this.itemsPerPage);
+            },
+            totalCategoryPages() {
+                return Math.ceil(this.filteredCategories.length / this.itemsPerPage);
             }
         },
         methods: {
@@ -176,112 +211,86 @@
                 const category = this.categories.find(c => c.id === categoryId);
                 return category ? category.name : '未知';
             },
-            showLabelForm(action) {
+            showLabelForm() {
                 this.resetLabelForm();
                 this.showLabelModal = true;
-                this.isEditingLabel = action === '編輯';
             },
             hideLabelForm() {
                 this.showLabelModal = false;
             },
-            editLabel(label) {
-                this.labelForm = { ...label };
-                this.showLabelForm('編輯');
-            },
             deleteLabel(id) {
                 if (!confirm("確定要刪除此標籤嗎？")) return;
-                axios.delete(`${baseAddress}/api/labelsManageApi/${id}`)
+                axios.delete(`${baseAddress}/api/LabelsManageApi/${id}`)
                     .then(() => {
                         this.labels = this.labels.filter(label => label.id !== id);
-                        this.resetLabelForm();
                     })
                     .catch(error => {
                         console.error("刪除標籤時發生錯誤:", error);
                     });
             },
             submitLabelForm() {
-                if (this.isEditingLabel) {
-                    axios.put(`${baseAddress}/api/LabelsManageApi/${this.labelForm.id}`, this.labelForm)
-                        .then(response => {
-                            const index = this.labels.findIndex(label => label.id === this.labelForm.id);
-                            if (index !== -1) {
-                                this.labels.splice(index, 1, response.data);
-                            }
-                            this.resetLabelForm();
-                        })
-                        .catch(error => {
-                            console.error("更新標籤時發生錯誤:", error);
-                        });
-                } else {
-                    // const newLabel = { ...this.labelForm };
-                    // delete newLabel.id;
-                    axios.post(`${baseAddress}/api/LabelsManageApi`, this.labelForm)
-                        .then(response => {
-                            this.labels.push(response.data);
-                            this.hideLabelForm();
-                        })
-                        .catch(error => {
-                            console.error("新增標籤時發生錯誤:", error);
-                        });
-                }
+                axios.post(`${baseAddress}/api/LabelsManageApi`, this.labelForm)
+                    .then(response => {
+                        this.labels.push(response.data);
+                        this.hideLabelForm();
+                    })
+                    .catch(error => {
+                        console.error("新增標籤時發生錯誤:", error);
+                    });
             },
             resetLabelForm() {
-                this.labelForm = { id: '', name: '', categoryId: '' };
-                this.isEditingLabel = false;
+                this.labelForm = { name: '', categoryId: '' };
             },
-            showCategoryForm(action) {
+            showCategoryForm() {
                 this.resetCategoryForm();
                 this.showCategoryModal = true;
-                this.isEditingCategory = action === '編輯';
             },
             hideCategoryForm() {
                 this.showCategoryModal = false;
             },
-            editCategory(category) {
-                this.categoryForm = { ...category };
-                this.showCategoryForm('編輯');
-            },
             deleteCategory(id) {
                 if (!confirm("確定要刪除此標籤種類嗎？")) return;
-                    axios.delete(`${baseAddress}/api/labelCategoriesManageApi/${id}`)
+                axios.delete(`${baseAddress}/api/LabelCategoriesManageApi/${id}`)
                     .then(() => {
                         this.categories = this.categories.filter(category => category.id !== id);
                         this.labels = this.labels.filter(label => label.categoryId !== id);
-                        this.resetCategoryForm();
                     })
                     .catch(error => {
                         console.error("刪除標籤種類時發生錯誤:", error);
                     });
             },
             submitCategoryForm() {
-                if (this.isEditingCategory) {
-                    axios.put(`${baseAddress}/api/labelCategoriesManageApi/${this.categoryForm.id}`, this.categoryForm)
-                        .then(response => {
-                            const index = this.categories.findIndex(category => category.id === this.categoryForm.id);
-                            if (index !== -1) {
-                                this.categories.splice(index, 1, response.data);
-                            }
-                                this.hideCategoryForm();
-                        })
-                        .catch(error => {
-                            console.error("更新標籤種類時發生錯誤:", error);
-                        });
-                } else {
-                    // const newCategory = { ...this.categoryForm };
-                    // delete newCategory.id;
-                    axios.post(`${baseAddress}/api/labelCategoriesManageApi`, this.categoryForm)
-                        .then(response => {
-                            this.categories.push(response.data);
-                            this.hideCategoryForm();
-                        })
-                        .catch(error => {
-                            console.error("新增標籤種類時發生錯誤:", error);
-                        });
-                }
+                axios.post(`${baseAddress}/api/LabelCategoriesManageApi`, this.categoryForm)
+                    .then(response => {
+                        this.categories.push(response.data);
+                        this.hideCategoryForm();
+                    })
+                    .catch(error => {
+                        console.error("新增標籤種類時發生錯誤:", error);
+                    });
             },
             resetCategoryForm() {
-                this.categoryForm = { id: '', name: '' };
-                this.isEditingCategory = false;
+                this.categoryForm = { name: '' };
+            },
+            nextLabelPage() {
+                if (this.currentLabelPage < this.totalLabelPages) {
+                    this.currentLabelPage++;
+                }
+            },
+            previousLabelPage() {
+                if (this.currentLabelPage > 1) {
+                    this.currentLabelPage--;
+                }
+            },
+            nextCategoryPage() {
+                if (this.currentCategoryPage < this.totalCategoryPages) {
+                    this.currentCategoryPage++;
+                }
+            },
+            previousCategoryPage() {
+                if (this.currentCategoryPage > 1) {
+                    this.currentCategoryPage--;
+                }
             }
         },
         mounted() {
