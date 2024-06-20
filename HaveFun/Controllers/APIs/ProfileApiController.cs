@@ -21,6 +21,26 @@ namespace HaveFun.Controllers.APIs
             _context = context;
         }
 
+        // Put: api/Profile/GetUserInfor
+        //[HttpPut("{loginUserId}")]
+        //public async Task<IEnumerable<UserInfo>> GetUserInfor(int loginUserId)
+        //{
+        //    var userInfoData = await _context.UserInfos
+        //        .Where(u => u.Id == loginUserId)
+        //        .ToListAsync();
+        //    return userInfoData;
+        //}
+
+        [HttpPost("{loginUserId}")]
+        public async Task<IEnumerable<UserInfo>> GetUserInfor([FromRoute] int loginUserId)
+        {
+            // 根据 profileId 和 loginUserId 进行查询
+            var userInfoData = await _context.UserInfos
+                .Where(u => u.Id == loginUserId)
+                .ToListAsync();
+            return userInfoData;
+        }
+
         // GET: api/Profile/GetWhoLikeList
         [HttpGet]
         public async Task<IEnumerable<WhoLikeListDTO>> GetWhoLikeList()
@@ -129,7 +149,7 @@ namespace HaveFun.Controllers.APIs
 
         //POST: api/Profile/AddPost
         [HttpPost]
-        public async Task<ActionResult<PostsDTO>> AddPost(PostsDTO postDto)
+        public async Task<ActionResult<PostsDTO>> AddPost([FromBody]PostsDTO postDto)
         {
             if (!ModelState.IsValid)
             {

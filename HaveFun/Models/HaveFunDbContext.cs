@@ -49,6 +49,7 @@ namespace HaveFun.Models
         public DbSet<SwipeHistory> SwipeHistories { get; set; }
 
         public DbSet<UserReview> UserReviews { get; set; }
+        public DbSet<ConId_UserId> ConId_UserId { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
