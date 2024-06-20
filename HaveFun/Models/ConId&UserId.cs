@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
         public virtual UserInfo User { get; set; }
-        public int connId { get; set; }
+        public string connId { get; set; }
 
 
     }
