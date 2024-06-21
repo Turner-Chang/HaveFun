@@ -104,10 +104,11 @@
 				<!-- 編輯活動內容 -->
 				<div v-if="act.inEdit === true" class="blog__content">
 					<form>
-					<img src="assets/images/blog/10.jpg" alt="blog"><br><br>
-					<button class="btn btn-outline-secondary">修改活動封面</button><br><br>
+					<img src="assets/images/blog/10.jpg" class="imgPreview"><br>
+					<input type="file" v-model="EditPic" @@change="previewPic" accept="image/*">
+					<button v-if="editPic != null" @@click="removeEditPic">移除</button><br>
 					<span> 活動名稱：</span>
-						<input :class="['form-control',{'is-invalid':errorStyle.title}]" maxlength="50" v-model="editTitle">
+					<input :class="['form-control',{'is-invalid':errorStyle.title}]" maxlength="50" v-model="editTitle">
 					<div class="invalid-feedback">活動標題為必填</div>
 					<span>活動時間：</span>
 					<input :class="['form-control',{'is-invalid':errorStyle.activityTime}]" type="datetime-local" v-model="editActivityTime">
@@ -116,15 +117,16 @@
 					<input :class="['form-control',{'is-invalid':errorStyle.location}]"  maxlength="200" v-model="editLocation">
 					<div class="invalid-feedback">活動地點為必填</div>
 					<span>活動類型：</span>
-					<select class="form-select" id="inputState" v-model="editActType">
-					<option disabled selected value="0">CHOOSE....</option>
+					<select :class="['form-control',{'is-invalid':errorStyle.type}]" id="inputState" v-model="editActType">
+					<option selected value=0 >CHOOSE....</option>
 					<option v-for="type in activitiyType" :value="type.id">{{type.typeName}}</option>
 					</select>
+					<div class="invalid-feedback">請選擇活動類別</div>
 					<span>活動開始報名時間：</span>
 					<input :class="['form-control',{'is-invalid':errorStyle.registrationTime}]" type="datetime-local" v-model="editRegistrationTime">
 					<div class="invalid-feedback">請輸入有效時間</div>
 					<span>活動報名截止時間：</span>
-						<input :class="['form-control',{'is-invalid':errorStyle.deadlineTime}]" type="datetime-local" v-model="editDeadlineTime">
+					<input :class="['form-control',{'is-invalid':errorStyle.deadlineTime}]" type="datetime-local" v-model="editDeadlineTime">
 					<div class="invalid-feedback">請輸入有效時間</div>
 					<span>活動費用：</span><br>
 					<input type="number" :class="['form-control',{'is-invalid':errorStyle.amount}]" v-model="editAmount">　元<br>
@@ -195,6 +197,7 @@
 				pastActivities: [],
 				activitiyType: [],
 				wannaEdit:0,
+				editPic:null,
 				editTitle:'',
 				editActivityTime:'',
 				editLocation:'',
@@ -216,7 +219,8 @@
 					registrationTime: false,
 					deadlineTime: false,
 					amount: false,
-					max: false
+					max: false,
+					type: false
 				},
 				currentDateTime: new Date().toISOString().slice(0, 16),
 				min: 0,
@@ -250,6 +254,9 @@
 			validMax(newVal, oldVal) {
 				this.errorStyle.max = !newVal;
 			},
+			validType(newVal, oldVal) {
+				this.errorStyle.type = !newVal;
+			},
 		},
 		computed: {
 			hasTitle(){
@@ -279,6 +286,9 @@
 			validMax() {
 				return this.editMax > this.min;
 			},
+			validType() {
+				return this.editActType > this.min;
+			}
 		},
 		methods: {
 			//取得登入者即將發生活動
@@ -422,6 +432,7 @@
 			cancelToEdit(act) {
 				act.inEdit = false;
 				this.wannaEdit = 0;
+				this.editPic = null;
 				this.editTitle = '';
 				this.editActivityTime = '';
 				this.editLocation = '';
@@ -436,6 +447,71 @@
 			//修改活動內容
 			editActivity(act) {
 				act.inEdit = false;
+				let formData = new FormData();
+				formData.append('UserId', this.loginUserId);
+				formData.append('ActivityId', act.id);
+				formData.append('Type', this.editActType);
+				formData.append('Title', this.editTitle);
+				formData.append('Content', this.editActContent);
+				formData.append('Notes', this.editNote);
+				formData.append('Amount', this.editAmount);
+				formData.append('Max', this.editMax);
+				formData.append('Location', this.editLocation);
+				formData.append('RegistrationTime', this.editRegistrationTime);
+				formData.append('DeadlineTime', this.editDeadlineTime);
+				formData.append('ActivityTime', this.editActivityTime);
+				formData.append('editPic', this.editPic);
+				fetch(`api/personalActivities/EditActivity/${act.id}`, {
+					method:'PUT',
+					body: formData
+				})
+				.then(response => response.json())
+				.then(data => {
+					console.log('成功', data);
+					act.inEdit = false;
+					this.wannaEdit = 0;
+					this.editPic = null;
+					this.editTitle = '';
+					this.editActivityTime = '';
+					this.editLocation = '';
+					this.editActType = 0;
+					this.editRegistrationTime = '';
+					this.editDeadlineTime = '';
+					this.editAmount = 0;
+					this.editMax = 0;
+					this.editActContent = '';
+					this.editNote = '';
+					this.getCommingupList(this.loginUserId);
+					this.getHostList(this.loginUserId);
+				})
+				.catch(err => {
+					console.log('fetch edit activity failed!', err);
+				})
+			},
+			//修改活動圖片預覽
+			previewPic() {
+				const allowType = "image.*";
+				let file = event.target.files[0];
+				if (file.type.match(allowType)) {
+					var reader = new FileReader();
+					reader.onload = function () {
+						this.editPic = this.result;
+						let blob = new Blob([this.editPic], { type: "image/jpeg" });
+						let uriCreator = window.URL || wondow.webkitURL;
+						let imgUrl = uriCreator.createObjectURL(blob);
+						$('.imgPreview').attr("src", imgUrl);
+					};
+					reader.readAsArrayBuffer(file);
+					this.editPic = file
+				} else {
+					this.editPic = null;
+					$('.imgPreview').attr("src", null);
+				}
+			},
+			//移除選的圖片
+			removeEditPic() {
+				this.editPic = null;
+				$('.imgPreview').attr("src", null);
 			},
 		},
 		mounted() {
