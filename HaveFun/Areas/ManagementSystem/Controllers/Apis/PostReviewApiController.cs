@@ -45,6 +45,22 @@ namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
             catch (Exception e) { return "Review狀態更新失敗"; }
             return "Review狀態更新成功";
         }
+
+        [HttpGet]
+        public async Task<int> Count() {
+            var ReviewCouut =  _context.PostReviews.Where(r=>r.ProcessingStstus==0).Count();
+            return ReviewCouut;
+        }
+
+
+
+
+
+
+
+
+
+
         [HttpDelete]
         public async Task<string> Delete(int Id)
         {

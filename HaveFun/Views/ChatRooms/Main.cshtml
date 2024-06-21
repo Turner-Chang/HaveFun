@@ -121,137 +121,134 @@
 </div>
 
 @section Scripts
-{
+{  <script>
+    // 定義全域變量
+           let chatHistory = [];
+           window.currentUserId = 1; // 預設值
+           window.otherUserId = 2;   // 預設值
+           window.updateUserIds = updateUserIds;
+           function updateUserIds(newCurrentUserId, newOtherUserId) {
+               window.currentUserId = newCurrentUserId;
+               window.otherUserId = newOtherUserId;
+               fetchChatHistory(); // 重新加載聊天歷史
+               console.log(`User IDs updated. Current User: ${window.currentUserId}, Other User: ${window.otherUserId}`);
+           }
+           // 更新聊天歷史的函數
+           function updateChatHistory() {
+               const chatHistoryContainer = document.querySelector('.chat-history ul');
+               chatHistoryContainer.innerHTML = '';
+               chatHistory.sort((a, b) => new Date(a.time) - new Date(b.time)).forEach(chat => {
+                   const chatItem = document.createElement('li');
+                   chatItem.className = 'clearfix';
+                   chatItem.innerHTML = `
+                       <div class="message-data ${chat.type === 'my' ? 'text-right' : ''}">
+                           <span class="message-data-time">${chat.time}</span>
+                           ${chat.img ? `<img src="${chat.img}" alt="avatar">` : ''}
+                       </div>
+                       <div class="message ${chat.type === 'my' ? 'my-message' : 'other-message float-right'}">
+                           ${chat.message}
+                       </div>
+                   `;
+                   chatHistoryContainer.appendChild(chatItem);
+               });
+           }
 
-    <script>
-        var chatHistory = [];
-       // Function to update chat history
-       function updateChatHistory() {
-           var chatHistoryContainer = document.querySelector('.chat-history ul');
-           chatHistoryContainer.innerHTML = '';
-           chatHistory.forEach(chat => {
-               var chatItem = document.createElement('li');
-               chatItem.className = 'clearfix';
-               var chatContent = `
-    <div class="message-data ${chat.type === 'my' ? 'text-right' : ''}">
-        <span class="message-data-time">${chat.time}</span>
-        ${chat.img ? `<img src="${chat.img}" alt="avatar">` : ''}
-    </div>
-    <div class="message ${chat.type === 'my' ? 'my-message' : 'other-message float-right'}">
-        ${chat.message}
-    </div>
-               `;
-               chatItem.innerHTML = chatContent;
-               chatHistoryContainer.appendChild(chatItem);
+           // 使用 axios 獲取聊天歷史
+           async function fetchChatHistory() {
+               try {
+                   const [response1, response2] = await Promise.all([
+                       axios.get(`/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/${window.otherUserId}/${window.currentUserId}`),
+                       axios.get(`/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/${window.currentUserId}/${window.otherUserId}`)
+                   ]);
+
+                   const processMessages = (data, isOther) => data.map(message => ({
+                       time: moment(message.createTime).format("h:mm A, MMMM D"),
+                       img: `/api/UserInfo/GetPicture/${message.user1Id}`,
+                       message: message.messageText,
+                       type: isOther ? "other" : "my"
+                   }));
+
+                   chatHistory = [
+                       ...processMessages(response1.data, true),
+                       ...processMessages(response2.data, false)
+                   ];
+
+                   updateChatHistory();
+               } catch (error) {
+                   console.error('獲取聊天歷史時出錯:', error);
+               }
+           }
+
+           // SignalR 連接設置
+           const connection = new signalR.HubConnectionBuilder()
+               .withUrl("/chatHub")
+               .build();
+
+           connection.on("ReceiveMessage", function (user, message) {
+               // 只有當消息不是來自當前用戶時才添加
+               if (user != window.currentUserId) {
+                   const chat = {
+                       time: moment().format("h:mm A, MMMM D"),
+                       img: `/api/UserInfo/GetPicture/${window.otherUserId}`,
+                       message: message,
+                       type: "other"
+                   };
+                   chatHistory.push(chat);
+                   updateChatHistory();
+               }
            });
-       }
 
-       // Fetch chat history from API
-       fetch('/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/2/1')
-           .then(response => response.json())
-           .then(data => {
-               data.forEach(message => {
-                   const newChatMessage = {
-                       time: moment(message.createTime).format("h:mm A, MMMM D"),
-                       img: `/api/UserInfo/GetPicture/${message.user1Id}`,
-                       message: message.messageText,
-                       type: message.user1Id === 2 ? "other" : "my" // Set type based on user1Id
-                   };
-                   chatHistory.push(newChatMessage);
-               });
+           connection.on("SomeOneOnline", (connid) => {
+               console.log(`有人連接，ID: ${connid}`);
+           });
+
+           connection.on("SomeOneOffline", (connid) => {
+               console.log(`有人斷開連接，ID: ${connid}`);
+           });
+
+           connection.start().catch(err => console.error(err.toString()));
+
+           // 發送消息
+           document.getElementById("sendButton").addEventListener("click", async (event) => {
+               event.preventDefault();
+               const messageText = document.getElementById("messageInput").value.trim();
+               if (!messageText) return;
+
+               // 立即將消息添加到聊天歷史
+               const newChat = {
+                   time: moment().format("h:mm A, MMMM D"),
+                   img: `/api/UserInfo/GetPicture/${window.currentUserId}`,
+                   message: messageText,
+                   type: "my"
+               };
+               chatHistory.push(newChat);
                updateChatHistory();
-           })
-           .catch(error => console.error('Error fetching chat history:', error));
 
-       fetch('/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/1/2')
-           .then(response => response.json())
-           .then(data => {
-               data.forEach(message => {
-                   const newChatMessage = {
-                       time: moment(message.createTime).format("h:mm A, MMMM D"),
-                       img: `/api/UserInfo/GetPicture/${message.user1Id}`,
-                       message: message.messageText,
-                       type: message.user1Id === 1 ? "my" : "other" // Set type based on user1Id
-                   };
-                   chatHistory.push(newChatMessage);
-               });
-               updateChatHistory();
-           })
-           .catch(error => console.error('Error fetching chat history:', error));
+               try {
+                   // 發送消息到 SignalR hub
+                   await connection.invoke("SendMessage", currentUserId.toString(), messageText);
 
-       // Initial call to update chat history
-       updateChatHistory();
+                   // 發送 POST 請求保存消息
+                   const response = await axios.post('/api/ChatRoom/ChatRoomsApi', {
+                       User1Id: window.currentUserId,
+                       User2Id: window.otherUserId,
+                       MessageText: messageText,
+                       CreateTime: new Date(),
+                       IsRead: false
+                   });
 
-       // SignalR connection setup
-       const connection = new signalR.HubConnectionBuilder()
-           .withUrl("/chatHub")
-           .build();
+                   console.log('消息已保存:', response.data);
 
-       connection.on("ReceiveMessage", function (user, message) {
-           const msg = message;
-           const chat = {
-               time: moment().format("h:mm A, MMMM D"),
-               img: "/api/UserInfo/GetPicture/1",
-               message: msg,
-               type: "my"
-           };
-           chatHistory.push(chat);
-           updateChatHistory();
-       });
+                   // 清空輸入框
+                   document.getElementById("messageInput").value = '';
+               } catch (error) {
+                   console.error('發送/保存消息時出錯:', error);
+               }
+           });
 
-       connection.on("SomeOneOnline", (connid) => {
-           console.log(`Someone connected with ID: ${connid}`);
-       });
-
-       connection.on("SomeOneOffline", (connid) => {
-           console.log(`Someone disconnected with ID: ${connid}`);
-       });
-
-       connection.start().catch(err => console.error(err.toString()));
-
-       document.getElementById("sendButton").addEventListener("click", event => {
-           const user1Id = 1; // Replace with the current user's ID
-           const user2Id = 2; // Replace with the recipient's ID
-           const messageText = document.getElementById("messageInput").value;
-           const user = "";
-           const message = document.getElementById("messageInput").value;
-           connection.invoke("SendMessage", user, message).catch(err => console.error(err.toString()));
-           document.getElementById("messageInput").value = '';
-
-           // Create data object for POST request
-           const data = {
-               User1Id: user1Id,
-               User2Id: user2Id,
-               MessageText: messageText,
-               CreateTime: new Date(),
-               IsRead: false
-           };
-
-           // Send POST request to the server
-           fetch('/api/ChatRoom/ChatRoomsApi', {
-               method: 'POST',
-               headers: {
-                   'Content-Type': 'application/json'
-               },
-               body: JSON.stringify(data)
-           })
-               .then(response => {
-                   if (response.ok) {
-                       return response.text();
-                   } else {
-                       throw new Error('Network response was not ok.');
-                   }
-               })
-               .then(responseText => {
-                   console.log(responseText); // Handle server response (if needed)
-                   document.getElementById("messageInput").value = ''; // Clear input field
-               })
-               .catch(error => {
-                   console.error('Error saving message:', error);
-               });
-           event.preventDefault();
-       });
-       </script>
+           // 初始化
+           fetchChatHistory();
+    </script>
 }
 
     
