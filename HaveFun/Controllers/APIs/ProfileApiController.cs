@@ -21,20 +21,10 @@ namespace HaveFun.Controllers.APIs
             _context = context;
         }
 
-        // Put: api/Profile/GetUserInfor
-        //[HttpPut("{loginUserId}")]
-        //public async Task<IEnumerable<UserInfo>> GetUserInfor(int loginUserId)
-        //{
-        //    var userInfoData = await _context.UserInfos
-        //        .Where(u => u.Id == loginUserId)
-        //        .ToListAsync();
-        //    return userInfoData;
-        //}
-
+        // Post: api/Profile/loginUserId
         [HttpPost("{loginUserId}")]
         public async Task<IEnumerable<UserInfo>> GetUserInfor([FromRoute] int loginUserId)
         {
-            // 根据 profileId 和 loginUserId 进行查询
             var userInfoData = await _context.UserInfos
                 .Where(u => u.Id == loginUserId)
                 .ToListAsync();
@@ -84,7 +74,7 @@ namespace HaveFun.Controllers.APIs
 
         // Get: api/Profile/GetProfilePicture
         [HttpGet("{id}")]
-        public async Task<FileResult> GetPicture(int id)
+        public async Task<FileResult> GetPicture([FromRoute]int id)
         {
             UserInfo? user = await _context.UserInfos.FindAsync(id);
             string path = user.ProfilePicture;
