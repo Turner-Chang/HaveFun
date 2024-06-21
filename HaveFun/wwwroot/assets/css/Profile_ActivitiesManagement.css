@@ -4,8 +4,10 @@
     line-height: 1.6;
     margin:10px;
 }
+.blog__content > img {
+    margin-bottom:10px;
+}
 summary {
-    list-style: none;
     margin: 5px;
     text-align: center;
 }
@@ -57,7 +59,17 @@ summary {
     align-content: center;
     text-align: center;
 }
+.deleteActBox > button {
+    margin: 20px;
+}
+.editNumber{
+    width: 20%;
+    display:inline;
+    height: 25px
+}
+textarea{
+    width:100%;
+    overflow: auto;
+    word-break: break-all;
+}
 
-    .deleteActBox > button {
-        margin: 20px;
-    }

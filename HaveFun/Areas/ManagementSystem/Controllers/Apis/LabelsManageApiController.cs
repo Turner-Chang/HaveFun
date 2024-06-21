@@ -95,6 +95,12 @@ namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
         [HttpPost]
         public async Task<ActionResult<LabelManageDTO>> CreateLabel(LabelManageDTO labelDTO)
         {
+            //檢查標籤是否存在
+            var existingLabel = await _context.Labels.FirstOrDefaultAsync(l => l.Name == labelDTO.Name);
+            if (existingLabel != null) {
+                //返回錯誤訊息
+                return Conflict(new { message = "此標籤已存在" });
+            }
             var label = new Label
             {
                 Name = labelDTO.Name,
