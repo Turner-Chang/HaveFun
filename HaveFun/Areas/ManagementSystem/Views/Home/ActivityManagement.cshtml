@@ -1,19 +1,18 @@
 ﻿<div id="ActivityCheckApp">
-    <div class="container row  p-lg-10 p-5 text-center border-2">
-        <h1>活動貼文管理</h1>
+    <div class="container row  p-5 p text-center border-2 m-auto">
+        <h1>檢舉活動貼文管理</h1>
         <hr />
 
         <div class="col-12">
-            <span class="col-12 col-md-2  m-2 ">處理狀態示意: </span>
-            <label class=" text-bg-warning  col-12 col-md-2  m-2">申訴中-0</label>
-
-            <label class="text-bg-secondary col-12 col-md-2  m-2">已封鎖--1</label>
-            <label class="text-bg-success col-12 col-md-2  m-2">無須封鎖-2</label>
-
+            <span class="col-12 col-md-2  m-2 ">處理狀態顏色示意: </span>
+            <label class=" text-bg-warning  col-12 col-md-2  m-2">申訴中</label>  
+            <label class="text-bg-secondary col-12 col-md-2  m-2">已封鎖</label>
+            <label class="text-bg-success col-12 col-md-2  m-2">無須封鎖</label> 
+            @* /*review status 0,1,2*/ *@
         </div>
         <hr />
-        <div class="table-responsive-md">
-            <table class="table table-secondary">
+        <div class="table-responsive">
+            <table class="table table-secondary ">
                 <thead class="table-active">
                     <tr>
                         <th scope="col">被檢舉活動Id</th>
@@ -45,10 +44,15 @@
             </table>
 
         </div>
+
         <div>
             <button class="btn btn-secondary m-3" @@click="UpperFive()">上五筆</button>
             <button class="btn btn-secondary m-3" @@click="LowerFive()">下五筆</button>
         </div>
+
+        <template v-if="reports.length==0"><h1>沒有被檢舉資料</h1> </template>
+
+
         <div class="  text-light bg-secondary">
             <label>檢舉項目:</label> <br />
             <label v-for="c in complaint" class="form-label col-12 col-md-2 col-sm-6">{{c.complaintCategoryId}} . {{c.complaintCategoryName}}</label>
@@ -64,9 +68,9 @@
          role="dialog"
          aria-labelledby="modalTitleId"
          aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered "
              role="document">
-            <div class="modal-content">
+            <div class="modal-content ">
                 <div class="modal-header " style="background-color:coral;">
                     <span style="width:150px;"></span>
                     <h5 class="modal-title " id="modalTitleId">
@@ -78,7 +82,7 @@
                             aria-label="Close">
                     </button>
                 </div>
-                <div class="modal-body row lh-lg">
+                <div class="modal-body row lh-lg overflow-auto">
                     <div>
                         <label class="col-3 text-decoration-underline">
                             活動標題:
@@ -135,7 +139,7 @@
                             {{Act.notes}}
                         </label>
                     </div>
-                    <div>
+					<div>
                         <label class="col-3 text-decoration-underline">
                             發起時間:
                         </label>
@@ -163,10 +167,10 @@
                         </label>
                     </div>
                     <div>
-                        <label class="col-6 text-decoration-underline">
+                        <label class="col-4 text-decoration-underline">
                             被檢舉圖片:
                         </label>
-                        <img class="col-6 img-fluid" />
+                        <img class="col-8 img-fluid" :src="ActImgSrc" />
 
                     </div>
                     <div>
@@ -206,7 +210,7 @@
                     tableStart: 0,
                     tableEnd: 5,
                     complaint: [],
-
+                    ActImgSrc:"",
                     baseAdress: "",			 /*"https://localhost:7152"*/
 
                 }
@@ -227,13 +231,7 @@
                             alert("錯誤");
                         });
                 }
-                ,
-                imgSrc(src) {
-                    if (src == null || src == "null" || src == "")
-                        return "/images/NOimg.jpg"
-                    else
-                        return src.substr(18);
-                }
+                
                 ,
                 check(ActivityId, ActivityReviewId) {
                     this.showModal();
@@ -263,6 +261,17 @@
                             App.Act = JSON.parse(d);
                             console.log(App.Act);
                         })
+                        .then(d => {
+                            if (App.Act.picture != '') {
+                                this.ActImgSrc = `/api/ActivityApi/GetPicture/${ActivityId} `
+                            }
+                            else {
+
+                                this.ActImgSrc = "/images/NOimg.jpg";
+                            }
+                        }
+                        
+                        )
                         .catch(error => {
                             console.error('發生錯誤:', error);
                             alert("錯誤");
