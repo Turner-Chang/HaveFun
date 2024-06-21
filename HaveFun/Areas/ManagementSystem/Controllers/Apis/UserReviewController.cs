@@ -2,6 +2,7 @@
 using HaveFun.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Elfie.Model.Strings;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -64,6 +65,12 @@ namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
                 { return "修改失敗"; }
 			return "修改成功";
 		}
-        
+        [HttpGet]
+        public async Task< int> UserReviewCount() {
+             var UserReviewNum=
+                _context.UserReviews.Where(r=>r.status==0).Count();
+            
+            return UserReviewNum;
+        } 
     }
 }

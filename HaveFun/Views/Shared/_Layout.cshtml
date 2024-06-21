@@ -218,10 +218,6 @@
 					if (id != null && id.length < 100) { this.Login = true; }
 					else { this.Login = false; }
 				},
-				BtnConfirmLogin() { 
-					if (this.Login == false) { }
-					else { }
-				},
 				out() {
 					//if (confirm("確定登出?") == true) {
 						fetch('/api/logout/Logout', { method: "post" }).then(res => res.text()).then(d => this.Login = false).then(d => window.location.href = '/');
