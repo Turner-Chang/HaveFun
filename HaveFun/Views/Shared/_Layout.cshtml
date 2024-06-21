@@ -223,10 +223,10 @@
 					else { }
 				},
 				out() {
-					if (confirm("確定登出?") == true) {
+					//if (confirm("確定登出?") == true) {
 						fetch('/api/logout/Logout', { method: "post" }).then(res => res.text()).then(d => this.Login = false).then(d => window.location.href = '/');
 						
-					}
+					//}
 				}
 				,
 				ToPageOrToLoginPage(href) {

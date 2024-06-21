@@ -62,6 +62,9 @@ summary {
 .deleteActBox > button {
     margin: 20px;
 }
+.imgPreview {
+    width: 100%;
+}
 .editNumber{
     width: 20%;
     display:inline;
@@ -72,4 +75,5 @@ textarea{
     overflow: auto;
     word-break: break-all;
 }
+
 

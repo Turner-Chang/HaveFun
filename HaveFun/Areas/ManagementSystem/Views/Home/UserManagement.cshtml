@@ -1,12 +1,12 @@
 ﻿
-<div id="UserManagementApp" class="container row  p-5 pt-5 text-center border-2">
-	<h1>個人資料管理</h1>
+<div id="UserManagementApp" class="container row  p-5 pt-5 text-center border-2 m-auto">
+	<h1>檢舉個人資料管理</h1>
 	<hr />
 	<div class="col-12">
-		<span class="col-12 col-md-2  m-2 ">處理狀態示意: </span>
-		<label class="text-bg-warning  col-12 col-md-2  m-2">申訴中-0</label>
-		<label class="text-bg-secondary col-12 col-md-2  m-2">已封鎖--1</label>
-		<label class="text-bg-success col-12 col-md-2  m-2">無須封鎖--2</label>
+		<span class="col-12 col-md-2  m-2 ">處理狀態顏色示意: </span>
+		<label class="text-bg-warning  col-12 col-md-2  m-2">申訴中</label>
+		<label class="text-bg-secondary col-12 col-md-2  m-2">已封鎖</label>
+		<label class="text-bg-success col-12 col-md-2  m-2">無須封鎖</label>
 
 
 	</div>
@@ -17,8 +17,8 @@
 				<tr>
 					<th scope="col">被檢舉人Id</th>
 					<th scope="col">檢舉人Id</th>
-					<th scope="col">檢舉時間</th>
 					<th scope="col">檢舉項目</th>
+					<th scope="col">檢舉時間</th>
 					<th scope="col">處理按鈕</th>
 					
 
@@ -29,8 +29,8 @@
 				<tr v-for="r in reviews.slice(tableStart,tableEnd)" class="">
 					<td>{{r.beReportedUserId}}</td>
 					<td>{{r.reportUserId}}</td>
-					<td>{{this.TimeSplit(r.reportTime)}}</td>
 					<td>{{this.ComplaintToString(r.complaintCategoryId)}}</td>
+					<td>{{this.TimeSplit(r.reportTime)}}</td>
 					<td>
 						<button class="btn " 
 							:class="btnColor(r.status)"
@@ -48,6 +48,9 @@
 		<button class="btn btn-secondary m-3" @@click="UpperFive()">上五筆</button>
 		<button class="btn btn-secondary m-3" @@click="LowerFive()">下五筆</button>
 	</div>
+
+	<template v-if="reviews.length==0"><h1>沒有被檢舉資料</h1> </template>
+
 	<div class="  text-light bg-secondary">
 		<label>檢舉項目:</label> <br />
 		<label v-for="c in complaint" class="form-label col-12 col-md-2 col-sm-6">{{c.complaintCategoryId}} . {{c.complaintCategoryName}}</label>
@@ -241,7 +244,7 @@
 						this.tableEnd -= 5;
 					}
 					else {
-						alert("已經是第一頁")
+						//alert("已經是第一頁")
 					}
 				},
 				LowerFive() {
@@ -250,7 +253,7 @@
 						this.tableEnd += 5;
 					}
 					else {
-						alert("已經是最後一頁")
+						//alert("已經是最後一頁")
 					}
 				},
 				btnColor(id) {
