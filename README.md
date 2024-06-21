@@ -68,7 +68,6 @@ HaveFunDev
 
 10. **管理者待辦事項提醒**
 
-10. **�޲z�̫ݿ�ƶ�����**
 11. @*  <script>
   var chatHistory = [
   ];
