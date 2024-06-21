@@ -57,7 +57,22 @@
                                 <p>或</p>
                             </div>
                             <div class="or-content">
-                                <a href="#" class="default-btn reverse"><img src="~/assets/images/login/google.png" alt="google"> <span>Google登入</span></a>
+                                <div class="mx-auto my-0" style="width:300px">
+                                    <div id="g_id_onload"
+                                         data-client_id="1014279430331-cg3iq3iqipo5alu91j7b27001cu156pq.apps.googleusercontent.com"
+                                         data-login_uri="/api/login/GoogleLogin"
+                                         data-auto_prompt="false">
+                                    </div>
+                                    <div class="g_id_signin"
+                                         data-type="standard"
+                                         data-size="large"
+                                         data-theme="outline"
+                                         data-text="sign_in_with"
+                                         data-shape="rectangular"
+                                         data-logo_alignment="left"
+                                         data-width="300">
+                                    </div>
+                                </div>
                                 <p class="or-signup"> 沒有帳號? <a asp-controller="Register" asp-action="index">點此註冊</a></p>
                             </div>
                         </form>
@@ -70,6 +85,7 @@
 <!-- ================> login section end here <================== -->
 
 @section Scripts{
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
         const login = Vue.createApp({
             data() {
