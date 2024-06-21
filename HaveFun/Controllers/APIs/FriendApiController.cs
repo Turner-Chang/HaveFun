@@ -1,8 +1,7 @@
-﻿using HaveFun.Models;
-using Microsoft.AspNetCore.Http;
+﻿using HaveFun.DTOs;
+using HaveFun.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
 
 namespace HaveFun.Controllers.APIs
 {
@@ -20,42 +19,43 @@ namespace HaveFun.Controllers.APIs
         [HttpGet("{id}")]
         public async Task<IActionResult> GetFriend(int id)
         {
-            var friendList = await _dbContext.FriendLists.Where(x => x.Clicked == id && x.state == 1).Select(x => x.User2).ToListAsync();
+            var friends = await _dbContext.FriendLists
+                .Where(x => x.Clicked == id)
+                .Include(x => x.User2) // 加载用户信息
+                .Select(x => new FriendDTO
+                {
+                    Id = x.User2.Id,
+                    Name = x.User2.Name,
+                    ProfilePicture = x.User2.ProfilePicture,
+                    state = x.state
+                })
+                .ToListAsync();
 
-			return Ok(friendList);
+            return Ok(friends);
         }
 
-        [HttpPost("BlockUser")]
+        [HttpPost]
         public async Task<IActionResult> BlockUser([FromBody] int friendId)
         {
-            var friend = await _dbContext.FriendLists.FindAsync(friendId);
-            if (friend == null)
-            {
-                return NotFound("找不到好友");
-            }
+            var friend = await _dbContext.FriendLists.FirstOrDefaultAsync(x => x.User2.Id == friendId); // 使用朋友的Id来查找
+            if (friend == null) return NotFound();
 
-            friend.state = 3; // 假設 3 表示已封鎖
-            _dbContext.FriendLists.Update(friend);
+            friend.state = 3; // 将状态更改为封锁状态
             await _dbContext.SaveChangesAsync();
 
-            return Ok("封鎖成功");
+            return Ok();
         }
 
-        [HttpPost("UnblockUser")]
+        [HttpPost]
         public async Task<IActionResult> UnblockUser([FromBody] int friendId)
         {
-            var friend = await _dbContext.FriendLists.FindAsync(friendId);
-            if (friend == null)
-            {
-                return NotFound("找不到好友");
-            }
+            var friend = await _dbContext.FriendLists.FirstOrDefaultAsync(x => x.User2.Id == friendId); // 使用朋友的Id来查找
+            if (friend == null) return NotFound();
 
-            friend.state = 0; // 假設 0 表示正常狀態
-            _dbContext.FriendLists.Update(friend);
+            friend.state = 1; // 将状态更改为解锁状态
             await _dbContext.SaveChangesAsync();
 
-            return Ok("解鎖成功");
+            return Ok();
         }
     }
 }
-

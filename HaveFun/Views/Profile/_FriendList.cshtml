@@ -1,172 +1,3 @@
-<div class="tab-pane fade" id="gt4" role="tabpanel" aria-labelledby="gt4-tab">
-    <div class="active-member bg-white mb-4">
-        <div class="modal-header">
-            <h6>好友列表</h6>
-            <ul class="nav nav-tabs" id="myTab4" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="Newest-tab" data-bs-toggle="tab" data-bs-target="#Newest" type="button" role="tab" aria-controls="Newest" aria-selected="true">好友</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="BlackList-tab" data-bs-toggle="tab" data-bs-target="#BlackList" type="button" role="tab" aria-controls="BlackList" aria-selected="false">黑名單</button>
-                </li>
-            </ul>
-        </div>
-        <div class="modal-body group__bottom--body">
-            <div class="tab-content" id="myTabContent4">
-                <div class="tab-pane fade show active" id="Newest" role="tabpanel" aria-labelledby="Newest-tab">
-                    <ul>
-                        <li>
-                            <div class="top">
-                                <div class="left member--style2">
-                                    <div class="member__thumb">
-                                       
-                                        <span class="member__activity"></span>
-                                    </div>
-                                </div>
-                                <div class="right">
-                                    
-                                    <button class="btn btn-danger block-btn">封鎖</button>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="top">
-                                <div class="left member--style2">
-                                    <div class="member__thumb">
-                                        
-                                        <span class="member__activity"></span>
-                                    </div>
-                                </div>
-                                <div class="right">
-                                   
-                                    <button class="btn btn-danger block-btn">封鎖</button>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="top">
-                                <div class="left member--style2">
-                                    <div class="member__thumb">
-                                        
-                                        <span class="member__activity"></span>
-                                    </div>
-                                </div>
-                                <div class="right">
-                                   
-                                    <button class="btn btn-danger block-btn">封鎖</button>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="top">
-                                <div class="left member--style2">
-                                    <div class="member__thumb">
-                                       
-                                        <span class="member__activity"></span>
-                                    </div>
-                                </div>
-                                <div class="right">
-                                    
-                                    <button class="btn btn-danger block-btn">封鎖</button>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="top">
-                                <div class="left member--style2">
-                                    <div class="member__thumb">
-                                       
-                                        <span class="member__activity"></span>
-                                    </div>
-                                </div>
-                                <div class="right">
-                                   
-                                    <button class="btn btn-danger block-btn">封鎖</button>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <div class="tab-pane fade" id="BlackList" role="tabpanel" aria-labelledby="BlackList-tab">
-                    <ul>
-                        <li>
-                            <div class="top">
-                                <div class="left member--style2">
-                                    <div class="member__thumb">
-                                     
-                                        <span class="member__activity"></span>
-                                    </div>
-                                </div>
-                                <div class="right">
-                                 
-                                    <button class="btn btn-success unblock-btn">解鎖</button>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="top">
-                                <div class="left member--style2">
-                                    <div class="member__thumb">
-                                 
-                                        <span class="member__activity"></span>
-                                    </div>
-                                </div>
-                                <div class="right">
-                                  
-                                    <button class="btn btn-success unblock-btn">解鎖</button>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="top">
-                                <div class="left member--style2">
-                                    <div class="member__thumb">
-                                      
-                                        <span class="member__activity"></span>
-                                    </div>
-                                </div>
-                                <div class="right">
-                                
-                                    <button class="btn btn-success unblock-btn">解鎖</button>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="top">
-                                <div class="left member--style2">
-                                    <div class="member__thumb">
-                                      
-                                        <span class="member__activity"></span>
-                                    </div>
-                                </div>
-                                <div class="right">
-                                   
-                                    <button class="btn btn-success unblock-btn">解鎖</button>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="top">
-                                <div class="left member--style2">
-                                    <div class="member__thumb">
-                                       
-                                        <span class="member__activity"></span>
-                                    </div>
-                                </div>
-                                <div class="right">
-                                    
-                                    <button class="btn btn-success unblock-btn">解鎖</button>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -184,99 +15,115 @@
             display: none;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
-    <div class="tab-pane fade show active" id="Newest" role="tabpanel" aria-labelledby="Newest-tab"></div>
-    <div class="tab-pane fade" id="BlackList" role="tabpanel" aria-labelledby="BlackList-tab"></div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const userId = 5; 
-            // 從API獲取好友列表數據
-            fetch(`/api/FriendApi/GetFriend/${userId}`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    renderFriendList(data);
-                })
-                .catch(error => console.error('Error:', error));
-        });
-
-        function renderFriendList(data) {
-            const friendListContainer = document.getElementById('Newest');
-            const blackListContainer = document.getElementById('BlackList');
-            friendListContainer.innerHTML = ''; 
-            blackListContainer.innerHTML = '';
-            console.log(data);
-            data.forEach(FriendDTO => {
-                const listItem = document.createElement('li');
-                listItem.dataset.id = FriendDTO.Id;
-
-                listItem.innerHTML = `
-                            <div class="top">
-                                <div class="left member--style2">
-                                    <div class="member__thumb">
-                                                <img src="${FriendDTO.profilePicture}" alt="member-img">
-                                        <span class="member__activity"></span>
+    <div class="tab-pane fade" id="gt4" role="tabpanel" aria-labelledby="gt4-tab">
+        <div class="active-member bg-white mb-4">
+            <div id="app">
+                <div class="modal-header">
+                    <h6>好友列表</h6>
+                    <ul class="nav nav-tabs" id="myTab4" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" :class="{ active: activeTab === 'Newest' }" @@click="switchTab('Newest')" id="Newest-tab" type="button" role="tab" aria-controls="Newest" aria-selected="true">好友</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" :class="{ active: activeTab === 'BlackList' }" @@click="switchTab('BlackList')" id="BlackList-tab" type="button" role="tab" aria-controls="BlackList" aria-selected="false">黑名單</button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-body group__bottom--body">
+                    <div class="tab-content" id="myTabContent4">
+                        <div v-if="activeTab === 'Newest'" class="tab-pane fade show active" id="Newest" role="tabpanel" aria-labelledby="Newest-tab">
+                            <ul>
+                                <li v-for="friend in friends" :key="friend.id">
+                                    <div class="top">
+                                        <div class="left member--style2">
+                                            <div class="member__thumb">
+                                                <img :src="friend.profilePicture" alt="member-img">
+                                                <span class="member__activity"></span>
+                                            </div>
+                                        </div>
+                                        <div class="right">
+                                            <a href="member-single.html"><h6>{{ friend.name }}</h6></a>
+                                            <button class="btn btn-danger" @@click="blockUser(friend.id)" v-if="friend.state !== 3">封鎖</button>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="right">
-                                    <a href="member-single.html"><h6>${FriendDTO.name}</h6></a><button class="btn ${FriendDTO.state === 3 ? 'btn-success unblock-btn' : 'btn-danger block-btn'}">
-                                        ${FriendDTO.state === 3 ? '解鎖' : '封鎖'}
-                                    </button>
-                                </div>
-                            </div>
-                        `;
-
-                if (FriendDTO.State === 3) {
-                    blackListContainer.appendChild(listItem);
-                } else {
-                    friendListContainer.appendChild(listItem);
+                                </li>
+                            </ul>
+                        </div>
+                        <div v-if="activeTab === 'BlackList'" class="tab-pane fade show active" id="BlackList" role="tabpanel" aria-labelledby="BlackList-tab">
+                            <ul>
+                                <li v-for="friend in blacklistedFriends" :key="friend.id">
+                                    <div class="top">
+                                        <div class="left member--style2">
+                                            <div class="member__thumb">
+                                                <img :src="friend.profilePicture" alt="member-img">
+                                                <span class="member__activity"></span>
+                                            </div>
+                                        </div>
+                                        <div class="right">
+                                            <a href="member-single.html"><h6>{{ friend.name }}</h6></a>
+                                            <button class="btn btn-success" @@click="unblockUser(friend.id)">解鎖</button>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                activeTab: 'Newest',
+                userId: 5, // 替換為您的用戶ID或從適當的地方獲取
+                friends: [],
+                blacklistedFriends: []
+            },
+            mounted() {
+                this.fetchFriends();
+            },
+            methods: {
+                switchTab(tab) {
+                    this.activeTab = tab;
+                },
+                fetchFriends() {
+                    axios.get(`/api/FriendApi/GetFriend/${this.userId}`)
+                        .then(response => {
+                            const data = response.data;
+                            this.friends = data.filter(friend => friend.state !== 3);
+                            this.blacklistedFriends = data.filter(friend => friend.state === 3);
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                },
+                blockUser(friendId) {
+                    axios.post('/api/FriendApi/BlockUser', { friendId }) // 传递为对象形式
+                        .then(() => {
+                            this.fetchFriends(); // 重新加载数据
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                },
+                unblockUser(friendId) {
+                    axios.post('/api/FriendApi/UnblockUser', { friendId }) // 传递为对象形式
+                        .then(() => {
+                            this.fetchFriends(); // 重新加载数据
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
                 }
-            });
 
-            updateButtons();
-        }
-
-        function updateButtons() {
-            document.querySelectorAll('.block-btn').forEach(button => {
-                button.onclick = function () {
-                    const friendId = button.closest('li').dataset.id;
-                    fetch('/api/FriendApi/BlockUser', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(friendId)
-                    }).then(() => {
-                        const memberItem = button.closest('li');
-                        document.getElementById('BlackList').appendChild(memberItem);
-                        button.innerText = '解鎖';
-                        button.className = 'btn btn-success unblock-btn';
-                        updateButtons();
-                    });
-                };
-            });
-
-            document.querySelectorAll('.unblock-btn').forEach(button => {
-                button.onclick = function () {
-                    const friendId = button.closest('li').dataset.id;
-                    fetch('/api/FriendApi/UnblockUser', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(friendId)
-                    }).then(() => {
-                        const memberItem = button.closest('li');
-                        document.getElementById('Newest').appendChild(memberItem);
-                        button.innerText = '封鎖';
-                        button.className = 'btn btn-danger block-btn';
-                        updateButtons();
-                    });
-                };
-            });
-        }
+            }
+        });
     </script>
 </body>
 </html>
