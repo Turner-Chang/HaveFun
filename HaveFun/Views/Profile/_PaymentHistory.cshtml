@@ -1,0 +1,70 @@
+﻿<div class="tab-pane fade" id="gt6" role="tabpanel" aria-labelledby="gt6-tab">
+	<title>會員購買記錄</title>
+    <div id="app_PayHistory">
+        <h1>會員購買記錄</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>日期時間</th>
+                    <th>購買品項</th>
+                    <th>購買金額</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="transaction in transactions" :key="transaction.id">
+                    <td>{{ formatDate(transaction.date) }}</td>
+                    <td>{{ transaction.productName }}</td>
+                    <td>{{ formatCurrency(transaction.amount) }}</td>
+                    <td>
+                        <button @@click="refund(transaction.id)">退款</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f4f4f4;
+    }
+
+    button {
+        padding: 5px 10px;
+        background-color: #ff5722;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+        button:hover {
+            background-color: #e64a19;
+        }
+</style>
+<script>
+    var app_PayHistory = Vue.createApp({
+        data() { },
+        methods: {},
+        mounted() { },
+    }).mount("#app_PayHistory");
+
+</script>
+
