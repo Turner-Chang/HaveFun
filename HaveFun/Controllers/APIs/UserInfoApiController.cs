@@ -9,6 +9,7 @@ using HaveFun.Models;
 using HaveFun.Common;
 using HaveFun.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.RegularExpressions;
 
 namespace HaveFun.Controllers.APIs
 {
@@ -43,8 +44,7 @@ namespace HaveFun.Controllers.APIs
                 PhoneNumber = u.PhoneNumber,
                 Gender = u.Gender,
                 BirthDay = u.BirthDay,
-                Introduction = u.Introduction,
-                Password = u.Password, // 注意: 密碼通常不應該被傳送到客戶端
+                Introduction = u.Introduction               
             })
             .FirstOrDefaultAsync(); // 使用 FirstOrDefaultAsync 來獲取單個資料
 
@@ -63,8 +63,7 @@ namespace HaveFun.Controllers.APIs
                     PhoneNumber = u.PhoneNumber,
                     Gender = u.Gender,
                     BirthDay = u.BirthDay,
-                    Introduction = u.Introduction,
-                    Password = u.Password
+                    Introduction = u.Introduction                    
                 })
                 .ToListAsync();
             return userInfos;
@@ -131,19 +130,42 @@ namespace HaveFun.Controllers.APIs
             {
                 return BadRequest(ModelState);
             }
-            UserInfo? user = await _context.UserInfos.FindAsync(userInfoDTO.Id);
+			// 檢查電話號碼格式
+			if (!string.IsNullOrEmpty(userInfoDTO.PhoneNumber) && !Regex.IsMatch(userInfoDTO.PhoneNumber, @"^[0-9]+$"))
+			{
+				ModelState.AddModelError(nameof(userInfoDTO.PhoneNumber), "電話號碼格式不正確");
+				return BadRequest(ModelState);
+			}
+			// 檢查電話號碼唯一性
+			var existingUser = await _context.UserInfos.FirstOrDefaultAsync(u => u.PhoneNumber == userInfoDTO.PhoneNumber && u.Id != userInfoDTO.Id);
+			if (existingUser != null)
+			{
+				ModelState.AddModelError(nameof(userInfoDTO.PhoneNumber), "電話號碼已存在");
+				return BadRequest(ModelState);
+			}
+
+			UserInfo? user = await _context.UserInfos.FindAsync(userInfoDTO.Id);
             if (user == null)
             {
                 return NotFound("User not found.");
             }
             user.Name = userInfoDTO.Name;
-            user.Address = userInfoDTO.Address;
-            user.PhoneNumber = userInfoDTO.PhoneNumber;
-            user.Password = userInfoDTO.Password;
+            user.Address = userInfoDTO.Address;                       
             user.Gender = userInfoDTO.Gender;
             user.BirthDay = userInfoDTO.BirthDay;
             user.Introduction = userInfoDTO.Introduction;
-            if (userInfoDTO.ProfilePicture != null)
+
+			// 檢查是否有新的電話號碼提供
+			if (!string.IsNullOrWhiteSpace(userInfoDTO.PhoneNumber))
+			{
+				user.PhoneNumber = userInfoDTO.PhoneNumber;
+			}
+			else
+			{
+				user.PhoneNumber = null; // 或者設置為空字符串，根據您的資料庫設計
+			}
+
+			if (userInfoDTO.ProfilePicture != null)
             {
                 // 把大頭照丟到wwwtoot的images的headshots資料夾內
                 string imgPath = "../HaveFun/wwwroot/images/headshots";
@@ -163,26 +185,7 @@ namespace HaveFun.Controllers.APIs
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "用戶資料已保存成功" });
-        }
-
-        //_saveImage.Path = imgPath;
-        //_saveImage.Name = imgName;
-        //_saveImage.Picture = userInfoDTO.ProfilePicture;
-        //string fullPath = string.Empty;
-        //bool isSave = _saveImage.Save(out fullPath);
-        //if (isSave == false)
-        //{
-        //    return new JsonResult(
-        //        new
-        //        {
-        //            success = false,
-        //            profilePictureError = "圖片存取失敗"
-        //        }
-        //    );
-        //}
-    
-
-            
+        }          
     
 
         // DELETE: api/UserInfoApi/5
