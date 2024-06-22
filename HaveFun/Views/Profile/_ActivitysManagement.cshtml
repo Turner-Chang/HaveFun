@@ -29,7 +29,7 @@
 		<div v-if="currentType === 'commingup'" v-for="act in commingupActivities" class="blog__item">
 			<div class="blog__inner">
 				<div class="blog__content">
-					<img v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}`>
+					<img v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}?rand=${rand}`>
 					<h3>{{act.title}}</h3>
 					<ul class="lab-ul blog__date">
 						<li><span><i class="fa-solid fa-calendar-days"></i> 活動時間：{{act.activityTime}} </span></li>
@@ -53,7 +53,7 @@
 							<span class="infoTitle">活動內容：</span><br>
 							<p class="actContent">{{act.content}}</p><br>
 							<span class="infoTitle">注意事項：</span><br>
-							{{act.notes}}<br><br>
+							<p class="actContent">{{act.notes}}</p><br><br>
 							<!-- Host與登入會員不相同才有取消參加活動按鈕 -->
 							<button v-if="act.hostId != loginUserId" class="default-btn" id="cancelAttend" @@click="showCancelAttend(act.id)">
 								取消參加活動
@@ -70,7 +70,7 @@
 		<div v-if="currentType === 'host'" v-for="act in hostActivities" class="blog__item">
 			<div class="blog__inner">
 				<div v-if="act.inEdit === false" class="blog__content">
-					<img v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}`>
+					<img v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}?rand=${rand}`>
 					<h3>{{act.title}}</h3>
 					<ul class="lab-ul blog__date">
 						<li><span><i class="fa-solid fa-calendar-days"></i> 活動時間：{{act.activityTime}} </span></li>
@@ -92,9 +92,9 @@
 							<span class="infoTitle">報名人數上限：</span>
 							{{act.max}}<br>
 							<span class="infoTitle">活動內容：</span><br>
-							{{act.content}}<br>
+							<p class="actContent">{{act.content}}</p><br>
 							<span class="infoTitle">注意事項：</span><br>
-							{{act.notes}}<br><br>
+							<p class="actContent">{{act.notes}}</p><br><br>
 							<button class="default-btn" @@click="showDeleteAct(act.id)">刪除活動</button>
 							<button class="default-btn" @@click="intoEditing(act)">修改活動內容</button>
 						</div>
@@ -103,8 +103,8 @@
 				<!-- 編輯活動內容 -->
 				<div v-if="act.inEdit === true" class="blog__content">
 					<form>
-					<img v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}` class="imgPreview"><br>
-					<input type="file" v-model="EditPic" @@change="previewPic" accept="image/*">
+					<img class="imgPreview" v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}?rand=${rand}`><br>
+					<input type="file" id="picFile" v-model="EditPic" accept="image/*" @@change="previewPic">
 					<button v-if="editPic != null" @@click="removeEditPic">移除</button><br>
 					<span> 活動名稱：</span>
 					<input :class="['form-control',{'is-invalid':errorStyle.title}]" maxlength="50" v-model="editTitle">
@@ -153,7 +153,7 @@
 		<div v-if="currentType === 'past'" v-for="act in pastActivities" class="blog__item">
 			<div class="blog__inner">
 				<div class="blog__content">
-					<img v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}`>
+					<img v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}?rand=${rand}`>
 					<h3>{{act.title}}</h3>
 					<ul class="lab-ul blog__date">
 						<li><span><i class="fa-solid fa-calendar-days"></i> 活動時間：{{act.activityTime}} </span></li>
@@ -171,9 +171,9 @@
 							<span class="infoTitle">報名人數上限：</span>
 							{{act.max}}<br>
 							<span class="infoTitle">活動內容：</span><br>
-							{{act.content}}<br>
+							<p class="actContent">{{act.content}}</p><br>
 							<span class="infoTitle">注意事項：</span><br>
-							{{act.notes}}
+							<p class="actContent">{{act.notes}}</p>
 						</div>
 					</details>
 				</div>
@@ -438,7 +438,6 @@
 				this.editMax = act.max;
 				this.editActContent = act.content;
 				this.editNote = act.notes;
-				this.editPic = act.picture;
 			},
 			//取消修改活動內容
 			cancelToEdit(act) {
@@ -478,9 +477,11 @@
 					method:'PUT',
 					body: formData
 				})
-				.then(response => response.json())
+					.then(response => { 
+						response.json() 
+					})
 				.then(data => {
-					console.log('成功', data);
+					// console.log('成功', data);
 					act.inEdit = false;
 					this.wannaEdit = 0;
 					this.editPic = null;
@@ -496,6 +497,7 @@
 					this.editNote = '';
 					this.getCommingupList(this.loginUserId);
 					this.getHostList(this.loginUserId);
+					this.rand = ++this.rand
 				})
 				.catch(err => {
 					console.log('fetch edit activity failed!', err);
@@ -525,6 +527,7 @@
 			removeEditPic() {
 				this.editPic = null;
 				$('.imgPreview').attr("src", null);
+				$('#picFile').val("");
 			},
 			//檢查現在是否還可以修改報名時間
 			canRegistrationEdit(registrationTime) {

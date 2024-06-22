@@ -29,4 +29,9 @@ namespace HaveFun.Models
 		public int state { get; set; } = 0; //狀態,0-等待、1-配對、2封鎖
 
 	}
+    public class data
+    {
+        public int? userId { get; set; }
+        public int? friendId { get; set; }
+    }
 }
