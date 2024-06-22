@@ -1,5 +1,5 @@
 ﻿<div id="PostCheckApp">
-	
+
 	<div class="container row   p-5 text-center border-2 m-auto">
 		<h1>檢舉個人貼文管理</h1>
 		<hr />
@@ -18,17 +18,17 @@
 						<th scope="col">被檢舉人Id</th>
 						<th scope="col">被檢舉項目</th>
 						<th scope="col">被檢舉理由</th>
-						<th scope="col" >被檢舉時間</th>
+						<th scope="col">被檢舉時間</th>
 						<th scope="col">處理按鈕</th>
-						
-						
+
+
 
 
 					</tr>
 				</thead>
 				<tbody>
 					<tr v-for="r in reports.slice(tableStart,tableEnd)" class="">
-						<td >{{r.postId}}</td>
+						<td>{{r.postId}}</td>
 						<td>{{r.userId}}</td>
 						<td>{{this.ComplaintToString(r.reportItems)}}</td>
 						<td>{{r.reason}}</td>
@@ -39,11 +39,11 @@
 								{{this.ReviewStatusToString(r.processingStstus)}}
 							</button>
 						</td>
-						
+
 					</tr>
 				</tbody>
 			</table>
-			
+
 		</div>
 		<div>
 			<button class="btn btn-secondary m-3" @@click="UpperFive()">上五筆</button>
@@ -53,8 +53,8 @@
 		<template v-if="reports.length==0"><h1>沒有被檢舉資料</h1> </template>
 
 		<div class="  text-light bg-secondary">
-			<label >檢舉項目:</label> <br />
-			<label v-for="c in complaint" class="form-label col-12 col-md-2 col-sm-6">{{c.complaintCategoryId}} . {{c.complaintCategoryName}}</label> 
+			<label>檢舉項目:</label> <br />
+			<label v-for="c in complaint" class="form-label col-12 col-md-2 col-sm-6">{{c.complaintCategoryId}} . {{c.complaintCategoryName}}</label>
 		</div>
 	</div>
 
@@ -82,12 +82,13 @@
 					</button>
 				</div>
 				<div class="modal-body row lh-lg">
-					<div><label class="col-6 text-decoration-underline">
-						被檢舉貼文Id:  
-					</label>
-					<label class="col-6 text-start">
-						{{Post.id}}  
-					</label>
+					<div>
+						<label class="col-6 text-decoration-underline">
+							被檢舉貼文Id:
+						</label>
+						<label class="col-6 text-start">
+							{{Post.id}}
+						</label>
 					</div>
 					<div>
 						<label class="col-6 text-decoration-underline">
@@ -101,9 +102,9 @@
 						<label class="col-6 text-decoration-underline">
 							被檢舉圖片:
 						</label>
-							<img class="col-12 img-fluid" :src="imgSrc(Post.pictures)"/>
+						<img class="col-12 img-fluid" :src="imgSrc(Post.pictures)" />
 
-						</div>
+					</div>
 					<div>
 						<label class="col-6 text-decoration-underline">
 							檢舉狀態:
@@ -115,13 +116,18 @@
 					</div>
 				</div>
 				<div class="modal-footer">
+					@* <button type="button" class="btn btn-warning" @@click="reportUser">檢舉使用者</button> *@
 					<button type="button"
-							@@click="PostStateChange(PostId,0) "
 							class="btn btn-secondary "
-							data-bs-dismiss="modal">
+							data-bs-dismiss="modal"
+							@@click="PostStateChange(PostId,0) ">
 						駁回檢舉
 					</button>
-					<button type="button" @@click="PostStateChange(PostId,1) " class="btn btn-danger">刪除貼文</button>
+					<button type="button"
+							class="btn btn-danger"
+							@@click="PostStateChange(PostId,1)">
+						刪除貼文
+					</button>
 				</div>
 			</div>
 		</div>
@@ -136,24 +142,24 @@
 				return {
 					reports: [],
 					Post: {},
-					PostReviewId:0,
-					PostId:0,
-					tableStart:0,
-					tableEnd:5,
-					complaint:[],
+					PostReviewId: 0,
+					PostId: 0,
+					tableStart: 0,
+					tableEnd: 5,
+					complaint: [],
 					baseAdress: "",			/*"https://localhost:7152" */
 				}
 			},
 			methods: {
 				GetAll() {
-					
+
 					var data = fetch(`${this.baseAdress}/api/PostReview/GetAll`, { method: "GET" })
 						.then(response => response.json())
 						.then(data =>
 							JSON.stringify(data))
 						.then(d => {
 							App.reports = JSON.parse(d);
-							
+
 						})
 						.catch(error => {
 							console.error('發生錯誤:', error);
@@ -162,12 +168,12 @@
 				}
 				,
 				imgSrc(src) {
-					if(src==null || src =="null"||src=="")
+					if (src == null || src == "null" || src == "")
 						return "/images/NOimg.jpg"
 					else
-					return src.substr(18);
+						return src.substr(18);
 				}
-				 ,
+				,
 				check(postId, postReviewId) {
 					this.showModal();
 					this.GetPost(postId);
@@ -179,21 +185,21 @@
 					$("#PostModal").modal("show");
 				}
 				,
-				hideModal() { 
+				hideModal() {
 					this.Post = {};
 					$("#PostModal").modal("hide");
 
 				}
 				,
 				GetPost(PostId) {
-					
+
 
 					var data = fetch(`${this.baseAdress}/api/Post/GetById/${PostId}`, { method: "GET" })
 						.then(response => response.json())
 						.then(data =>
-							JSON.stringify(data)	)
+							JSON.stringify(data))
 						.then(d => {
-							App.Post = JSON.parse( d);
+							App.Post = JSON.parse(d);
 							console.log(App.Post);
 						}
 						)
@@ -202,10 +208,10 @@
 							alert("錯誤");
 						});
 
-					
+
 
 				},
-				PostReviewStateChange(postReviewId,state) {
+				PostReviewStateChange(postReviewId, state) {
 					var body = {
 						"postReviewId": postReviewId,
 						"userId": 0,
@@ -218,16 +224,16 @@
 					fetch(
 						`${this.baseAdress}/api/PostReview/Put/${postReviewId}`,
 						{
-							method:"PUT",
-							body:JSON.stringify(body),
-							headers: {'Content-Type':'application/json'}
+							method: "PUT",
+							body: JSON.stringify(body),
+							headers: { 'Content-Type': 'application/json' }
 						}
-					).then(res=>res.text())
-					.then(data=>console.log(data))
-					.then(d=> App.GetAll())
-					.catch(err=>alert("err"));
+					).then(res => res.text())
+						.then(data => console.log(data))
+						.then(d => App.GetAll())
+						.catch(err => alert("err"));
 					this.hideModal();
-					
+
 
 				},
 				PostStateChange(PostId, state) {
@@ -247,7 +253,7 @@
 						.catch(err => alert("err"));
 					if (state == 0) { state = 2; }
 					this.PostReviewStateChange(this.PostReviewId, state);
-					
+
 				},
 				btnColor(id) {
 					if (id == 0) { return "btn-warning"; }
@@ -270,10 +276,10 @@
 						this.tableEnd += 5;
 					}
 					else {
-					//alert("已經是最後一頁")
+						//alert("已經是最後一頁")
 					}
 				},
-				ReviewStatusToString(s) { 
+				ReviewStatusToString(s) {
 					if (s == 0) { return "申訴中"; }
 					else if (s == 1) { return "已封鎖"; }
 					else { return "無須封鎖"; }
@@ -281,7 +287,7 @@
 				PostStatusToString(s) {
 					if (s == 0) { return "未下架貼文"; }
 					else { return "已下架貼文"; }
-				}, 
+				},
 				ComplaintToString(id) {
 					if (this.complaint.length != 0)
 						return this.complaint[parseInt(id) - 1].complaintCategoryName
@@ -294,24 +300,41 @@
 						return `${timeArr[0]}年 ${timeArr[1]}月 ${timeArr[2]}日 ${timeArr[3]}時 ${timeArr[4]}分`;
 					}
 				},
-			},
-			mounted: async () => {
+			// 	reportUser(UserId) {
+			// 		var body = {
+			// 						{
+			// 			"id": 0,
+			// 			"reportTime": Date().now,
+			// 			"complaintCategoryId": 1,
+				// 			"reportUserId": UserId,
+			// 			"beReportedUserId": 0
+			// 		}
+			// 	};
+			// 	fetch(`/api/userReview/Create`,
+			// 		{
+			// 			method: "POST",
+			// 			body: JSON.stringify(body),
+			// 	headers: { 'Content-Type': 'application/json' }
+			// })
+			// 			},
+					},
+		mounted: async () => {
 
-				var baseAdress= "https://localhost:7152";
+			var baseAdress = "https://localhost:7152";
 
-				var resp = await fetch(
-					`${baseAdress}/api/PostReview/GetAll`, {
-					method: "GET"
-				});
-				var data = await resp.json();
-				App.reports = data;
-				//alert(JSON.stringify(data));
+			var resp = await fetch(
+				`${baseAdress}/api/PostReview/GetAll`, {
+				method: "GET"
+			});
+			var data = await resp.json();
+			App.reports = data;
+			//alert(JSON.stringify(data));
 
-				fetch(`${baseAdress}/api/complaint/Getall`, { method: "GET" }).then(r => r.json()).then(d => App.complaint = d);
-				//
+			fetch(`${baseAdress}/api/complaint/Getall`, { method: "GET" }).then(r => r.json()).then(d => App.complaint = d);
+			//
 
-			}, 
-		}).mount("#PostCheckApp");
+		},
+				}).mount("#PostCheckApp");
 
 	</script>
 }
