@@ -50,7 +50,6 @@ namespace HaveFun.Controllers.APIs
                     RegistrationTime = data.RegistrationTime.ToString("yyyy-MM-dd HH:mm"),
                     DeadlineTime = data.DeadlineTime.ToString("yyyy-MM-dd HH:mm"),
                     ActivityTime = data.ActivityTime.ToString("yyyy-MM-dd HH:mm"),
-                    ActivityPicture = data.Picture,
                     Participant = data.ActivityParticipants.Select(user => new
                     {
                         Name = user.User.Name,
@@ -87,7 +86,6 @@ namespace HaveFun.Controllers.APIs
                     RegistrationTime = data.RegistrationTime.ToString("yyyy-MM-dd HH:mm"),
                     DeadlineTime = data.DeadlineTime.ToString("yyyy-MM-dd HH:mm"),
                     ActivityTime = data.ActivityTime.ToString("yyyy-MM-dd HH:mm"),
-					ActivityPicture = data.Picture,
 					Participant = data.ActivityParticipants.Select(user => new
                     {
                         Name = user.User.Name,
@@ -197,7 +195,8 @@ namespace HaveFun.Controllers.APIs
                 return new JsonResult(new { state = "修改活動失敗" });
             }
             var record = await _context.Activities.FindAsync(id);
-            if (record == null)
+            var recordChange = await _context.Activities.FindAsync(id);
+			if (record == null)
             {
                 return new JsonResult(new { result = "此活動不存在" });
             }
@@ -216,7 +215,12 @@ namespace HaveFun.Controllers.APIs
             record.Amount = activity.Amount;
             record.MaxParticipants = activity.MaxParticipants;
             record.Location = activity.Location;
-			//用BinaryReader讀取上傳的圖片，沒有則返回null
+            
+            
+            //用BinaryReader讀取上傳的圖片，沒有則返回null
+            //如果有上傳圖片
+            
+
 			if (activity.Pictures != null && activity.Pictures.Length > 0)
 			{
 				var picture = activity.Pictures[0];
@@ -228,10 +232,6 @@ namespace HaveFun.Controllers.APIs
 					}
 				}
 			}
-            else
-            {
-                record.Picture = null;
-            }
             try
             {
                 _context.Activities.Update(record);
