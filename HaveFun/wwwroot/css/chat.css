@@ -78,6 +78,59 @@
         font-size: 13px;
     }
 
+
+.people-list {
+    width: 280px;
+    float: left;
+}
+
+    .people-list .chat-list li {
+        padding: 10px 15px;
+        list-style: none;
+        border-radius: 3px;
+    }
+
+        .people-list .chat-list li:hover {
+            background: #efefef;
+            cursor: pointer;
+        }
+
+        .people-list .chat-list li.active {
+            background: #efefef;
+        }
+
+        .people-list .chat-list li .name {
+            font-size: 15px;
+        }
+
+    .people-list .chat-list img {
+        width: 45px;
+        border-radius: 50%;
+    }
+
+    .people-list img {
+        float: left;
+        border-radius: 50%;
+    }
+
+    .people-list .about {
+        float: left;
+        padding-left: 8px;
+    }
+
+    .people-list .status {
+        color: #999;
+        font-size: 13px;
+    }
+
+.chat-list li .status .online {
+    color: #86c541;
+}
+
+.chat-list li .status .offline {
+    color: #e47297;
+}
+
 .chat .chat-header {
     padding: 15px 20px;
     border-bottom: 2px solid #f4f7f6;
