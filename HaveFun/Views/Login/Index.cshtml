@@ -132,11 +132,33 @@
                         }
                         if (data.success == false || data.success == '') {
                             this.errorMessage.push('帳號或密碼錯誤');
-                        } else {
-                            console.log(data);
+                        } 
+                            if (data.success == true && data.emailLink != '' && data.id != '') {
+                            this.sendEmail(data.id);
+                            window.location.href = data.emailLink;
+                        }else{
+                            //window.location.href = '';
                         }
                     })
                     .catch()     
+                },
+                sendEmail(id) {
+                    fetch(`/api/Register/SendCheckEmail/${id}`)
+                        .then(resp => {
+                            if (!resp.ok) {
+                                throw '傳送信件失敗，請聯繫管理員';
+                            } else {
+                                return resp.json();
+                            }
+                        })
+                        .then(result => {
+                            if (result.success == true) {
+
+                            } else {
+                                throw '傳送信件失敗，請聯繫管理員';
+                            }
+                        })
+                        .catch(err => console.log(err))
                 },
             },
         }).mount('#login');

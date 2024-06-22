@@ -143,6 +143,16 @@ namespace HaveFun.Controllers.APIs
                         HttpOnly = true,
                         IsEssential = true
                     });
+                    if(user.AccountStatus == 0)
+                    {
+                        string? link = Url.Action("SendMail", "Register", new { id = user.Id }, protocol: HttpContext.Request.Scheme);
+                        return new JsonResult(new
+                        {
+                            success = true,
+                            emailLink = link,
+                            id = user.Id
+                        });
+                    }
                     return new JsonResult(new
                     {
                         success = true,
