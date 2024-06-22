@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HaveFun.Models;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HaveFun.Controllers
 {
@@ -22,8 +23,9 @@ namespace HaveFun.Controllers
             _context = context;
            
         }
-        //
-        public async Task<IActionResult> Main()
+		//
+		[Authorize(AuthenticationSchemes = "Bearer,Cookies")]
+		public async Task<IActionResult> Main()
         {
             var haveFunDbContext = _context.ChatRooms.Include(c => c.Receiver).Include(c => c.Sender);
                return View(await haveFunDbContext.ToListAsync());
