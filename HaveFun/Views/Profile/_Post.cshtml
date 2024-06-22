@@ -1,4 +1,60 @@
 ﻿<link href="~/assets/css/profile_poststyle.css" rel="stylesheet" />
+<style>
+    .imgPreview {
+        width: 60%;
+        margin: 20px;
+    }
+
+    .Post-size-img {
+        max-width: 80%; /* 确保图片宽度不会超过容器宽度 */
+        height: auto; /* 自动调整高度以保持比例 */
+        display: block; /* 避免图片下方的空白间距 */
+        margin: 0 auto; /* 圖片置中 */
+    }
+</style>
+<style scoped>
+    .image-container {
+        position: relative;
+        display: inline-block;
+        width: 100%; /* 调整宽度以适应需要 */
+        max-width: 100%;
+    }
+
+    .img-preview-container {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+    }
+
+    .imgPreview {
+        display: block;
+        width: 60%; /* 调整宽度以适应需要 */
+        height: auto; /* 保持纵横比 */
+    }
+
+    .remove-btn {
+        position: absolute;
+        top: 5px; /* 调整按钮位置 */
+        right: 5px; /* 调整按钮位置 */
+        background-color: rgba(255, 0, 0, 0.8); /* 按钮背景颜色 */
+        color: white; /* 按钮文字颜色 */
+        border: none; /* 去掉边框 */
+        border-radius: 50%; /* 圆形按钮 */
+        width: 20px; /* 按钮宽度 */
+        height: 20px; /* 按钮高度 */
+        text-align: center; /* 文字居中 */
+        cursor: pointer; /* 鼠标指针样式 */
+        font-size: 12px; /* 文字大小 */
+        line-height: 20px; /* 行高 */
+        z-index: 10; /* 确保按钮位于图片之上 */
+        display: none; /* 默认隐藏删除按钮 */
+    }
+
+    .img-preview-container:hover .remove-btn {
+        display: block; /* 鼠标悬停时显示删除按钮 */
+    }
+</style>
+
 
 <div class="tab-pane fade show active" id="gt1" role="tabpanel" aria-labelledby="gt1-tab">
     <div id="post">
@@ -30,17 +86,27 @@
                                         </div>
                                         <div class="lab-content">
                                             <form class="post-form">
-                                                <textarea v-model="postContent" :placeholder="placeholderText" rows="4"></textarea>
+                                                <textarea v-model="postContent" :placeholder="placeholderText" rows="3"></textarea>
+                                                <div class="img-preview-container">
+                                                <img class="imgPreview" />
+                                                <button v-if="newPostPic != null" @@click="removeNewPostPic">移除</button>
+                                                </div>
+                                               @*  <div class="image-container" v-if="newPostPic">
+                                                    <div class="img-preview-container">
+                                                        <img class="imgPreview" :src="previewImageUrl" alt="Image Preview" @@mouseover="showDeleteBtn = true" @@mouseleave="showDeleteBtn = false" />
+                                                        <button class="remove-btn" @@click="removeNewPostPic" v-show="showDeleteBtn">X</button>
+                                                    </div>
+                                                </div> *@
                                                 <div class="content-type">
                                                     <ul class="content-list">
                                                         <li class="text"><a href="#"><i class="fa-solid fa-pen-to-square"></i>Text</a></li>
                                                         <li class="image-video">
-                                                            <div class="file-btn"><i class="fa-solid fa-camera"></i>Photo/Videos</div>
-                                                            <input type="file" @@change.prevent="handleFileUpload">
+                                                            <div class="file-btn"><i class="fa-solid fa-camera"></i>Photo</div>
+                                                            <input type="file" v-model="newPostPic" @@change.prevent="previewPic" accept="image/*">
                                                         </li>
                                                         <li class="attach-file">
                                                             <div class="file-btn"><i class="fa-solid fa-link"></i>Attach File</div>
-                                                            <input type="file" @@change.prevent="handleFileUpload">
+                                                            @* <input type="file" @@change.prevent="handleFileUpload"> *@
                                                         </li>
                                                         <li class="post-submit">
                                                             <button @@click.prevent="addPost" class="default-btn">Post</button>
@@ -82,6 +148,10 @@
                                         </div>
                                         <div class="post-description">
                                             <p>{{ post.Contents }}</p>
+                                            <div v-if="post.showPostPicture">
+                                                <img :src="post.Pictures" class="Post-size-img" alt="Post Picture" />
+                                            </div>
+                                            
                                         </div>
                                     </div>
                                     @* 貼文功能按鈕 *@
@@ -206,6 +276,7 @@
             return {
                 postContent: '',
                 placeholderText: '',
+                newPostPic:null, // 發文圖片 
                 postPrivacy: 'Public',
                 posts: [],
                 userName: '',
@@ -218,6 +289,7 @@
                 ratPostId: null, // 檢舉貼文Id
                 showDeleteBox: false, // 顯示刪除視窗
                 deletePostId: null,
+                showDeleteBtn:false,
             };
         },
         computed: {
@@ -232,22 +304,10 @@
         },
         methods: {
             // 登入者資料
-            // async getUserInfo() {
-            //     axios.put(`/api/Profile/GetUserInfor/${this.loginUserId}`)
-            //         .then(response => {
-            //             console.log("getUserInfo response:",response.data);
-            //             this.userInfo = response.data;
-            //             this.setUserInfo();
-            //         })
-            //         .catch(error => {
-            //             console.error('Error getUserInfo:', error);
-            //         });
-            // },
-
             async getUserInfo() {
                 axios.post(`/api/Profile/GetUserInfor/${this.loginUserId}`)
                     .then(response => {
-                        console.log("getUserInfo response:", response.data);
+                        // console.log("getUserInfo response:", response.data);
                         this.userInfo = response.data;
                         this.setUserInfo();
                     })
@@ -273,7 +333,7 @@
                         UserName: post.userName,
                         Contents: post.contents,
                         Time: post.time,
-                        Pictures: post.pictures,
+                        Pictures: post.picturePath,
                         Like: post.like,
                         Replies: (post.replies || []).map(reply => ({
                             Id: reply.id,
@@ -295,6 +355,7 @@
                             showNestedForm: false,
                             nestedReplyContent: ''
                         })),
+                        showPostPicture: post.picturePath ? true:false,
                         showComments: false,
                         showReplyForm: false,
                         newReply: ''
@@ -314,15 +375,20 @@
                     return;
                 }
 
-                const newPost = {
-                    UserId: this.loginUserId,
-                    UserName: this.userName,
-                    Contents: this.postContent,
-                    Replies: []
-                };
+                const newPost = new FormData();
+                newPost.append('UserId', this.loginUserId);
+                newPost.append('UserName', this.userName);
+                newPost.append('Contents', this.postContent);
+                if (this.newPostPic) {
+                    newPost.append('Pictures', this.newPostPic);
+                }
 
                 try {
-                    const response = await axios.post('/api/Profile/AddPost', newPost);
+                    const response = await axios.post('/api/Profile/AddPost', newPost, {
+                        Headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
                     const createdPost = response.data;
                     this.posts.unshift({
                         Id: createdPost.id,
@@ -330,18 +396,46 @@
                         UserName: createdPost.userName,
                         Contents: createdPost.contents,
                         Time: createdPost.time,
-                        Pictures: createdPost.pictures,
+                        Pictures: createdPost.picturePath,
                         Like: createdPost.like || [],
                         Replies: createdPost.replies || [],
+                        showPostPicture: createdPost.picturePath ? true : false,
                         showComments: false,
                         showReplyForm: false,
                         newReply: ''
                     });
-
                     this.postContent = '';
+                    this.newPostPic = null;
+                    this.removeNewPostPic();
                 } catch (error) {
                     console.error('Error addPost:', error);
                 }
+            },
+
+            // 新增貼文圖片
+            previewPic(event) {
+                const allowType = "image.*";
+                let file = event.target.files[0];
+                if (file.type.match(allowType)) {
+                    var reader = new FileReader();
+                    reader.onload = (e) => {
+                        let blob = new Blob([e.target.result], { type: "image/jpeg" });
+                        let uriCreator = window.URL || window.webkitURL;
+                        let imgUrl = uriCreator.createObjectURL(blob);
+                        $('.imgPreview').attr("src", imgUrl);
+                    };
+                    reader.readAsArrayBuffer(file);
+                    this.newPostPic = file;
+                } else {
+                    this.newPostPic = null;
+                    $('.imgPreview').attr("src", null);
+                }
+            },
+
+            // 移除貼文圖片
+            removeNewPostPic() {
+                this.newPostPic = null;
+                $('.imgPreview').attr("src", null);
             },
 
             // 貼文回覆
@@ -440,11 +534,6 @@
                         }
                     }
                 }
-            },
-
-            handleFileUpload(event) {
-                const files = event.target.files;
-                console.log(files);
             },
 
             // Like 圖示變化

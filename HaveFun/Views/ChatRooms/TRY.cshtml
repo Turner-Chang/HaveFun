@@ -1,407 +1,39 @@
-﻿@section Styles
- {
-    <style>
-        body {
-            background-color: #f4f7f6;
-            margin-top: 20px;
-        }
-
-        .card {
-            background: #fff;
-            transition: .5s;
-            border: 0;
-            margin-bottom: 30px;
-            border-radius: .55rem;
-            position: relative;
-            width: 100%;
-            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
-        }
-
-        .chat-app .people-list {
-            width: 280px;
-            position: absolute;
-            left: 0;
-            top: 0;
-            padding: 20px;
-            z-index: 7;
-        }
-
-        .text-right {
-            text-align: right !important;
-        }
-
-        .chat-app .chat {
-            margin-left: 280px;
-            border-left: 1px solid #eaeaea;
-        }
-
-        .people-list {
-            -moz-transition: .5s;
-            -o-transition: .5s;
-            -webkit-transition: .5s;
-            transition: .5s;
-        }
-
-            .people-list .chat-list li {
-                padding: 10px 15px;
-                list-style: none;
-                border-radius: 3px;
-            }
-
-                .people-list .chat-list li:hover {
-                    background: #efefef;
-                    cursor: pointer;
-                }
-
-                .people-list .chat-list li.active {
-                    background: #efefef;
-                }
-
-                .people-list .chat-list li .name {
-                    font-size: 15px;
-                }
-
-            .people-list .chat-list img {
-                width: 45px;
-                border-radius: 50%;
-            }
-
-            .people-list img {
-                float: left;
-                border-radius: 50%;
-            }
-
-            .people-list .about {
-                float: left;
-                padding-left: 8px;
-            }
-
-            .people-list .status {
-                color: #999;
-                font-size: 13px;
-            }
-
-        .chat .chat-header {
-            padding: 15px 20px;
-            border-bottom: 2px solid #f4f7f6;
-        }
-
-            .chat .chat-header img {
-                float: left;
-                border-radius: 40px;
-                width: 40px;
-            }
-
-            .chat .chat-header .chat-about {
-                float: left;
-                padding-left: 10px;
-            }
-
-        .chat .chat-history {
-            padding: 20px;
-            border-bottom: 2px solid #fff;
-        }
-
-            .chat .chat-history ul {
-                padding: 0;
-            }
-
-                .chat .chat-history ul li {
-                    list-style: none;
-                    margin-bottom: 30px;
-                }
-
-                    .chat .chat-history ul li:last-child {
-                        margin-bottom: 0px;
-                    }
-
-            .chat .chat-history .message-data {
-                margin-bottom: 15px;
-            }
-
-                .chat .chat-history .message-data img {
-                    border-radius: 40px;
-                    width: 40px;
-                }
-
-            .chat .chat-history .message-data-time {
-                color: #434651;
-                padding-left: 6px;
-            }
-
-            .chat .chat-history .message {
-                color: #444;
-                padding: 18px 20px;
-                line-height: 26px;
-                font-size: 16px;
-                border-radius: 7px;
-                display: inline-block;
-                position: relative
-            }
-
-                .chat .chat-history .message:after {
-                    bottom: 100%;
-                    left: 7%;
-                    border: solid transparent;
-                    content: " ";
-                    height: 0;
-                    width: 0;
-                    position: absolute;
-                    pointer-events: none;
-                    border-bottom-color: #fff;
-                    border-width: 10px;
-                    margin-left: -10px
-                }
-
-            .chat .chat-history .my-message {
-                background: #efefef;
-                float: right;
-                text-align: right;
-            }
-
-                .chat .chat-history .my-message img {
-                    float: right;
-                    margin-left: 10px;
-                }
-
-            .chat .chat-history .other-message {
-                background: #e8f1f3;
-                float: left;
-                text-align: left;
-            }
-
-                .chat .chat-history .other-message img {
-                    float: left;
-                    margin-right: 10px;
-                }
-
-            .chat .chat-history .my-message:after {
-                bottom: 100%;
-                left: 30px;
-                border: solid transparent;
-                content: " ";
-                height: 0;
-                width: 0;
-                position: absolute;
-                pointer-events: none;
-                border-bottom-color: #efefef;
-                border-width: 10px;
-                margin-left: -10px
-            }
-
-            .chat .chat-history .other-message:after {
-                border-bottom-color: #e8f1f3;
-                left: 93%
-            }
-
-        .chat .chat-message {
-            padding: 20px
-        }
-
-        .online,
-        .offline,
-        .me {
-            margin-right: 2px;
-            font-size: 8px;
-            vertical-align: middle
-        }
-
-        .online {
-            color: #86c541
-        }
-
-        .offline {
-            color: #e47297
-        }
-
-        .me {
-            color: #1d8ecd
-        }
-
-        .float-right {
-            float: right
-        }
-
-        .clearfix:after {
-            visibility: hidden;
-            display: block;
-            font-size: 0;
-            content: " ";
-            clear: both;
-            height: 0
-        }
-
-        .text-right {
-            text-align: right !important;
-        }
-
-        .online,
-        .offline,
-        .me {
-            margin-right: 2px;
-            font-size: 8px;
-            vertical-align: middle;
-        }
-
-        .online {
-            color: #0000CC;
-        }
-
-        .offline {
-            color: #e47297;
-        }
-
-        .me {
-            color: #1d8ecd;
-        }
-
-        .float-right {
-            float: right;
-        }
-
-        .clearfix:after {
-            visibility: hidden;
-            display: block;
-            font-size: 0;
-            content: " ";
-            clear: both;
-            height: 0;
-        }
-
-        @@media only screen and (max-width: 767px) {
-            .chat-app .people-list {
-                height: 465px;
-                width: 100%;
-                overflow-x: auto;
-                background: #fff;
-                left: -400px;
-                display: none;
-            }
-
-                .chat-app .people-list.open {
-                    left: 0;
-                }
-
-            .chat-app .chat {
-                margin: 0;
-            }
-
-                .chat-app .chat .chat-header {
-                    border-radius: 0.55rem 0.55rem 0 0;
-                }
-
-            .chat-app .chat-history {
-                height: 300px;
-                overflow-x: auto;
-            }
-        }
-
-        @@media only screen and (min-width: 768px) and (max-width: 992px) {
-            .chat-app .chat-list {
-                height: 650px;
-                overflow-x: auto;
-            }
-
-            .chat-app .chat-history {
-                height: 600px;
-                overflow-x: auto;
-            }
-        }
-
-        @@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
-            .chat-app .chat-list {
-                height: 480px;
-                overflow-x: auto;
-            }
-
-            .chat-app .chat-history {
-                height: calc(100vh - 350px);
-                overflow-x: auto;
-            }
-
-            .chat .chat-history .my-message {
-                background: #efefef;
-                text-align: right;
-            }
-
-                .chat .chat-history .my-message img {
-                    float: right;
-                    margin-left: 10px;
-                }
-
-            .chat .chat-history .other-message {
-                background: #efefef;
-                text-align: left;
-            }
-
-                .chat .chat-history .other-message img {
-                    float: right;
-                    margin-left: 10px;
-                }
-        }
-    </style>
-}
+﻿
+<link href="~/css/chat.css" rel="stylesheet" />
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.5/signalr.min.js"></script>
-
+<script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
 <div id="appc">
     <div class="container">
         <div class="row clearfix">
             <div class="col-lg-12">
                 <div class="card chat-app">
-                    <div id="plist" class="people-list">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                    <div id="friendListApp">
+                        <div id="plist" class="people-list">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-search"></i></span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Search..." v-model="searchQuery">
                             </div>
-                            <input type="text" class="form-control" placeholder="Search...">
+                            <ul class="list-unstyled chat-list mt-2 mb-0">
+                                <li v-for="friend in filteredFriends"
+                                    :key="friend.id"
+                                    :class="{ 'clearfix': true, 'active': friend.id === activeFriendId }"
+                                    @@click="selectFriend(friend)">
+                                    <img :src="friend.avatarUrl" alt="avatar">
+                                    <div class="about">
+                                        <div class="name">{{ friend.name }}</div>
+                                        <div class="status">
+                                            <i :class="{ 'fa fa-circle': true, 'online': friend.isOnline, 'offline': !friend.isOnline }"></i>
+                                            {{ friend.status }}
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
                         </div>
-                        <ul class="list-unstyled chat-list mt-2 mb-0">
-                            <li class="clearfix">
-                                <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="avatar">
-                                <div class="about">
-                                    <div class="name">Vincent Porter</div>
-                                    <div class="status"> <i class="fa fa-circle offline"></i> left 7 mins ago </div>
-                                </div>
-                            </li>
-                            <li class="clearfix active">
-                                <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar">
-                                <div class="about">
-                                    <div class="name">Aiden Chavez</div>
-                                    <div class="status"> <i class="fa fa-circle online"></i> online </div>
-                                </div>
-                            </li>
-                            <li class="clearfix">
-                                <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="avatar">
-                                <div class="about">
-                                    <div class="name">Mike Thomas</div>
-                                    <div class="status"> <i class="fa fa-circle online"></i> online </div>
-                                </div>
-                            </li>
-                            <li class="clearfix">
-                                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
-                                <div class="about">
-                                    <div class="name">Christian Kelly</div>
-                                    <div class="status"> <i class="fa fa-circle offline"></i> left 10 hours ago </div>
-                                </div>
-                            </li>
-                            <li class="clearfix">
-                                <img src="https://bootdey.com/img/Content/avatar/avatar8.png" alt="avatar">
-                                <div class="about">
-                                    <div class="name">Monica Ward</div>
-                                    <div class="status"> <i class="fa fa-circle online"></i> online </div>
-                                </div>
-                            </li>
-                            <li class="clearfix">
-                                <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="avatar">
-                                <div class="about">
-                                    <div class="name">Dean Henry</div>
-                                    <div class="status"> <i class="fa fa-circle offline"></i> offline since Oct 28 </div>
-                                </div>
-                            </li>
-                        </ul>
                     </div>
                     <div class="chat">
                         <div class="chat-header clearfix">
@@ -463,137 +95,245 @@
 
 @section Scripts
 {
-
     <script>
-        var chatHistory = [];
-        // Function to update chat history
+        const { createApp } = Vue;
+        const currentUserId = 7;
+        createApp({
+            data() {
+                return {
+                    friends: [],
+                    searchQuery: '',
+                    activeFriendId: null
+                };
+            },
+            computed: {
+                filteredFriends() {
+                    return this.friends.filter(friend =>
+                        friend.name.toLowerCase().includes(this.searchQuery.toLowerCase())
+                    );
+                }
+            },
+            methods: {
+                selectFriend(friend) {
+                    if (!friend.isBlocked) {
+                        this.activeFriendId = friend.id;
+                        console.log('選擇的朋友:', friend);
+                    } else {
+                        console.log('無法選擇被封鎖的朋友');
+                    }
+                },
+                fetchFriends() {
+                    axios.get(`/api/FriendApi/GetFriend/${currentUserId}`)
+                        .then(response => {
+                            this.friends = response.data.map(friend => ({
+                                id: friend.id,
+                                name: friend.name,
+                                avatarUrl: friend.profilePicture ?
+                                    (friend.profilePicture.startsWith('http') ? friend.profilePicture : `/api/UserInfo/GetPicture/${friend.id}`) :
+                                    '/img/default-avatar.png',
+                                isOnline: false,
+                                status: 'offline',
+                                isBlocked: friend.isBlocked
+                            }));
+                        })
+                        .catch(error => {
+                            console.error('獲取好友列表失敗:', error);
+                        });
+                },
+                updateFriendStatus(friendId, isOnline) {
+                    const friend = this.friends.find(f => f.id === friendId);
+                    if (friend) {
+                        friend.isOnline = isOnline;
+                        friend.status = isOnline ? 'online' : 'offline';
+                    }
+                },
+                addFriend(newFriend) {
+                    if (!this.friends.some(f => f.id === newFriend.id)) {
+                        this.friends.push({
+                            id: newFriend.id,
+                            name: newFriend.name,
+                            avatarUrl: newFriend.profilePicture || '/img/default-avatar.png',
+                            isOnline: false,
+                            status: 'offline',
+                            isBlocked: false
+                        });
+                    }
+                },
+                removeFriend(friendId) {
+                    this.friends = this.friends.filter(f => f.id !== friendId);
+                },
+                blockFriend(friendId) {
+                    axios.post('/api/FriendApi/BlockUser', {
+                        userId: currentUserId,
+                        friendId: friendId
+                    })
+                        .then(() => {
+                            const friend = this.friends.find(f => f.id === friendId);
+                            if (friend) {
+                                friend.isBlocked = true;
+                            }
+                            console.log('用戶已被封鎖');
+                        })
+                        .catch(error => {
+                            console.error('封鎖用戶失敗:', error);
+                        });
+                },
+                unblockFriend(friendId) {
+                    axios.post('/api/FriendApi/UnblockUser', {
+                        userId: currentUserId,
+                        friendId: friendId
+                    })
+                        .then(() => {
+                            const friend = this.friends.find(f => f.id === friendId);
+                            if (friend) {
+                                friend.isBlocked = false;
+                            }
+                            console.log('用戶已被解除封鎖');
+                        })
+                        .catch(error => {
+                            console.error('解除封鎖失敗:', error);
+                        });
+                }
+            },
+            mounted() {
+                this.fetchFriends();
+                const connection = new signalR.HubConnectionBuilder()
+                    .withUrl("/chatHub")
+                    .build();
+                connection.on("UserOnline", (userId) => {
+                    this.updateFriendStatus(userId, true);
+                });
+                connection.on("UserOffline", (userId) => {
+                    this.updateFriendStatus(userId, false);
+                });
+                connection.on("NewFriend", (friendData) => {
+                    this.addFriend(friendData);
+                });
+                connection.on("FriendRemoved", (friendId) => {
+                    this.removeFriend(friendId);
+                });
+                connection.start().catch(err => console.error(err.toString()));
+            }
+        }).mount('#friendListApp');
+
+        // 定義全域變量
+        let chatHistory = [];
+        window.currentUserId = 2; // 預設值
+        window.otherUserId = 1;   // 預設值
+        window.updateUserIds = updateUserIds;
+
         function updateChatHistory() {
-            var chatHistoryContainer = document.querySelector('.chat-history ul');
+            const chatHistoryContainer = document.querySelector('.chat-history ul');
             chatHistoryContainer.innerHTML = '';
-            chatHistory.forEach(chat => {
-                var chatItem = document.createElement('li');
+            chatHistory.sort((a, b) => new Date(a.time) - new Date(b.time)).forEach(chat => {
+                const chatItem = document.createElement('li');
                 chatItem.className = 'clearfix';
-                var chatContent = `
-            <div class="message-data ${chat.type === 'my' ? 'text-right' : ''}">
-                <span class="message-data-time">${chat.time}</span>
-                ${chat.img ? `<img src="${chat.img}" alt="avatar">` : ''}
-            </div>
-            <div class="message ${chat.type === 'my' ? 'my-message' : 'other-message float-right'}">
-                ${chat.message}
-            </div>
-                       `;
-                chatItem.innerHTML = chatContent;
+                chatItem.innerHTML = `
+                            <div class="message-data ${chat.type === 'my' ? 'text-right' : ''}">
+                                <span class="message-data-time">${chat.time}</span>
+                                ${chat.img ? `<img src="${chat.img}" alt="avatar">` : ''}
+                            </div>
+                            <div class="message ${chat.type === 'my' ? 'my-message' : 'other-message float-right'}">
+                                ${chat.message}
+                            </div>
+                        `;
                 chatHistoryContainer.appendChild(chatItem);
             });
         }
 
-        // Fetch chat history from API
-        fetch('/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/1/2')
-            .then(response => response.json())
-            .then(data => {
-                data.forEach(message => {
-                    const newChatMessage = {
-                        time: moment(message.createTime).format("h:mm A, MMMM D"),
-                        img: `/api/UserInfo/GetPicture/${message.user1Id}`,
-                        message: message.messageText,
-                        type: message.user1Id === 1 ? "other" : "my" // Set type based on user1Id
-                    };
-                    chatHistory.push(newChatMessage);
-                });
+        function updateUserIds(newCurrentUserId, newOtherUserId) {
+            window.currentUserId = newCurrentUserId;
+            window.otherUserId = newOtherUserId;
+            fetchChatHistory(); // 重新加載聊天歷史
+            console.log(`User IDs updated. Current User: ${window.currentUserId}, Other User: ${window.otherUserId}`);
+        }
+
+        async function fetchChatHistory() {
+            try {
+                const [response1, response2] = await Promise.all([
+                    axios.get(`/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/${window.otherUserId}/${window.currentUserId}`),
+                    axios.get(`/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/${window.currentUserId}/${window.otherUserId}`)
+                ]);
+
+                const processMessages = (data, isOther) => data.map(message => ({
+                    time: moment(message.createTime).format("h:mm A, MMMM D"),
+                    img: `/api/UserInfo/GetPicture/${message.user1Id}`,
+                    message: message.messageText,
+                    type: isOther ? "other" : "my"
+                }));
+
+                chatHistory = [
+                    ...processMessages(response1.data, true),
+                    ...processMessages(response2.data, false)
+                ];
+
                 updateChatHistory();
-            })
-            .catch(error => console.error('Error fetching chat history:', error));
+            } catch (error) {
+                console.error('獲取聊天歷史時出錯:', error);
+            }
+        }
 
-        fetch('/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/2/1')
-            .then(response => response.json())
-            .then(data => {
-                data.forEach(message => {
-                    const newChatMessage = {
-                        time: moment(message.createTime).format("h:mm A, MMMM D"),
-                        img: `/api/UserInfo/GetPicture/${message.user1Id}`,
-                        message: message.messageText,
-                        type: message.user1Id === 2 ? "my" : "other" // Set type based on user1Id
-                    };
-                    chatHistory.push(newChatMessage);
-                });
-                updateChatHistory();
-            })
-            .catch(error => console.error('Error fetching chat history:', error));
-
-        // Initial call to update chat history
-        updateChatHistory();
-
-        // SignalR connection setup
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("/chatHub")
             .build();
 
         connection.on("ReceiveMessage", function (user, message) {
-            const msg = message;
-            const chat = {
-                time: moment().format("h:mm A, MMMM D"),
-                img: "/api/UserInfo/GetPicture/2",
-                message: msg,
-                type: "my"
-            };
-            chatHistory.push(chat);
-            updateChatHistory();
+            if (user != window.currentUserId) {
+                const chat = {
+                    time: moment().format("h:mm A, MMMM D"),
+                    img: `/api/UserInfo/GetPicture/${window.otherUserId}`,
+                    message: message,
+                    type: "other"
+                };
+                chatHistory.push(chat);
+                updateChatHistory();
+            }
         });
 
         connection.on("SomeOneOnline", (connid) => {
-            console.log(`Someone connected with ID: ${connid}`);
-         
-                    });
-        
+            console.log(`有人連接，ID: ${connid}`);
+        });
 
         connection.on("SomeOneOffline", (connid) => {
-            console.log(`Someone disconnected with ID: ${connid}`);
+            console.log(`有人斷開連接，ID: ${connid}`);
         });
 
         connection.start().catch(err => console.error(err.toString()));
 
-        document.getElementById("sendButton").addEventListener("click", event => {
-            const user1Id = 2; // Replace with the current user's ID
-            const user2Id = 1; // Replace with the recipient's ID
-            const messageText = document.getElementById("messageInput").value;
-            const user = "";
-            const message = document.getElementById("messageInput").value;
-            connection.invoke("SendMessage", user, message).catch(err => console.error(err.toString()));
-            document.getElementById("messageInput").value = '';
-
-            // Create data object for POST request
-            const data = {
-                User1Id: user1Id,
-                User2Id: user2Id,
-                MessageText: messageText,
-                CreateTime: new Date(),
-                IsRead: false
-            };
-
-            // Send POST request to the server
-            fetch('/api/ChatRoom/ChatRoomsApi', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-                .then(response => {
-                    if (response.ok) {
-                        return response.text();
-                    } else {
-                        throw new Error('Network response was not ok.');
-                    }
-                })
-                .then(responseText => {
-                    console.log(responseText); // Handle server response (if needed)
-                    document.getElementById("messageInput").value = ''; // Clear input field
-                })
-                .catch(error => {
-                    console.error('Error saving message:', error);
-                });
+        document.getElementById("sendButton").addEventListener("click", async (event) => {
             event.preventDefault();
+            const messageText = document.getElementById("messageInput").value.trim();
+            if (!messageText) return;
+
+            const newChat = {
+                time: moment().format("h:mm A, MMMM D"),
+                img: `/api/UserInfo/GetPicture/${window.currentUserId}`,
+                message: messageText,
+                type: "my"
+            };
+            chatHistory.push(newChat);
+            updateChatHistory();
+
+            try {
+                await connection.invoke("SendMessage", currentUserId.toString(), messageText);
+
+                const response = await axios.post('/api/ChatRoom/ChatRoomsApi', {
+                    User1Id: window.currentUserId,
+                    User2Id: window.otherUserId,
+                    MessageText: messageText,
+                    CreateTime: new Date(),
+                    IsRead: false
+                });
+
+                console.log('消息已保存:', response.data);
+
+                document.getElementById("messageInput").value = '';
+            } catch (error) {
+                console.error('發送/保存消息時出錯:', error);
+            }
         });
+
+        fetchChatHistory();
     </script>
 }
 

@@ -21,20 +21,10 @@ namespace HaveFun.Controllers.APIs
             _context = context;
         }
 
-        // Put: api/Profile/GetUserInfor
-        //[HttpPut("{loginUserId}")]
-        //public async Task<IEnumerable<UserInfo>> GetUserInfor(int loginUserId)
-        //{
-        //    var userInfoData = await _context.UserInfos
-        //        .Where(u => u.Id == loginUserId)
-        //        .ToListAsync();
-        //    return userInfoData;
-        //}
-
+        // Post: api/Profile/loginUserId
         [HttpPost("{loginUserId}")]
         public async Task<IEnumerable<UserInfo>> GetUserInfor([FromRoute] int loginUserId)
         {
-            // 根据 profileId 和 loginUserId 进行查询
             var userInfoData = await _context.UserInfos
                 .Where(u => u.Id == loginUserId)
                 .ToListAsync();
@@ -66,7 +56,7 @@ namespace HaveFun.Controllers.APIs
                     Name = item.Name,
                     Age = CalculateAge(item.BirthDay),
                     Gender = item.Gender == 1 ? "male" : "female",
-                    ProfilePicture = CreatePictureUrl("GetPicture", "Profile", new { id = item.Id })
+                    ProfilePicture = string.IsNullOrEmpty(item.ProfilePicture) ? "" : CreatePictureUrl("GetPicture", "Profile", new { id = item.Id })
                 });
             }
 
@@ -82,9 +72,9 @@ namespace HaveFun.Controllers.APIs
             return baseUrl.Replace($"/{controller}/{action}", $"/api/{controller}/{action}");
         }
 
-        // Get: api/Profile/GetProfilePicture
+        // Get: api/Profile/GetPicture
         [HttpGet("{id}")]
-        public async Task<FileResult> GetPicture(int id)
+        public async Task<FileResult> GetPicture([FromRoute] int id)
         {
             UserInfo? user = await _context.UserInfos.FindAsync(id);
             string path = user.ProfilePicture;
@@ -109,47 +99,131 @@ namespace HaveFun.Controllers.APIs
             string userId = Request.Cookies["userId"];
             var posts = await _context.Posts
                 .Where(p => p.UserId.ToString() == userId && p.Status == 0)
-                .OrderByDescending(p => p.Id) // Id由大到小排序
-                .Select(p => new PostsDTO
+                .OrderByDescending(p => p.Id)
+                .Select(p => new
                 {
-                    Id = p.Id,
-                    UserId = p.UserId,
+                    p.Id,
+                    p.UserId,
                     UserName = p.User.Name,
-                    Contents = p.Contents,
+                    p.Contents,
                     Time = p.Time.ToString("yyyy-MM-dd HH:mm:ss"),
-                    Pictures = p.Pictures,
-                    Like = p.Like,
+                    p.Pictures,
+                    p.Like,
                     Replies = p.Comments
                         .Where(c => c.ParentCommentId == null)
-                        .Select(c => new CommentsDTO
+                        .Select(c => new
                         {
-                            Id = c.Id,
-                            UserId = c.UserId,
+                            c.Id,
+                            c.UserId,
                             UserName = c.User.Name,
-                            PostId = c.PostId,
-                            ParentCommentId = c.ParentCommentId,
-                            Contents = c.Contents,
+                            c.PostId,
+                            c.ParentCommentId,
+                            c.Contents,
                             Time = c.Time.ToString("yyyy-MM-dd HH:mm:ss"),
-                            NestedReplies = c.Replies.Select(nc => new CommentsDTO
+                            NestedReplies = c.Replies.Select(nc => new
                             {
-                                Id = nc.Id,
-                                UserId = nc.UserId,
+                                nc.Id,
+                                nc.UserId,
                                 UserName = nc.User.Name,
-                                PostId = nc.PostId,
-                                ParentCommentId = nc.ParentCommentId,
-                                Contents = nc.Contents,
+                                nc.PostId,
+                                nc.ParentCommentId,
+                                nc.Contents,
                                 Time = nc.Time.ToString("yyyy-MM-dd HH:mm:ss")
                             }).ToList()
                         }).ToList()
                 })
                 .ToListAsync();
 
-            return posts;
+            var postDTOs = posts.Select(p => new PostsDTO
+            {
+                Id = p.Id,
+                UserId = p.UserId,
+                UserName = p.UserName,
+                Contents = p.Contents,
+                Time = p.Time,
+                PicturePath = string.IsNullOrEmpty(p.Pictures) ? "": CreatePictureUrl("GetPostPicture", "Profile", new { id = p.Id }),
+                Like = p.Like,
+                Replies = p.Replies.Select(c => new CommentsDTO
+                {
+                    Id = c.Id,
+                    UserId = c.UserId,
+                    UserName = c.UserName,
+                    PostId = c.PostId,
+                    ParentCommentId = c.ParentCommentId,
+                    Contents = c.Contents,
+                    Time = c.Time,
+                    NestedReplies = c.NestedReplies.Select(nc => new CommentsDTO
+                    {
+                        Id = nc.Id,
+                        UserId = nc.UserId,
+                        UserName = nc.UserName,
+                        PostId = nc.PostId,
+                        ParentCommentId = nc.ParentCommentId,
+                        Contents = nc.Contents,
+                        Time = nc.Time
+                    }).ToList()
+                }).ToList()
+            }).ToList();
+
+            return postDTOs;
         }
+
+        // Get: api/Profile/GetPostPicture
+        [HttpGet("{id}")]
+        public async Task<FileResult> GetPostPicture([FromRoute] int id)
+        {
+            Post? post = await _context.Posts.FindAsync(id);
+            string path = post.Pictures;
+            byte[] ImageContent = System.IO.File.ReadAllBytes(path);
+            return File(ImageContent, "image/*");
+        }
+
+        //public async Task<IEnumerable<PostsDTO>> GetPostsList()
+        //{
+        //    string userId = Request.Cookies["userId"];
+        //    var posts = await _context.Posts
+        //        .Where(p => p.UserId.ToString() == userId && p.Status == 0)
+        //        .OrderByDescending(p => p.Id) // Id由大到小排序
+        //        .Select(p => new PostsDTO
+        //        {
+        //            Id = p.Id,
+        //            UserId = p.UserId,
+        //            UserName = p.User.Name,
+        //            Contents = p.Contents,
+        //            Time = p.Time.ToString("yyyy-MM-dd HH:mm:ss"),
+        //            Pictures = p.Pictures,
+        //            Like = p.Like,
+        //            Replies = p.Comments
+        //                .Where(c => c.ParentCommentId == null)
+        //                .Select(c => new CommentsDTO
+        //                {
+        //                    Id = c.Id,
+        //                    UserId = c.UserId,
+        //                    UserName = c.User.Name,
+        //                    PostId = c.PostId,
+        //                    ParentCommentId = c.ParentCommentId,
+        //                    Contents = c.Contents,
+        //                    Time = c.Time.ToString("yyyy-MM-dd HH:mm:ss"),
+        //                    NestedReplies = c.Replies.Select(nc => new CommentsDTO
+        //                    {
+        //                        Id = nc.Id,
+        //                        UserId = nc.UserId,
+        //                        UserName = nc.User.Name,
+        //                        PostId = nc.PostId,
+        //                        ParentCommentId = nc.ParentCommentId,
+        //                        Contents = nc.Contents,
+        //                        Time = nc.Time.ToString("yyyy-MM-dd HH:mm:ss")
+        //                    }).ToList()
+        //                }).ToList()
+        //        })
+        //        .ToListAsync();
+
+        //    return posts;
+        //}
 
         //POST: api/Profile/AddPost
         [HttpPost]
-        public async Task<ActionResult<PostsDTO>> AddPost([FromBody]PostsDTO postDto)
+        public async Task<ActionResult<PostsDTO>> AddPost([FromForm] PostsDTO postDto)
         {
             if (!ModelState.IsValid)
             {
@@ -180,12 +254,31 @@ namespace HaveFun.Controllers.APIs
                 return BadRequest("User not found");
             }
 
+            // 保存圖片到指定目錄
+            string picturePath = "";
+            if (postDto.Pictures != null)
+            {
+                string Current = DateTime.Now.ToString("yyyyMMddHHmmss");
+                string imgPath = "../HaveFun/wwwroot/images/postImgs";
+                string fileName = $"PostPic_{postDto.UserId}_{Current}_{postDto.Pictures.FileName}";
+
+
+                var savePath = Path.Combine(Directory.GetCurrentDirectory(), imgPath, fileName);
+
+                using (var stream = new FileStream(savePath, FileMode.Create))
+                {
+                    await postDto.Pictures.CopyToAsync(stream);
+                }
+
+                picturePath = $"{imgPath}/{fileName}";
+            }
+
             var post = new Post
             {
                 UserId = postDto.UserId,
                 Contents = postDto.Contents,
                 Time = DateTime.Now,
-                Pictures = postDto.Pictures,
+                Pictures = picturePath,
                 Status = 0
             };
 
@@ -195,6 +288,7 @@ namespace HaveFun.Controllers.APIs
             postDto.Id = post.Id;
             postDto.UserName = userInfo.Name;
             postDto.Time = post.Time.ToString("yyyy-MM-dd HH:mm:ss");
+            postDto.PicturePath = string.IsNullOrEmpty(picturePath) ? "" : CreatePictureUrl("GetPostPicture", "Profile", new { id = post.Id });
 
             return CreatedAtAction(nameof(GetPostsList), new { id = post.Id }, postDto);
         }

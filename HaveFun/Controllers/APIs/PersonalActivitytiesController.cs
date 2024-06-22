@@ -1,4 +1,5 @@
-﻿using HaveFun.DTOs;
+﻿using HaveFun.Common;
+using HaveFun.DTOs;
 using HaveFun.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +16,7 @@ namespace HaveFun.Controllers.APIs
     public class PersonalActivitytiesController : ControllerBase
     {
         HaveFunDbContext _context;
-        public PersonalActivitytiesController(HaveFunDbContext context)
+        public PersonalActivitytiesController(HaveFunDbContext context, SaveImage saveImage)
         {
             _context = context;
         }
@@ -76,6 +77,7 @@ namespace HaveFun.Controllers.APIs
                     Host = data.User.Name,
                     Title = data.Title,
                     Type = data.ActivityType.TypeName,
+                    TypeId = data.ActivityType.Id,
                     Content = data.Content,
                     Notes = data.Notes,
                     Amount = data.Amount,
@@ -84,7 +86,7 @@ namespace HaveFun.Controllers.APIs
                     RegistrationTime = data.RegistrationTime.ToString("yyyy-MM-dd HH:mm"),
                     DeadlineTime = data.DeadlineTime.ToString("yyyy-MM-dd HH:mm"),
                     ActivityTime = data.ActivityTime.ToString("yyyy-MM-dd HH:mm"),
-                    Participant = data.ActivityParticipants.Select(user => new
+					Participant = data.ActivityParticipants.Select(user => new
                     {
                         Name = user.User.Name,
                         ProfilePicture = user.User.ProfilePicture
@@ -122,7 +124,8 @@ namespace HaveFun.Controllers.APIs
                     RegistrationTime = data.RegistrationTime.ToString("yyyy-MM-dd HH:mm"),
                     DeadlineTime = data.DeadlineTime.ToString("yyyy-MM-dd HH:mm"),
                     ActivityTime = data.ActivityTime.ToString("yyyy-MM-dd HH:mm"),
-                    Participant = data.ActivityParticipants.Select(user => new
+					ActivityPicture = data.Picture,
+					Participant = data.ActivityParticipants.Select(user => new
                     {
                         Name = user.User.Name,
                         ProfilePicture = user.User.ProfilePicture
@@ -164,6 +167,7 @@ namespace HaveFun.Controllers.APIs
                 return new JsonResult($"伺服器錯誤：{ex.Message}");
             }
         }
+        //刪除活動(狀態改成下架)
 		// PUT: api/personalActivities/DeleteActivity/5
 		[HttpPut("{id}")]
         public async Task<JsonResult> DeleteActivity(int id)
@@ -181,5 +185,74 @@ namespace HaveFun.Controllers.APIs
             await _context.SaveChangesAsync();
             return new JsonResult(new { result = "成功刪除活動" });
 		}
-	}
+        //修改活動
+        // PUT: api/personalActivities/EditActivity/5
+        [HttpPut("{id}")]
+        public async Task<JsonResult> EditActivity(int id, [FromForm]EditActivityDTO activity)
+        {
+            if (id != activity.ActivityId)
+            {
+                return new JsonResult(new { state = "修改活動失敗" });
+            }
+            var record = await _context.Activities.FindAsync(id);
+            var recordChange = await _context.Activities.FindAsync(id);
+			if (record == null)
+            {
+                return new JsonResult(new { result = "此活動不存在" });
+            }
+            if (!ModelState.IsValid)
+            {
+                return new JsonResult(new { result = "前端未輸入有效值" });
+            }
+            record.Title = activity.Title;
+            record.UserId = activity.UserId;
+            record.Id = activity.ActivityId;
+            record.Content = activity.Content;
+            record.Notes = activity.Notes;
+            record.RegistrationTime = activity.RegistrationTime;
+            record.DeadlineTime = activity.DeadlineTime;
+            record.ActivityTime = activity.ActivityTime;
+            record.Amount = activity.Amount;
+            record.MaxParticipants = activity.MaxParticipants;
+            record.Location = activity.Location;
+            
+            
+            //用BinaryReader讀取上傳的圖片，沒有則返回null
+            //如果有上傳圖片
+            
+
+			if (activity.Pictures != null && activity.Pictures.Length > 0)
+			{
+				var picture = activity.Pictures[0];
+				if (picture.Length > 0)
+				{
+					using (var binaryReader = new BinaryReader(picture.OpenReadStream()))
+					{
+						record.Picture = binaryReader.ReadBytes((int)picture.Length);
+					}
+				}
+			}
+            try
+            {
+                _context.Activities.Update(record);
+				await _context.SaveChangesAsync();
+				return new JsonResult(new { result = "成功修改活動" });
+			}
+			catch(Exception ex)
+            {
+				return new JsonResult($"伺服器錯誤：{ex.Message}");
+			}
+        }
+		//前端發請求讀取活動資料表byte[]
+		// GET: api/personalActivities/GetPicture/5
+		[HttpGet("{id}")]
+        public async Task<FileResult> GetPicture(int id)
+        {
+            string Filename = Path.Combine("wwwroot", "images", "NOimg.jpg");
+            Activity activity = await _context.Activities.FindAsync(id);
+            byte[] ImageContent = activity.Picture != null? activity.Picture : System.IO.File.ReadAllBytes(Filename);
+            return File(ImageContent, "image/jpeg");
+        }
+
+    }
 }

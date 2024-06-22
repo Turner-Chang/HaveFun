@@ -31,6 +31,7 @@ builder.Services.AddSingleton<PasswordSecure>();
 builder.Services.AddScoped<SendEmail>();
 builder.Services.AddSingleton<Jwt>();
 builder.Services.AddSingleton<DESSecure>();
+builder.Services.AddSingleton<GoogleOAuth>();
 
 builder.Services.AddScoped<MembershipService>();
 

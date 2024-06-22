@@ -13,9 +13,8 @@ namespace HaveFun.Controllers
         {
             return View();
         }
-        [HttpGet]
 
-        
+        [HttpGet]
         public IActionResult ForgetPassword()
         {
             return View();

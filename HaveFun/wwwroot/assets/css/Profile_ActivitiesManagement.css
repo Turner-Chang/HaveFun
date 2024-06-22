@@ -3,6 +3,7 @@
 .blog__content{
     line-height: 1.6;
     margin:10px;
+    word-break:break-all;
 }
 .blog__content > img {
     margin-bottom:10px;
@@ -15,6 +16,9 @@ summary {
     color: #f24570;
     font-size: 16px;
     margin:0;
+}
+.actContent {
+    white-space: pre-wrap;
 }
 .blog__item{
     margin: 20px;
@@ -62,6 +66,9 @@ summary {
 .deleteActBox > button {
     margin: 20px;
 }
+.imgPreview {
+    width: 100%;
+}
 .editNumber{
     width: 20%;
     display:inline;
@@ -72,4 +79,5 @@ textarea{
     overflow: auto;
     word-break: break-all;
 }
+
 
