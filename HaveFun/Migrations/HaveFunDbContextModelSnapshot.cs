@@ -33,10 +33,8 @@ namespace HaveFun.Migrations
                     b.Property<DateTime>("ActivityTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Amount")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -307,6 +305,28 @@ namespace HaveFun.Migrations
                     b.HasKey("ComplaintCategoryId");
 
                     b.ToTable("ComplaintCategories");
+                });
+
+            modelBuilder.Entity("HaveFun.Models.ConId_UserId", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("connId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ConId_UserId");
                 });
 
             modelBuilder.Entity("HaveFun.Models.FriendList", b =>
@@ -660,9 +680,6 @@ namespace HaveFun.Migrations
                     b.Property<int>("ComplaintCategoryId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProcessingStatus")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("ReportTime")
                         .HasColumnType("datetime2");
 
@@ -799,6 +816,17 @@ namespace HaveFun.Migrations
                     b.Navigation("ParentComment");
 
                     b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("HaveFun.Models.ConId_UserId", b =>
+                {
+                    b.HasOne("HaveFun.Models.UserInfo", "User")
+                        .WithMany("ConnUsers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -1017,6 +1045,8 @@ namespace HaveFun.Migrations
                     b.Navigation("BeRepostedUsers");
 
                     b.Navigation("Comments");
+
+                    b.Navigation("ConnUsers");
 
                     b.Navigation("Friends1");
 

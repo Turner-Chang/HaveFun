@@ -29,17 +29,14 @@ namespace HaveFun.Controllers.APIs
         }
 
         // GET: api/MemberLabelsApi/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<MemberLabel>> GetMemberLabel(int id)
-        {
-            var memberLabel = await _context.MemberLabels.FindAsync(id);
-
-            if (memberLabel == null)
-            {
-                return NotFound();
-            }
-
-            return memberLabel;
+        [HttpGet("getLabelsForUser/{userId}")]
+        public async Task<IActionResult> GetLabelsForUser(int userId)
+		{
+            var userLabels = await _context.MemberLabels
+                .Where(ml => ml.UserId == userId)
+                .Select(ml => ml.LabelId)
+                .ToListAsync();
+            return Ok(userLabels);            
         }
 
         // PUT: api/MemberLabelsApi/5
@@ -79,7 +76,7 @@ namespace HaveFun.Controllers.APIs
 		{
 			if (memberLabelDTO == null || memberLabelDTO.LabelIds == null || !memberLabelDTO.LabelIds.Any())
 			{
-				return BadRequest("请求數據不能為空或標籤列表不能為空");
+				return BadRequest("錯誤! 請至少選擇一項標籤");
 			}
 
 			Console.WriteLine($"接收到的數據: UserId = {memberLabelDTO.UserId}, LabelIds = {string.Join(", ", memberLabelDTO.LabelIds)}");
@@ -87,13 +84,18 @@ namespace HaveFun.Controllers.APIs
             try
 			{			
 
-				// 清理旧的标签记录
+				// 清除舊的標籤紀錄
 				var existingLabels = await _context.MemberLabels
 					.Where(ml => ml.UserId == memberLabelDTO.UserId)
 					.ToListAsync();
-				_context.MemberLabels.RemoveRange(existingLabels);
+               
 
-				// 添加新的标签记录
+                if (existingLabels.Any())
+                {
+					_context.MemberLabels.RemoveRange(existingLabels);
+				}
+
+				// 增加新的標籤
 				foreach (var labelId in memberLabelDTO.LabelIds)
 				{
 					var memberLabel = new MemberLabel
@@ -105,7 +107,7 @@ namespace HaveFun.Controllers.APIs
 				}
 
 				await _context.SaveChangesAsync();
-				return CreatedAtAction(nameof(GetMemberLabel), new { id = memberLabelDTO.UserId }, memberLabelDTO);
+				return CreatedAtAction(nameof(GetLabelsForUser), new { id = memberLabelDTO.UserId }, memberLabelDTO);
 			}
 			catch (Exception ex)
 			{

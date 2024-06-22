@@ -84,7 +84,11 @@ namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
 			}
 			return "修改狀態成功"; ;
 		}
-
+		[HttpGet]
+		public async Task<int> Count() {
+			var ReviewCount =_context.ActivityReviews.Where(r=>r.ProcessingStstus==0).Count();
+			return ReviewCount;
+		}
 
 
 
