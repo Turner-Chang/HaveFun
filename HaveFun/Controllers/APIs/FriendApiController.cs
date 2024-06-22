@@ -16,46 +16,84 @@ namespace HaveFun.Controllers.APIs
             _dbContext = dbContext;
         }
 
+        // 取得好友列表
         [HttpGet("{id}")]
         public async Task<IActionResult> GetFriend(int id)
         {
-            var friends = await _dbContext.FriendLists
-                .Where(x => x.Clicked == id)
-                .Include(x => x.User2) // 加载用户信息
-                .Select(x => new FriendDTO
+            var friendList = await _dbContext.FriendLists
+                .Where(x => x.Clicked == id && x.state == 1)
+                .Select(x => x.Clicked == id ? x.User2 : x.User1)
+                .Select(u => new FriendDTO
                 {
-                    Id = x.User2.Id,
-                    Name = x.User2.Name,
-                    ProfilePicture = x.User2.ProfilePicture,
-                    state = x.state
-                })
-                .ToListAsync();
+                    Id = u.Id,
+                    Name = u.Name,
+                    ProfilePicture = u.ProfilePicture,
+                    IsBlocked = false, // 未封鎖
+                    state = 1 // 正常狀態
+                }).ToListAsync();
 
-            return Ok(friends);
+            return Ok(friendList);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> BlockUser([FromBody] int friendId)
+        // 取得黑名單
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetBlacklist(int id)
         {
-            var friend = await _dbContext.FriendLists.FirstOrDefaultAsync(x => x.User2.Id == friendId); // 使用朋友的Id来查找
-            if (friend == null) return NotFound();
+            var blacklist = await _dbContext.FriendLists
+                .Where(x => (x.Clicked == id || x.BeenClicked == id) && x.state == 2)
+                .Select(x => x.Clicked == id ? x.User2 : x.User1)
+                .Select(u => new FriendDTO
+                {
+                    Id = u.Id,
+                    Name = u.Name,
+                    ProfilePicture = u.ProfilePicture,
+                    IsBlocked = true, // 已封鎖
+                    state = 2 // 已封鎖狀態
+                }).ToListAsync();
 
-            friend.state = 3; // 将状态更改为封锁状态
+            return Ok(blacklist);
+        }
+        
+        // 封鎖用戶
+        [HttpPost]
+        public async Task<IActionResult> BlockUser(data data)
+        {
+            var friendRelation = await _dbContext.FriendLists
+                .FirstOrDefaultAsync(x =>
+                    (x.Clicked == data.userId && x.BeenClicked == data.friendId) ||
+                    (x.Clicked == data.friendId && x.BeenClicked == data.userId));
+
+            if (friendRelation == null)
+            {
+                return NotFound("找不到好友關係");
+            }
+
+            friendRelation.state = 2; // 已封鎖
+            _dbContext.FriendLists.Update(friendRelation);
             await _dbContext.SaveChangesAsync();
 
-            return Ok();
+            return Ok("封鎖成功");
         }
 
+        // 解除封鎖用戶
         [HttpPost]
-        public async Task<IActionResult> UnblockUser([FromBody] int friendId)
+        public async Task<IActionResult> UnblockUser(data data)
         {
-            var friend = await _dbContext.FriendLists.FirstOrDefaultAsync(x => x.User2.Id == friendId); // 使用朋友的Id来查找
-            if (friend == null) return NotFound();
+            var friendRelation = await _dbContext.FriendLists
+                .FirstOrDefaultAsync(x =>
+                    (x.Clicked == data.userId && x.BeenClicked == data.friendId) ||
+                    (x.Clicked == data.friendId && x.BeenClicked == data.userId));
 
-            friend.state = 1; // 将状态更改为解锁状态
+            if (friendRelation == null)
+            {
+                return NotFound("找不到好友關係");
+            }
+
+            friendRelation.state = 1; // 正常狀態
+            _dbContext.FriendLists.Update(friendRelation);
             await _dbContext.SaveChangesAsync();
 
-            return Ok();
+            return Ok("解除封鎖成功");
         }
     }
 }
