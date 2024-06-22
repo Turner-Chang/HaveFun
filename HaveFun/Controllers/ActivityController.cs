@@ -36,7 +36,8 @@ namespace HaveFun.Controllers
 			}
 		}
 
-		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+		[Authorize(AuthenticationSchemes = "Bearer,Cookies")]
+		//[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public IActionResult Index()
 		{
 			ViewBag.UserId = _userId;
