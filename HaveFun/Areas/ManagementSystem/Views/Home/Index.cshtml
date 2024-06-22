@@ -124,26 +124,26 @@
                 },
                 mounted() {
 
-                    fetch(`api/userReview/UserReviewCount`, { method: "GET" })
+                    fetch(`/api/userReview/UserReviewCount`, { method: "GET" })
                         .then(r => r.json())
                         .then(d => JSON.stringify(d))
                         .then(d => JSON.parse(d))
                         .then(d => HomeApp.UserReviewCount = d)
-                        .catch(err => comnsole.log(err));
+                        .catch(err => console.log(err));
 
                     fetch(`/api/PostReview/Count`, { method: "GET" })
                         .then(r => r.json())
                         .then(d => JSON.stringify(d))
                         .then(d => JSON.parse(d))
                         .then(d => HomeApp.PostReviewCount = d)
-                        .catch(err => comnsole.log(err));
+                        .catch(err => console.log(err));
 
                     fetch(`/api/ActivityReview/Count`, { method: "GET" })
                         .then(r => r.json())
                         .then(d => JSON.stringify(d))
                         .then(d => JSON.parse(d))
                         .then(d => HomeApp.ActReviewCount = d)
-                        .catch(err => comnsole.log(err));
+                        .catch(err => console.log(err));
 
                     
 
