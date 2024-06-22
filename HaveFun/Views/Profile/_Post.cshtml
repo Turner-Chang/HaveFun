@@ -1,60 +1,4 @@
 ﻿<link href="~/assets/css/profile_poststyle.css" rel="stylesheet" />
-<style>
-    .imgPreview {
-        width: 60%;
-        margin: 20px;
-    }
-
-    .Post-size-img {
-        max-width: 80%; /* 确保图片宽度不会超过容器宽度 */
-        height: auto; /* 自动调整高度以保持比例 */
-        display: block; /* 避免图片下方的空白间距 */
-        margin: 0 auto; /* 圖片置中 */
-    }
-</style>
-<style scoped>
-    .image-container {
-        position: relative;
-        display: inline-block;
-        width: 100%; /* 调整宽度以适应需要 */
-        max-width: 100%;
-    }
-
-    .img-preview-container {
-        position: relative;
-        display: inline-block;
-        width: 100%;
-    }
-
-    .imgPreview {
-        display: block;
-        width: 60%; /* 调整宽度以适应需要 */
-        height: auto; /* 保持纵横比 */
-    }
-
-    .remove-btn {
-        position: absolute;
-        top: 5px; /* 调整按钮位置 */
-        right: 5px; /* 调整按钮位置 */
-        background-color: rgba(255, 0, 0, 0.8); /* 按钮背景颜色 */
-        color: white; /* 按钮文字颜色 */
-        border: none; /* 去掉边框 */
-        border-radius: 50%; /* 圆形按钮 */
-        width: 20px; /* 按钮宽度 */
-        height: 20px; /* 按钮高度 */
-        text-align: center; /* 文字居中 */
-        cursor: pointer; /* 鼠标指针样式 */
-        font-size: 12px; /* 文字大小 */
-        line-height: 20px; /* 行高 */
-        z-index: 10; /* 确保按钮位于图片之上 */
-        display: none; /* 默认隐藏删除按钮 */
-    }
-
-    .img-preview-container:hover .remove-btn {
-        display: block; /* 鼠标悬停时显示删除按钮 */
-    }
-</style>
-
 
 <div class="tab-pane fade show active" id="gt1" role="tabpanel" aria-labelledby="gt1-tab">
     <div id="post">
@@ -88,7 +32,7 @@
                                             <form class="post-form">
                                                 <textarea v-model="postContent" :placeholder="placeholderText" rows="3"></textarea>
                                                 <div class="img-preview-container">
-                                                <img class="imgPreview" />
+                                                <img class="Post-Preview-img" />
                                                 <button v-if="newPostPic != null" @@click="removeNewPostPic">移除</button>
                                                 </div>
                                                @*  <div class="image-container" v-if="newPostPic">
@@ -118,8 +62,13 @@
                                     </div>
                                 </div>
 
+                                <div class="button-container_displayPostsSelect">
+                                    <button :class="{ 'active': displayPersonalPosts }" @@click="showPersonalPosts">個人貼文</button>
+                                    <button :class="{ 'active': !displayPersonalPosts }" @@click="showFriendPosts">朋友貼文</button>
+                                </div>
+
                                 @* 顯示貼文 *@
-                                <div v-for="post in postsWithLikeStatus" :key="post.id" class="post-item mb-4">
+                                <div v-for="post in filteredPosts" :key="post.id" class="post-item mb-4">
                                     @* 貼文內容 *@
                                     <div class="post-content">
                                         <div class="post-author">
@@ -290,6 +239,8 @@
                 showDeleteBox: false, // 顯示刪除視窗
                 deletePostId: null,
                 showDeleteBtn:false,
+                displayPersonalPosts: true, // 初始顯示個人貼文
+                FriendPostList: [], // 朋友列表
             };
         },
         computed: {
@@ -300,6 +251,39 @@
                     post.likedByUser = userIds.includes(this.loginUserId);
                     return post;
                 });
+            },
+            filteredPosts() {
+                if (this.displayPersonalPosts) {
+                    // 顯示個人貼文
+                    return this.postsWithLikeStatus.filter(post => {
+                        console.log('post.UserId:', post.UserId);
+                        return post.UserId === this.loginUserId;
+                    });
+                } else {
+                    // 顯示朋友貼文
+                    console.log('朋友貼文 FriendPostList:', this.FriendPostList);
+
+                    // 檢查 post.UserId 的型態
+                    console.log('post.UserId 型態:', typeof this.postsWithLikeStatus[0].UserId);
+
+                    // 檢查 FriendPostList 的型態
+                    console.log('FriendPostList 型態:', typeof this.FriendPostList);
+
+                    // 檢查 FriendPostList 是否為陣列
+                    if (Array.isArray(this.FriendPostList)) {
+                        console.log('FriendPostList 是陣列')
+                    } else {
+                        console.log('FriendPostList 不是陣列')
+                    }
+                    // 檢查 FriendPostList[0] 的型態
+                    console.log('FriendPostList內容值:', typeof this.FriendPostList[0]);
+
+                    return this.postsWithLikeStatus.filter(post => {
+                        console.log('post.UserId:', post.UserId);
+                        return this.FriendPostList.includes(post.UserId.toString());
+                        // return (post.UserId == '16');
+                    });
+                }
             },
         },
         methods: {
@@ -325,8 +309,9 @@
             // 查詢貼文
             async getPosts() {
                 try {
-                    const response = await axios.get('/api/Profile/GetPostsList');
+                    const response = await axios.get(`/api/Profile/GetPostsList/${this.loginUserId}`);
                     // console.log('getPosts:', response.data);
+                    this.FriendPostList = response.data[0].freindList
                     this.posts = response.data.map(post => ({
                         Id: post.id,
                         UserId: post.userId,
@@ -422,20 +407,20 @@
                         let blob = new Blob([e.target.result], { type: "image/jpeg" });
                         let uriCreator = window.URL || window.webkitURL;
                         let imgUrl = uriCreator.createObjectURL(blob);
-                        $('.imgPreview').attr("src", imgUrl);
+                        $('.Post-Preview-img').attr("src", imgUrl);
                     };
                     reader.readAsArrayBuffer(file);
                     this.newPostPic = file;
                 } else {
                     this.newPostPic = null;
-                    $('.imgPreview').attr("src", null);
+                    $('.Post-Preview-img').attr("src", null);
                 }
             },
 
             // 移除貼文圖片
             removeNewPostPic() {
                 this.newPostPic = null;
-                $('.imgPreview').attr("src", null);
+                $('.Post-Preview-img').attr("src", null);
             },
 
             // 貼文回覆
@@ -685,6 +670,16 @@
                         textarea.focus(); // 聚焦到 nested-reply-input
                     }
                 });
+            },
+
+            // 顯示個人貼文
+            showPersonalPosts() {
+                this.displayPersonalPosts = true;
+            },
+
+            // 顯示朋友貼文
+            showFriendPosts() {
+                this.displayPersonalPosts = false;
             },
 
             // 調整高度

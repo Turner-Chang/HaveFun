@@ -31,8 +31,8 @@ namespace HaveFun.Controllers
 				_userId = -1; //默認值或其他處理
 			}
 		}
-
-		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+		[Authorize(AuthenticationSchemes = "Bearer,Cookies")]
+	//	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public IActionResult Index()
 		{
 			ViewBag.UserId = _userId;
