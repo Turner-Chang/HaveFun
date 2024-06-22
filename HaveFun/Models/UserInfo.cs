@@ -90,5 +90,6 @@ namespace HaveFun.Models
         public virtual ICollection<UserReview> ReportUsers { get; set; }
 
         public virtual ICollection<UserReview> BeRepostedUsers { get; set; }
-	}
+        public virtual ICollection<ConId_UserId> ConnUsers { get; set; }
+    }
 }

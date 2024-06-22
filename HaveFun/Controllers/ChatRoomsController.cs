@@ -94,7 +94,7 @@ namespace HaveFun.Controllers
         {
             if (chatRoom.User1Id != chatRoom.User2Id)
             {
-                if (!ModelState.IsValid)
+                if (ModelState.IsValid == false)
                 {
                     _context.Add(chatRoom);
                     await _context.SaveChangesAsync();

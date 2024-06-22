@@ -57,7 +57,22 @@
                                 <p>或</p>
                             </div>
                             <div class="or-content">
-                                <a href="#" class="default-btn reverse"><img src="~/assets/images/login/google.png" alt="google"> <span>Google登入</span></a>
+                                <div class="mx-auto my-0" style="width:300px">
+                                    <div id="g_id_onload"
+                                         data-client_id="1014279430331-cg3iq3iqipo5alu91j7b27001cu156pq.apps.googleusercontent.com"
+                                         data-login_uri="/api/login/GoogleLogin"
+                                         data-auto_prompt="false">
+                                    </div>
+                                    <div class="g_id_signin"
+                                         data-type="standard"
+                                         data-size="large"
+                                         data-theme="outline"
+                                         data-text="sign_in_with"
+                                         data-shape="rectangular"
+                                         data-logo_alignment="left"
+                                         data-width="300">
+                                    </div>
+                                </div>
                                 <p class="or-signup"> 沒有帳號? <a asp-controller="Register" asp-action="index">點此註冊</a></p>
                             </div>
                         </form>
@@ -70,6 +85,7 @@
 <!-- ================> login section end here <================== -->
 
 @section Scripts{
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
         const login = Vue.createApp({
             data() {
@@ -116,11 +132,33 @@
                         }
                         if (data.success == false || data.success == '') {
                             this.errorMessage.push('帳號或密碼錯誤');
-                        } else {
-                            console.log(data);
+                        } 
+                            if (data.success == true && data.emailLink != '' && data.id != '') {
+                            this.sendEmail(data.id);
+                            window.location.href = data.emailLink;
+                        }else{
+                            //window.location.href = '';
                         }
                     })
                     .catch()     
+                },
+                sendEmail(id) {
+                    fetch(`/api/Register/SendCheckEmail/${id}`)
+                        .then(resp => {
+                            if (!resp.ok) {
+                                throw '傳送信件失敗，請聯繫管理員';
+                            } else {
+                                return resp.json();
+                            }
+                        })
+                        .then(result => {
+                            if (result.success == true) {
+
+                            } else {
+                                throw '傳送信件失敗，請聯繫管理員';
+                            }
+                        })
+                        .catch(err => console.log(err))
                 },
             },
         }).mount('#login');

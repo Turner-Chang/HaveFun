@@ -95,6 +95,13 @@ namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
         [HttpPost]
         public async Task<ActionResult<LabelCategoryManageDTO>> CreateLabelCategory(LabelCategoryManageDTO categoryDTO)
         {
+            //檢查標籤種類是否存在
+            var existingCategory = await _context.LabelCategories.FirstOrDefaultAsync(c => c.Name == categoryDTO.Name);
+            if (existingCategory != null) {
+                //返回錯誤訊息
+                return Conflict(new { message = "此標籤種類已存在" });
+            }
+
             var category = new LabelCategory
             {
                 Name = categoryDTO.Name

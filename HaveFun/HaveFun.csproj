@@ -7,12 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Profile\_FriendsPost.cshtml" />
     <Content Remove="Views\Profile\_Post - Dev_Back.cshtml" />
     <Content Remove="Views\Profile\_Post - Dev_比對.cshtml" />
     <Content Remove="wwwroot\images\headshots\AVB%40gmail.comnousaki.jpg" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
     <PackageReference Include="Konscious.Security.Cryptography.Argon2" Version="1.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.6" />
