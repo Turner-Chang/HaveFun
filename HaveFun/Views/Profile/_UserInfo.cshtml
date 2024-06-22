@@ -207,8 +207,7 @@
 					"birthDay": "",
 					"address": "您的居住地",
 					"introduction": "我愛大家",
-					"phoneNumber": "您的電話號碼",
-					"password": null,
+					"phoneNumber": "",	
 					"id": "",
 				},
 				genderOptions: {
@@ -228,10 +227,7 @@
 				}
 			}
 		},
-		computed: {
-			maskedPassword() {
-				return this.material.password ? '*******' : '';
-			},
+		computed: {			
 			displayGender() {
 				return this.genderOptions[this.material.gender];
 			},
@@ -239,7 +235,6 @@
 				// 如果 `material.birthDay` 有值，切割並取日期部分
 				return this.material.birthDay ? this.material.birthDay.split('T')[0] : '';
 			}
-
 		},
 		methods: {
 			showModel() {									/* 顯示修改的表單 */
@@ -274,28 +269,34 @@
 					this.customErrors.birthDay = '錯誤!! 生日格式為: 西元年-月-日';
 					isValid = false;
 				}
-				if (!this.validatePhoneNumber(this.material.phoneNumber)) {
-					this.customErrors.phoneNumber = '請填寫正確電話號碼! 格式為: +886-xxx-xxxxxx';
+
+				// 將電話號碼的檢查放寬，只有在非空時才進行格式驗證
+				if (this.material.phoneNumber && !this.validatePhoneNumber(this.material.phoneNumber)) {
+					this.customErrors.phoneNumber = '請填寫正確電話號碼! 電話號碼應該介於 10 到 20 個字元之間 ';
 					isValid = false;
 				}
 				// 如果有錯誤，停止保存
 				if (!isValid) {
 					return;
 				}
+
 				let formData = new FormData();
 				formData.append('Id', this.material.id);
 				formData.append('Name', this.material.name);
-				formData.append('Address', this.material.address);
-				formData.append('PhoneNumber', this.material.phoneNumber);
-				// formData.append('Gender', this.material.gender);
+				formData.append('Address', this.material.address);								
 				formData.append('BirthDay', this.material.birthDay);
-				formData.append('Introduction', this.material.introduction);
-				// formData.append('Password', this.material.password);
-				let blob = null;
-				if (this.profilePicture) {
-					blob = new Blob([this.profilePicture], { type: "image/*" });
+				formData.append('Introduction', this.material.introduction);		
+				
+				//PhoneNumber 的處理，允許為空
+				if (this.material.phoneNumber) {
+					formData.append('PhoneNumber', this.material.phoneNumber);
 				}
+
+				let blob = null;
+				if (this.profilePicture) {	blob = new Blob([this.profilePicture], { type: "image/*" }); }
+
 				formData.append("ProfilePicture", blob);
+
 				axios.post(`${baseAddress}/api/UserInfo/SaveData`, formData)
 					.then(response => {
 						console.log(response.data); alert("已儲存"); $("#saveModal").modal("hide");
@@ -304,7 +305,15 @@
 						this.profilePicture = null; // 重置圖片
 						this.imagePreview = ""; // 清除圖片預覽
 					})
-					.catch(error => { console.error(error); alert("儲存錯誤.請檢查"); });
+					.catch(error => {
+						if (error.response && error.response.status === 400 && error.response.data.errors) {
+							// 從後端返回的錯誤中取得電話號碼相關的錯誤訊息
+							if (error.response.data.errors.PhoneNumber) {
+								this.customErrors.phoneNumber = error.response.data.errors.PhoneNumber[0];
+							}
+						}
+						console.error(error); alert("儲存錯誤.請檢查");
+					});
 			},
 			fetchData() {									/* 呼叫資料 */
 				axios.get(`${baseAddress}/api/UserInfo/GetUserinfos/${@ViewBag.UserId}`)
