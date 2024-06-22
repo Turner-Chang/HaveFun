@@ -1,5 +1,4 @@
-﻿@model HaveFun.ViewModels.ActivityViewModel
-<link href="~/assets/css/profile_activitiesmanagement.css" rel="stylesheet" />
+﻿<link href="~/assets/css/profile_activitiesmanagement.css" rel="stylesheet" />
 <div class="tab-pane fade" id="gt3" role="tabpanel" aria-labelledby="gt3-tab">
 	<div id="activityPlatform">
 		<ul class="tags lab-ul justify-content-center">
@@ -30,7 +29,7 @@
 		<div v-if="currentType === 'commingup'" v-for="act in commingupActivities" class="blog__item">
 			<div class="blog__inner">
 				<div class="blog__content">
-					<img src="assets/images/blog/10.jpg" alt="blog">
+					<img v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}`>
 					<h3>{{act.title}}</h3>
 					<ul class="lab-ul blog__date">
 						<li><span><i class="fa-solid fa-calendar-days"></i> 活動時間：{{act.activityTime}} </span></li>
@@ -52,7 +51,7 @@
 							<span class="infoTitle">報名人數上限：</span>
 							{{act.max}}<br>
 							<span class="infoTitle">活動內容：</span><br>
-							{{act.content}}<br>
+							<p class="actContent">{{act.content}}</p><br>
 							<span class="infoTitle">注意事項：</span><br>
 							{{act.notes}}<br><br>
 							<!-- Host與登入會員不相同才有取消參加活動按鈕 -->
@@ -71,7 +70,7 @@
 		<div v-if="currentType === 'host'" v-for="act in hostActivities" class="blog__item">
 			<div class="blog__inner">
 				<div v-if="act.inEdit === false" class="blog__content">
-					<img src="assets/images/blog/10.jpg" alt="blog">
+					<img v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}`>
 					<h3>{{act.title}}</h3>
 					<ul class="lab-ul blog__date">
 						<li><span><i class="fa-solid fa-calendar-days"></i> 活動時間：{{act.activityTime}} </span></li>
@@ -104,7 +103,7 @@
 				<!-- 編輯活動內容 -->
 				<div v-if="act.inEdit === true" class="blog__content">
 					<form>
-					<img src="assets/images/blog/10.jpg" class="imgPreview"><br>
+					<img v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}` class="imgPreview"><br>
 					<input type="file" v-model="EditPic" @@change="previewPic" accept="image/*">
 					<button v-if="editPic != null" @@click="removeEditPic">移除</button><br>
 					<span> 活動名稱：</span>
@@ -118,12 +117,12 @@
 					<div class="invalid-feedback">活動地點為必填</div>
 					<span>活動類型：</span>
 					<select :class="['form-control',{'is-invalid':errorStyle.type}]" id="inputState" v-model="editActType">
-					<option selected value=0 >CHOOSE....</option>
 					<option v-for="type in activitiyType" :value="type.id">{{type.typeName}}</option>
 					</select>
 					<div class="invalid-feedback">請選擇活動類別</div>
 					<span>活動開始報名時間：</span>
-					<input :class="['form-control',{'is-invalid':errorStyle.registrationTime}]" type="datetime-local" v-model="editRegistrationTime">
+					<input v-if="canRegistrationEdit(act.registrationTime)" :class="['form-control',{'is-invalid':errorStyle.registrationTime}]" type="datetime-local" v-model="editRegistrationTime">
+					<p v-else>{{act.registrationTime}}</p>
 					<div class="invalid-feedback">請輸入有效時間</div>
 					<span>活動報名截止時間：</span>
 					<input :class="['form-control',{'is-invalid':errorStyle.deadlineTime}]" type="datetime-local" v-model="editDeadlineTime">
@@ -142,7 +141,7 @@
 					<div class="invalid-feedback">注意事項為必填</div>
 					<br><br>
 					<button class="btn btn-outline-secondary" @@click="cancelToEdit(act)">取消修改</button>&nbsp;
-					<button type="submit" class="default-btn" @@click="editActivity(act)">確定修改</button>
+					<button type="submit" id="submit" class="default-btn" @@click="editActivity(act)">確定修改</button>
 					</form>
 				</div>
 			</div>
@@ -154,7 +153,7 @@
 		<div v-if="currentType === 'past'" v-for="act in pastActivities" class="blog__item">
 			<div class="blog__inner">
 				<div class="blog__content">
-					<img src="assets/images/blog/10.jpg" alt="blog">
+					<img v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}`>
 					<h3>{{act.title}}</h3>
 					<ul class="lab-ul blog__date">
 						<li><span><i class="fa-solid fa-calendar-days"></i> 活動時間：{{act.activityTime}} </span></li>
@@ -224,6 +223,7 @@
 				},
 				currentDateTime: new Date().toISOString().slice(0, 16),
 				min: 0,
+				rand:1,
 			}
 		},
 		watch: {
@@ -257,6 +257,14 @@
 			validType(newVal, oldVal) {
 				this.errorStyle.type = !newVal;
 			},
+			hasError(newVal) {
+				if (newVal) {
+					$('#submit').css("display", "none");
+				} else {
+					$('#submit').css("display", "inline-block");
+				}
+				
+			},
 		},
 		computed: {
 			hasTitle(){
@@ -288,6 +296,9 @@
 			},
 			validType() {
 				return this.editActType > this.min;
+			},
+			hasError() {
+				return Object.values(this.errorStyle).includes(true);
 			}
 		},
 		methods: {
@@ -420,13 +431,14 @@
 				this.editTitle = act.title;
 				this.editActivityTime = act.activityTime;
 				this.editLocation = act.location;
-				this.editActType = act.type;
+				this.editActType = act.typeId;
 				this.editRegistrationTime = act.registrationTime;
 				this.editDeadlineTime = act.deadlineTime;
 				this.editAmount = act.amount;
 				this.editMax = act.max;
 				this.editActContent = act.content;
 				this.editNote = act.notes;
+				this.editPic = act.picture;
 			},
 			//取消修改活動內容
 			cancelToEdit(act) {
@@ -455,12 +467,13 @@
 				formData.append('Content', this.editActContent);
 				formData.append('Notes', this.editNote);
 				formData.append('Amount', this.editAmount);
-				formData.append('Max', this.editMax);
+				formData.append('MaxParticipants', this.editMax);
 				formData.append('Location', this.editLocation);
 				formData.append('RegistrationTime', this.editRegistrationTime);
 				formData.append('DeadlineTime', this.editDeadlineTime);
 				formData.append('ActivityTime', this.editActivityTime);
-				formData.append('editPic', this.editPic);
+				formData.append('Pictures', this.editPic);
+				
 				fetch(`api/personalActivities/EditActivity/${act.id}`, {
 					method:'PUT',
 					body: formData
@@ -512,6 +525,10 @@
 			removeEditPic() {
 				this.editPic = null;
 				$('.imgPreview').attr("src", null);
+			},
+			//檢查現在是否還可以修改報名時間
+			canRegistrationEdit(registrationTime) {
+				return new Date(registrationTime) > new Date(this.currentDateTime);
 			},
 		},
 		mounted() {

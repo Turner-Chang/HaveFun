@@ -5,28 +5,36 @@
 		.container {
 	height:600px;
 	}
+
+        .NoReviewFontColor{
+        color:yellow;
+        }
+
+        .HaveReviewFontColor{
+        color:darkviolet;
+        }
 	</style>
 } 
-<div class="container" id="BackHomeApp">
+<div class="container m-auto" id="BackHomeApp">
 
-<h1>首頁</h1>
+<h1 class="text-center">首頁</h1>
 @* //card *@
     <div class="row">
         <div class="col-xl-6 col-md-12">
-            <div class="card bg-primary text-white mb-4">
+            <div class="card mb-4" :class="CardColor(UserReviewCount),FontColor(UserReviewCount)">
                 <div class="card-body">
                     個人資料待審核件數:
                     <br /> 
                     {{this.UserReviewCount}}件
                 </div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
+                <div class="card-footer d-flex align-items-center justify-content-between ">
                     <a class="small text-white stretched-link" asp-area="ManagementSystem" asp-controller="Home" asp-action="UserManagement">View Details</a>
 @*                     <a class="small text-white stretched-link" href="#">View Details</a>*@                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                 </div>
             </div>
         </div>
         <div class="col-xl-6 col-md-12">
-            <div class="card bg-warning text-white mb-4">
+            <div class="card  mb-4" :class="CardColor(PostReviewCount),FontColor(PostReviewCount)">
                 <div class="card-body">
                     個人貼文待審核件數
                     <br /> 
@@ -40,7 +48,7 @@
             </div>
         </div>
         <div class="col-xl-6 col-md-12">
-            <div class="card bg-primary text-white mb-4">
+            <div class="card  mb-4" :class="CardColor(ActReviewCount),FontColor(ActReviewCount)">
                 <div class="card-body">
                     活動貼文待審核 <br />
                     {{this.ActReviewCount}} 件
@@ -93,6 +101,15 @@
                 computed: {
                 },
                 methods: {
+                    CardColor(count) {
+                        if (count != 0) { return "bg-warning"; }
+                        else { return "bg-primary" }
+                    },
+                    FontColor(count) {
+                        if (count == 0) { return "NoReviewFontColor"; }
+                        else { return "HaveReviewFontColor" }
+                    },
+
                     // GetCount(Address) {
                     //     fetch(Address, { method: "GET" })
                     //         .then(r => r.json())
@@ -107,26 +124,26 @@
                 },
                 mounted() {
 
-                    fetch(`api/userReview/UserReviewCount`, { method: "GET" })
+                    fetch(`/api/userReview/UserReviewCount`, { method: "GET" })
                         .then(r => r.json())
                         .then(d => JSON.stringify(d))
                         .then(d => JSON.parse(d))
                         .then(d => HomeApp.UserReviewCount = d)
-                        .catch(err => comnsole.log(err));
+                        .catch(err => console.log(err));
 
                     fetch(`/api/PostReview/Count`, { method: "GET" })
                         .then(r => r.json())
                         .then(d => JSON.stringify(d))
                         .then(d => JSON.parse(d))
                         .then(d => HomeApp.PostReviewCount = d)
-                        .catch(err => comnsole.log(err));
+                        .catch(err => console.log(err));
 
                     fetch(`/api/ActivityReview/Count`, { method: "GET" })
                         .then(r => r.json())
                         .then(d => JSON.stringify(d))
                         .then(d => JSON.parse(d))
                         .then(d => HomeApp.ActReviewCount = d)
-                        .catch(err => comnsole.log(err));
+                        .catch(err => console.log(err));
 
                     
 
