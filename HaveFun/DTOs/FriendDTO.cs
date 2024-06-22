@@ -1,9 +1,11 @@
-﻿namespace HaveFun.DTOs
+﻿using HaveFun.Models;
+
+namespace HaveFun.DTOs
 {
     public class FriendDTO
     {
-		public string UserId { get; set; }
-		public string Id { get; set; }
+		
+		public int Id { get; set; }
         public string Name { get; set; }
         public string ProfilePicture { get; set; }
         public bool IsBlocked { get; set; }
