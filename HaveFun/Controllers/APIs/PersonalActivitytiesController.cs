@@ -50,6 +50,7 @@ namespace HaveFun.Controllers.APIs
                     RegistrationTime = data.RegistrationTime.ToString("yyyy-MM-dd HH:mm"),
                     DeadlineTime = data.DeadlineTime.ToString("yyyy-MM-dd HH:mm"),
                     ActivityTime = data.ActivityTime.ToString("yyyy-MM-dd HH:mm"),
+                    ActivityPicture = data.Picture,
                     Participant = data.ActivityParticipants.Select(user => new
                     {
                         Name = user.User.Name,
@@ -77,6 +78,7 @@ namespace HaveFun.Controllers.APIs
                     Host = data.User.Name,
                     Title = data.Title,
                     Type = data.ActivityType.TypeName,
+                    TypeId = data.ActivityType.Id,
                     Content = data.Content,
                     Notes = data.Notes,
                     Amount = data.Amount,
@@ -85,7 +87,8 @@ namespace HaveFun.Controllers.APIs
                     RegistrationTime = data.RegistrationTime.ToString("yyyy-MM-dd HH:mm"),
                     DeadlineTime = data.DeadlineTime.ToString("yyyy-MM-dd HH:mm"),
                     ActivityTime = data.ActivityTime.ToString("yyyy-MM-dd HH:mm"),
-                    Participant = data.ActivityParticipants.Select(user => new
+					ActivityPicture = data.Picture,
+					Participant = data.ActivityParticipants.Select(user => new
                     {
                         Name = user.User.Name,
                         ProfilePicture = user.User.ProfilePicture
@@ -123,7 +126,8 @@ namespace HaveFun.Controllers.APIs
                     RegistrationTime = data.RegistrationTime.ToString("yyyy-MM-dd HH:mm"),
                     DeadlineTime = data.DeadlineTime.ToString("yyyy-MM-dd HH:mm"),
                     ActivityTime = data.ActivityTime.ToString("yyyy-MM-dd HH:mm"),
-                    Participant = data.ActivityParticipants.Select(user => new
+					ActivityPicture = data.Picture,
+					Participant = data.ActivityParticipants.Select(user => new
                     {
                         Name = user.User.Name,
                         ProfilePicture = user.User.ProfilePicture
@@ -239,5 +243,16 @@ namespace HaveFun.Controllers.APIs
 				return new JsonResult($"伺服器錯誤：{ex.Message}");
 			}
         }
+		//前端發請求讀取活動資料表byte[]
+		// GET: api/personalActivities/GetPicture/5
+		[HttpGet("{id}")]
+        public async Task<FileResult> GetPicture(int id)
+        {
+            string Filename = Path.Combine("wwwroot", "images", "NOimg.jpg");
+            Activity activity = await _context.Activities.FindAsync(id);
+            byte[] ImageContent = activity.Picture != null? activity.Picture : System.IO.File.ReadAllBytes(Filename);
+            return File(ImageContent, "image/jpeg");
+        }
+
     }
 }
