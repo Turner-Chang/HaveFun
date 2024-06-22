@@ -70,26 +70,30 @@
 									<a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">首頁</a>
 								</li>
 								<li>
-									<a class="nav-link" @@click="ToPageOrToLoginPage('Match')">
+									<a class="nav-link" asp-area="" asp-controller="Activity" asp-action="Index">
 										配對
 									</a>
 								</li>
 								<li>
-									<a class="nav-link" @@click="ToPageOrToLoginPage('Activity')">
+									<a class="nav-link" asp-area="" asp-controller="Activity" asp-action="Index">
 										糾團
-									</a>	
+									</a>
+										
 								</li>
 								<li>
-									<a class="nav-link" @@click="ToPageOrToLoginPage('ChatRooms/Main')">			好友聊天室
+
+									<a class="nav-link" asp-area="" asp-controller="ChatRooms" asp-action="Main">
+										好友聊天室
 									</a>
 								</li>
 								<li>
-									<a class="nav-link" @@click="ToPageOrToLoginPage('Profile')">
-										個人主頁
-									</a>			
+									<a class="nav-link" asp-area="" asp-controller="Profile" asp-action="Index">
+										個人貼文
+									</a>
+									
 								</li>
 								<li>
-									<a class="nav-link" @@click="ToPageOrToLoginPage('POST')">
+									<a class="nav-link" asp-area="" asp-controller="POST" asp-action="Index">
 										個人貼文
 									</a>
 									
