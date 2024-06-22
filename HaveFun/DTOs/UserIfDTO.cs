@@ -6,10 +6,8 @@ namespace HaveFun.DTOs
     public class UserIfDTO
     {
         public int Id { get; set; }
-        // 暱稱
-        [Required(ErrorMessage = "請輸入暱稱")]
-        [StringLength(maximumLength: 50,
-           ErrorMessage = "暱稱長度不能超過50字")]
+        // 暱稱        
+        [StringLength(maximumLength: 50, ErrorMessage = "暱稱長度不能超過50字")]
         public string? Name { get; set; }
 
         // 地址
@@ -17,8 +15,7 @@ namespace HaveFun.DTOs
         public string? Address { get; set; }
 
         // 電話
-        [StringLength(maximumLength: 20, MinimumLength = 10,
-           ErrorMessage = "電話號碼應該介於 10 到 20 個字元之間")]
+        [StringLength(maximumLength: 20, MinimumLength = 10, ErrorMessage = "電話號碼應該介於 10 到 20 個字元之間")]
         [RegularExpression("^[\\d\\+\\-\\(\\) ]+$", ErrorMessage = "電話號碼格式不正確")]
         public string? PhoneNumber { get; set; }
 
@@ -33,14 +30,10 @@ namespace HaveFun.DTOs
 
         //圖片
         public IFormFile? ProfilePicture { get; set; }
-
-        [Required]
+        
         public string? Introduction { get; set; }
-        //密碼
-        [Required]
-        [StringLength(maximumLength: 255, MinimumLength = 10)]
-        [Column("Password", TypeName = "nvarchar(255)")]
-        public string Password { get; set; }
+        
+        
 
 
     }
