@@ -94,7 +94,9 @@
                                         <p><i class="fa-solid fa-clock"></i> Active 3 Days Ago</p>
                                     </div>
                                         <p class="mb-2">{{introduction}}</p>
-                                        <button class="default-btn">關注我</button>
+                                        <button class="default-btn" @@click.prevent="postFollowUser">
+                                            {{followButtonText}}
+                                        </button>
                                     <!--照片-->
                                     <!-- <div class="story__content--author mt-3 pb-2">
                                         <h6 class="d-block w-100 mb-3">William Smith Photos</h6>
@@ -823,6 +825,7 @@
                     name:'',
                     introduction:'',
                     profilePicture:'',
+                    followButtonText: '關注我'
                 };
             },
             methods: {
@@ -838,6 +841,28 @@
                         })
                         .catch(error => {
                             console.log("Erro getUserInforation:", error)
+                        })
+                },
+                async postFollowUser() {
+
+                    const userId = 2;
+                    const loginId = 4;
+                    // const follow = {
+                    //     userId: 2,
+                    //     loginId:4
+                    // }
+
+                    axios.post(`/api/ProfileIndex/FollowUser?userId=${userId}&loginId=${loginId}`)
+                    // axios.post(`api/ProfileIndex/FollowUser`,follow)
+                        .then(response => {
+                            if (response.data === '已關注') {
+                                this.followButtonText = '已關注';
+                            } else {
+                                this.followButtonText = '關注我';
+                            }
+                        })
+                        .catch(error => {
+                        console.log("Error postFollowUser：",error)
                         })
                 },
             },

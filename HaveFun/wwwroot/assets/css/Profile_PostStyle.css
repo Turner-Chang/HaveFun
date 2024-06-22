@@ -254,7 +254,7 @@ textarea {
     }
 
     .ratBox .btn-danger {
-        margin-left: 339px;
+        margin-left: 330px;
     }
 
     .ratBox .btn-outline-secondary {
@@ -283,3 +283,46 @@ textarea {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
 }
+
+<style >
+.Post-Preview-img {
+    width: 60%;
+    margin: 20px;
+}
+
+.Post-size-img {
+    max-width: 80%; /* 确保图片宽度不会超过容器宽度 */
+    height: auto; /* 自动调整高度以保持比例 */
+    display: block; /* 避免图片下方的空白间距 */
+    margin: 0 auto; /* 圖片置中 */
+}
+
+.button-container_displayPostsSelect {
+    display: flex;
+    height: 2em; /* 調整成合適的相對高度 */
+}
+
+    .button-container_displayPostsSelect button {
+        flex-grow: 1; /*根據父容器寬度，等分2個按鈕的寬度*/
+        padding: 10px 20px;
+        border: none; /*移除按鈕的邊框*/
+        border-top-left-radius: 20px; /* 左上圓角 */
+        border-top-right-radius: 20px; /* 右上圓角 */
+        cursor: pointer; /*手指*/
+        outline: none; /*移除按鈕的默認外框線*/
+        transition: background-color 0.3s ease, color 0.3s ease; /* 添加顏色過渡效果 */
+        color: white; /* 按鈕文字顏色，預設為主題色 */
+    }
+
+        .button-container_displayPostsSelect button.active {
+            background-color: rgb(242, 69, 112); /* 當顯示個人貼文時的背景顏色 */
+            color: white;
+        }
+
+        .button-container_displayPostsSelect button:not(.active) {
+            background-color: white; /* 當顯示朋友貼文時的背景顏色 */
+            color: black;
+            /* color: rgb(242, 69, 112); /* 文字顏色 */
+        }
+
+</style >
