@@ -1,5 +1,6 @@
 ﻿using HaveFun.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace HaveFun.Controllers
 {
@@ -19,11 +20,28 @@ namespace HaveFun.Controllers
 			return View();
 		}
 
-        //Register/SendMail
-        // 註冊後的寄信頁面
-        public IActionResult SendMail() { 
+		//Register/SendMail
+		// 註冊後的寄信頁面
+		[HttpGet("Register/SendMail/{userId}")]
+        public async Task<IActionResult> SendMail(int userId) {
+			try
+			{
+				UserInfo? userInfo = await _dbContext.UserInfos.FirstOrDefaultAsync(user => user.Id == userId);
+				if (userInfo == null)
+				{
+					return RedirectToAction("Index");
+				}
+				if (userInfo.AccountStatus == 1)
+				{
+					return Redirect("/Login/Index");
+				}
+				return View();
+			}
+			catch (Exception)
+			{
 
-			return View();
+				return Redirect("/Login/Index");
+            }
 		}
 
 		// Register/Verification/id
