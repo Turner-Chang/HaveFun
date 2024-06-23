@@ -1,0 +1,273 @@
+﻿<link href="~/css/chat.css" rel="stylesheet" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.5/signalr.min.js"></script>
+<script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
+
+<div id="appc">
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-lg-12">
+                <div class="card chat-app">
+                    <!-- Friend list -->
+                    <div id="plist" class="people-list">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Search..." v-model="searchQuery">
+                        </div>
+                        <ul class="list-unstyled chat-list mt-2 mb-0">
+                            <li v-for="friend in filteredFriends"
+                                :key="friend.id"
+                                :class="{ 'clearfix': true, 'active': friend.id === activeFriendId }"
+                                @@click="selectFriend(friend)">
+                                <img :src="friend.avatarUrl" alt="avatar">
+                                <div class="about">
+                                    <div class="name">{{ friend.name }}</div>
+                                    <div class="status">
+                                        <i :class="{ 'fa fa-circle': true, 'online': friend.isOnline, 'offline': !friend.isOnline }"></i>
+                                        {{ friend.status }}
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Chat -->
+                    <div class="chat">
+                        <div class="chat-header clearfix">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
+                                        <img :src="activeFriend ? activeFriend.avatarUrl : '/img/default-avatar.png'"
+                                             :alt="activeFriend ? activeFriend.name + '的頭像' : '默認頭像'">
+                                    </a>
+                                    <div class="chat-about">
+                                        <h6 class="m-b-0">{{ activeFriend ? activeFriend.name : '請選擇一位朋友' }}</h6>
+                                        <small>{{ activeFriend ? (activeFriend.isOnline ? '在線' : '離線') : '' }}</small>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 hidden-sm text-right">
+                                    <a href="javascript:void(0);" class="btn btn-outline-secondary"><i class="fa fa-camera"></i></a>
+                                    <a href="javascript:void(0);" class="btn btn-outline-primary"><i class="fa fa-image"></i></a>
+                                    <a href="javascript:void(0);" class="btn btn-outline-info"><i class="fa fa-cogs"></i></a>
+                                    <a href="javascript:void(0);" class="btn btn-outline-warning"><i class="fa fa-question"></i></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chat-history scroll">
+                            <ul class="m-b-0">
+                                <!-- Chat messages will be dynamically inserted here -->
+                            </ul>
+                        </div>
+
+                        <div class="chat-message clearfix">
+                            <div class="input-group mb-0">
+                                <div class="input-group-prepend">
+                                    <span id="sendButton" class="input-group-text"><i class="fa fa-send"></i></span>
+                                </div>
+                                <input type="text" id="messageInput" class="form-control" placeholder="Enter text here...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        window.currentUserId = @ViewBag.UserId;
+
+        const { createApp } = Vue;
+
+        const app = createApp({
+            data() {
+                return {
+                    friends: [],
+                    searchQuery: '',
+                    activeFriendId: null,
+                    activeFriend: null
+                };
+            },
+            computed: {
+                filteredFriends() {
+                    return this.friends.filter(friend =>
+                        friend.name.toLowerCase().includes(this.searchQuery.toLowerCase())
+                    );
+                }
+            },
+            methods: {
+                setInitialFriend() {
+                    if (this.friends.length > 0) {
+                        this.selectFriend(this.friends[0]);
+                    }
+                },
+                selectFriend(friend) {
+                    if (!friend.isBlocked) {
+                        this.activeFriendId = friend.id;
+                        this.activeFriend = friend;
+                        console.log('Selected friend:', friend);
+                        window.updateUserIds(window.currentUserId, friend.id);
+                        this.updateChatHeader(friend);
+                    } else {
+                        console.log('Cannot select blocked friend');
+                    }
+                },
+                fetchFriends() {
+                    axios.get(`/api/FriendApi/GetFriend/${window.currentUserId}`)
+                        .then(response => {
+                            this.friends = response.data.map(friend => ({
+                                id: friend.id,
+                                name: friend.name,
+                                avatarUrl: friend.profilePicture ?
+                                    (friend.profilePicture.startsWith('http') ? friend.profilePicture : `/api/UserInfo/GetPicture/${friend.id}`) :
+                                    '/img/default-avatar.png',
+                                isOnline: false,
+                                status: 'offline',
+                                isBlocked: friend.isBlocked
+                            }));
+                            this.setInitialFriend();
+                        })
+                        .catch(error => {
+                            console.error('Failed to fetch friends:', error);
+                        });
+                },
+                updateFriendStatus(friendId, isOnline) {
+                    const friend = this.friends.find(f => f.id === friendId);
+                    if (friend) {
+                        friend.isOnline = isOnline;
+                        friend.status = isOnline ? 'online' : 'offline';
+                    }
+                },
+                updateChatHeader(friend) {
+                    // You can update any additional header information here
+                },
+            },
+            mounted() {
+                this.fetchFriends();
+                const connection = new signalR.HubConnectionBuilder()
+                    .withUrl("/chatHub")
+                    .build();
+                connection.on("UserOnline", (userId) => {
+                    this.updateFriendStatus(userId, true);
+                });
+                connection.on("UserOffline", (userId) => {
+                    this.updateFriendStatus(userId, false);
+                });
+
+                connection.start().catch(err => console.error(err.toString()));
+            }
+        }).mount('#appc');
+
+        window.updateUserIds = function (newCurrentUserId, newOtherUserId) {
+            window.currentUserId = newCurrentUserId;
+            window.otherUserId = newOtherUserId;
+            fetchChatHistory();
+            console.log(`User IDs updated. Current User: ${window.currentUserId}, Other User: ${window.otherUserId}`);
+        }
+
+        async function fetchChatHistory() {
+            try {
+                const [response1, response2] = await Promise.all([
+                    axios.get(`/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/${window.otherUserId}/${window.currentUserId}`),
+                    axios.get(`/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/${window.currentUserId}/${window.otherUserId}`)
+                ]);
+
+                const processMessages = (data, isOther) => data.map(message => ({
+                    time: moment(message.createTime).format("h:mm A, MMMM D"),
+                    img: isOther ? `/api/UserInfo/GetPicture/${window.otherUserId}` : `/api/UserInfo/GetPicture/${window.currentUserId}`,
+                    message: message.messageText,
+                    type: isOther ? "other" : "my"
+                }));
+
+                chatHistory = [
+                    ...processMessages(response1.data, true),
+                    ...processMessages(response2.data, false)
+                ];
+
+                updateChatHistory();
+            } catch (error) {
+                console.error('Error fetching chat history:', error);
+            }
+        }
+
+        function updateChatHistory() {
+            const chatHistoryContainer = document.querySelector('.chat-history ul');
+            chatHistoryContainer.innerHTML = '';
+            chatHistory.sort((a, b) => new Date(a.time) - new Date(b.time)).forEach(chat => {
+                const chatItem = document.createElement('li');
+                chatItem.className = 'clearfix';
+                chatItem.innerHTML = `
+                        <div class="message-data ${chat.type === 'my' ? 'text-right' : ''}">
+                            <span class="message-data-time">${chat.time}</span>
+                            ${chat.img ? `<img src="${chat.img}" alt="avatar">` : ''}
+                        </div>
+                        <div class="message ${chat.type === 'my' ? 'my-message' : 'other-message float-right'}">
+                            ${chat.message}
+                        </div>
+                    `;
+                chatHistoryContainer.appendChild(chatItem);
+            });
+        }
+
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chatHub")
+            .build();
+
+        connection.on("ReceiveMessage", function (user, message) {
+            if (user != window.currentUserId) {
+                const chat = {
+                    time: moment().format("h:mm A, MMMM D"),
+                    img: `/api/UserInfo/GetPicture/${window.otherUserId}`,
+                    message: message,
+                    type: "other"
+                };
+                chatHistory.push(chat);
+                updateChatHistory();
+            }
+        });
+
+        connection.start().catch(err => console.error(err.toString()));
+
+        document.getElementById("sendButton").addEventListener("click", async (event) => {
+            event.preventDefault();
+            const messageText = document.getElementById("messageInput").value.trim();
+            if (!messageText) return;
+
+            const newChat = {
+                time: moment().format("h:mm A, MMMM D"),
+                img: `/api/UserInfo/GetPicture/${window.currentUserId}`,
+                message: messageText,
+                type: "my"
+            };
+            chatHistory.push(newChat);
+            updateChatHistory();
+
+            try {
+                await connection.invoke("SendMessage", window.currentUserId.toString(), messageText);
+
+                const response = await axios.post('/api/ChatRoom/ChatRoomsApi', {
+                    User1Id: window.currentUserId,
+                    User2Id: window.otherUserId,
+                    MessageText: messageText,
+                    CreateTime: new Date(),
+                    IsRead: false
+                });
+
+                console.log('Message saved:', response.data);
+
+                document.getElementById("messageInput").value = '';
+            } catch (error) {
+                console.error('Error sending/saving message:', error);
+            }
+        });
+
+        fetchChatHistory();
+    </script>
+}
