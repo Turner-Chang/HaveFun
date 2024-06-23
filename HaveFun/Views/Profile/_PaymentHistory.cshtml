@@ -1,27 +1,32 @@
 ﻿<div class="tab-pane fade" id="gt6" role="tabpanel" aria-labelledby="gt6-tab">
-	<title>會員購買記錄</title>
+	<title>您的購買記錄</title>
     <div id="app_PayHistory">
         <h1>會員購買記錄</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>日期時間</th>
-                    <th>購買品項</th>
-                    <th>購買金額</th>
-                    <th>操作</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="transaction in transactions" :key="transaction.id">
-                    <td>{{ formatDate(transaction.date) }}</td>
-                    <td>{{ transaction.productName }}</td>
-                    <td>{{ formatCurrency(transaction.amount) }}</td>
-                    <td>
-                        <button @@click="refund(transaction.id)">退款</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div v-if="transactions.length === 0">
+            <p>沒有找到購買紀錄。</p>
+        </div>
+        <div v-else>
+            <table>
+                <thead>
+                    <tr>
+                        <th>購買日期</th>
+                        <th>購買品項</th>
+                        <th>購買金額</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="transaction in transactions" :key="transaction.id">
+                        <td>{{ formatDate(transaction.date) }}</td>
+                        <td>{{ getProductDisplayName(transaction.product) }}</td>
+                        <td>{{ formatCurrency(transaction.amount) }}</td>
+                        <td>
+                            <button @@click="refund(transaction.id)">退款</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
 </div>
@@ -59,12 +64,69 @@
             background-color: #e64a19;
         }
 </style>
-<script>
-    var app_PayHistory = Vue.createApp({
-        data() { },
-        methods: {},
-        mounted() { },
-    }).mount("#app_PayHistory");
 
+<script>    
+    var app_PayHistory = Vue.createApp({
+        data() {
+            return {
+                transactions: [] // 存儲交易記錄
+            };
+        },
+        methods: {
+            fetchTransactions() {
+                // 請求後端 API 獲取購買紀錄
+                fetch(`${baseAddress}/api/TransactionsPayApi/user/${@ViewBag.UserId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        this.transactions = data;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                    });
+            },
+            formatDate(date) {
+                const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+                return new Date(date).toLocaleString('zh-Hant', options);
+            },
+            formatCurrency(amount) {
+                return new Intl.NumberFormat('zh-Hant', { style: 'currency', currency: 'TWD' }).format(amount);
+            },
+            getProductDisplayName(productId) {
+                // 根據產品 ID 返回對應的顯示名稱
+                if (productId === 0) {
+                    return "購買白金會員";
+                } else if (productId === 2) {
+                    return "其他產品名稱"; // 根據實際情況調整
+                } else {
+                    return "未知產品";
+                }
+            },
+            refund(transactionId) {
+                if (confirm("確定要退款嗎？")) {
+                    // 請求後端 API 執行退款操作
+                    fetch(`/api/TransactionsPayApi/${transactionId}`, {
+                        method: 'DELETE'
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                alert('退款成功！');
+                                // 更新交易記錄列表
+                                this.fetchTransactions();
+                            } else {
+                                alert('退款失敗！');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error refunding:', error);
+                            alert('退款失敗！');
+                        });
+                }
+            }
+        },
+        mounted() { 
+            // 在 mounted 階段加載購買紀錄
+            this.fetchTransactions();
+        },
+    }).mount("#app_PayHistory");
 </script>
 
