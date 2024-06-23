@@ -21,8 +21,9 @@
 			border: 2px solid white;
 			border-radius: 25px;
 			position: relative;
-			width: 26rem; /* 23rem */
+			width: 90%;
 			height: 550px; /* 500px */
+			padding: 10px;
 		}
 
 		.collapseCard {
@@ -33,7 +34,7 @@
 			/* outline: 2px solid blue; */
 
 			height: 500px;
-			width: 23rem;
+			width: 90%;
 			left: 0;
 			right: 0;
 			top: 0px;
@@ -262,7 +263,6 @@
 			</div>
 		</div>
 	</div>
-	<button @@click="canUserSwipeRequest">按鈕</button>
 
 	<!-- Modal -->
 	<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -314,14 +314,16 @@
 					complaintCategories:[],
 					selectedComplaintCategory:'',
 					canSwipe: true,
+					lastChecked:null,
 				}
 			},
 			computed: {
 				filterGender() {
+					let temp = this.notMatchUsers;
 					if (this.filter.gender != "") {
 						return this.notMatchUsers.filter(u => u.gender == this.filter.gender);
 					}
-					return this.notMatchUsers;
+					return temp;
 				},
 				filterAge() { 
 					let temp = this.filterGender;
@@ -531,13 +533,35 @@
 					this.notMatchUsers = this.notMatchUsers.filter(u => u.id != this.currentCard.id);
 					this.currentCard = null;
 				},
+				toggleRadio: function (event) {
+					const value = event.target.value;
+					if (this.filter.gender == value) {
+						this.filter.gender = "";
+					}
+					else {
+						this.filter.gender = value;
+					}
+					this.lastChecked = value;
+				}
 			},
 			watch: {
+				'filter.gender': function (newVal, oldVal) {
+					if (newVal === "") {
+						this.$nextTick(() => {
+							document.querySelectorAll('input[type="radio"]').forEach(radio => {
+								radio.checked = false;
+							});
+						});
+					}
+				}
 			},
 			mounted() {
 				this.getNotMatchUsers();
 				this.getComplaintCategories();
 				this.canUserSwipeRequest();
+				document.querySelectorAll('input[type="radio"]').forEach(radio => {
+					radio.addEventListener('click', this.toggleRadio);
+				});
 			},
 		}).mount("#matchApp");
 	</script>
