@@ -64,7 +64,7 @@
 
                         <!-- #endregion -->
                         <!-- #region chat-history -->
-                        <div class="chat-history">
+                        <div class="chat-history scroll">
                             <ul class="m-b-0">
                                 <li class="clearfix">
                                     <div class="message-data text-right">
@@ -187,6 +187,7 @@
                 connection.on("UserOffline", (userId) => {
                     this.updateFriendStatus(userId, false);
                 });
+ 
                 connection.start().catch(err => console.error(err.toString()));
             }
         }).mount('#friendListApp');
