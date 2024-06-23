@@ -135,6 +135,12 @@
                     axios.get(`/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/${window.otherUserId}/${window.currentUserId}`),
                     axios.get(`/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/${window.currentUserId}/${window.otherUserId}`)
                 ]);
+                if (response1.data.length === 0 && response2.data.length === 0) {
+                    chatHistory = [];
+                    updateChatHistory();
+                    return;
+                }
+
 
                 const processMessages = (data, isOther) => data.map(message => ({
                     time: moment(message.createTime).format("h:mm A, MMMM D"),
@@ -142,7 +148,7 @@
                     message: message.messageText,
                     type: isOther ? "other" : "my"
                 }));
-
+                
                 chatHistory = [
                     ...processMessages(response1.data, true),
                     ...processMessages(response2.data, false)

@@ -23,13 +23,7 @@ namespace HaveFun.Controllers
             _context = context;
            
         }
-		//
-		[Authorize(AuthenticationSchemes = "Bearer,Cookies")]
-		public async Task<IActionResult> Main()
-        {
-            var haveFunDbContext = _context.ChatRooms.Include(c => c.Receiver).Include(c => c.Sender);
-               return View(await haveFunDbContext.ToListAsync());
-        }
+	
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             base.OnActionExecuting(context);
@@ -44,7 +38,15 @@ namespace HaveFun.Controllers
                 Id = -1; //默認值或其他處理
             }
         }
-
+        //
+        [Authorize(AuthenticationSchemes = "Bearer,Cookies")]
+        public async Task<IActionResult> Main()
+        {
+            ViewBag.Id = _Id;
+            return View();
+        }
+        //
+        [Authorize(AuthenticationSchemes = "Bearer,Cookies")]
         public IActionResult TRY()
         {
             ViewBag.Id = _Id;
