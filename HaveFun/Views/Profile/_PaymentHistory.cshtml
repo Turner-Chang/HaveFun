@@ -1,27 +1,32 @@
 ﻿<div class="tab-pane fade" id="gt6" role="tabpanel" aria-labelledby="gt6-tab">
-	<title>會員購買記錄</title>
+	<title>您的購買記錄</title>
     <div id="app_PayHistory">
         <h1>會員購買記錄</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>日期時間</th>
-                    <th>購買品項</th>
-                    <th>購買金額</th>
-                    <th>操作</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="transaction in transactions" :key="transaction.id">
-                    <td>{{ formatDate(transaction.date) }}</td>
-                    <td>{{ getProductDisplayName(transaction.product) }}</td>
-                    <td>{{ formatCurrency(transaction.amount) }}</td>
-                    <td>
-                        <button @@click="refund(transaction.id)">退款</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div v-if="transactions.length === 0">
+            <p>沒有找到購買紀錄。</p>
+        </div>
+        <div v-else>
+            <table>
+                <thead>
+                    <tr>
+                        <th>購買日期</th>
+                        <th>購買品項</th>
+                        <th>購買金額</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="transaction in transactions" :key="transaction.id">
+                        <td>{{ formatDate(transaction.date) }}</td>
+                        <td>{{ getProductDisplayName(transaction.product) }}</td>
+                        <td>{{ formatCurrency(transaction.amount) }}</td>
+                        <td>
+                            <button @@click="refund(transaction.id)">退款</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
 </div>
@@ -70,7 +75,7 @@
         methods: {
             fetchTransactions() {
                 // 請求後端 API 獲取購買紀錄
-                fetch(`${baseAddress}/api/TransactionsPayApi/user/${userId}`)
+                fetch(`${baseAddress}/api/TransactionsPayApi/user/${@ViewBag.UserId}`)
                     .then(response => response.json())
                     .then(data => {
                         this.transactions = data;
@@ -88,7 +93,7 @@
             },
             getProductDisplayName(productId) {
                 // 根據產品 ID 返回對應的顯示名稱
-                if (productId === 1) {
+                if (productId === 0) {
                     return "購買白金會員";
                 } else if (productId === 2) {
                     return "其他產品名稱"; // 根據實際情況調整
