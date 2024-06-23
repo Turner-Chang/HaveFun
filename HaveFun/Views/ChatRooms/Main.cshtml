@@ -135,7 +135,7 @@
                     axios.get(`/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/${window.otherUserId}/${window.currentUserId}`),
                     axios.get(`/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/${window.currentUserId}/${window.otherUserId}`)
                 ]);
-                if (response1.data.length === 0 && response2.data.length === 0) {
+                if (response1.data.length === 0 || response2.data.length === 0) {
                     chatHistory = [];
                     updateChatHistory();
                     return;
