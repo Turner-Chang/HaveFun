@@ -50,11 +50,10 @@ namespace HaveFun.Controllers.APIs
                     RegistrationTime = data.RegistrationTime.ToString("yyyy-MM-dd HH:mm"),
                     DeadlineTime = data.DeadlineTime.ToString("yyyy-MM-dd HH:mm"),
                     ActivityTime = data.ActivityTime.ToString("yyyy-MM-dd HH:mm"),
-                    ActivityPicture = data.Picture,
                     Participant = data.ActivityParticipants.Select(user => new
                     {
                         Name = user.User.Name,
-                        ProfilePicture = user.User.ProfilePicture
+                        Id = user.User.Id
                     }).ToList()
                 }).ToListAsync();
             return new JsonResult(commingupActivities);
@@ -87,12 +86,11 @@ namespace HaveFun.Controllers.APIs
                     RegistrationTime = data.RegistrationTime.ToString("yyyy-MM-dd HH:mm"),
                     DeadlineTime = data.DeadlineTime.ToString("yyyy-MM-dd HH:mm"),
                     ActivityTime = data.ActivityTime.ToString("yyyy-MM-dd HH:mm"),
-					ActivityPicture = data.Picture,
 					Participant = data.ActivityParticipants.Select(user => new
                     {
                         Name = user.User.Name,
-                        ProfilePicture = user.User.ProfilePicture
-                    }).ToList()
+						Id = user.User.Id
+					}).ToList()
                 }).ToListAsync();
             return new JsonResult(hostActivities);
         }
@@ -130,8 +128,8 @@ namespace HaveFun.Controllers.APIs
 					Participant = data.ActivityParticipants.Select(user => new
                     {
                         Name = user.User.Name,
-                        ProfilePicture = user.User.ProfilePicture
-                    }).ToList()
+						Id = user.User.Id
+					}).ToList()
                 }).ToListAsync();
             return new JsonResult(pastActivities);
         }
@@ -197,7 +195,8 @@ namespace HaveFun.Controllers.APIs
                 return new JsonResult(new { state = "修改活動失敗" });
             }
             var record = await _context.Activities.FindAsync(id);
-            if (record == null)
+            var recordChange = await _context.Activities.FindAsync(id);
+			if (record == null)
             {
                 return new JsonResult(new { result = "此活動不存在" });
             }
@@ -216,7 +215,8 @@ namespace HaveFun.Controllers.APIs
             record.Amount = activity.Amount;
             record.MaxParticipants = activity.MaxParticipants;
             record.Location = activity.Location;
-			//用BinaryReader讀取上傳的圖片，沒有則返回null
+            
+            //用BinaryReader讀取上傳的圖片，沒有則返回null
 			if (activity.Pictures != null && activity.Pictures.Length > 0)
 			{
 				var picture = activity.Pictures[0];
@@ -228,10 +228,6 @@ namespace HaveFun.Controllers.APIs
 					}
 				}
 			}
-            else
-            {
-                record.Picture = null;
-            }
             try
             {
                 _context.Activities.Update(record);
@@ -243,7 +239,7 @@ namespace HaveFun.Controllers.APIs
 				return new JsonResult($"伺服器錯誤：{ex.Message}");
 			}
         }
-		//前端發請求讀取活動資料表byte[]
+		//前端發請求讀取活動資料表byte[]圖片
 		// GET: api/personalActivities/GetPicture/5
 		[HttpGet("{id}")]
         public async Task<FileResult> GetPicture(int id)
@@ -253,6 +249,15 @@ namespace HaveFun.Controllers.APIs
             byte[] ImageContent = activity.Picture != null? activity.Picture : System.IO.File.ReadAllBytes(Filename);
             return File(ImageContent, "image/jpeg");
         }
-
+		//讀取使用者頭像
+		// GET: api/personalActivities/GetUserProfile/5
+		[HttpGet("{id}")]
+        public async Task<FileResult> GetUserProfile(int id)
+        {
+            var user = await _context.UserInfos.FindAsync(id);
+            string profilePath = user.ProfilePicture;
+            byte[] ImageContent = System.IO.File.ReadAllBytes(profilePath);
+            return File(ImageContent, "image/jpge");
+		}
     }
 }

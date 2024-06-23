@@ -29,102 +29,150 @@
 		</div>
 	</div>
 	<!-- ================> Member section start here <================== -->
-	<div class="member story story--style2 padding-top padding-bottom overflow-hidden" style="outline: 2px solid red; padding-top: 20px;">
-		<div class="overflow-hidden">
-			<a type="button" class="default-btn float-end" style="background-color:#f24570; color:white; margin-right: 20px;" asp-controller="Activity" asp-action="Create"><b>主辦活動 <i class="fa-solid fa-plus"></i></b></a>
-		</div>
-		<div class="container" style="outline: 2px solid blue;">
-			<div class="section__wrapper">
-				<div class="member__info mb-4">
-					<div class="member__info--left">
-						<div class="member__info--filter">
-							<div class="default-btn" data-bs-toggle="modal" data-bs-target="#exampleModal"><span>Filter Your Search <i class="fa-solid fa-sliders"></i></span></div>
-						</div>
-						<div class="member__info--count">
-							<div class="default-btn"><span>All Activities</span></div>
-							<p>{{activities.length}}</p>
-						</div>
-					</div>
-					<div class="member__info--right">
-						<div class="member__info--customselect right w-100">
-							<div class="default-btn"><span>Order By:</span></div>
-							<div class="banner__inputlist">
-								<select>
-									<option value="0">Last Active </option>
-									<option value="1">Oldest</option>
-									<option value="2">Popular</option>
-									<option value="3">Most Active</option>
-								</select>
+	<div class="row">
+		<div class="member story story--style2 padding-top padding-bottom overflow-hidden col-lg-9" style="outline: 2px solid red; padding-top: 20px;">
+			<div class="overflow-hidden">
+				<a type="button" class="default-btn float-end" style="background-color:#f24570; color:white; margin-right: 20px;" asp-controller="Activity" asp-action="Create"><b>主辦活動 <i class="fa-solid fa-plus"></i></b></a>
+			</div>
+			<div class="container" style="outline: 2px solid blue;">
+				<div class="section__wrapper">
+					<div class="member__info mb-4">
+						<div class="member__info--left">
+							<div class="member__info--filter">
+								<div class="default-btn" data-bs-toggle="modal" data-bs-target="#exampleModal"><span>Filter Your Search <i class="fa-solid fa-sliders"></i></span></div>
+							</div>
+							<div class="member__info--count">
+								<div class="default-btn"><span>All Activities</span></div>
+								<p>{{activities.length}}</p>
 							</div>
 						</div>
-					</div>
-				</div>
-				<div class="row g-4 justify-content-left row-cols-lg-4 row-cols-sm-2 row-cols-1">
-					<div class="col" v-for="activity in activities.slice(pageStart,pageEnd)" :id="activity.id">
-						<div class="story__item style2 story--theme-color">
-							<div class="story__inner">
-								<div class="story__thumb position-relative">
-									<a href="group-single.html"><img :src=`${baseAddress}/api/ActivityApi/GetPicture/${activity.id}` alt="dating thumb" style="height:160px;width:280px"></a>
-									<span class="member__activity member__activity--ofline">{{activity.pastDay}} days ago</span>
+						@* <div class="member__info--right">
+							<div class="member__info--customselect right w-100">
+								<div class="default-btn"><span>Order By:</span></div>
+								<div class="banner__inputlist">
+									<select v-model="sortOrder" @@change="sortActivities">
+										<option value="mostRecent">Most Recent</option>
+										<option value="leastRecent">Least Recent</option>
+									</select>
 								</div>
-								<div class="story__content px-0 pb-0">
-									<a href="group-single.html"><h4>{{activity.title}}</h4></a>
-									<p class="card-text">{{activity.content}}</p>
-									<div class="story__content--author justify-content-between border-top pt-3">
-										<div class="story__content--content">
-											<p><i class="fa-solid fa-earth-africa"></i> Public Group</p>
+							</div>
+						</div> *@
+					</div>
+					<div class="row g-4 justify-content-left row-cols-lg-3 row-cols-sm-2 row-cols-1">
+						<div class="col" v-for="activity in sortActivityTime.slice(pageStart,pageEnd)" :id="activity.id">
+							<div class="story__item style2 story--theme-color">
+								<div class="story__inner">
+									<div class="story__thumb position-relative">
+										<a href="group-single.html"><img :src=`${baseAddress}/api/ActivityApi/GetPicture/${activity.id}` alt="dating thumb" style="height:160px;width:280px"></a>
+										<span class="member__activity member__activity--ofline">{{activity.pastDay}} days ago</span>
+									</div>
+									<div class="story__content px-0 pb-0">
+										<a href="group-single.html"><h4>{{activity.title}}</h4></a>
+										<p class="card-text">{{activity.content}}</p>
+										<div class="story__content--author justify-content-between border-top pt-3">
+											<div class="story__content--content">
+												<p><i class="fa-solid fa-earth-africa"></i> Public Group</p>
+											</div>
+											<ul class="img-stack">
+												<li v-for="participant in limitedParticipants(activity.participants)">
+													<a href="#">
+														<img :src="participant.profilePicture" alt="member-img" style="height:30px; width:30px;">
+														<div class="time-tooltip">
+															<div class="time-tooltip-holder">
+																<span class="tooltip-info">{{participant.name}}</span>
+															</div>
+														</div>
+													</a>
+												</li>
+
+												<li v-if="remainingParticipants(activity.participants) > 0" class="bg-theme">
+													<a href="#">
+														{{ remainingParticipants(activity.participants) }}+
+														<div class="time-tooltip">
+															<div class="time-tooltip-holder">
+																<span class="tooltip-info">More</span>
+															</div>
+														</div>
+													</a>
+												</li>
+											</ul>
 										</div>
-										<ul class="img-stack">
-											<li v-for="participant in limitedParticipants(activity.participants)">
-												<a href="#">
-													<img :src="participant.profilePicture" alt="member-img" style="height:30px; width:30px;">
-													<div class="time-tooltip">
-														<div class="time-tooltip-holder">
-															<span class="tooltip-info">{{participant.name}}</span>
-														</div>
-													</div>
-												</a>
-											</li>
-											
-											<li v-if="remainingParticipants(activity.participants) > 0" class="bg-theme">
-												<a href="#">
-													{{ remainingParticipants(activity.participants) }}+
-													<div class="time-tooltip">
-														<div class="time-tooltip-holder">
-															<span class="tooltip-info">More</span>
-														</div>
-													</div>
-												</a>
-											</li>
-										</ul>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
 
-				</div>
-				<div class="member__pagination mt-4">
-					<div class="member__pagination--left">
-						<p>Viewing {{pageStart + 1}} - {{pageEnd + 1}} of {{activities.length}} Activities</p>
 					</div>
-					<div class="member__pagination--right">
-						<ul class="default-pagination">
-							<li>
-								<a href="#" @@click.prevent="setPage(currentPage-1)"><i class="fas fa-chevron-left"></i></a>
-							</li>
-							<li>
-								<a href="#" v-for="(n, index) in totalPage" :key="index" @@click.prevent="setPage(n)" :class="{'active': (currentPage === (n))}">{{n}}</a>
-							</li>
-							<li>
-								<a href="#" @@click.prevent="setPage(currentPage+1)"><i class="fas fa-chevron-right"></i></a>
-							</li>
-						</ul>
+					<div class="member__pagination mt-4">
+						<div class="member__pagination--left">
+							<p>Viewing {{pageStart + 1}} - {{pageEnd}} of {{activities.length}} Activities</p>
+						</div>
+						<div class="member__pagination--right">
+							<ul class="default-pagination">
+								<li>
+									<a href="#" @@click.prevent="setPage(currentPage-1)"><i class="fas fa-chevron-left"></i></a>
+								</li>
+								<li>
+									<a href="#" v-for="(n, index) in totalPage" :key="index" @@click.prevent="setPage(n)" :class="{'active': (currentPage === (n))}">{{n}}</a>
+								</li>
+								<li>
+									<a href="#" @@click.prevent="setPage(currentPage+1)"><i class="fas fa-chevron-right"></i></a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-3 p-4">
+			<h3>歷史活動</h3>
+			<div class="row g-4 row-cols-lg-1 row-cols-sm-2 row-cols-1">
+				<div class="col" v-for="activity in activities.slice(pageStart,pageEnd)" :id="activity.id">
+					<div class="story__item style2 story--theme-color">
+						<div class="story__inner">
+							<div class="story__thumb position-relative">
+								<a href="group-single.html"><img :src=`${baseAddress}/api/ActivityApi/GetPicture/${activity.id}` alt="dating thumb" style="height:160px;width:280px"></a>
+								<span class="member__activity member__activity--ofline">{{activity.pastDay}} days ago</span>
+							</div>
+							<div class="story__content px-0 pb-0">
+								<a href="group-single.html"><h4>{{activity.title}}</h4></a>
+								<p class="card-text">{{activity.content}}</p>
+								<div class="story__content--author justify-content-between border-top pt-3">
+									<div class="story__content--content">
+										<p><i class="fa-solid fa-earth-africa"></i> Public Group</p>
+									</div>
+									<ul class="img-stack">
+										<li v-for="participant in limitedParticipants(activity.participants)">
+											<a href="#">
+												<img :src="participant.profilePicture" alt="member-img" style="height:30px; width:30px;">
+												<div class="time-tooltip">
+													<div class="time-tooltip-holder">
+														<span class="tooltip-info">{{participant.name}}</span>
+													</div>
+												</div>
+											</a>
+										</li>
+
+										<li v-if="remainingParticipants(activity.participants) > 0" class="bg-theme">
+											<a href="#">
+												{{ remainingParticipants(activity.participants) }}+
+												<div class="time-tooltip">
+													<div class="time-tooltip-holder">
+														<span class="tooltip-info">More</span>
+													</div>
+												</div>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+	
 	<!-- ================> Member section end here <================== -->
 	<!-- Modal -->
 	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -139,13 +187,30 @@
 						<div class="banner__list">
 							<div class="row align-items-center row-cols-1">
 								<div class="col">
-									<label>I am a</label>
+									<label>活動種類</label>
 									<div class="banner__inputlist">
-										<select>
-											<option>Select Gender</option>
-											<option value="male" selected>Male</option>
-											<option value="female">Female</option>
-											<option value="others">Others</option>
+										<select v-model="selectedActivityTypes">
+											<option  disabled value="">Select Category...</option>
+											<option v-for="activityType in activityTypes" :key="activityType.id" :value="activityType.id">{{activityType.typeName}}</option>
+											
+										</select>
+									</div>
+								</div>
+								<div class="col">
+									<label>排序依據</label>
+									<div class="banner__inputlist">
+										<select v-model="search.sortOrder">
+											<option value="mostRecent">Most Recent</option>
+											<option value="leastRecent">Least Recent</option>
+										</select>
+									</div>
+								</div>
+								<div class="col">
+									<label>依預算排序</label>
+									<div class="banner__inputlist">
+										<select v-model="sortAmount" @@change="">
+											<option value="amountAsc">從小到大</option>
+											<option value="amountDesc">從大到小</option>
 										</select>
 									</div>
 								</div>
@@ -232,6 +297,13 @@
 					activities:[],
 					perpage: 4,
 					currentPage: 1,
+					
+					activityTypes:[],
+					selectedActivityTypes: '',
+					search: {
+						sortOrder: 'mostRecent',
+						sortAmount: 'asc'
+					},
 				}
 			},
 			computed: {
@@ -244,8 +316,24 @@
 					//取得該頁第一個值的index
 				},
 				pageEnd() {
-					return this.currentPage * this.perpage
+					const remainder = this.activities.length - this.currentPage * this.perpage
+					return remainder > 0 ? this.currentPage * this.perpage : this.activities.length;
 					//取得該頁最後一個值的index
+				},
+				sortActivityTime() {
+					let _this = this;
+
+					if (this.search.sortOrder != "") {
+						return this.activities.sort((a, b) => {
+							if (this.search.sortOrder === 'leastRecent') {
+								return new Date(b.activityTime) - new Date(a.activityTime);
+							}
+							else {
+								return new Date(a.activityTime) - new Date(b.activityTime);
+							}
+						});
+					}
+					return _this;
 				}
 			},
 			methods: {
@@ -285,12 +373,21 @@
 						return
 					}
 					this.currentPage = page
+				},
+				getActivityTypes() {
+					axios.get(`${this.baseAddress}/api/ActivityApi/GetActivityType`)
+						//JSON.stringify(response.data)就可以用眼睛看到結果確認正確
+						.then(response => {
+							this.activityTypes = response.data;
+						})
+						.catch(err => alert(err));
 				}
 			},
 			watch: {
 			},
 			mounted() {
 				let _this = this;
+				_this.getActivityTypes();
 				_this.getActivities();
 			},
 		}).mount("#activityApp");

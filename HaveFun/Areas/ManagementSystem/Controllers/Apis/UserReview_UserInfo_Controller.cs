@@ -71,7 +71,25 @@ namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
 
 			return "用戶狀態修改成功";
 		}
+		[HttpGet]
 
+        public async Task<string> UserCount()
+        {
+            var MCount = _context.UserInfos.Where(user => user.Gender == 0).Count();
+            string M = MCount.ToString();
 
-	}
+            var FCount = _context.UserInfos.Where(user => user.Gender == 1).Count();
+            string F = FCount.ToString();
+
+            return M + "," + F;
+
+        }
+
+		[HttpGet]
+		public async Task<string> AcountStatusCount() {
+			var count0 = _context.UserInfos.Where(user=>user.AccountStatus==0).Count().ToString();
+			var count1 = _context.UserInfos.Where(user=>user.AccountStatus==1).Count().ToString();
+			return count0+","+count1;
+		}
+    }
 }

@@ -19,7 +19,7 @@ namespace HaveFun.Controllers.APIs
         {
             _context = context;
         }
-
+     
 
         public static ChatRoomDTO MapToChatRoomDTO(ChatRoom chatRoom, UserInfo sender, UserInfo receiver)
         {
@@ -33,7 +33,7 @@ namespace HaveFun.Controllers.APIs
                 IsRead = chatRoom.IsRead,
             };
         }
-
+  
         // GET: api/ChatRooms
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ChatRoomDTO>>> GetChatRooms()
@@ -47,7 +47,7 @@ namespace HaveFun.Controllers.APIs
 
             return Ok(chatRoomDTOs);
         }
-
+   
         // POST: api/ChatRooms
         [HttpPost]
         public async Task<ActionResult<string>> PostChatRoom(ChatRoomDTO chatRoomDTO)
@@ -70,7 +70,7 @@ namespace HaveFun.Controllers.APIs
 
             return CreatedAtAction(nameof(GetChatRoom), new { id = chatRoom.Id }, $"聊天室編號:{chatRoom.Id}");
         }
-
+     
         // GET: api/ChatRooms/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ChatRoomDTO>> GetChatRoom(int id)
@@ -88,7 +88,7 @@ namespace HaveFun.Controllers.APIs
             var chatRoomDTO = MapToChatRoomDTO(chatRoom, chatRoom.Sender, chatRoom.Receiver);
             return Ok(chatRoomDTO);
         }
-
+      
         // GET: api/ChatRooms/GetByUser1IdAndUser2Id/1/2
         [HttpGet("GetByUser1IdAndUser2Id/{User1Id}/{User2Id}")]
         public async Task<ActionResult<IEnumerable<ChatRoomDTO>>> GetByUser1IdAndUser2Id(int User1Id, int User2Id)
@@ -101,13 +101,13 @@ namespace HaveFun.Controllers.APIs
 
             if (!chatRooms.Any())
             {
-                return NotFound();
+                return null;
             }
 
             var chatRoomDTOs = chatRooms.Select(chatRoom => MapToChatRoomDTO(chatRoom, chatRoom.Sender, chatRoom.Receiver));
             return Ok(chatRoomDTOs);
         }
-
+      
         // PUT: api/ChatRooms/5
         [HttpPut("{id}")]
         public async Task<ActionResult<string>> PutChatRoom(int id, ChatRoomDTO chatRoomDTO)
@@ -149,7 +149,7 @@ namespace HaveFun.Controllers.APIs
 
             return Ok("修改聊天室紀錄成功");
         }
-
+     
         // DELETE: api/ChatRooms/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteChatRoom(int id)
@@ -165,7 +165,7 @@ namespace HaveFun.Controllers.APIs
 
             return NoContent();
         }
-
+     
         private bool ChatRoomExists(int id)
         {
             return _context.ChatRooms.Any(e => e.Id == id);
