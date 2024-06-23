@@ -42,7 +42,8 @@ namespace HaveFun.Controllers
         [Authorize(AuthenticationSchemes = "Bearer,Cookies")]
         public async Task<IActionResult> Main()
         {
-            ViewBag.Id = _Id;
+            var loginUser = Convert.ToInt32(Request.Cookies["userId"]);
+            ViewBag.UserId = loginUser;
             return View();
         }
         //
