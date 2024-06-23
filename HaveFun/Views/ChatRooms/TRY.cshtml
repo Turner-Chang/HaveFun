@@ -66,10 +66,10 @@
 
                         <div class="chat-message clearfix">
                             <div class="input-group mb-0">
-                                <div class="input-group-prepend">
-                                    <span id="sendButton" class="input-group-text"><i class="fa fa-send"></i></span>
+                                <div class="input-group-prepend" >
+                                    <span id="sendButton" class="input-group-text" @@click="sendMessage"><i class="fa fa-send"></i></span>
                                 </div>
-                                <input type="text" id="messageInput" class="form-control" placeholder="Enter text here...">
+                                <input type="text" id="messageInput" class="form-control" placeholder="Enter text here..." v-model="messageText">
                             </div>
                         </div>
                     </div>
@@ -92,7 +92,9 @@
                     friends: [],
                     searchQuery: '',
                     activeFriendId: null,
-                    activeFriend: null
+                    activeFriend: null,
+                    chatHistory: [],
+                    messageText: ''
                 };
             },
             computed: {
@@ -113,8 +115,9 @@
                         this.activeFriendId = friend.id;
                         this.activeFriend = friend;
                         console.log('Selected friend:', friend);
-                        window.updateUserIds(window.currentUserId, friend.id);
+                        this.updateUserIds(window.currentUserId, friend.id);
                         this.updateChatHeader(friend);
+                        this.fetchChatHistory();
                     } else {
                         console.log('Cannot select blocked friend');
                     }
@@ -148,126 +151,101 @@
                 updateChatHeader(friend) {
                     // You can update any additional header information here
                 },
+                updateUserIds(newCurrentUserId, newOtherUserId) {
+                    window.currentUserId = newCurrentUserId;
+                    window.otherUserId = newOtherUserId;
+                    this.fetchChatHistory();
+                    console.log(`User IDs updated. Current User: ${window.currentUserId}, Other User: ${window.otherUserId}`);
+                },
+                async fetchChatHistory() {
+                    try {
+                        const [response1, response2] = await Promise.all([
+                            axios.get(`/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/${window.otherUserId}/${window.currentUserId}`),
+                            axios.get(`/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/${window.currentUserId}/${window.otherUserId}`)
+                        ]);
+
+                        const processMessages = (data, isOther) => data.map(message => ({
+                            time: moment(message.createTime).format("h:mm A, MMMM D"),
+                            img: isOther ? `/api/UserInfo/GetPicture/${window.otherUserId}` : `/api/UserInfo/GetPicture/${window.currentUserId}`,
+                            message: message.messageText,
+                            type: isOther ? "other" : "my"
+                        }));
+
+                        this.chatHistory = [
+                            ...processMessages(response1.data, true),
+                            ...processMessages(response2.data, false)
+                        ].sort((a, b) => new Date(a.time) - new Date(b.time));
+
+                    } catch (error) {
+                        console.error('Error fetching chat history:', error);
+                    }
+                },
+                async sendMessage() {
+                    if (!this.messageText.trim()) return;
+
+                    const newChat = {
+                        time: moment().format("h:mm A, MMMM D"),
+                        img: `/api/UserInfo/GetPicture/${window.currentUserId}`,
+                        message: this.messageText,
+                        type: "my"
+                    };
+                    this.chatHistory.push(newChat);
+
+                    try {
+                        await this.connection.invoke("SendMessage", window.currentUserId.toString(), this.messageText);
+
+                        const response = await axios.post('/api/ChatRoom/ChatRoomsApi', {
+                            User1Id: window.currentUserId,
+                            User2Id: window.otherUserId,
+                            MessageText: this.messageText,
+                            CreateTime: new Date(),
+                            IsRead: false
+                        });
+
+                        console.log('Message saved:', response.data);
+
+                        this.messageText = '';
+                    } catch (error) {
+                        console.error('Error sending/saving message:', error);
+                    }
+                }
             },
             mounted() {
                 this.fetchFriends();
-                const connection = new signalR.HubConnectionBuilder()
+                this.connection = new signalR.HubConnectionBuilder()
                     .withUrl("/chatHub")
                     .build();
-                connection.on("UserOnline", (userId) => {
+
+                this.connection.on("UserOnline", (userId) => {
                     this.updateFriendStatus(userId, true);
                 });
-                connection.on("UserOffline", (userId) => {
+
+                this.connection.on("UserOffline", (userId) => {
                     this.updateFriendStatus(userId, false);
                 });
 
-                connection.start().catch(err => console.error(err.toString()));
-            }
-        }).mount('#appc');
-
-        window.updateUserIds = function (newCurrentUserId, newOtherUserId) {
-            window.currentUserId = newCurrentUserId;
-            window.otherUserId = newOtherUserId;
-            fetchChatHistory();
-            console.log(`User IDs updated. Current User: ${window.currentUserId}, Other User: ${window.otherUserId}`);
-        }
-
-        async function fetchChatHistory() {
-            try {
-                const [response1, response2] = await Promise.all([
-                    axios.get(`/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/${window.otherUserId}/${window.currentUserId}`),
-                    axios.get(`/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/${window.currentUserId}/${window.otherUserId}`)
-                ]);
-
-                const processMessages = (data, isOther) => data.map(message => ({
-                    time: moment(message.createTime).format("h:mm A, MMMM D"),
-                    img: isOther ? `/api/UserInfo/GetPicture/${window.otherUserId}` : `/api/UserInfo/GetPicture/${window.currentUserId}`,
-                    message: message.messageText,
-                    type: isOther ? "other" : "my"
-                }));
-
-                chatHistory = [
-                    ...processMessages(response1.data, true),
-                    ...processMessages(response2.data, false)
-                ];
-
-                updateChatHistory();
-            } catch (error) {
-                console.error('Error fetching chat history:', error);
-            }
-        }
-
-        function updateChatHistory() {
-            const chatHistoryContainer = document.querySelector('.chat-history ul');
-            chatHistoryContainer.innerHTML = '';
-            chatHistory.sort((a, b) => new Date(a.time) - new Date(b.time)).forEach(chat => {
-                const chatItem = document.createElement('li');
-                chatItem.className = 'clearfix';
-                chatItem.innerHTML = `
-                        <div class="message-data ${chat.type === 'my' ? 'text-right' : ''}">
-                            <span class="message-data-time">${chat.time}</span>
-                            ${chat.img ? `<img src="${chat.img}" alt="avatar">` : ''}
-                        </div>
-                        <div class="message ${chat.type === 'my' ? 'my-message' : 'other-message float-right'}">
-                            ${chat.message}
-                        </div>
-                    `;
-                chatHistoryContainer.appendChild(chatItem);
-            });
-        }
-
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/chatHub")
-            .build();
-
-        connection.on("ReceiveMessage", function (user, message) {
-            if (user != window.currentUserId) {
-                const chat = {
-                    time: moment().format("h:mm A, MMMM D"),
-                    img: `/api/UserInfo/GetPicture/${window.otherUserId}`,
-                    message: message,
-                    type: "other"
-                };
-                chatHistory.push(chat);
-                updateChatHistory();
-            }
-        });
-
-        connection.start().catch(err => console.error(err.toString()));
-
-        document.getElementById("sendButton").addEventListener("click", async (event) => {
-            event.preventDefault();
-            const messageText = document.getElementById("messageInput").value.trim();
-            if (!messageText) return;
-
-            const newChat = {
-                time: moment().format("h:mm A, MMMM D"),
-                img: `/api/UserInfo/GetPicture/${window.currentUserId}`,
-                message: messageText,
-                type: "my"
-            };
-            chatHistory.push(newChat);
-            updateChatHistory();
-
-            try {
-                await connection.invoke("SendMessage", window.currentUserId.toString(), messageText);
-
-                const response = await axios.post('/api/ChatRoom/ChatRoomsApi', {
-                    User1Id: window.currentUserId,
-                    User2Id: window.otherUserId,
-                    MessageText: messageText,
-                    CreateTime: new Date(),
-                    IsRead: false
+                this.connection.on("ReceiveMessage", (user, message) => {
+                    if (user != window.currentUserId) {
+                        const chat = {
+                            time: moment().format("h:mm A, MMMM D"),
+                            img: `/api/UserInfo/GetPicture/${window.otherUserId}`,
+                            message: message,
+                            type: "other"
+                        };
+                        this.chatHistory.push(chat);
+                    }
                 });
 
-                console.log('Message saved:', response.data);
+                this.connection.on("SomeOneOnline", (connid) => {
+                    console.log(`有人連接，ID: ${connid}`);
+                });
 
-                document.getElementById("messageInput").value = '';
-            } catch (error) {
-                console.error('Error sending/saving message:', error);
+                this.connection.on("SomeOneOffline", (connid) => {
+                    console.log(`有人斷開連接，ID: ${connid}`);
+                });
+
+                this.connection.start().catch(err => console.error(err.toString()));
             }
-        });
-
-        fetchChatHistory();
+        }).mount('#appc');
     </script>
 }
