@@ -6,36 +6,20 @@ namespace HaveFun.Controllers
     public class ProfileController : Controller
     {
         [Authorize(AuthenticationSchemes = "Bearer,Cookies")]
-        public IActionResult Index()
+        public IActionResult Index(string? userId)
         {
             var loginUser = Convert.ToInt32(Request.Cookies["userId"]);
             ViewBag.UserId = loginUser;
+
+            if (userId != null)
+            {
+                ViewBag.ShowUserId = userId;
+            }
+            else
+            {
+                ViewBag.ShowUserId = loginUser;
+            }
             return View();
         }
-        //public IActionResult Post()
-        //{
-
-        //	return PartialView("_Post");
-        //}
-
-        //public IActionResult UserInfo()
-        //{
-        //	return PartialView("_UserInfo");
-        //}
-
-        //public IActionResult WhoLikes()
-        //{
-        //	return PartialView("_WhoLikes");
-        //}
-
-        //      public IActionResult FriendList()
-        //      {
-        //          return PartialView("_FriendList");
-        //      }
-
-        //public IActionResult ActivitysManagement()
-        //{
-        //	return PartialView("_ActivitysManagement");
-        //}
     }
 }

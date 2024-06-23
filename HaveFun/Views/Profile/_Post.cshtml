@@ -62,7 +62,11 @@
                                     </div>
                                 </div>
 
-                                <div class="button-container_displayPostsSelect">
+                                @* <a class="default-btn" asp-area="" asp-controller="Profile" asp-action="Index" asp-route-userId="16">
+                                    個人主頁
+                                </a> *@
+                                <h3>{{ShowUserId}}</h3>
+                                <div v-if="displayPostsSelect" class="button-container_displayPostsSelect">
                                     <button :class="{ 'active': displayPersonalPosts }" @@click="showPersonalPosts">個人貼文</button>
                                     <button :class="{ 'active': !displayPersonalPosts }" @@click="showFriendPosts">朋友貼文</button>
                                 </div>
@@ -77,7 +81,14 @@
                                                     <img src="assets/images/member/profile/member1.jpg" alt="datting thumb">
                                                 </div>
                                                 <div class="author-details">
-                                                    <h6><a href="#">{{ post.UserName }}</a></h6>
+                                                    <h6>
+                                                        @* <a :href="'Profile/Index?userId='+post.UserId"> *@
+                                                        <a :href="`/Profile/Index?userId=${post.UserId}`">
+                                                        @* <a :href="`/Index?userId=${post.UserId}`"> *@
+                                                            {{ post.UserName }}
+                                                        </a>
+                                                    </h6>
+                                                    @* <h6><a href="#">{{ post.UserName }}</a></h6> *@
                                                     <ul class="post-status">
                                                         <li class="post-privacy"><i class="icofont-world"></i>{{postPrivacy}}</li>
                                                         <li class="post-time">{{post.Time}}</li>
@@ -89,7 +100,7 @@
                                                     <i class="fa-solid fa-ellipsis"></i>
                                                 </button>
                                                 <ul class="dropdown-menu">
-                                                    @* <li @@click.prevent="showDelete(post)"><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop">刪除貼文</a></li> *@
+
                                                     <li @@click.prevent="showDelete(post)"><a class="dropdown-item" >刪除貼文</a></li>
                                                     <li @@click.prevent="showRat(post)"></i><a class="dropdown-item">檢舉貼文</a></li>
                                                 </ul>
@@ -229,8 +240,9 @@
                 postPrivacy: 'Public',
                 posts: [],
                 userName: '',
+                showUserId: @ViewBag.ShowUserId,
                 loginUserId: @ViewBag.UserId, // 使用者ID
-                userInfo:[],    // 使用者資料
+                userInfo:[],       // 使用者資料
                 showRatBox: false, // 顯示檢舉視窗
                 ratContent: "",
                 ratReason: "",
@@ -239,7 +251,8 @@
                 showDeleteBox: false, // 顯示刪除視窗
                 deletePostId: null,
                 showDeleteBtn:false,
-                displayPersonalPosts: true, // 初始顯示個人貼文
+                displayPostsSelect:true, // 個人/朋友 選項
+                displayPersonalPosts: true, // 個人貼文
                 FriendPostList: [], // 朋友列表
             };
         },
@@ -253,42 +266,30 @@
                 });
             },
             filteredPosts() {
-                if (this.displayPersonalPosts) {
-                    // 顯示個人貼文
-                    return this.postsWithLikeStatus.filter(post => {
-                        console.log('post.UserId:', post.UserId);
-                        return post.UserId === this.loginUserId;
-                    });
-                } else {
-                    // 顯示朋友貼文
-                    console.log('朋友貼文 FriendPostList:', this.FriendPostList);
-
-                    // 檢查 post.UserId 的型態
-                    console.log('post.UserId 型態:', typeof this.postsWithLikeStatus[0].UserId);
-
-                    // 檢查 FriendPostList 的型態
-                    console.log('FriendPostList 型態:', typeof this.FriendPostList);
-
-                    // 檢查 FriendPostList 是否為陣列
-                    if (Array.isArray(this.FriendPostList)) {
-                        console.log('FriendPostList 是陣列')
+                if (this.showUserId == this.loginUserId) {
+                    this.displayPostsSelect = true;
+                    if (this.displayPersonalPosts) {
+                        // 顯示個人貼文
+                        return this.postsWithLikeStatus.filter(post => {
+                            // console.log('post.UserId:', post.UserId);
+                            return post.UserId === this.loginUserId;
+                        });
                     } else {
-                        console.log('FriendPostList 不是陣列')
+                        // 顯示朋友貼文
+                        return this.postsWithLikeStatus.filter(post => {
+                            // console.log('post.UserId:', post.UserId);
+                            return this.FriendPostList.includes(post.UserId.toString());
+                        });
                     }
-                    // 檢查 FriendPostList[0] 的型態
-                    console.log('FriendPostList內容值:', typeof this.FriendPostList[0]);
-
-                    return this.postsWithLikeStatus.filter(post => {
-                        console.log('post.UserId:', post.UserId);
-                        return this.FriendPostList.includes(post.UserId.toString());
-                        // return (post.UserId == '16');
-                    });
-                }
+                } 
+                this.displayPostsSelect = false;
+                return this.postsWithLikeStatus;
             },
         },
         methods: {
             // 登入者資料
             async getUserInfo() {
+                console.log("this.loginUserId",this.loginUserId)
                 axios.post(`/api/Profile/GetUserInfor/${this.loginUserId}`)
                     .then(response => {
                         // console.log("getUserInfo response:", response.data);
@@ -303,13 +304,15 @@
             // 設置基本資料
             setUserInfo() {
                 this.userName = this.userInfo[0].name;
-                this.placeholderText = `What's on your mind, ${this.userInfo[0].name}?`;
+                this.placeholderText = `What's on your mind, ${this.userInfo[0].name}?`; 
             },
 
             // 查詢貼文
             async getPosts() {
                 try {
-                    const response = await axios.get(`/api/Profile/GetPostsList/${this.loginUserId}`);
+                    const queryId= this.showUserId? this.showUserId: this.loginUserId
+
+                    const response = await axios.get(`/api/Profile/GetPostsList/${queryId}`);
                     // console.log('getPosts:', response.data);
                     this.FriendPostList = response.data[0].freindList
                     this.posts = response.data.map(post => ({
