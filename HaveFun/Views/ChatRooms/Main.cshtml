@@ -1,55 +1,52 @@
-﻿
-<link href="~/css/chat.css" rel="stylesheet" />
+﻿<link href="~/css/chat.css" rel="stylesheet" />
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.5/signalr.min.js"></script>
 <script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
+
 <div id="appc">
     <div class="container">
         <div class="row clearfix">
             <div class="col-lg-12">
                 <div class="card chat-app">
-                    <!-- #region friendlist -->
-                    <div id="friendListApp">
-                        <div id="plist" class="people-list">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fa fa-search"></i></span>
-                                </div>
-                                <input type="text" class="form-control" placeholder="Search..." v-model="searchQuery">
+                    <!-- Friend list -->
+                    <div id="plist" class="people-list">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa fa-search"></i></span>
                             </div>
-                            <ul class="list-unstyled chat-list mt-2 mb-0">
-                                <li v-for="friend in filteredFriends"
-                                    :key="friend.id"
-                                    :class="{ 'clearfix': true, 'active': friend.id === activeFriendId }"
-                                    @@click="selectFriend(friend)">
-                                    <img :src="friend.avatarUrl" alt="avatar">
-                                    <div class="about">
-                                        <div class="name">{{ friend.name }}</div>
-                                        <div class="status">
-                                            <i :class="{ 'fa fa-circle': true, 'online': friend.isOnline, 'offline': !friend.isOnline }"></i>
-                                            {{ friend.status }}
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
+                            <input type="text" class="form-control" placeholder="Search..." v-model="searchQuery">
                         </div>
+                        <ul class="list-unstyled chat-list mt-2 mb-0">
+                            <li v-for="friend in filteredFriends"
+                                :key="friend.id"
+                                :class="{ 'clearfix': true, 'active': friend.id === activeFriendId }"
+                                @@click="selectFriend(friend)">
+                                <img :src="friend.avatarUrl" alt="avatar">
+                                <div class="about">
+                                    <div class="name">{{ friend.name }}</div>
+                                    <div class="status">
+                                        <i :class="{ 'fa fa-circle': true, 'online': friend.isOnline, 'offline': !friend.isOnline }"></i>
+                                        {{ friend.status }}
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
 
-
-                    <!-- #endregion -->
-                    <!-- #region chat -->
+                    <!-- Chat -->
                     <div class="chat">
                         <div class="chat-header clearfix">
                             <div class="row">
                                 <div class="col-lg-6">
                                     <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
-                                        <img src="/api/UserInfo/GetPicture/2" alt="avatar">
+                                        <img :src="activeFriend ? activeFriend.avatarUrl : '/img/default-avatar.png'"
+                                             :alt="activeFriend ? activeFriend.name + '的頭像' : '默認頭像'">
                                     </a>
                                     <div class="chat-about">
-                                        <h6 class="m-b-0"></h6>
-                                        <small>Last seen: 2 hours ago</small>
+                                        <h6 class="m-b-0">{{ activeFriend ? activeFriend.name : '請選擇一位朋友' }}</h6>
+                                        <small>{{ activeFriend ? (activeFriend.isOnline ? '在線' : '離線') : '' }}</small>
                                     </div>
                                 </div>
                                 <div class="col-lg-6 hidden-sm text-right">
@@ -61,42 +58,27 @@
                             </div>
                         </div>
 
-
-                        <!-- #endregion -->
-                        <!-- #region chat-history -->
-                        <div class="chat-history scroll">
-                            <ul class="m-b-0">
-                                <li class="clearfix">
-                                    <div class="message-data text-right">
-                                        <span class="message-data-time">10:10 AM, Today</span>
-                                        <img src="https://localhost:7152/api/UserInfo/GetPicture/2" alt="avatar">
+                        <div class="chat-history">
+                            <ul class="m-b-0" ref="chatHistoryList">
+                                <li v-for="chat in chatHistory" :key="chat.time" class="clearfix">
+                                    <div :class="['message-data', chat.type === 'my' ? 'text-right' : '']">
+                                        <img :src="chat.img" :alt="chat.type === 'my' ? 'My Avatar' : 'Friend Avatar'">
+                                        <span class="message-data-time">{{ chat.time }}</span>
                                     </div>
-                                    <div class="message other-message float-right"> Hi Aiden, how are you? How is the project coming along? </div>
-                                </li>
-                                <li class="clearfix">
-                                    <div class="message-data">
-                                        <span class="message-data-time">10:12 AM, Today</span>
+                                    <div :class="['message', chat.type === 'my' ? 'my-message' : 'other-message']">
+                                        {{ chat.message }}
                                     </div>
-                                    <div class="message my-message">Are we meeting today?</div>
-                                </li>
-                                <li class="clearfix">
-                                    <div class="message-data">
-                                        <span class="message-data-time">10:15 AM, Today</span>
-                                    </div>
-                                    <div class="message my-message">Project has been already finished and I have results to show you.</div>
                                 </li>
                             </ul>
                         </div>
 
-                        <div class="chat-message clearfix">
 
-                            <!-- #endregion -->
-                            <!-- #region inputSendButton -->
+                        <div class="chat-message clearfix">
                             <div class="input-group mb-0">
                                 <div class="input-group-prepend">
-                                    <span id="sendButton" class="input-group-text"><i class="fa fa-send"></i></span>
+                                    <span id="sendButton" class="input-group-text" @@click="sendMessage"><i class="fa fa-send"></i></span>
                                 </div>
-                                <input type="text" id="messageInput" class="form-control" placeholder="Enter text here...">
+                                <input type="text" id="messageInput" class="form-control" placeholder="Enter text here..." v-model="messageText">
                             </div>
                         </div>
                     </div>
@@ -106,24 +88,22 @@
     </div>
 </div>
 
-
-<!-- #endregion -->
 @section Scripts
 {
-
     <script>
-        // 定義全域變量
-        let chatHistory = [];
-        window.currentUserId = (@ViewBag.UserId); // 預設值
+        window.currentUserId = @ViewBag.UserId;
 
         const { createApp } = Vue;
-        const currentUserId = window.currentUserId;
-        createApp({
+
+        const app = createApp({
             data() {
                 return {
                     friends: [],
                     searchQuery: '',
-                    activeFriendId: null
+                    activeFriendId: null,
+                    activeFriend: null,
+                    chatHistory: [],
+                    messageText: ''
                 };
             },
             computed: {
@@ -136,22 +116,23 @@
             methods: {
                 setInitialFriend() {
                     if (this.friends.length > 0) {
-                        const firstFriend = this.friends[0];
-                        this.selectFriend(firstFriend);
+                        this.selectFriend(this.friends[0]);
                     }
                 },
                 selectFriend(friend) {
                     if (!friend.isBlocked) {
                         this.activeFriendId = friend.id;
-                        console.log('選擇的朋友:', friend);
-                        window.updateUserIds(currentUserId, friend.id);
-                        updateChatHeader(friend);
+                        this.activeFriend = friend;
+                        console.log('Selected friend:', friend);
+                        this.updateUserIds(window.currentUserId, friend.id);
+                        this.updateChatHeader(friend);
+                        this.fetchChatHistory();
                     } else {
-                        console.log('無法選擇被封鎖的朋友');
+                        console.log('Cannot select blocked friend');
                     }
                 },
                 fetchFriends() {
-                    axios.get(`/api/FriendApi/GetFriend/${currentUserId}`)
+                    axios.get(`/api/FriendApi/GetFriend/${window.currentUserId}`)
                         .then(response => {
                             this.friends = response.data.map(friend => ({
                                 id: friend.id,
@@ -163,9 +144,10 @@
                                 status: 'offline',
                                 isBlocked: friend.isBlocked
                             }));
+                            this.setInitialFriend();
                         })
                         .catch(error => {
-                            console.error('獲取好友列表失敗:', error);
+                            console.error('Failed to fetch friends:', error);
                         });
                 },
                 updateFriendStatus(friendId, isOnline) {
@@ -175,154 +157,108 @@
                         friend.status = isOnline ? 'online' : 'offline';
                     }
                 },
+                updateChatHeader(friend) {
+                    // You can update any additional header information here
+                },
+                updateUserIds(newCurrentUserId, newOtherUserId) {
+                    window.currentUserId = newCurrentUserId;
+                    window.otherUserId = newOtherUserId;
+                    this.fetchChatHistory();
+                    console.log(`User IDs updated. Current User: ${window.currentUserId}, Other User: ${window.otherUserId}`);
+                },
+                async fetchChatHistory() {
+                    try {
+                        const [response1, response2] = await Promise.all([
+                            axios.get(`/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/${window.otherUserId}/${window.currentUserId}`),
+                            axios.get(`/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/${window.currentUserId}/${window.otherUserId}`)
+                        ]);
+                        if (response1.data.length === 0 || response2.data.length === 0) {
+                            this.chatHistory = [];
+                            return;
+                        }
+                        const processMessages = (data, isOther) => data.map(message => ({
+                            time: moment(message.createTime).format("h:mm A, MMMM D"),
+                            img: isOther ? `/api/UserInfo/GetPicture/${window.otherUserId}` : `/api/UserInfo/GetPicture/${window.currentUserId}`,
+                            message: message.messageText,
+                            type: isOther ? "other" : "my"
+                        }));
+
+                        this.chatHistory = [
+                            ...processMessages(response1.data, true),
+                            ...processMessages(response2.data, false)
+                        ].sort((a, b) => new Date(a.time) - new Date(b.time));
+
+                    } catch (error) {
+                        console.error('Error fetching chat history:', error);
+                    }
+                },
+                async sendMessage() {
+                    if (!this.messageText.trim()) return;
+
+                    const newChat = {
+                        time: moment().format("h:mm A, MMMM D"),
+                        img: `/api/UserInfo/GetPicture/${window.currentUserId}`,
+                        message: this.messageText,
+                        type: "my"
+                    };
+                    this.chatHistory.push(newChat);
+
+                    try {
+                        await this.connection.invoke("SendMessage", window.currentUserId.toString(), this.messageText);
+
+                        const response = await axios.post('/api/ChatRoom/ChatRoomsApi', {
+                            User1Id: window.currentUserId,
+                            User2Id: window.otherUserId,
+                            MessageText: this.messageText,
+                            CreateTime: new Date(),
+                            IsRead: false
+                        });
+
+                        console.log('Message saved:', response.data);
+
+                        this.messageText = '';
+                    } catch (error) {
+                        console.error('Error sending/saving message:', error);
+                    }
+                }
             },
-           mounted() {
+            mounted() {
                 this.fetchFriends();
-                const connection = new signalR.HubConnectionBuilder()
+                this.connection = new signalR.HubConnectionBuilder()
                     .withUrl("/chatHub")
                     .build();
-                connection.on("UserOnline", (userId) => {
+
+                this.connection.on("UserOnline", (userId) => {
                     this.updateFriendStatus(userId, true);
                 });
-                connection.on("UserOffline", (userId) => {
+
+                this.connection.on("UserOffline", (userId) => {
                     this.updateFriendStatus(userId, false);
                 });
- 
-                connection.start().catch(err => console.error(err.toString()));
-            }
-        }).mount('#friendListApp');
 
-
-        window.otherUserId = 2;   // 預設值
-        window.updateUserIds = updateUserIds;
-
-        // 更新聊天歷史的函數
-        function updateChatHistory() {
-            const chatHistoryContainer = document.querySelector('.chat-history ul');
-            chatHistoryContainer.innerHTML = '';
-            chatHistory.sort((a, b) => new Date(a.time) - new Date(b.time)).forEach(chat => {
-                const chatItem = document.createElement('li');
-                chatItem.className = 'clearfix';
-                chatItem.innerHTML = `
-                                               <div class="message-data ${chat.type === 'my' ? 'text-right' : ''}">
-                                                   <span class="message-data-time">${chat.time}</span>
-                                                   ${chat.img ? `<img src="${chat.img}" alt="avatar">` : ''}
-                                               </div>
-                                               <div class="message ${chat.type === 'my' ? 'my-message' : 'other-message float-right'}">
-                                                   ${chat.message}
-                                               </div>
-                                           `;
-                chatHistoryContainer.appendChild(chatItem);
-            });
-        }
-        function updateUserIds(newCurrentUserId, newOtherUserId) {
-            window.currentUserId = newCurrentUserId;
-            window.otherUserId = newOtherUserId;
-            fetchChatHistory(); // 重新加載聊天歷史
-            console.log(`User IDs updated. Current User: ${window.currentUserId}, Other User: ${window.otherUserId}`);
-        }
-        // 使用 axios 獲取聊天歷史
-        async function fetchChatHistory() {
-            try {
-                const [response1, response2] = await Promise.all([
-                    axios.get(`/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/${window.otherUserId}/${window.currentUserId}`),
-                    axios.get(`/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/${window.currentUserId}/${window.otherUserId}`)
-                ]);
-                if (response1.data.length === 0 || response2.data.length === 0) {
-                    chatHistory = [];
-                    updateChatHistory();
-                    return;
-                }
-
-
-                const processMessages = (data, isOther) => data.map(message => ({
-                    time: moment(message.createTime).format("h:mm A, MMMM D"),
-                    img: `/api/UserInfo/GetPicture/${message.user1Id}`,
-                    message: message.messageText,
-                    type: isOther ? "other" : "my"
-                }));
-
-                chatHistory = [
-                    ...processMessages(response1.data, true),
-                    ...processMessages(response2.data, false)
-                ];
-
-                updateChatHistory();
-            } catch (error) {
-                console.error('獲取聊天歷史時出錯:', error);
-            }
-        }
-
-        // SignalR 連接設置
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/chatHub")
-            .build();
-
-        connection.on("ReceiveMessage", function (user, message) {
-            // 只有當消息不是來自當前用戶時才添加
-            if (user != window.currentUserId) {
-                const chat = {
-                    time: moment().format("h:mm A, MMMM D"),
-                    img: `/api/UserInfo/GetPicture/${window.otherUserId}`,
-                    message: message,
-                    type: "other"
-                };
-                chatHistory.push(chat);
-                updateChatHistory();
-            }
-        });
-
-        connection.on("SomeOneOnline", (connid) => {
-            console.log(`有人連接，ID: ${connid}`);
-        });
-
-        connection.on("SomeOneOffline", (connid) => {
-            console.log(`有人斷開連接，ID: ${connid}`);
-        });
-
-        connection.start().catch(err => console.error(err.toString()));
-
-        // 發送消息
-        document.getElementById("sendButton").addEventListener("click", async (event) => {
-            event.preventDefault();
-            const messageText = document.getElementById("messageInput").value.trim();
-            if (!messageText) return;
-
-            // 立即將消息添加到聊天歷史
-            const newChat = {
-                time: moment().format("h:mm A, MMMM D"),
-                img: `/api/UserInfo/GetPicture/${window.currentUserId}`,
-                message: messageText,
-                type: "my"
-            };
-            chatHistory.push(newChat);
-            updateChatHistory();
-
-            try {
-                // 發送消息到 SignalR hub
-                await connection.invoke("SendMessage", currentUserId.toString(), messageText);
-
-                // 發送 POST 請求保存消息
-                const response = await axios.post('/api/ChatRoom/ChatRoomsApi', {
-                    User1Id: window.currentUserId,
-                    User2Id: window.otherUserId,
-                    MessageText: messageText,
-                    CreateTime: new Date(),
-                    IsRead: false
+                this.connection.on("ReceiveMessage", (user, message) => {
+                    if (user != window.currentUserId) {
+                        const chat = {
+                            time: moment().format("h:mm A, MMMM D"),
+                            img: `/api/UserInfo/GetPicture/${window.otherUserId}`,
+                            message: message,
+                            type: "other"
+                        };
+                        this.chatHistory.push(chat);
+                    }
                 });
 
-                console.log('消息已保存:', response.data);
+                this.connection.on("SomeOneOnline", (connid) => {
+                    console.log(`有人連接，ID: ${connid}`);
+                });
 
-                // 清空輸入框
-                document.getElementById("messageInput").value = '';
-            } catch (error) {
-                console.error('發送/保存消息時出錯:', error);
+                this.connection.on("SomeOneOffline", (connid) => {
+                    console.log(`有人斷開連接，ID: ${connid}`);
+                });
+
+                this.connection.start().catch(err => console.error(err.toString()));
             }
-        });
-
-        // 初始化
-        fetchChatHistory();
+        }).mount('#appc');
 
     </script>
 }
-
