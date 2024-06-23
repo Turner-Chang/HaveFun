@@ -27,6 +27,8 @@ namespace HaveFun.Controllers
 		[Authorize(AuthenticationSchemes = "Bearer,Cookies")]
 		public async Task<IActionResult> Main()
         {
+            var loginUser = Convert.ToInt32(Request.Cookies["userId"]);
+            ViewBag.UserId = loginUser;
             var haveFunDbContext = _context.ChatRooms.Include(c => c.Receiver).Include(c => c.Sender);
                return View(await haveFunDbContext.ToListAsync());
         }

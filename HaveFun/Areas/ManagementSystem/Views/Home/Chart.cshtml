@@ -1,31 +1,138 @@
 ﻿<div class="container" id="ChartApp">
 	<h2 class="text-center">圖表分析</h2>
-	總人數
-	男女比
-	課金比
-	年齡分布
+	總人數 : {{countUser}}
+	男女比 {{countMale}} :  {{countFeMale}}
+	課金比 {{countMoneyLevel}}:{{countNoMoneyLevel}}
+	年齡分布 ~20  20~30  30~40 40~50 50~
+	<div class="row">
+		
+		<div class="" style="width:250px;" >
+			<div class="card mb-4" style="height:250px;">
+				<div class="card-header">
+					<i class="fas fa-chart-area me-1"></i>
+					使用者男女比
+				</div>
+				<div class="card-body">
+					<canvas id="GenderChart" height="250px"></canvas>
+				</div>
+			<button class="btn btn-success" @@click="changeStyle(1)">圓餅/長條切換</button>
+			</div>
+		</div>
 
+		<div class="" style="width:250px;">
+			<div class="card mb-4" style="height:250px;">
+				<div class="card-header">
+					<i class="fas fa-chart-area me-1"></i>
+					付費比
+				</div>
+				<div class="card-body">
+					<canvas id="LevelChart"></canvas>
+				</div>
+				<button class="btn btn-success" @@click="changeStyle(2)">圓餅/長條切換</button>
+			</div>
+		</div>
+	</div>
 
 </div>
 
-@section Scripts{
+@section Scripts {
 
 
-	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	<script>
 		const ChartApp = Vue.createApp({
 			data() {
 				return {
-					
+					genderArr:[],
+					LevelArr:[],
+					UserArr:[],
+					NoBlockUserArr: [],
+					chartType:'bar',
 				}
 			},
 			computed: {
+				filterStatus() {
+					this.NoBlockUserArr = this.UserArr.filter(i => i.status == 0);
+				},
+				countUser() {
+					return this.NoBlockUserArr.length;
+				},
+				countMale() {
+					return this.NoBlockUserArr.filter(i => i.gender == 0).length;
+				},
+				countFeMale() {
+					return this.NoBlockUserArr.filter(i => i.gender == 1).length;
+				},
+				countMoneyLevel() {
+					return this.NoBlockUserArr.filter(i => i.level == 0).length;
+				},
+				countNoMoneyLevel() {
+					return this.NoBlockUserArr.filter(i => i.level == 1).length;
 				}
-
 			},
 			methods: {
+				DrawGenderChart() {
+					$('#GenderChart').replaceWith($('<canvas id="GenderChart" height="250px"></canvas>'));
+					const chartElement = document.getElementById('GenderChart');
+					new Chart(chartElement, {
+						type: this.chartType,
+						data: {
+							labels: [
+								'男生',
+								'女生',
+							],
+							datasets: [{
+								label: '人數',
+								data: [this.countMale, this.countFeMale],
+							}]
+						},
+					});
+				},
+
+				DrawLevelChart() {
+					$('#LevelChart').replaceWith($('<canvas id="LevelChart" height="250px"></canvas>'));
+
+					const chartElement = document.getElementById('LevelChart');
+					new Chart(chartElement, {
+						type: 'pie',
+						data: {
+							labels: [
+								'免費',
+								'付費',
+							],
+							datasets: [{
+								label: '人數',
+								data: [this.countMoneyLevel, this.countNoMoneyLevel],
+							}]
+						},
+					});
+				},
+				changeStyle(id) {
+					if (this.chartType == 'bar') {
+						this.chartType = 'pie';
+					}
+					else {
+						this.chartType = 'bar';	
+					}
+					this.ChoiseChart(id);
+				},
+				ChoiseChart(id) {
+					if (id == 1)
+						this.DrawGenderChart();
+					if (id == 2)
+						this.DrawLevelChart();
+				}
 			},
-			watch: {
+
+			mounted() { 
+
+				axios.get('/api/UserInfo/GetAll').then(d => d.data).then(d => ChartApp.UserArr = d)
+					.then(d => ChartApp.filterStatus)
+					.then(d => ChartApp.DrawGenderChart())
+					.then(d => ChartApp.DrawLevelChart())
+
+					
 			},
 		}).mount("#ChartApp");
 	</script>
