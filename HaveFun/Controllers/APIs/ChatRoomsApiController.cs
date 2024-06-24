@@ -101,7 +101,7 @@ namespace HaveFun.Controllers.APIs
 
             if (!chatRooms.Any())
             {
-                return NotFound();
+                return null;
             }
 
             var chatRoomDTOs = chatRooms.Select(chatRoom => MapToChatRoomDTO(chatRoom, chatRoom.Sender, chatRoom.Receiver));
