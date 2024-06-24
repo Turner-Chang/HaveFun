@@ -43,7 +43,7 @@
 							</div>
 							<div class="member__info--count">
 								<div class="default-btn"><span>All Upcoming Activities</span></div>
-								<p>{{sortAmout.length}}</p>
+								<p>{{filteredActivities.length}}</p>
 							</div>
 						</div>
 						@* <div class="member__info--right">
@@ -59,7 +59,7 @@
 						</div> *@
 					</div>
 					<div class="row g-4 justify-content-left row-cols-lg-3 row-cols-sm-2 row-cols-1">
-						<div class="col" v-for="activity in sortAmout.slice(pageStart,pageEnd)" :id="activity.id">
+						<div class="col" v-for="activity in filteredActivities.slice(pageStart,pageEnd)" :id="activity.id">
 							<div class="story__item style2 story--theme-color">
 								<div class="story__inner">
 									<div class="story__thumb position-relative">
@@ -105,7 +105,7 @@
 					</div>
 					<div class="member__pagination mt-4">
 						<div class="member__pagination--left">
-							<p>Viewing {{pageStart + 1}} - {{pageEnd}} of {{sortAmout.length}} Activities</p>
+							<p>Viewing {{pageStart + 1}} - {{pageEnd}} of {{filteredActivities.length}} Activities</p>
 						</div>
 						<div class="member__pagination--right">
 							<ul class="default-pagination">
@@ -183,7 +183,6 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-					<form action="#">
 						<div class="banner__list">
 							<div class="row align-items-center row-cols-1">
 								<div class="col">
@@ -217,11 +216,10 @@
 									</div>
 								</div>
 								<div class="col">
-									<button type="submit" class="default-btn reverse d-block"><span>Find Your Partner</span></button>
+								<button type="submit" class="default-btn reverse d-block" v-on:click="applyFilters"><span>Find Your Partner</span></button>
 								</div>
 							</div>
 						</div>
-					</form>
 				</div>
 			</div>
 		</div>
@@ -260,11 +258,12 @@
 						sortAmount: '',
 						type:'',
 					},
+					filteredActivities:[],
 				}
 			},
 			computed: {
 				totalPage() {
-					return Math.ceil(this.sortAmout.length / this.perpage)
+					return Math.ceil(this.filteredActivities.length / this.perpage)
 					//Math.ceil()取最小整數
 				},
 				pageStart() {
@@ -272,46 +271,46 @@
 					//取得該頁第一個值的index
 				},
 				pageEnd() {
-					const remainder = this.sortAmout.length - this.currentPage * this.perpage
-					return remainder > 0 ? this.currentPage * this.perpage : this.sortAmout.length;
+					const remainder = this.filteredActivities.length - this.currentPage * this.perpage
+					return remainder > 0 ? this.currentPage * this.perpage : this.filteredActivities.length;
 					//取得該頁最後一個值的index
 				},
-				sortActivityTime() {
-					let _this = this.upcomingActivities;
+				// sortActivityTime() {
+				// 	let _this = this.upcomingActivities;
 
-					if (this.search.sortOrder != "") {
-						return this.upcomingActivities.sort((a, b) => {
-							if (this.search.sortOrder === 'leastRecent') {
-								return new Date(b.activityTime) - new Date(a.activityTime);
-							}
-							else {
-								return new Date(a.activityTime) - new Date(b.activityTime);
-							}
-						});
-					}
-					return _this;
-				},
-				filterType() {
-					let _this = this.sortActivityTime;
-					if (this.search.type != '') {
-						return this.sortActivityTime.filter(a => a.activityTypeName == this.search.type);
-					}
-					return _this;
-				},
-				sortAmout() { 
-					let _this = this.filterType;
-					if (this.search.sortAmount != '') {
-						return this.filterType.sort((a, b) => {
-							if (this.search.sortAmount === 'amountAsc') {
-								return a.amount - b.amount
-							}
-							else {
-								return b.amount - a.amount;
-							}
-						});
-					}
-					return _this;
-				},
+				// 	if (this.search.sortOrder != "") {
+				// 		return this.upcomingActivities.sort((a, b) => {
+				// 			if (this.search.sortOrder === 'leastRecent') {
+				// 				return new Date(b.activityTime) - new Date(a.activityTime);
+				// 			}
+				// 			else {
+				// 				return new Date(a.activityTime) - new Date(b.activityTime);
+				// 			}
+				// 		});
+				// 	}
+				// 	return _this;
+				// },
+				// filterType() {
+				// 	let _this = this.sortActivityTime;
+				// 	if (this.search.type != '') {
+				// 		return this.sortActivityTime.filter(a => a.activityTypeName == this.search.type);
+				// 	}
+				// 	return _this;
+				// },
+				// sortAmout() { 
+				// 	let _this = this.filterType;
+				// 	if (this.search.sortAmount != '') {
+				// 		return this.filterType.sort((a, b) => {
+				// 			if (this.search.sortAmount === 'amountAsc') {
+				// 				return a.amount - b.amount
+				// 			}
+				// 			else {
+				// 				return b.amount - a.amount;
+				// 			}
+				// 		});
+				// 	}
+				// 	return _this;
+				// },
 				pastActivities() 
 				{
 					const now = new Date();
@@ -335,6 +334,9 @@
 						.then(response => { 
 							this.activities = response.data;
 							this.processProfilePictures();
+						})
+						.then(() => { 
+							this.applyFilters();
 						})
 						.catch(err => alert(err));
 				},
@@ -372,7 +374,38 @@
 							this.activityTypes = response.data;
 						})
 						.catch(err => alert(err));
-				}
+				},
+				applyFilters() {
+					let activities = this.upcomingActivities;
+					// 按活动时间排序
+					if (this.search.sortOrder != '') {
+						activities = activities.sort((a, b) => {
+							if (this.search.sortOrder === 'leastRecent') {
+								return new Date(b.activityTime) - new Date(a.activityTime);
+							} else {
+								return new Date(a.activityTime) - new Date(b.activityTime);
+							}
+						});
+					}
+
+					// 按活动类型筛选
+					if (this.search.type != '') {
+						activities = activities.filter(a => a.activityTypeName === this.search.type);
+					}
+
+					// 按预算排序
+					if (this.search.sortAmount != '') {
+						activities = activities.sort((a, b) => {
+							if (this.search.sortAmount === 'amountAsc') {
+								return a.amount - b.amount;
+							} else {
+								return b.amount - a.amount;
+							}
+						});
+					}
+
+					this.filteredActivities = activities;
+				},
 			},
 			watch: {
 			},
