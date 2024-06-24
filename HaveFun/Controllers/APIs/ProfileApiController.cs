@@ -1,5 +1,6 @@
 ﻿using HaveFun.DTOs;
 using HaveFun.Models;
+using HaveFun.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -18,11 +19,18 @@ namespace HaveFun.Controllers.APIs
     public class ProfileApiController : ControllerBase
     {
         HaveFunDbContext _context;
+        //private readonly PostServices postServices;
 
         public ProfileApiController(HaveFunDbContext context)
         {
             _context = context;
         }
+
+        //public ProfileApiController(HaveFunDbContext context, PostServices postServices)
+        //{
+        //    _context = context;
+        //    this.postServices = postServices;
+        //}
 
         // Post: api/Profile/loginUserId
         [HttpPost("{loginUserId}")]
@@ -101,13 +109,16 @@ namespace HaveFun.Controllers.APIs
         {
             string loginId = Request.Cookies["userId"]; // 取得loginId
 
-            List<string> FriendPostList = new List<string>(); // 需撈取的Post UserId
-            FriendPostList.Clear();
-
             //todo 先判斷是否是自己，是則撈出朋友id
             // userId = loginId => loginId + friendListId
             // userId != loginId => userId
 
+            //從資料庫取資料
+
+            //整理資料
+
+            //return result;
+            List<string> FriendPostList = new List<string>();
             if (userId == loginId)
             {
                 // 取出登入者FriendList
@@ -123,7 +134,7 @@ namespace HaveFun.Controllers.APIs
                     }
                 }
             }
-
+            IList<string> test;
             var posts = await _context.Posts
                 .Where(p => p.UserId.ToString() == userId || FriendPostList.Contains(p.UserId.ToString()) && p.Status == 0)
                 .OrderByDescending(p => p.Id)
@@ -193,7 +204,8 @@ namespace HaveFun.Controllers.APIs
                 }).ToList()
             }).ToList();
 
-            
+            //var postDTOs = await postServices.GetPostsList(userId, loginId);
+
             return postDTOs;
         }
 

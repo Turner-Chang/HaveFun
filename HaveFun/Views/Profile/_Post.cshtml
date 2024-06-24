@@ -14,7 +14,7 @@
                                         <div class="lab-thumb">
                                             <div class="thumb-inner">
                                                 <div class="thumb-img">
-                                                    <img src="assets/images/member/profile/profile.jpg" alt="datting thumb">
+                                                    <img src="/assets/images/member/profile/profile.jpg" alt="datting thumb">
                                                 </div>
                                                 <div class="thumb-content">
                                                     <h6><a href="#">{{userName}}</a></h6>
@@ -78,7 +78,7 @@
                                         <div class="post-author">
                                             <div class="post-author-inner">
                                                 <div class="author-thumb">
-                                                    <img src="assets/images/member/profile/member1.jpg" alt="datting thumb">
+                                                    <img src="/assets/images/member/profile/member1.jpg" alt="datting thumb">
                                                 </div>
                                                 <div class="author-details">
                                                     <h6>
@@ -240,7 +240,7 @@
                 postPrivacy: 'Public',
                 posts: [],
                 userName: '',
-                showUserId: @ViewBag.ShowUserId,
+                showUserId: @ViewBag.ShowUserId, // 指定顯示的UserId
                 loginUserId: @ViewBag.UserId, // 使用者ID
                 userInfo:[],       // 使用者資料
                 showRatBox: false, // 顯示檢舉視窗
@@ -289,7 +289,6 @@
         methods: {
             // 登入者資料
             async getUserInfo() {
-                console.log("this.loginUserId",this.loginUserId)
                 axios.post(`/api/Profile/GetUserInfor/${this.loginUserId}`)
                     .then(response => {
                         // console.log("getUserInfo response:", response.data);

@@ -11,7 +11,7 @@ namespace HaveFun.Controllers
             var loginUser = Convert.ToInt32(Request.Cookies["userId"]);
             ViewBag.UserId = loginUser;
 
-            if (userId != null)
+            if (!string.IsNullOrEmpty(userId))
             {
                 ViewBag.ShowUserId = userId;
             }
