@@ -63,11 +63,13 @@ namespace HaveFun.Controllers.APIs
 				.Where(t => t.UserId == userId)
 				.Select(t => new PaymentHistoryDTO
 				{
+                    Id = t.Id,
 					Date = t.Date,
 					Product = t.Product, 
-					Amount = t.Amount
-					// 根據需求添加其他屬性
-				})
+					Amount = t.Amount,
+                    Status = t.Status
+                    // 根據需求添加其他屬性
+                })
 				.ToListAsync();
 
 			return transactions;
@@ -84,6 +86,39 @@ namespace HaveFun.Controllers.APIs
             }
 
             _context.Entry(transaction).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TransactionExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // PATCH: api/TransactionsPayApi/{id}/status
+        [HttpPatch("{id}/status")]
+        public async Task<IActionResult> PatchTransactionStatus(int id, [FromBody] int status)
+        {
+            var transaction = await _context.Transactions.FindAsync(id);
+            if (transaction == null)
+            {
+                return NotFound();
+            }
+
+            transaction.Status = status;
+
+            _context.Entry(transaction).Property(t => t.Status).IsModified = true;
 
             try
             {
