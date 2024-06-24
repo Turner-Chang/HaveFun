@@ -12,16 +12,18 @@
                         <th>購買日期</th>
                         <th>購買品項</th>
                         <th>購買金額</th>
+                        <th>購買狀態</th>
                         <th>操作</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="transaction in transactions" :key="transaction.id">
                         <td>{{ formatDate(transaction.date) }}</td>
-                        <td>{{ getProductDisplayName(transaction.product) }}</td>
+                        <td>{{ getProductDisplayName(transaction.product) }}</td>                        
                         <td>{{ formatCurrency(transaction.amount) }}</td>
-                        <td>
-                            <button @@click="refund(transaction.id)">退款</button>
+                        <td>{{ getStatusDisplay(transaction.status) }}</td>
+                        <td v-if="transaction.status === 0" >
+                            <button @@click="refund(transaction.id)">退款申請</button>
                         </td>
                     </tr>
                 </tbody>
@@ -94,33 +96,52 @@
             getProductDisplayName(productId) {
                 // 根據產品 ID 返回對應的顯示名稱
                 if (productId === 0) {
-                    return "購買白金會員";
+                    return "白金會員";
                 } else if (productId === 2) {
                     return "其他產品名稱"; // 根據實際情況調整
                 } else {
                     return "未知產品";
                 }
             },
-            refund(transactionId) {
-                if (confirm("確定要退款嗎？")) {
-                    // 請求後端 API 執行退款操作
-                    fetch(`/api/TransactionsPayApi/${transactionId}`, {
-                        method: 'DELETE'
-                    })
-                        .then(response => {
-                            if (response.ok) {
-                                alert('退款成功！');
-                                // 更新交易記錄列表
-                                this.fetchTransactions();
-                            } else {
-                                alert('退款失敗！');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error refunding:', error);
-                            alert('退款失敗！');
-                        });
+            getStatusDisplay(status) {
+                // 根據 Status 返回對應的顯示文本
+                switch (status) {
+                    case 0:
+                        return "成功";
+                    case 1:
+                        return "失敗";
+                    case 2:
+                        return "等待";
+                    case 3:
+                        return "審核中";
+                    case 4:
+                        return "已退款";
+                    default:
+                        return "未知";
                 }
+            },
+            refund(transactionId) {
+				if (confirm("確定要退款嗎？")) {
+					// 將狀態更新為 3 (審核中)
+                    fetch(`${baseAddress}/api/TransactionsPayApi/${transactionId}/status`, {
+						method: 'PATCH',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify(3) // 更新狀態為審核中
+					})
+				    .then(response => {
+						if (response.ok) {
+							alert('退款申請成功！');
+							// 更新交易記錄列表
+							this.fetchTransactions();
+						} else {
+							alert('退款申請失敗！');
+						}
+					})
+					.catch(error => {
+						console.error('Error refunding:', error);
+						alert('退款失敗！');
+					});
+				}
             }
         },
         mounted() { 
