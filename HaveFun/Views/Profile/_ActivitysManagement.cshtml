@@ -38,7 +38,7 @@
 			<button class="btn btn-outline-secondary" @@click="escdeleteActBox">否</button>
 		</div>
 		<!-- ================> 即將發生的活動 <================== -->
-		<div v-if="currentType === 'commingup'" v-for="act in commingupActivities" class="blog__item">
+		<div v-if="currentType === 'commingup'" v-for="(act, index) in commingupActivities" class="blog__item">
 			<div class="blog__inner">
 				<div class="blog__content">
 					<img v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}?rand=${rand}`>
@@ -52,6 +52,7 @@
 					<details @@toggle="act.expandState = !act.expandState">
 						<summary>{{act.expandState? '隱藏詳細內容' : '展開詳細內容'}}</summary>
 						<div class="col-xs-2">
+							<div :id="'map' + index" class="map"></div>
 							<span class="infoTitle">活動類型：</span>
 							{{act.type}}<br>
 							<span class="infoTitle">活動開始報名時間：</span>
@@ -194,6 +195,7 @@
 		</div>
 	</div>
 </div>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDh0olCmLq7Tpu-ktNN0_JYyt9G529C4qA&libraries=geocoding"></script>
 <script>
 	const activityPlatform = Vue.createApp({
 		data() {
@@ -274,7 +276,11 @@
 				} else {
 					$('#submit').css("display", "inline-block");
 				}
-				
+			},
+			commingupActivities(newVal,oldVal) {
+				if (newVal !== oldVal) {
+					this.showMap(newVal);
+				}
 			},
 		},
 		computed: {
@@ -555,6 +561,28 @@
 			//檢查現在是否還可以修改報名時間
 			canRegistrationEdit(registrationTime) {
 				return new Date(registrationTime) > new Date(this.currentDateTime);
+			},
+			// 藉由地址顯示活動地圖
+			showMap(activityType) {
+				activityType.forEach((act, index) => {
+					let geocoder = new google.maps.Geocoder();
+					geocoder.geocode({ address: act.location }, function (result, status) {
+						if (status === 'OK') {
+							let mapOptions = {
+								center: result[0].geometry.location,
+								zoom: 16
+							};
+							let map = new google.maps.Map(document.getElementById('map' + index), mapOptions);
+							new google.maps.Marker({
+								position: result[0].geometry.location,
+								map: map,
+								title: act.title
+							});
+						} else {
+							console.error('求取活動地圖失敗!');
+						}
+					});
+				});
 			},
 		},
 		mounted() {
