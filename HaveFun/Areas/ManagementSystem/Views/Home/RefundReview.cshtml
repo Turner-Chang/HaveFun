@@ -1,1 +1,35 @@
-﻿退款審核
+﻿<div id="app_RefundReview">
+    <h1>退款審核</h1>
+    <div v-if="refundRequests.length === 0">
+        <p>沒有需要審核的退款請求。</p>
+    </div>
+    <div v-else>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>用戶ID</th>
+                    <th>購買日期</th>
+                    <th>購買金額</th>
+                    <th>購買品項</th>
+                    <th>付款方式</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="request in refundRequests" :key="request.id">
+                    <td>{{ request.id }}</td>
+                    <td>{{ request.userId }}</td>
+                    <td>{{ formatDate(request.date) }}</td>
+                    <td>{{ formatCurrency(request.amount) }}</td>
+                    <td>{{ getProductDisplayName(request.product) }}</td>
+                    <td>{{ request.paymentMethod }}</td>
+                    <td>
+                        <button @@click="approveRefund(request.id)">核准</button>
+                        <button @@click="rejectRefund(request.id)">退回</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
