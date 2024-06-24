@@ -139,7 +139,6 @@
 							<p>Serious dating with your perfect match is just a click away.</p>
 						</div>
 						<div class="banner__form">
-							<form action="#">
 								<div class="banner__list">
 									<label>Looking for</label>
 									<div class="row">
@@ -191,15 +190,15 @@
 									</div>
 									</div> *@
 								</div>
-								<button type="submit" class="default-btn reverse d-block mt-5"><span>Find Your Partner</span></button>
-							</form>
+								<button type="submit" class="default-btn reverse d-block mt-5" v-on:click="applyFilter"><span>Find Your Partner</span></button>
+							
 						</div>
 					</div>
 				</div>
 				<div class="col-lg-7 col-12">
 					<div id="out" class="wow fadeInUp" data-wow-duration="1.5s" data-wow-delay="1s">
 						<div id="card-container">
-							<div v-for="(user, index) in filterAge" :id="user.id" class="card cards" :style="{'z-index': index}" @@mousedown="startDrag($event, index)"
+							<div v-for="(user, index) in filteredNotMatchUsers" :id="user.id" class="card cards" :style="{'z-index': index}" @@mousedown="startDrag($event, index)"
 								 @@touchstart="startDrag($event, index)">
 								<div class="button-container">
 									<button class="top-right-button" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="fa-solid fa-circle-exclamation" style="color: #ff3838;" @@click="setCurrentCard($event.target)"></i></button>
@@ -299,6 +298,7 @@
 				return {
 					baseAddress: "https://localhost:7152",
 					notMatchUsers: [],
+					filteredNotMatchUsers: [],
 					startX: 0,
 					startY: 0,
 					currentCard: null,
@@ -342,6 +342,7 @@
 					fetch(`${this.baseAddress}/api/MatchApi/@ViewBag.UserId`)
 						.then(res => res.json())
 						.then(u => this.notMatchUsers = u)
+						.then(()=>this.applyFilter())
 				},
 				getComplaintCategories() {
 					axios.get(`${this.baseAddress}/api/MatchApi/GetComplaintCategory`)
@@ -542,7 +543,24 @@
 						this.filter.gender = value;
 					}
 					this.lastChecked = value;
-				}
+				},
+				applyFilter() { 
+					let users = this.notMatchUsers;
+
+					if (this.filter.gender != "") {
+						users = users.filter(u => u.gender == this.filter.gender);
+					}
+
+					if (this.filter.age.max != "") {
+						users = users.filter(u => u.age <= Number(this.filter.age.max));
+					}
+
+					if (this.filter.age.max != "") {
+						users = users.filter(u => u.age <= Number(this.filter.age.max));
+					}
+
+					this.filteredNotMatchUsers = users;
+				},
 			},
 			watch: {
 				'filter.gender': function (newVal, oldVal) {
