@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HaveFun.Models;
+using HaveFun.Areas.ManagementSystem.DTOs;
+
+
+
 
 namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
 {
@@ -22,9 +26,21 @@ namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
 
         // GET: api/TransactionsReviewApi
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactions()
+        public async Task<ActionResult<IEnumerable<RefundReviewDTO>>> GetRefundRequests()
         {
-            return await _context.Transactions.ToListAsync();
+            var refundRequests = await _context.Transactions
+                .Where(t => t.Status == 3)
+                .Select(t => new RefundReviewDTO
+                {
+                    Id = t.Id,
+                    UserId = t.UserId,
+                    Amount = t.Amount,
+                    Product = t.Product,
+                    Date = t.Date,
+                    Status = t.Status
+                }).ToListAsync();
+
+            return refundRequests;
         }
 
         // GET: api/TransactionsReviewApi/5
@@ -41,34 +57,34 @@ namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
             return transaction;
         }
 
-        // PUT: api/TransactionsReviewApi/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTransaction(int id, Transaction transaction)
+        // PUT: api/TransactionsReviewApi/5/approve
+        [HttpPut("{id}/approve")]
+        public async Task<IActionResult> ApproveRefund(int id)
         {
-            if (id != transaction.Id)
+            var transaction = await _context.Transactions.FindAsync(id);
+            if(transaction == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(transaction).State = EntityState.Modified;
+            transaction.Status = 4; // 將狀態改為 4 (已退款)
+            await _context.SaveChangesAsync();
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TransactionExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            return NoContent();
+        }
 
+        // PUT: api/TransactionsReviewApi/5/reject
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}/reject")]
+        public async Task<IActionResult> RejectRefund(int id)
+        {
+            var transaction = await _context.Transactions.FindAsync(id);
+            if (transaction == null)
+            {
+                return NotFound();
+            }
+            transaction.Status = 0; // 將狀態改為 0 (成功)
+            await _context.SaveChangesAsync();
             return NoContent();
         }
 
