@@ -13,7 +13,7 @@
 <!-- scrollToTop ending here -->
 
 <!-- ================> Page Header section start here <================== -->
-<div class="pageheader bg_img" style="background-image: url(assets/images/bg-img/pageheader.jpg);">
+<div class="pageheader bg_img" style="background-image: url(/assets/images/bg-img/pageheader.jpg);">
     <div class="container">
         <div class="pageheader__content text-center">
             <h2>Member Single Page</h2>
@@ -821,7 +821,8 @@
         const Profile_Left_UserInfo = Vue.createApp({
             data() {
                 return {
-                    userId : @ViewBag.UserId ,
+                    showUserId: @ViewBag.ShowUserId, // 指定顯示的UserId
+                    loginUserId: @ViewBag.UserId, // 使用者ID
                     userInfo:[],
                     name:'',
                     introduction:'',
@@ -831,7 +832,8 @@
             },
             methods: {
                 async getUserInforation() {
-                    axios.post(`/api/ProfileIndex/GetUser/${this.userId}`)
+                    const queryId = this.showUserId ? this.showUserId : this.loginUserId
+                    axios.post(`/api/ProfileIndex/GetUser/${queryId}`)
                         .then(response => {
                             // console.log("getUserInfo data",response.data)
                             this.userInfo = response.data;
@@ -846,15 +848,7 @@
                 },
                 async postFollowUser() {
 
-                    const userId = 2;
-                    const loginId = 4;
-                    // const follow = {
-                    //     userId: 2,
-                    //     loginId:4
-                    // }
-
-                    axios.post(`/api/ProfileIndex/FollowUser?userId=${userId}&loginId=${loginId}`)
-                    // axios.post(`api/ProfileIndex/FollowUser`,follow)
+                    axios.post(`/api/ProfileIndex/FollowUser?showUserId=${this.showUserId}&loginUserId=${this.loginUserId}`)
                         .then(response => {
                             if (response.data === '已關注') {
                                 this.followButtonText = '已關注';
