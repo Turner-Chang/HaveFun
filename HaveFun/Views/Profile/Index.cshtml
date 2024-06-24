@@ -90,7 +90,12 @@
                                         <img :src="profilePicture" alt="dating thumb">
                                 </div>
                                 <div class="story__content px-0 pb-0">
-                                    <h4>{{name}}</h4>
+                                        <h4>
+                                            <a :href="`/Profile/Index?userId=${showUserId}`">
+                                                @* <a :href="`/Index?userId=${post.UserId}`"> *@
+                                                {{name}}
+                                            </a>
+                                        </h4>
                                     <div class="story__content--content mb-2 pb-3">
                                         <p><i class="fa-solid fa-clock"></i> Active 3 Days Ago</p>
                                     </div>

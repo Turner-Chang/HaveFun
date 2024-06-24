@@ -14,10 +14,17 @@
                                         <div class="lab-thumb">
                                             <div class="thumb-inner">
                                                 <div class="thumb-img">
-                                                    <img src="/assets/images/member/profile/profile.jpg" alt="datting thumb">
+                                                    <a :href="`/Profile/Index?userId=${loginUserId}`">
+                                                        <img :src="loginUserPicture" alt="datting thumb">
+                                                    </a>
                                                 </div>
                                                 <div class="thumb-content">
-                                                    <h6><a href="#">{{userName}}</a></h6>
+                                                    <h6>
+                                                        <a :href="`/Profile/Index?userId=${loginUserId}`">
+                                                            @* <a :href="`/Index?userId=${post.UserId}`"> *@
+                                                            {{loginUserName}}
+                                                        </a>
+                                                    </h6>
                                                     <div class="custom-select">
                                                         <select v-model="postPrivacy">
                                                             <option value="Public"> Public</option>
@@ -65,7 +72,6 @@
                                 @* <a class="default-btn" asp-area="" asp-controller="Profile" asp-action="Index" asp-route-userId="16">
                                     個人主頁
                                 </a> *@
-                                <h3>{{ShowUserId}}</h3>
                                 <div v-if="displayPostsSelect" class="button-container_displayPostsSelect">
                                     <button :class="{ 'active': displayPersonalPosts }" @@click="showPersonalPosts">個人貼文</button>
                                     <button :class="{ 'active': !displayPersonalPosts }" @@click="showFriendPosts">朋友貼文</button>
@@ -78,7 +84,9 @@
                                         <div class="post-author">
                                             <div class="post-author-inner">
                                                 <div class="author-thumb">
-                                                    <img src="/assets/images/member/profile/member1.jpg" alt="datting thumb">
+                                                    <a :href="`/Profile/Index?userId=${post.UserId}`">
+                                                    <img alt="" :src="post.UserPicture">
+                                                    </a>
                                                 </div>
                                                 <div class="author-details">
                                                     <h6>
@@ -139,12 +147,16 @@
                                             <li class="comment" v-for="reply in post.Replies" :key="reply.Id">
                                                 <div class="com-item">
                                                     <div class="com-thumb">
-                                                        <img alt="" src="assets/images/member/profile/member1.jpg">
+                                                        <a :href="`/Profile/Index?userId=${reply.UserId}`">
+                                                            <img alt="" :src="reply.UserPicture">
+                                                        </a>
                                                     </div>
                                                     <div class="com-content">
                                                         <div class="com-title">
                                                             <div class="com-title-meta">
-                                                                <a href="#">{{reply.UserName}}</a>
+                                                                <a :href="`/Profile/Index?userId=${reply.UserId}`">
+                                                                    {{reply.UserName}}
+                                                                </a>
                                                                 <span> || {{reply.Time}}</span>
                                                             </div>
                                                             <span class="reply">
@@ -160,12 +172,16 @@
                                                 <ul class="lab-ul comment-list">
                                                     <li class="comment" v-for="nestedReply in reply.nestedReplies" :key="nestedReply.Id">
                                                         <div class="com-thumb">
-                                                            <img alt="" src="assets/images/blog/author/03.jpg">
+                                                            <a :href="`/Profile/Index?userId=${nestedReply.UserId}`">
+                                                            <img alt="" :src="nestedReply.UserPicture">
+                                                            </a>
                                                         </div>
                                                         <div class="com-content">
                                                             <div class="com-title">
                                                                 <div class="com-title-meta">
-                                                                    <a href="#">{{ nestedReply.UserName }}</a>
+                                                                    <a :href="`/Profile/Index?userId=${nestedReply.UserId}`">
+                                                                        {{ nestedReply.UserName }}
+                                                                    </a>
                                                                     <span> || {{nestedReply.Time}} </span>
                                                                 </div>
                                                             </div>
@@ -239,9 +255,10 @@
                 newPostPic:null, // 發文圖片 
                 postPrivacy: 'Public',
                 posts: [],
-                userName: '',
                 showUserId: @ViewBag.ShowUserId, // 指定顯示的UserId
                 loginUserId: @ViewBag.UserId, // 使用者ID
+                loginUserName: '',
+                loginUserPicture: '',
                 userInfo:[],       // 使用者資料
                 showRatBox: false, // 顯示檢舉視窗
                 ratContent: "",
@@ -302,7 +319,8 @@
 
             // 設置基本資料
             setUserInfo() {
-                this.userName = this.userInfo[0].name;
+                this.loginUserName = this.userInfo[0].name;
+                this.loginUserPicture = this.userInfo[0].profilePicture
                 this.placeholderText = `What's on your mind, ${this.userInfo[0].name}?`; 
             },
 
@@ -318,6 +336,7 @@
                         Id: post.id,
                         UserId: post.userId,
                         UserName: post.userName,
+                        UserPicture: post.userPicture,
                         Contents: post.contents,
                         Time: post.time,
                         Pictures: post.picturePath,
@@ -326,6 +345,7 @@
                             Id: reply.id,
                             UserId: reply.userId,
                             UserName: reply.userName,
+                            UserPicture: reply.userPicture,
                             PostId: reply.postId,
                             ParentCommentId: reply.parentCommentId,
                             Content: reply.contents,
@@ -334,6 +354,7 @@
                                 Id: nestedReply.id,
                                 UserId: nestedReply.userId,
                                 UserName: nestedReply.userName,
+                                UserPicture: nestedReply.userPicture,
                                 PostId: nestedReply.postId,
                                 ParentCommentId: nestedReply.parentCommentId,
                                 Content: nestedReply.contents,
@@ -381,6 +402,7 @@
                         Id: createdPost.id,
                         UserId: createdPost.userId,
                         UserName: createdPost.userName,
+                        UserPicture: createdPost.userPicture,
                         Contents: createdPost.contents,
                         Time: createdPost.time,
                         Pictures: createdPost.picturePath,
@@ -440,7 +462,7 @@
                 if (post) {
                     const newReply = {
                         UserId: this.loginUserId,
-                        UserName: this.userName,
+                        UserName: this.loginUserName,
                         PostId: PostId,
                         Contents: post.newReply,
                         Time: '',
@@ -456,6 +478,7 @@
                             Id: createdReply.id,
                             UserId: createdReply.userId,
                             UserName: createdReply.userName,
+                            UserPicture: createdReply.userPicture,
                             PostId: createdReply.postId,
                             ParentCommentId: createdReply.parentCommentId,
                             Content: createdReply.contents,
@@ -490,7 +513,7 @@
                     if (reply && reply.nestedReplyContent.trim()) {
                         const newNestedReply = {
                             UserId: this.loginUserId,
-                            UserName: this.userName,
+                            UserName: this.loginUserName,
                             PostId: PostId,
                             Contents: reply.nestedReplyContent,
                             Time: '',
@@ -506,6 +529,7 @@
                                 Id: createdNestedReply.id,
                                 UserId: createdNestedReply.userId,
                                 UserName: createdNestedReply.userName,
+                                UserPicture: createdNestedReply.userPicture,
                                 PostId: createdNestedReply.postId,
                                 ParentCommentId: createdNestedReply.parentCommentId,
                                 Content: createdNestedReply.contents,
