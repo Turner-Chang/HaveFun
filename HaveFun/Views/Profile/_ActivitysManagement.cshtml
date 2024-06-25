@@ -280,16 +280,21 @@
 					$('#submit').css("display", "inline-block");
 				}
 			},
-			commingupActivities(newVal,oldVal) {
-				if (newVal !== oldVal && this.currentType === 'commingup') {
+			// commingupActivities(newVal,oldVal) {
+			// 	if (newVal !== oldVal && this.currentType === 'commingup') {
+			// 		this.showCommingupMap(newVal);
+			// 	}
+			// },
+			// pastActivities(newVal, oldVal) {
+			// 	if (newVal !== oldVal && this.currentType === 'past') {
+			// 		this.showPastMap(newVal);
+			// 	}
+			// },
+			commingupActivities(newVal, oldVal){
+				if (newVal !== oldVal){
 					this.showCommingupMap(newVal);
 				}
-			},
-			pastActivities(newVal, oldVal) {
-				if (newVal !== oldVal && this.currentType === 'past') {
-					this.showPastMap(newVal);
-				}
-			},
+			}
 		},
 		computed: {
 			hasTitle(){
@@ -573,8 +578,8 @@
 				return new Date(registrationTime) > new Date(this.currentDateTime);
 			},
 			// 藉由地址顯示活動地圖
-			showCommingupMap() {
-				this.commingupActivities.forEach((act, index) => {
+			showCommingupMap(activityType) {
+				activityType.forEach((act, index) => {
 					let geocoder = new google.maps.Geocoder();
 					geocoder.geocode({ address: act.location }, function (result, status) {
 						if (status === 'OK') {
@@ -593,26 +598,26 @@
 					});
 				});
 			},
-			showPastMap() {
-				this.commingupActivities.forEach((act, index) => {
-					let geocoder = new google.maps.Geocoder();
-					geocoder.geocode({ address: act.location }, function (result, status) {
-						if (status === 'OK') {
-							let mapOptions = {
-								center: result[0].geometry.location,
-								zoom: 16
-							};
-							let map = new google.maps.Map(document.getElementById('pastMap' + index), mapOptions);
-							new google.maps.Marker({
-								position: result[0].geometry.location,
-								map: map
-							});
-						} else {
-							console.error('求取活動地圖失敗!');
-						}
-					});
-				});
-			},
+			// showPastMap() {
+			// 	this.commingupActivities.forEach((act, index) => {
+			// 		let geocoder = new google.maps.Geocoder();
+			// 		geocoder.geocode({ address: act.location }, function (result, status) {
+			// 			if (status === 'OK') {
+			// 				let mapOptions = {
+			// 					center: result[0].geometry.location,
+			// 					zoom: 16
+			// 				};
+			// 				let map = new google.maps.Map(document.getElementById('pastMap' + index), mapOptions);
+			// 				new google.maps.Marker({
+			// 					position: result[0].geometry.location,
+			// 					map: map
+			// 				});
+			// 			} else {
+			// 				console.error('求取活動地圖失敗!');
+			// 			}
+			// 		});
+			// 	});
+			// },
 			// 修改活動地址自動完成內容
 			siteAuto() {
 				let options = {
