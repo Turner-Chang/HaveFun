@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 
 namespace HaveFun.Controllers.APIs
@@ -27,8 +28,10 @@ namespace HaveFun.Controllers.APIs
 		public IEnumerable<MatchUserInfoDTO> GetNotMatchUser(int userId)
 		{
 			DateTime today = DateTime.Today;
+            Random r = new Random(Guid.NewGuid().GetHashCode());
 
-			var interactedUser = _context.FriendLists
+
+            var interactedUser = _context.FriendLists
 				.Where(f1 => f1.Clicked == userId)
 				.Select(f1 => f1.BeenClicked);
 
@@ -61,7 +64,10 @@ namespace HaveFun.Controllers.APIs
 							Name = m1.Label.LabelCategory.Name
 						}
 					}).ToList()
-				}).ToList();
+				})
+				.ToList();
+                //.OrderBy(u => Guid.NewGuid())
+                //.OrderBy(u => r.Next());
 
 			return usersNotInteractedWith;
 		}

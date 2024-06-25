@@ -36,7 +36,8 @@ namespace HaveFun.Controllers
 			}
 		}
 
-		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+		[Authorize(AuthenticationSchemes = "Bearer,Cookies")]
+		//[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public IActionResult Index()
 		{
 			ViewBag.UserId = _userId;
@@ -95,5 +96,20 @@ namespace HaveFun.Controllers
             }
         }
 
+		[HttpGet("Activity/Detail/{id}")]
+		public async Task<IActionResult> Detail(int? id)
+		{
+			//ViewBag.Id = _userId;
+			if (id == null)
+			{
+				return NotFound();
+			}
+			var activity = await _context.Activities.FindAsync(id);
+			if (activity == null)
+			{
+				return NotFound();
+			}
+			return View(activity);
+		}
     }
 }

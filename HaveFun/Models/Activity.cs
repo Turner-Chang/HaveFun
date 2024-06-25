@@ -15,7 +15,7 @@ namespace HaveFun.Models
         public int UserId { get; set; }
         public virtual UserInfo? User { get; set; }
 
-        [Required]       
+        [Required(ErrorMessage = "此項為必填")]       
         [ForeignKey("ActivityType")]
         [Display(Name ="活動類型")]
         public int Type { get; set; }

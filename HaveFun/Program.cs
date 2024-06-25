@@ -1,5 +1,6 @@
 using HaveFun.Common;
 using HaveFun.Models;
+//using HaveFun.Service;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.FileProviders;
@@ -34,6 +35,7 @@ builder.Services.AddSingleton<DESSecure>();
 builder.Services.AddSingleton<GoogleOAuth>();
 
 builder.Services.AddScoped<MembershipService>();
+//builder.Services.AddScoped<PostServices>();
 
 // ≥]©wCookie + JWT≈Á√“
 var jwt = builder.Configuration.GetSection("Jwt:secret").Get<string>();

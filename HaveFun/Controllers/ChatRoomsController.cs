@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HaveFun.Models;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HaveFun.Controllers
 {
@@ -22,9 +23,12 @@ namespace HaveFun.Controllers
             _context = context;
            
         }
-        //
-        public async Task<IActionResult> Main()
+		//
+		[Authorize(AuthenticationSchemes = "Bearer,Cookies")]
+		public async Task<IActionResult> Main()
         {
+            var loginUser = Convert.ToInt32(Request.Cookies["userId"]);
+            ViewBag.UserId = loginUser;
             var haveFunDbContext = _context.ChatRooms.Include(c => c.Receiver).Include(c => c.Sender);
                return View(await haveFunDbContext.ToListAsync());
         }
@@ -42,10 +46,14 @@ namespace HaveFun.Controllers
                 Id = -1; //默認值或其他處理
             }
         }
-
+        //
+        
+        //
+        [Authorize(AuthenticationSchemes = "Bearer,Cookies")]
         public IActionResult TRY()
         {
-            ViewBag.Id = _Id;
+            var loginUser = Convert.ToInt32(Request.Cookies["userId"]);
+            ViewBag.UserId = loginUser;
             return View();
         }
         // GET: ChatRooms
