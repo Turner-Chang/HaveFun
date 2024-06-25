@@ -36,69 +36,6 @@ namespace HaveFun.Controllers.APIs
         }
 
         [HttpPost]
-        public async Task<IActionResult> GoogleLogin()
-        {
-            try
-            {
-                string? formCredential = Request.Form["credential"]; //回傳憑證
-                string? formToken = Request.Form["g_csrf_token"]; //回傳令牌
-                string? cookiesToken = Request.Cookies["g_csrf_token"]; //Cookie 令牌
-
-                GoogleJsonWebSignature.Payload? payload = _googleOAuth.VerifyGoogleToken(formCredential, formToken, cookiesToken).Result;
-                if (payload == null)
-                {
-                    return Redirect("/Login");
-                }
-                else
-                {
-                    UserInfo? user = _dbContext.UserInfos.FirstOrDefault(user => user.Account == payload.Email);
-                    if (user == null)
-                    {
-                        user = new UserInfo
-                        {
-                            Account = payload.Email,
-                            PasswordSalt = _passwordSecure.CreateSalt(),
-                            Name = payload.Name,
-                            Password = _passwordSecure.HashPassword(Convert.ToBase64String(_passwordSecure.CreateSalt()), _passwordSecure.CreateSalt()),
-                            Gender = 0,
-                            BirthDay = new DateTime(1970, 1, 1)
-                        };
-                        _dbContext.UserInfos.Add(user);
-                        _dbContext.SaveChanges();
-                    }
-                    // 這邊設定Cookie驗證
-                    var claims = new Claim[]
-                    {
-                        new Claim(ClaimTypes.Name, user.Id.ToString())
-                    };
-                    var claimsIdentity = new ClaimsIdentity(claims, "Login");
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-
-                    //這邊設定JWT驗證
-                    string jwtToken = _jwt.GenerateJWTToken(user);
-                    Response.Cookies.Append("JwtSecret", jwtToken, new CookieOptions
-                    {
-                        Expires = DateTime.Now.AddDays(1),
-                        HttpOnly = true,
-                        IsEssential = true
-                    });
-
-                    Response.Cookies.Append("userId", Convert.ToString(user.Id), new CookieOptions
-                    {
-                        Expires = DateTime.Now.AddDays(1),
-                        HttpOnly = true,
-                        IsEssential = true
-                    });
-                }
-                return Redirect("/Profile");
-            }
-            catch (Exception)
-            {
-                return Redirect("/Login");
-            }
-        }
-
-        [HttpPost]
         public async Task<JsonResult> Login(UserLoginDTO userDTO)
         {
             if (!ModelState.IsValid)
