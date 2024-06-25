@@ -66,7 +66,7 @@ namespace HaveFun.Controllers.APIs
         //
         // Post: api/ProfileIndex/FollowUser
         [HttpPost]
-        public async Task<ActionResult> FollowUser(int userId, int loginId)
+        public async Task<ActionResult> FollowUser(int showUserId, int loginUserId)
         {
             
             if (!ModelState.IsValid)
@@ -74,14 +74,14 @@ namespace HaveFun.Controllers.APIs
                 return BadRequest(ModelState);
             }
 
-            var followData = _context.FriendLists.FirstOrDefault(f => f.Clicked == loginId && f.BeenClicked == userId && f.state == 0);
+            var followData = _context.FriendLists.FirstOrDefault(f => f.Clicked == loginUserId && f.BeenClicked == showUserId && f.state == 0);
 
             if (followData == null)
             {
                 var followUserData = new FriendList
                 {
-                    Clicked = loginId,
-                    BeenClicked = userId,
+                    Clicked = loginUserId,
+                    BeenClicked = showUserId,
                     state = 0  // 關注
                 };
                 _context.FriendLists.Add(followUserData);

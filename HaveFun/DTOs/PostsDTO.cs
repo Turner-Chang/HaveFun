@@ -21,6 +21,7 @@ namespace HaveFun.DTOs
         public int Id { get; set; }
         public int UserId { get; set; }
         public string UserName { get; set; }
+        public string? UserPicture { get; set; } // 圖片路徑
         public string Contents { get; set; }
         public string? Time { get; set; } 
         public string? PicturePath { get; set; } // 圖片路徑

@@ -16,11 +16,10 @@ namespace HaveFun.DTOs
         public int Id { get; set; }
         public int UserId { get; set; }
         public string UserName { get; set; }
-        public int PostId { get; set; }    
-        public int? ParentCommentId { get; set; } // 可為null
+        public string? UserPicture { get; set; }
+        public int PostId { get; set; }
+        public int? ParentCommentId { get; set; } 
         public string Contents { get; set; }
-
-        //[JsonConverter(typeof(CommentDateTimeConverter))]
         public string Time {  get; set; }
         public List<CommentsDTO> NestedReplies { get; set; } // 新增 NestedReplies 屬性
     }

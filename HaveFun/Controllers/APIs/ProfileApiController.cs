@@ -1,5 +1,6 @@
 ﻿using HaveFun.DTOs;
 using HaveFun.Models;
+using HaveFun.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -18,20 +19,41 @@ namespace HaveFun.Controllers.APIs
     public class ProfileApiController : ControllerBase
     {
         HaveFunDbContext _context;
+        //private readonly PostServices postServices;
 
         public ProfileApiController(HaveFunDbContext context)
         {
             _context = context;
         }
 
+        //public ProfileApiController(HaveFunDbContext context, PostServices postServices)
+        //{
+        //    _context = context;
+        //    this.postServices = postServices;
+        //}
+
         // Post: api/Profile/loginUserId
         [HttpPost("{loginUserId}")]
         public async Task<IEnumerable<UserInfo>> GetUserInfor([FromRoute] int loginUserId)
         {
-            var userInfoData = await _context.UserInfos
+            var userInfo = await _context.UserInfos
                 .Where(u => u.Id == loginUserId)
+                .Select(u => new
+                {
+                    u.Id,
+                    u.Name,
+                    u.ProfilePicture
+                })
                 .ToListAsync();
-            return userInfoData;
+
+            var userInfoReturn = userInfo.Select(u => new UserInfo
+            {
+                Id = u.Id,
+                Name = u.Name,
+                ProfilePicture = string.IsNullOrEmpty(u.ProfilePicture) ? "" : CreatePictureUrl("GetPicture", "Profile", new { id = u.Id }),
+            });
+
+            return userInfoReturn;
         }
 
         // GET: api/Profile/GetWhoLikeList
@@ -101,13 +123,16 @@ namespace HaveFun.Controllers.APIs
         {
             string loginId = Request.Cookies["userId"]; // 取得loginId
 
-            List<string> FriendPostList = new List<string>(); // 需撈取的Post UserId
-            FriendPostList.Clear();
-
             //todo 先判斷是否是自己，是則撈出朋友id
             // userId = loginId => loginId + friendListId
             // userId != loginId => userId
 
+            //從資料庫取資料
+
+            //整理資料
+
+            //return result;
+            List<string> FriendPostList = new List<string>();
             if (userId == loginId)
             {
                 // 取出登入者FriendList
@@ -123,7 +148,6 @@ namespace HaveFun.Controllers.APIs
                     }
                 }
             }
-
             var posts = await _context.Posts
                 .Where(p => p.UserId.ToString() == userId || FriendPostList.Contains(p.UserId.ToString()) && p.Status == 0)
                 .OrderByDescending(p => p.Id)
@@ -132,6 +156,7 @@ namespace HaveFun.Controllers.APIs
                     p.Id,
                     p.UserId,
                     UserName = p.User.Name,
+                    UserPicture = p.User.ProfilePicture,
                     p.Contents,
                     Time = p.Time.ToString("yyyy-MM-dd HH:mm:ss"),
                     p.Pictures,
@@ -143,6 +168,7 @@ namespace HaveFun.Controllers.APIs
                             c.Id,
                             c.UserId,
                             UserName = c.User.Name,
+                            UserPicture= c.User.ProfilePicture,
                             c.PostId,
                             c.ParentCommentId,
                             c.Contents,
@@ -152,6 +178,7 @@ namespace HaveFun.Controllers.APIs
                                 nc.Id,
                                 nc.UserId,
                                 UserName = nc.User.Name,
+                                UserPicture = nc.User.ProfilePicture,
                                 nc.PostId,
                                 nc.ParentCommentId,
                                 nc.Contents,
@@ -166,6 +193,7 @@ namespace HaveFun.Controllers.APIs
                 Id = p.Id,
                 UserId = p.UserId,
                 UserName = p.UserName,
+                UserPicture= string.IsNullOrEmpty(p.UserPicture) ? "" : CreatePictureUrl("GetPicture", "Profile", new { id = p.UserId }),
                 Contents = p.Contents,
                 Time = p.Time,
                 PicturePath = string.IsNullOrEmpty(p.Pictures) ? "" : CreatePictureUrl("GetPostPicture", "Profile", new { id = p.Id }),
@@ -176,6 +204,7 @@ namespace HaveFun.Controllers.APIs
                     Id = c.Id,
                     UserId = c.UserId,
                     UserName = c.UserName,
+                    UserPicture = string.IsNullOrEmpty(c.UserPicture) ? "" : CreatePictureUrl("GetPicture", "Profile", new { id = c.UserId }),
                     PostId = c.PostId,
                     ParentCommentId = c.ParentCommentId,
                     Contents = c.Contents,
@@ -185,6 +214,7 @@ namespace HaveFun.Controllers.APIs
                         Id = nc.Id,
                         UserId = nc.UserId,
                         UserName = nc.UserName,
+                        UserPicture = string.IsNullOrEmpty(nc.UserPicture) ? "" : CreatePictureUrl("GetPicture", "Profile", new { id = nc.UserId }),
                         PostId = nc.PostId,
                         ParentCommentId = nc.ParentCommentId,
                         Contents = nc.Contents,
@@ -193,7 +223,8 @@ namespace HaveFun.Controllers.APIs
                 }).ToList()
             }).ToList();
 
-            
+            //var postDTOs = await postServices.GetPostsList(userId, loginId);
+
             return postDTOs;
         }
 
@@ -273,6 +304,7 @@ namespace HaveFun.Controllers.APIs
 
             postDto.Id = post.Id;
             postDto.UserName = userInfo.Name;
+            postDto.UserPicture = string.IsNullOrEmpty(userInfo.ProfilePicture) ? "" : CreatePictureUrl("GetPicture", "Profile", new { id = userInfo.Id });
             postDto.Time = post.Time.ToString("yyyy-MM-dd HH:mm:ss");
             postDto.PicturePath = string.IsNullOrEmpty(picturePath) ? "" : CreatePictureUrl("GetPostPicture", "Profile", new { id = post.Id });
 
@@ -321,6 +353,7 @@ namespace HaveFun.Controllers.APIs
 
             commentDto.Id = comment.Id;
             commentDto.UserName = userInfo.Name;
+            commentDto.UserPicture = string.IsNullOrEmpty(userInfo.ProfilePicture) ? "" : CreatePictureUrl("GetPicture", "Profile", new { id = userInfo.Id });
             commentDto.Time = comment.Time.ToString("yyyy-MM-dd HH:mm:ss");
 
             return CreatedAtAction(nameof(AddComment), new { id = comment.Id }, commentDto);
