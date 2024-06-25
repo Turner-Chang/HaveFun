@@ -47,13 +47,7 @@ namespace HaveFun.Controllers
             }
         }
         //
-        [Authorize(AuthenticationSchemes = "Bearer,Cookies")]
-        public async Task<IActionResult> Main()
-        {
-            var loginUser = Convert.ToInt32(Request.Cookies["userId"]);
-            ViewBag.UserId = loginUser;
-            return View();
-        }
+        
         //
         [Authorize(AuthenticationSchemes = "Bearer,Cookies")]
         public IActionResult TRY()
