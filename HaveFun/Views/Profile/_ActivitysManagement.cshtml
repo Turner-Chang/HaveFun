@@ -52,7 +52,7 @@
 					<details @@toggle="act.expandState = !act.expandState">
 						<summary>{{act.expandState? '隱藏詳細內容' : '展開詳細內容'}}</summary>
 						<div class="col-xs-2">
-							<div :id="'map' + index" class="map"></div>
+							<div :id="'commingupMap' + index" class="map"></div>
 							<span class="infoTitle">活動類型：</span>
 							{{act.type}}<br>
 							<span class="infoTitle">活動開始報名時間：</span>
@@ -125,7 +125,7 @@
 					<input :class="['form-control',{'is-invalid':errorStyle.activityTime}]" type="datetime-local" v-model="editActivityTime">
 					<div class="invalid-feedback">請輸入有效時間</div>
 					<span> 活動地點：</span>
-					<input :class="['form-control',{'is-invalid':errorStyle.location}]"  maxlength="200" v-model="editLocation">
+					<input id="editLoaction" :class="['form-control',{'is-invalid':errorStyle.location}]"  maxlength="200" v-model="site">
 					<div class="invalid-feedback">活動地點為必填</div>
 					<span>活動類型：</span>
 					<select :class="['form-control',{'is-invalid':errorStyle.type}]" id="inputState" v-model="editActType">
@@ -161,7 +161,7 @@
 			<p class="empty">目前沒有主辦活動可以顯示</p>
 		</div>
 		<!-- ================> 已經結束的活動 <================== -->
-		<div v-if="currentType === 'past'" v-for="act in pastActivities" class="blog__item">
+		<div v-if="currentType === 'past'" v-for="(act, index) in pastActivities" class="blog__item">
 			<div class="blog__inner">
 				<div class="blog__content">
 					<img v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}?rand=${rand}`>
@@ -175,6 +175,7 @@
 					<details @@toggle="act.expandState = !act.expandState">
 						<summary>{{act.expandState? '隱藏詳細內容' : '展開詳細內容'}}</summary>
 						<div>
+							<div :id="'pastMap' + index" class="map"></div>
 							<span class="infoTitle">活動類型：</span>
 							{{act.type}}<br>
 							<span class="infoTitle">活動費用：</span>
@@ -195,7 +196,7 @@
 		</div>
 	</div>
 </div>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDh0olCmLq7Tpu-ktNN0_JYyt9G529C4qA&libraries=geocoding"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDh0olCmLq7Tpu-ktNN0_JYyt9G529C4qA&libraries=places,geocoding"></script>
 <script>
 	const activityPlatform = Vue.createApp({
 		data() {
@@ -237,6 +238,8 @@
 				currentDateTime: new Date().toISOString().slice(0, 16),
 				min: 0,
 				rand:1,
+				site:"",
+				autocomplete:null,
 			}
 		},
 		watch: {
@@ -278,8 +281,13 @@
 				}
 			},
 			commingupActivities(newVal,oldVal) {
-				if (newVal !== oldVal) {
-					this.showMap(newVal);
+				if (newVal !== oldVal && this.currentType === 'commingup') {
+					this.showCommingupMap(newVal);
+				}
+			},
+			pastActivities(newVal, oldVal) {
+				if (newVal !== oldVal && this.currentType === 'past') {
+					this.showPastMap(newVal);
 				}
 			},
 		},
@@ -460,6 +468,7 @@
 				this.editTitle = act.title;
 				this.editActivityTime = act.activityTime;
 				this.editLocation = act.location;
+				this.site = act.location;
 				this.editActType = act.typeId;
 				this.editRegistrationTime = act.registrationTime;
 				this.editDeadlineTime = act.deadlineTime;
@@ -496,7 +505,7 @@
 				formData.append('Notes', this.editNote);
 				formData.append('Amount', this.editAmount);
 				formData.append('MaxParticipants', this.editMax);
-				formData.append('Location', this.editLocation);
+				formData.append('Location', this.site);
 				formData.append('RegistrationTime', this.editRegistrationTime);
 				formData.append('DeadlineTime', this.editDeadlineTime);
 				formData.append('ActivityTime', this.editActivityTime);
@@ -524,6 +533,7 @@
 					this.editMax = 0;
 					this.editActContent = '';
 					this.editNote = '';
+					this.site = '';
 					this.getCommingupList(this.loginUserId);
 					this.getHostList(this.loginUserId);
 					this.rand = ++this.rand
@@ -563,8 +573,8 @@
 				return new Date(registrationTime) > new Date(this.currentDateTime);
 			},
 			// 藉由地址顯示活動地圖
-			showMap(activityType) {
-				activityType.forEach((act, index) => {
+			showCommingupMap() {
+				this.commingupActivities.forEach((act, index) => {
 					let geocoder = new google.maps.Geocoder();
 					geocoder.geocode({ address: act.location }, function (result, status) {
 						if (status === 'OK') {
@@ -572,16 +582,48 @@
 								center: result[0].geometry.location,
 								zoom: 16
 							};
-							let map = new google.maps.Map(document.getElementById('map' + index), mapOptions);
+							let map = new google.maps.Map(document.getElementById('commingupMap' + index), mapOptions);
 							new google.maps.Marker({
 								position: result[0].geometry.location,
-								map: map,
-								title: act.title
+								map: map
 							});
 						} else {
 							console.error('求取活動地圖失敗!');
 						}
 					});
+				});
+			},
+			showPastMap() {
+				this.commingupActivities.forEach((act, index) => {
+					let geocoder = new google.maps.Geocoder();
+					geocoder.geocode({ address: act.location }, function (result, status) {
+						if (status === 'OK') {
+							let mapOptions = {
+								center: result[0].geometry.location,
+								zoom: 16
+							};
+							let map = new google.maps.Map(document.getElementById('pastMap' + index), mapOptions);
+							new google.maps.Marker({
+								position: result[0].geometry.location,
+								map: map
+							});
+						} else {
+							console.error('求取活動地圖失敗!');
+						}
+					});
+				});
+			},
+			// 修改活動地址自動完成內容
+			siteAuto() {
+				let options = {
+					componentRestrictions: { country: "tw" },
+				};
+				this.autocomplete = new google.maps.places.Autocomplete(document.querySelector('#editLoaction'), options);
+				this.autocomplete.addListener("place_changed", () => {
+					let place = this.autocomplete.getPlace();
+					if (place.geometry) {
+						this.site = place.formatted_address;
+					}
 				});
 			},
 		},
@@ -590,6 +632,11 @@
 			this.getHostList(this.loginUserId);
 			this.getPastList(this.loginUserId);
 			this.getActivityTypeList();
+			// //這樣子失敗 一開始地圖就顯示不出來@@
+			// if (this.commingupActivities.length > 0) {
+			// 	this.showMap(this.commingupActivities);
+			// }
+			this.siteAuto();
 		},
 	})
 		.mount('#activityPlatform');
