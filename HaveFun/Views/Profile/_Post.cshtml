@@ -14,10 +14,17 @@
                                         <div class="lab-thumb">
                                             <div class="thumb-inner">
                                                 <div class="thumb-img">
-                                                    <img src="assets/images/member/profile/profile.jpg" alt="datting thumb">
+                                                    <a :href="`/Profile/Index?userId=${loginUserId}`">
+                                                        <img :src="loginUserPicture" alt="datting thumb">
+                                                    </a>
                                                 </div>
                                                 <div class="thumb-content">
-                                                    <h6><a href="#">{{userName}}</a></h6>
+                                                    <h6>
+                                                        <a :href="`/Profile/Index?userId=${loginUserId}`">
+                                                            @* <a :href="`/Index?userId=${post.UserId}`"> *@
+                                                            {{loginUserName}}
+                                                        </a>
+                                                    </h6>
                                                     <div class="custom-select">
                                                         <select v-model="postPrivacy">
                                                             <option value="Public"> Public</option>
@@ -62,7 +69,10 @@
                                     </div>
                                 </div>
 
-                                <div class="button-container_displayPostsSelect">
+                                @* <a class="default-btn" asp-area="" asp-controller="Profile" asp-action="Index" asp-route-userId="16">
+                                    個人主頁
+                                </a> *@
+                                <div v-if="displayPostsSelect" class="button-container_displayPostsSelect">
                                     <button :class="{ 'active': displayPersonalPosts }" @@click="showPersonalPosts">個人貼文</button>
                                     <button :class="{ 'active': !displayPersonalPosts }" @@click="showFriendPosts">朋友貼文</button>
                                 </div>
@@ -74,10 +84,19 @@
                                         <div class="post-author">
                                             <div class="post-author-inner">
                                                 <div class="author-thumb">
-                                                    <img src="assets/images/member/profile/member1.jpg" alt="datting thumb">
+                                                    <a :href="`/Profile/Index?userId=${post.UserId}`">
+                                                    <img alt="" :src="post.UserPicture">
+                                                    </a>
                                                 </div>
                                                 <div class="author-details">
-                                                    <h6><a href="#">{{ post.UserName }}</a></h6>
+                                                    <h6>
+                                                        @* <a :href="'Profile/Index?userId='+post.UserId"> *@
+                                                        <a :href="`/Profile/Index?userId=${post.UserId}`">
+                                                        @* <a :href="`/Index?userId=${post.UserId}`"> *@
+                                                            {{ post.UserName }}
+                                                        </a>
+                                                    </h6>
+                                                    @* <h6><a href="#">{{ post.UserName }}</a></h6> *@
                                                     <ul class="post-status">
                                                         <li class="post-privacy"><i class="icofont-world"></i>{{postPrivacy}}</li>
                                                         <li class="post-time">{{post.Time}}</li>
@@ -89,7 +108,7 @@
                                                     <i class="fa-solid fa-ellipsis"></i>
                                                 </button>
                                                 <ul class="dropdown-menu">
-                                                    @* <li @@click.prevent="showDelete(post)"><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop">刪除貼文</a></li> *@
+
                                                     <li @@click.prevent="showDelete(post)"><a class="dropdown-item" >刪除貼文</a></li>
                                                     <li @@click.prevent="showRat(post)"></i><a class="dropdown-item">檢舉貼文</a></li>
                                                 </ul>
@@ -128,12 +147,16 @@
                                             <li class="comment" v-for="reply in post.Replies" :key="reply.Id">
                                                 <div class="com-item">
                                                     <div class="com-thumb">
-                                                        <img alt="" src="assets/images/member/profile/member1.jpg">
+                                                        <a :href="`/Profile/Index?userId=${reply.UserId}`">
+                                                            <img alt="" :src="reply.UserPicture">
+                                                        </a>
                                                     </div>
                                                     <div class="com-content">
                                                         <div class="com-title">
                                                             <div class="com-title-meta">
-                                                                <a href="#">{{reply.UserName}}</a>
+                                                                <a :href="`/Profile/Index?userId=${reply.UserId}`">
+                                                                    {{reply.UserName}}
+                                                                </a>
                                                                 <span> || {{reply.Time}}</span>
                                                             </div>
                                                             <span class="reply">
@@ -149,12 +172,16 @@
                                                 <ul class="lab-ul comment-list">
                                                     <li class="comment" v-for="nestedReply in reply.nestedReplies" :key="nestedReply.Id">
                                                         <div class="com-thumb">
-                                                            <img alt="" src="assets/images/blog/author/03.jpg">
+                                                            <a :href="`/Profile/Index?userId=${nestedReply.UserId}`">
+                                                            <img alt="" :src="nestedReply.UserPicture">
+                                                            </a>
                                                         </div>
                                                         <div class="com-content">
                                                             <div class="com-title">
                                                                 <div class="com-title-meta">
-                                                                    <a href="#">{{ nestedReply.UserName }}</a>
+                                                                    <a :href="`/Profile/Index?userId=${nestedReply.UserId}`">
+                                                                        {{ nestedReply.UserName }}
+                                                                    </a>
                                                                     <span> || {{nestedReply.Time}} </span>
                                                                 </div>
                                                             </div>
@@ -228,9 +255,11 @@
                 newPostPic:null, // 發文圖片 
                 postPrivacy: 'Public',
                 posts: [],
-                userName: '',
+                showUserId: @ViewBag.ShowUserId, // 指定顯示的UserId
                 loginUserId: @ViewBag.UserId, // 使用者ID
-                userInfo:[],    // 使用者資料
+                loginUserName: '',
+                loginUserPicture: '',
+                userInfo:[],       // 使用者資料
                 showRatBox: false, // 顯示檢舉視窗
                 ratContent: "",
                 ratReason: "",
@@ -239,7 +268,8 @@
                 showDeleteBox: false, // 顯示刪除視窗
                 deletePostId: null,
                 showDeleteBtn:false,
-                displayPersonalPosts: true, // 初始顯示個人貼文
+                displayPostsSelect:true, // 個人/朋友 選項
+                displayPersonalPosts: true, // 個人貼文
                 FriendPostList: [], // 朋友列表
             };
         },
@@ -253,37 +283,24 @@
                 });
             },
             filteredPosts() {
-                if (this.displayPersonalPosts) {
-                    // 顯示個人貼文
-                    return this.postsWithLikeStatus.filter(post => {
-                        console.log('post.UserId:', post.UserId);
-                        return post.UserId === this.loginUserId;
-                    });
-                } else {
-                    // 顯示朋友貼文
-                    console.log('朋友貼文 FriendPostList:', this.FriendPostList);
-
-                    // 檢查 post.UserId 的型態
-                    console.log('post.UserId 型態:', typeof this.postsWithLikeStatus[0].UserId);
-
-                    // 檢查 FriendPostList 的型態
-                    console.log('FriendPostList 型態:', typeof this.FriendPostList);
-
-                    // 檢查 FriendPostList 是否為陣列
-                    if (Array.isArray(this.FriendPostList)) {
-                        console.log('FriendPostList 是陣列')
+                if (this.showUserId == this.loginUserId) {
+                    this.displayPostsSelect = true;
+                    if (this.displayPersonalPosts) {
+                        // 顯示個人貼文
+                        return this.postsWithLikeStatus.filter(post => {
+                            // console.log('post.UserId:', post.UserId);
+                            return post.UserId === this.loginUserId;
+                        });
                     } else {
-                        console.log('FriendPostList 不是陣列')
+                        // 顯示朋友貼文
+                        return this.postsWithLikeStatus.filter(post => {
+                            // console.log('post.UserId:', post.UserId);
+                            return this.FriendPostList.includes(post.UserId.toString());
+                        });
                     }
-                    // 檢查 FriendPostList[0] 的型態
-                    console.log('FriendPostList內容值:', typeof this.FriendPostList[0]);
-
-                    return this.postsWithLikeStatus.filter(post => {
-                        console.log('post.UserId:', post.UserId);
-                        return this.FriendPostList.includes(post.UserId.toString());
-                        // return (post.UserId == '16');
-                    });
-                }
+                } 
+                this.displayPostsSelect = false;
+                return this.postsWithLikeStatus;
             },
         },
         methods: {
@@ -302,20 +319,24 @@
 
             // 設置基本資料
             setUserInfo() {
-                this.userName = this.userInfo[0].name;
-                this.placeholderText = `What's on your mind, ${this.userInfo[0].name}?`;
+                this.loginUserName = this.userInfo[0].name;
+                this.loginUserPicture = this.userInfo[0].profilePicture
+                this.placeholderText = `What's on your mind, ${this.userInfo[0].name}?`; 
             },
 
             // 查詢貼文
             async getPosts() {
                 try {
-                    const response = await axios.get(`/api/Profile/GetPostsList/${this.loginUserId}`);
+                    const queryId= this.showUserId? this.showUserId: this.loginUserId
+
+                    const response = await axios.get(`/api/Profile/GetPostsList/${queryId}`);
                     // console.log('getPosts:', response.data);
                     this.FriendPostList = response.data[0].freindList
                     this.posts = response.data.map(post => ({
                         Id: post.id,
                         UserId: post.userId,
                         UserName: post.userName,
+                        UserPicture: post.userPicture,
                         Contents: post.contents,
                         Time: post.time,
                         Pictures: post.picturePath,
@@ -324,6 +345,7 @@
                             Id: reply.id,
                             UserId: reply.userId,
                             UserName: reply.userName,
+                            UserPicture: reply.userPicture,
                             PostId: reply.postId,
                             ParentCommentId: reply.parentCommentId,
                             Content: reply.contents,
@@ -332,6 +354,7 @@
                                 Id: nestedReply.id,
                                 UserId: nestedReply.userId,
                                 UserName: nestedReply.userName,
+                                UserPicture: nestedReply.userPicture,
                                 PostId: nestedReply.postId,
                                 ParentCommentId: nestedReply.parentCommentId,
                                 Content: nestedReply.contents,
@@ -379,6 +402,7 @@
                         Id: createdPost.id,
                         UserId: createdPost.userId,
                         UserName: createdPost.userName,
+                        UserPicture: createdPost.userPicture,
                         Contents: createdPost.contents,
                         Time: createdPost.time,
                         Pictures: createdPost.picturePath,
@@ -438,7 +462,7 @@
                 if (post) {
                     const newReply = {
                         UserId: this.loginUserId,
-                        UserName: this.userName,
+                        UserName: this.loginUserName,
                         PostId: PostId,
                         Contents: post.newReply,
                         Time: '',
@@ -454,6 +478,7 @@
                             Id: createdReply.id,
                             UserId: createdReply.userId,
                             UserName: createdReply.userName,
+                            UserPicture: createdReply.userPicture,
                             PostId: createdReply.postId,
                             ParentCommentId: createdReply.parentCommentId,
                             Content: createdReply.contents,
@@ -488,7 +513,7 @@
                     if (reply && reply.nestedReplyContent.trim()) {
                         const newNestedReply = {
                             UserId: this.loginUserId,
-                            UserName: this.userName,
+                            UserName: this.loginUserName,
                             PostId: PostId,
                             Contents: reply.nestedReplyContent,
                             Time: '',
@@ -504,6 +529,7 @@
                                 Id: createdNestedReply.id,
                                 UserId: createdNestedReply.userId,
                                 UserName: createdNestedReply.userName,
+                                UserPicture: createdNestedReply.userPicture,
                                 PostId: createdNestedReply.postId,
                                 ParentCommentId: createdNestedReply.parentCommentId,
                                 Content: createdNestedReply.contents,
