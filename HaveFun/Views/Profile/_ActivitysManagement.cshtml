@@ -19,6 +19,18 @@
 			<button class="btn btn-danger" @@click="cancelAttendActivity">是</button>
 			<button class="btn btn-outline-secondary" @@click="escCancelAttendBox">否</button>
 		</div>
+		<!-- 活動參加會員們視窗 -->
+		<div class="participantsBox">
+			<span>參加者: {{members.length}} 位</span><br>
+			<div class="joinMember">
+				<div class="memberProfile" v-for="member in members">
+					<a href="#">
+					<img class="memberPic" v-bind:src=`${baseAddress}/api/personalActivities/GetUserProfile/${member.id}`>
+					{{member.name}}</a>
+                </div>
+			</div>
+			<button class="btn btn-danger" @@click="escParticipantsBox">關閉</button>
+		</div>
 		<!-- 刪除活動視窗 -->
 		<div class="deleteActBox">
 			<span>確定要刪除活動嗎？</span><br><br>
@@ -34,7 +46,7 @@
 					<ul class="lab-ul blog__date">
 						<li><span><i class="fa-solid fa-calendar-days"></i> 活動時間：{{act.activityTime}} </span></li>
 						<li><span><i class="fa-solid fa-user"></i> 主辦者：{{act.host}}</span> </li>
-						<li><span><i class="fa-solid fa-users"></i> {{act.participant.length}} 位參加者</span></li>
+						<li><a href="#" @@click="showParticipantsBox(act)"><span><i class="fa-solid fa-users"></i> {{act.participant.length}}位參加者</span> </a></li>
 						<li><span><i class="fa-solid fa-map-location-dot"></i> 活動地點：{{act.location}}</span></li>
 					</ul>
 					<details @@toggle="act.expandState = !act.expandState">
@@ -75,7 +87,7 @@
 					<ul class="lab-ul blog__date">
 						<li><span><i class="fa-solid fa-calendar-days"></i> 活動時間：{{act.activityTime}} </span></li>
 						<li><span><i class="fa-solid fa-user"></i> 主辦者：{{act.host}}</span> </li>
-						<li><span><i class="fa-solid fa-users"></i> {{act.participant.length}} 位參加者</span></li>
+						<li><a href="#" @@click="showParticipantsBox(act)"><span><i class="fa-solid fa-users"></i> {{act.participant.length}}位參加者</span> </a></li>
 						<li><span><i class="fa-solid fa-map-location-dot"></i> 活動地點：{{act.location}}</span></li>
 					</ul>
 					<details @@toggle="act.expandState = !act.expandState">
@@ -102,7 +114,6 @@
 				</div>
 				<!-- 編輯活動內容 -->
 				<div v-if="act.inEdit === true" class="blog__content">
-					<form>
 					<img class="imgPreview" v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}?rand=${rand}`><br>
 					<input type="file" id="picFile" v-model="EditPic" accept="image/*" @@change="previewPic">
 					<button v-if="editPic != null" @@click="removeEditPic">移除</button><br>
@@ -142,7 +153,6 @@
 					<br><br>
 					<button class="btn btn-outline-secondary" @@click="cancelToEdit(act)">取消修改</button>&nbsp;
 					<button type="submit" id="submit" class="default-btn" @@click="editActivity(act)">確定修改</button>
-					</form>
 				</div>
 			</div>
 		</div>
@@ -158,7 +168,7 @@
 					<ul class="lab-ul blog__date">
 						<li><span><i class="fa-solid fa-calendar-days"></i> 活動時間：{{act.activityTime}} </span></li>
 						<li><span><i class="fa-solid fa-user"></i> 主辦者：{{act.host}}</span> </li>
-						<li><span><i class="fa-solid fa-users"></i> {{act.participant.length}} 位參加者</span></li>
+						<li><a href="#" @@click="showParticipantsBox(act)"><span><i class="fa-solid fa-users"></i> {{act.participant.length}}位參加者</span> </a></li>
 						<li><span><i class="fa-solid fa-map-location-dot"></i> 活動地點：{{act.location}}</span></li>
 					</ul>
 					<details @@toggle="act.expandState = !act.expandState">
@@ -196,6 +206,7 @@
 				pastActivities: [],
 				activitiyType: [],
 				wannaEdit:0,
+				members:[],
 				editPic:null,
 				editTitle:'',
 				editActivityTime:'',
@@ -286,7 +297,7 @@
 				return this.editRegistrationTime > this.currentDateTime;
 			},
 			validDeadlineTime() {
-				return this.editDeadlineTime > this.currentDateTime;
+				return this.editDeadlineTime > this.currentDateTime && this.editDeadlineTime > this.editRegistrationTime;
 			},
 			validAmount() {
 				return this.editAmount >= this.min;
@@ -354,6 +365,18 @@
 			},
 			buttonText(type, text) {
 				return this.currentType === type ? '● ' + text : text;
+			},
+			//顯示活動參加者視窗
+			showParticipantsBox(act){
+				event.preventDefault();
+				this.members = act.participant;
+				console.log(this.members);
+				$('.participantsBox').css("display", "block");
+			},
+			//關閉活動參加者視窗
+			escParticipantsBox(){
+				event.preventDefault();
+				$('.participantsBox').css("display", "none");
 			},
 			//顯示退出活動視窗
 			showCancelAttend(id) {

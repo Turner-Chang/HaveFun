@@ -61,8 +61,39 @@ namespace HaveFun.Controllers.APIs
             return File(ImageContent, "image/*");
         }
 
+        //"{userId = 1 , loginId = 2}"
+        //data = 反序列化
+        //
+        // Post: api/ProfileIndex/FollowUser
+        [HttpPost]
+        public async Task<ActionResult> FollowUser(int showUserId, int loginUserId)
+        {
+            
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
+            var followData = _context.FriendLists.FirstOrDefault(f => f.Clicked == loginUserId && f.BeenClicked == showUserId && f.state == 0);
 
-
+            if (followData == null)
+            {
+                var followUserData = new FriendList
+                {
+                    Clicked = loginUserId,
+                    BeenClicked = showUserId,
+                    state = 0  // 關注
+                };
+                _context.FriendLists.Add(followUserData);
+                await _context.SaveChangesAsync();
+                return Content("已關注");
+            }
+            else
+            {
+                _context.FriendLists.Remove(followData);
+                await _context.SaveChangesAsync();
+                return Content("取消關注");
+            }
+        }
     }
 }

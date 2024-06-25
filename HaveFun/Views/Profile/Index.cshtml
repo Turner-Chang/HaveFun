@@ -13,7 +13,7 @@
 <!-- scrollToTop ending here -->
 
 <!-- ================> Page Header section start here <================== -->
-<div class="pageheader bg_img" style="background-image: url(assets/images/bg-img/pageheader.jpg);">
+<div class="pageheader bg_img" style="background-image: url(/assets/images/bg-img/pageheader.jpg);">
     <div class="container">
         <div class="pageheader__content text-center">
             <h2>Member Single Page</h2>
@@ -90,12 +90,19 @@
                                         <img :src="profilePicture" alt="dating thumb">
                                 </div>
                                 <div class="story__content px-0 pb-0">
-                                    <h4>{{name}}</h4>
+                                        <h4>
+                                            <a :href="`/Profile/Index?userId=${showUserId}`">
+                                                @* <a :href="`/Index?userId=${post.UserId}`"> *@
+                                                {{name}}
+                                            </a>
+                                        </h4>
                                     <div class="story__content--content mb-2 pb-3">
                                         <p><i class="fa-solid fa-clock"></i> Active 3 Days Ago</p>
                                     </div>
                                         <p class="mb-2">{{introduction}}</p>
-                                        <button class="default-btn">關注我</button>
+                                        <button class="default-btn" @@click.prevent="postFollowUser">
+                                            {{followButtonText}}
+                                        </button>
                                     <!--照片-->
                                     <!-- <div class="story__content--author mt-3 pb-2">
                                         <h6 class="d-block w-100 mb-3">William Smith Photos</h6>
@@ -819,16 +826,19 @@
         const Profile_Left_UserInfo = Vue.createApp({
             data() {
                 return {
-                    userId : @ViewBag.UserId ,
+                    showUserId: @ViewBag.ShowUserId, // 指定顯示的UserId
+                    loginUserId: @ViewBag.UserId, // 使用者ID
                     userInfo:[],
                     name:'',
                     introduction:'',
                     profilePicture:'',
+                    followButtonText: '關注我'
                 };
             },
             methods: {
                 async getUserInforation() {
-                    axios.post(`/api/ProfileIndex/GetUser/${this.userId}`)
+                    const queryId = this.showUserId ? this.showUserId : this.loginUserId
+                    axios.post(`/api/ProfileIndex/GetUser/${queryId}`)
                         .then(response => {
                             // console.log("getUserInfo data",response.data)
                             this.userInfo = response.data;
@@ -839,6 +849,20 @@
                         })
                         .catch(error => {
                             console.log("Erro getUserInforation:", error)
+                        })
+                },
+                async postFollowUser() {
+
+                    axios.post(`/api/ProfileIndex/FollowUser?showUserId=${this.showUserId}&loginUserId=${this.loginUserId}`)
+                        .then(response => {
+                            if (response.data === '已關注') {
+                                this.followButtonText = '已關注';
+                            } else {
+                                this.followButtonText = '關注我';
+                            }
+                        })
+                        .catch(error => {
+                        console.log("Error postFollowUser：",error)
                         })
                 },
             },

@@ -46,10 +46,20 @@ namespace HaveFun.Controllers
                 Id = -1; //默認值或其他處理
             }
         }
-
+        //
+        [Authorize(AuthenticationSchemes = "Bearer,Cookies")]
+        public async Task<IActionResult> Main()
+        {
+            var loginUser = Convert.ToInt32(Request.Cookies["userId"]);
+            ViewBag.UserId = loginUser;
+            return View();
+        }
+        //
+        [Authorize(AuthenticationSchemes = "Bearer,Cookies")]
         public IActionResult TRY()
         {
-            ViewBag.Id = _Id;
+            var loginUser = Convert.ToInt32(Request.Cookies["userId"]);
+            ViewBag.UserId = loginUser;
             return View();
         }
         // GET: ChatRooms

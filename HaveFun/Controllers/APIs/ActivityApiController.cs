@@ -15,7 +15,7 @@ namespace HaveFun.Controllers.APIs
 		private readonly HaveFunDbContext _context;
 
 		public ActivityApiController(HaveFunDbContext context)
-		{ 
+		{
 			_context = context;
 		}
 
@@ -33,7 +33,7 @@ namespace HaveFun.Controllers.APIs
 			{
 				Id = a.Id,
 				Title = a.Title,
-				User = new MatchUserInfoDTO 
+				User = new MatchUserInfoDTO
 				{
 					Id = a.User.Id,
 					Name = a.User.Name,
@@ -71,6 +71,13 @@ namespace HaveFun.Controllers.APIs
 			Activity? a = await _context.Activities.FindAsync(id);
 			byte[] imageContent = a?.Picture != null ? a.Picture : System.IO.File.ReadAllBytes(fileName);
 			return File(imageContent, "image/jpg");
+		}
+
+		[HttpGet("GetActivityType")]
+		public ActionResult<ActivityType> GetActivityType()
+		{
+			var activityTypes = _context.ActivityTypes;
+			return Ok(activityTypes);
 		}
 	}
 }
