@@ -2,25 +2,25 @@
 
 namespace HaveFun.Areas.ManagementSystem.Controllers
 {
-    [Area("ManagementSystem")]
-    public class HomeController : Controller
-    {
-        public IActionResult Index()
-        {
-            return View();
-        }
-        public IActionResult login() 
-        {
-            return View();
-        }
-        public IActionResult Management()
-        {
-            return View();
-        }
-        public IActionResult PostManagement()
-        {
-            return View();
-        }
+	[Area("ManagementSystem")]
+	public class HomeController : Controller
+	{
+		public IActionResult Index()
+		{
+			return View();
+		}
+		public IActionResult login()
+		{
+			return View();
+		}
+		public IActionResult Management()
+		{
+			return View();
+		}
+		public IActionResult PostManagement()
+		{
+			return View();
+		}
 		public IActionResult UserManagement()
 		{
 			return View();
@@ -33,10 +33,15 @@ namespace HaveFun.Areas.ManagementSystem.Controllers
 		{
 			return View();
 		}
-        public IActionResult RefundReview()
-        {
-            return View();
-        }
-    }
-		
+		public IActionResult RefundReview()
+		{
+			return View();
+		}
+		public IActionResult Chart()
+		{
+
+			return View();
+		}
+	}
+
 }
