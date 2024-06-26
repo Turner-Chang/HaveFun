@@ -1,15 +1,15 @@
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
-using HaveFun.Models;  // 確保引用模型命名空間
+using HaveFun.Models;
+using Microsoft.EntityFrameworkCore;
 
 public class ChatHub : Hub
 {
-    private readonly HaveFunDbContext _context;  // DbContext名稱
-    //注入
+    private readonly HaveFunDbContext _context;
+
     public ChatHub(HaveFunDbContext context)
     {
         _context = context;
-
     }
 
     public override Task OnConnectedAsync()
@@ -48,10 +48,15 @@ public class ChatHub : Hub
         return base.OnConnectedAsync();
     }
 
-
-    // Commented code
     public async Task SendMessage(string user, string message)
     {
         await Clients.Others.SendAsync("ReceiveMessage", user, message);
+    }
+
+    private int GetUserIdFromContext()
+    {
+        // 實現這個方法來從連接上下文獲取用戶ID
+        // 這可能涉及讀取聲明、查詢數據庫等
+        throw new NotImplementedException("GetUserIdFromContext 需要被實現");
     }
 }
