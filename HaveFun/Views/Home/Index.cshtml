@@ -1,12 +1,12 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-
+<div id="homePage">
 <!-- ================> Banner section start here <================== -->
 <div class="banner padding-top padding-bottom bg_img" style="background-image: url(assets/images/banner/bg.jpg);">
 	<div class="container">
 		<div class="row justify-content-center">
-			<div class="col-lg-6 col-12">
+			@* <div class="col-lg-6 col-12">
 				<div class="banner__content wow fadeInUp" data-wow-duration="1.5s" data-wow-delay=".5s">
 					<div class="banner__title">
 						<h2>Find your ture love</h2>
@@ -376,7 +376,8 @@
 						</form>
 					</div>
 				</div>
-			</div>
+			</div> *@
+			<div class="col-lg-6 col-12"><a href="/Register"><button class="default-btn">註冊</button></a></div>
 			<div class="col-lg-6 col-12">
 				<div class="banner__thumb banner__thumb--thumb1 wow fadeInUp" data-wow-duration="1.5s" data-wow-delay="1s">
 					<img src="assets/images/banner/01.png" alt="banner">
@@ -387,11 +388,11 @@
 </div>
 <!-- ================> Banner section end here <================== -->
 <!-- ================> About section start here <================== -->
-<div class="about padding-top padding-bottom">
+@* <div class="about padding-top padding-bottom">
 	<div class="container">
 		<div class="section__header style-2 text-center wow fadeInUp" data-wow-duration="1.5s">
-			<h2>Ollya Super Powers</h2>
-			<p>Our dating platform is like a breath of fresh air. Clean and trendy design with ready to use features we are sure you will love.</p>
+			<h2>近期公告</h2>
+			
 		</div>
 		<div class="section__wrapper">
 			<div class="row g-4 justify-content-center row-cols-xl-4 row-cols-lg-3 row-cols-sm-2 row-cols-1">
@@ -450,71 +451,31 @@
 			</div>
 		</div>
 	</div>
-</div>
+</div> *@
 <!-- ================> About section end here <================== -->
 <!-- ================> Work section start here <================== -->
 <div class="work padding-top padding-bottom bg_img" style="background-image: url(assets/images/bg-img/01.jpg);">
 	<div class="container">
 		<div class="section__header text-center wow fadeInUp" data-wow-duration="1.5s">
-			<h2>How Does it Work​</h2>
+			<h2>近期公告​</h2>
 		</div>
 		<div class="section__wrapper wow fadeInUp" data-wow-duration="1.5s">
 			<div class="d-xl-flex align-items-start work__area">
 				<div class="nav flex-xl-column nav-pills me-xl-4 work__tablist" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-					<button class="nav-link" id="work__tab1-tab" data-bs-toggle="pill" data-bs-target="#work__tab1" type="button" role="tab" aria-controls="work__tab1" aria-selected="true"><img src="assets/images/work/01.png" alt="dating thumb" class="me-3"><span>Search Your Partner</span></button>
-					<button class="nav-link active" id="work__tab2-tab" data-bs-toggle="pill" data-bs-target="#work__tab2" type="button" role="tab" aria-controls="work__tab2" aria-selected="false"><img src="assets/images/work/02.png" alt="dating thumb" class="me-3"><span>100% Match People</span></button>
-					<button class="nav-link" id="work__tab3-tab" data-bs-toggle="pill" data-bs-target="#work__tab3" type="button" role="tab" aria-controls="work__tab3" aria-selected="false"><img src="assets/images/work/03.png" alt="dating thumb" class="me-3"><span>Find Out Partner</span></button>
-					<button class="nav-link" id="work__tab4-tab" data-bs-toggle="pill" data-bs-target="#work__tab4" type="button" role="tab" aria-controls="work__tab4" aria-selected="false"><img src="assets/images/work/04.png" alt="dating thumb" class="me-3"><span>Live The Story</span></button>
+					<button v-for="(anc, index) in announcement" class="nav-link" :id="`work__tab${index + 1}-tab`" data-bs-toggle="pill" :data-bs-target="`#work__tab${index + 1}`" type="button" role="tab" :aria-controls="`work__tab${index + 1}`" aria-selected="true"><span>{{anc.title}}</span></button>
+						
 				</div>
 				<div class="tab-content work__tabcontent" id="v-pills-tabContent">
-					<div class="tab-pane fade" id="work__tab1" role="tabpanel" aria-labelledby="work__tab1-tab">
-						<div class="work__item">
+					<div v-for="(anc, index) in announcement" class="tab-pane fade" :id="`work__tab${index +1}`" role="tabpanel" :aria-labelledby="`work__tab${index + 1}-tab`">
+							<div class="work__item">
 							<div class="work__inner">
-								<div class="work__thumb">
-									<img src="assets/images/work/05.png" alt="dating thumb">
-								</div>
+								
 								<div class="work__content">
-									<h3>Search Your Partner</h3>
-									<p>The simple steps to follow to have great experience using ollya. all you have to do is follows your gut and awesome your heart!</p>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="tab-pane fade show active" id="work__tab2" role="tabpanel" aria-labelledby="work__tab2-tab">
-						<div class="work__item">
-							<div class="work__inner">
-								<div class="work__thumb">
-									<img src="assets/images/work/06.png" alt="dating thumb">
-								</div>
-								<div class="work__content">
-									<h3>100% Match People</h3>
-									<p>The simple steps to follow to have great experience using ollya. all you have to do is follows your gut and awesome your heart!</p>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="tab-pane fade" id="work__tab3" role="tabpanel" aria-labelledby="work__tab3-tab">
-						<div class="work__item">
-							<div class="work__inner">
-								<div class="work__thumb">
-									<img src="assets/images/work/07.png" alt="dating thumb">
-								</div>
-								<div class="work__content">
-									<h3>Find Out Partner</h3>
-									<p>The simple steps to follow to have great experience using ollya. all you have to do is follows your gut and awesome your heart!</p>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="tab-pane fade" id="work__tab4" role="tabpanel" aria-labelledby="work__tab4-tab">
-						<div class="work__item">
-							<div class="work__inner">
-								<div class="work__thumb">
-									<img src="assets/images/work/08.png" alt="dating thumb">
-								</div>
-								<div class="work__content">
-									<h3>Live The Story</h3>
-									<p>The simple steps to follow to have great experience using ollya. all you have to do is follows your gut and awesome your heart!</p>
+									<h3>{{anc.title}}</h3>
+									<h4>{{anc.startTime}}</h4>
+									<p>
+										{{anc.content}}
+									</p>
 								</div>
 							</div>
 						</div>
@@ -526,7 +487,7 @@
 </div>
 <!-- ================> Work section end here <================== -->
 <!-- ================> Member section start here <================== -->
-<div class="member padding-top padding-bottom overflow-hidden">
+@* <div class="member padding-top padding-bottom overflow-hidden">
 	<div class="container">
 		<div class="section__header style-2 text-center wow fadeInUp" data-wow-duration="1.5s">
 			<h2>Most Popular Members</h2>
@@ -606,45 +567,45 @@
 			</div>
 		</div>
 	</div>
-</div>
+</div> *@
 <!-- ================> Member section end here <================== -->
 <!-- ================> Story section start here <================== -->
 <div class="story bg_img padding-top padding-bottom" style="background-image: url(assets/images/bg-img/02.jpg);">
 	<div class="container">
 		<div class="section__header style-2 text-center wow fadeInUp" data-wow-duration="1.5s">
-			<h2>Ollya Success Stories</h2>
-			<p>Listen and learn from our community members and find out tips and tricks to meet your love. Join us and be part of a bigger family.</p>
+			<h2>線正熱門的活動</h2>
+			<p>現在朋友們正討論這些活動，你還沒加入嗎，快來看看你是不是也很感興趣！</p>
 		</div>
 		<div class="section__wrapper wow fadeInUp" data-wow-duration="1.5s">
 			<div class="row g-4 justify-content-center row-cols-lg-3 row-cols-sm-2 row-cols-1">
-				<div class="col">
+				<div v-for="act in popularAct" class="col">
 					<div class="story__item">
 						<div class="story__inner">
 							<div class="story__thumb">
-								<a href="blog-single.html"><img src="assets/images/story/01.jpg" alt="dating thumb"></a>
-								<span class="member__activity member__activity--ofline">Entertainment</span>
+								<a :href="`/Activity/Detail/${act.id}`"><img :src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}?rand=${rand}`></a>
+								<span class="member__activity member__activity--ofline">最多人參加</span>
 							</div>
 							<div class="story__content">
-								<a href="blog-single.html"><h4>Dream places and locations to visit in 2022</h4></a>
+								<a :href="`/Activity/Detail/${act.id}`"><h4>{{act.title}}</h4></a>
 								<div class="story__content--author">
 									<div class="story__content--thumb">
-										<img src="assets/images/story/author/01.jpg" alt="dating thumb">
+											<img v-bind:src=`${baseAddress}/api/personalActivities/GetUserProfile/${act.userId}?rand=${rand}`>
 									</div>
 									<div class="story__content--content">
-										<h6>Hester Reeves</h6>
-										<p>April 16, 2022</p>
+										<h6>{{act.userName}}</h6>
+										<p>{{act.time}}</p>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="col">
+				@* <div class="col">
 					<div class="story__item">
 						<div class="story__inner">
 							<div class="story__thumb">
 								<a href="blog-single.html"><img src="assets/images/story/02.jpg" alt="dating thumb"></a>
-								<span class="member__activity member__activity--ofline">Love Stories</span>
+								<span class="member__activity member__activity--ofline">最新</span>
 							</div>
 							<div class="story__content">
 								<a href="blog-single.html"><h4>Make your dreams come true and monetise quickly</h4></a>
@@ -666,7 +627,7 @@
 						<div class="story__inner">
 							<div class="story__thumb">
 								<a href="blog-single.html"><img src="assets/images/story/03.jpg" alt="dating thumb"></a>
-								<span class="member__activity member__activity--ofline">Attraction</span>
+								<span class="member__activity member__activity--ofline">最近舉辦</span>
 							</div>
 							<div class="story__content">
 								<a href="blog-single.html"><h4>Love looks not with the eyes, but with the mind.</h4></a>
@@ -682,14 +643,14 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</div> *@
 			</div>
 		</div>
 	</div>
 </div>
 <!-- ================> Story section end here <================== -->
 <!-- ================> Meet section start here <================== -->
-<div class="meet padding-top padding-bottom">
+@* <div class="meet padding-top padding-bottom">
 	<div class="container">
 		<div class="section__header style-2 text-center wow fadeInUp" data-wow-duration="1.5s">
 			<h2>Meet Singles in Your Area</h2>
@@ -781,7 +742,7 @@
 			</div>
 		</div>
 	</div>
-</div>
+</div> *@
 <!-- ================> Meet section end here <================== -->
 <!-- ================> Work section start here <================== -->
 <div class="work work--style2 padding-top padding-bottom bg_img" style="background-image: url(assets/images/bg-img/01.jpg);">
@@ -792,12 +753,13 @@
 					<div class="work__item">
 						<div class="work__inner">
 							<div class="work__thumb">
-								<img src="assets/images/work/09.png" alt="dating thumb">
+								<img src="assets/images/homePage/match.jpg" alt="dating thumb">
 							</div>
 							<div class="work__content">
-								<h3>Trust And Safety</h3>
-								<p>Choose from one of our membership levels and unlock features you need. </p>
-								<a href="policy.html" class="default-btn"><span>See More Details</span></a>
+								<h3>左滑配對</h3>
+								<p>以標籤取向配對，讓擁有共同愛好的你們更有話聊！
+									貓派、狗派一目瞭然，再也不用猜，不怕踩到對方地雷！</p>
+								<a href="/match" class="default-btn"><span>前往配對</span></a>
 							</div>
 						</div>
 					</div>
@@ -806,12 +768,12 @@
 					<div class="work__item">
 						<div class="work__inner">
 							<div class="work__thumb">
-								<img src="assets/images/work/10.png" alt="dating thumb">
+								<img src="assets/images/homePage/social.jpg" alt="dating thumb">
 							</div>
 							<div class="work__content">
-								<h3>Simple Membership</h3>
-								<p>Choose from one of our membership levels and unlock features you need. </p>
-								<a href="membership.html" class="default-btn reverse"><span>Membership Details</span></a>
+								<h3>專屬社交頁面</h3>
+								<p>在這裡也可以輕鬆分享你的日常與暢紓你的心情，朋友們可以互相Like彼此的貼文，也可以輕鬆取得活動同行的友人。</p>
+								<a href="/Profile" class="default-btn reverse"><span>前往社群</span></a>
 							</div>
 						</div>
 					</div>
@@ -829,13 +791,12 @@
 				<div class="app__item">
 					<div class="app__inner">
 						<div class="app__content">
-							<h4>Easy Connect To Everyone</h4>
-							<h2>Download App Our Ollya</h2>
-							<p>You find us, finally and you are already in love. More than 5.000.000 around the world already shared the same experience andng ares uses our system Joining us today just got easier!</p>
-							<ul>
+							<h2>期待與你相見</h2>
+							<p>在這裡遇見友情、愛情，讓你往後的生活不再孤單！我們誠摯地邀請起加入，一起體驗豐富美好的人生吧！</p>
+							@* <ul>
 								<li><a href="#"><img src="assets/images/app/01.jpg" alt="dating thumb"></a></li>
 								<li><a href="#"><img src="assets/images/app/02.jpg" alt="dating thumb"></a></li>
-							</ul>
+							</ul> *@
 						</div>
 					</div>
 				</div>
@@ -844,7 +805,7 @@
 				<div class="app__item">
 					<div class="app__inner">
 						<div class="app__thumb">
-							<img src="assets/images/app/01.png" alt="dating thumb">
+							<img src="assets/images/HomePage/end.jpg" alt="dating thumb">
 						</div>
 					</div>
 				</div>
@@ -853,3 +814,46 @@
 	</div>
 </div>
 <!-- ================> App section end here <================== -->
+</div>
+@section Scripts{
+	<script>
+		const homePage = Vue.createApp({
+			data() {
+				return {
+					baseAddress: window.location.origin,
+					rand: 1,
+					popularAct:[],
+					announcement:[],
+				}
+			},
+			methods: {
+				//取得最熱門活動
+				getMostParticipantsActivity() {
+					fetch(`api/Home/GetPopularActivity`)
+						.then(res => res.json())
+						.then(data => {
+							this.popularAct = data;
+						})
+						.catch(error => { console.log('fetch most participants activity failed!') });
+				},
+				//取得進行中公告
+				getAnnouncement() {
+					fetch(`api/Home/GetAnnouncement`)
+						.then(res => res.json())
+						.then(data => {
+							this.announcement = data;
+						})
+						.catch(error => { console.log('fetch announcement failed!') });
+				},
+				fixFirstAnnouncement() {
+					document.querySelector('#work__tab1').classList.add('active show');
+				}
+			},
+			mounted() {
+				this.getMostParticipantsActivity();
+				this.getAnnouncement();
+				this.fixFirstAnnouncement();
+			}
+		}).mount('#homePage');
+	</script>
+}

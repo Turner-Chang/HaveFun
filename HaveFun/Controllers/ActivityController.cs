@@ -108,11 +108,25 @@ namespace HaveFun.Controllers
 			var activity = await _context.Activities
 				.Include(a => a.User)
 				.Include(a => a.ActivityParticipants)
+					.ThenInclude(ap => ap.User)
 				.FirstOrDefaultAsync(a => a.Id == id);
 
 			if (activity == null)
 			{
 				return NotFound();
+			}
+
+			foreach (var participant in activity.ActivityParticipants)
+			{
+				if (participant.User != null && !string.IsNullOrEmpty(participant.User.ProfilePicture))
+				{
+					participant.User.ProfilePicture = participant.User.ProfilePicture.Replace(@"\", "/");
+					var index = participant.User.ProfilePicture.LastIndexOf("images/");
+					if (index != -1)
+					{
+						participant.User.ProfilePicture = participant.User.ProfilePicture.Substring(index);
+					}
+				}
 			}
 
 			return View(activity);
