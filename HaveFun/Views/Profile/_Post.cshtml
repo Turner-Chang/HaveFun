@@ -39,14 +39,14 @@
                                             <form class="post-form">
                                                 <textarea v-model="postContent" :placeholder="placeholderText" rows="3"></textarea>
                                                 <div class="img-preview-container">
-                                                <img class="Post-Preview-img" />
-                                                <button v-if="newPostPic != null" @@click="removeNewPostPic">移除</button>
+                                                    <img class="Post-Preview-img" />
+                                                    <button v-if="newPostPic != null" @@click="removeNewPostPic">移除</button>
                                                 </div>
-                                               @*  <div class="image-container" v-if="newPostPic">
-                                                    <div class="img-preview-container">
-                                                        <img class="imgPreview" :src="previewImageUrl" alt="Image Preview" @@mouseover="showDeleteBtn = true" @@mouseleave="showDeleteBtn = false" />
-                                                        <button class="remove-btn" @@click="removeNewPostPic" v-show="showDeleteBtn">X</button>
-                                                    </div>
+                                                @*  <div class="image-container" v-if="newPostPic">
+                                                <div class="img-preview-container">
+                                                <img class="imgPreview" :src="previewImageUrl" alt="Image Preview" @@mouseover="showDeleteBtn = true" @@mouseleave="showDeleteBtn = false" />
+                                                <button class="remove-btn" @@click="removeNewPostPic" v-show="showDeleteBtn">X</button>
+                                                </div>
                                                 </div> *@
                                                 <div class="content-type">
                                                     <ul class="content-list">
@@ -70,7 +70,7 @@
                                 </div>
 
                                 @* <a class="default-btn" asp-area="" asp-controller="Profile" asp-action="Index" asp-route-userId="16">
-                                    個人主頁
+                                個人主頁
                                 </a> *@
                                 <div v-if="displayPostsSelect" class="button-container_displayPostsSelect">
                                     <button :class="{ 'active': displayPersonalPosts }" @@click="showPersonalPosts">個人貼文</button>
@@ -85,18 +85,16 @@
                                             <div class="post-author-inner">
                                                 <div class="author-thumb">
                                                     <a :href="`/Profile/Index?userId=${post.UserId}`">
-                                                    <img alt="" :src="post.UserPicture">
+                                                        <img alt="" :src="post.UserPicture">
                                                     </a>
                                                 </div>
                                                 <div class="author-details">
                                                     <h6>
                                                         @* <a :href="'Profile/Index?userId='+post.UserId"> *@
                                                         <a :href="`/Profile/Index?userId=${post.UserId}`">
-                                                        @* <a :href="`/Index?userId=${post.UserId}`"> *@
                                                             {{ post.UserName }}
                                                         </a>
                                                     </h6>
-                                                    @* <h6><a href="#">{{ post.UserName }}</a></h6> *@
                                                     <ul class="post-status">
                                                         <li class="post-privacy"><i class="icofont-world"></i>{{postPrivacy}}</li>
                                                         <li class="post-time">{{post.Time}}</li>
@@ -109,7 +107,7 @@
                                                 </button>
                                                 <ul class="dropdown-menu">
 
-                                                    <li @@click.prevent="showDelete(post)"><a class="dropdown-item" >刪除貼文</a></li>
+                                                    <li @@click.prevent="showDelete(post)"><a class="dropdown-item">刪除貼文</a></li>
                                                     <li @@click.prevent="showRat(post)"></i><a class="dropdown-item">檢舉貼文</a></li>
                                                 </ul>
                                             </div>
@@ -119,13 +117,13 @@
                                             <div v-if="post.showPostPicture">
                                                 <img :src="post.Pictures" class="Post-size-img" alt="Post Picture" />
                                             </div>
-                                            
+
                                         </div>
                                     </div>
                                     @* 貼文功能按鈕 *@
                                     <div class="post-meta">
-                                        <div class="post-meta-top">
-                                            <p><a href="#"><i class="fa-solid fa-thumbs-up"></i> <i class="fa-solid fa-heart"></i> <i class="fa-solid fa-face-laugh"></i> <span>Julia, Petrova and 306 like this</span></a></p>
+                                        <div v-if="post.LikeCount>0" class="post-meta-top">
+                                            <p><a href="#"><i class="fa-solid fa-heart"></i> <span>{{post.LikeCount}}</span></a></p>
                                             @* <p><a href="#" @@click.prevent="showCommentsAlert">Show Comments</a></p> *@
                                         </div>
                                         <div class="post-meta-bottom">
@@ -173,7 +171,7 @@
                                                     <li class="comment" v-for="nestedReply in reply.nestedReplies" :key="nestedReply.Id">
                                                         <div class="com-thumb">
                                                             <a :href="`/Profile/Index?userId=${nestedReply.UserId}`">
-                                                            <img alt="" :src="nestedReply.UserPicture">
+                                                                <img alt="" :src="nestedReply.UserPicture">
                                                             </a>
                                                         </div>
                                                         <div class="com-content">
@@ -252,14 +250,14 @@
             return {
                 postContent: '',
                 placeholderText: '',
-                newPostPic:null, // 發文圖片 
+                newPostPic: null, // 發文圖片
                 postPrivacy: 'Public',
                 posts: [],
                 showUserId: @ViewBag.ShowUserId, // 指定顯示的UserId
                 loginUserId: @ViewBag.UserId, // 使用者ID
                 loginUserName: '',
                 loginUserPicture: '',
-                userInfo:[],       // 使用者資料
+                userInfo: [],       // 使用者資料
                 showRatBox: false, // 顯示檢舉視窗
                 ratContent: "",
                 ratReason: "",
@@ -267,8 +265,8 @@
                 ratPostId: null, // 檢舉貼文Id
                 showDeleteBox: false, // 顯示刪除視窗
                 deletePostId: null,
-                showDeleteBtn:false,
-                displayPostsSelect:true, // 個人/朋友 選項
+                showDeleteBtn: false,
+                displayPostsSelect: true, // 個人/朋友 選項
                 displayPersonalPosts: true, // 個人貼文
                 FriendPostList: [], // 朋友列表
             };
@@ -277,6 +275,7 @@
             postsWithLikeStatus() {
                 return this.posts.map(post => {
                     // console.log('postsWithLikeStatus:', post);
+                    // console.log("post.LikeUserList", post.LikeUserList);
                     const userIds = post.Like.map(like => like.userId);
                     post.likedByUser = userIds.includes(this.loginUserId);
                     return post;
@@ -298,7 +297,7 @@
                             return this.FriendPostList.includes(post.UserId.toString());
                         });
                     }
-                } 
+                }
                 this.displayPostsSelect = false;
                 return this.postsWithLikeStatus;
             },
@@ -321,13 +320,13 @@
             setUserInfo() {
                 this.loginUserName = this.userInfo[0].name;
                 this.loginUserPicture = this.userInfo[0].profilePicture
-                this.placeholderText = `What's on your mind, ${this.userInfo[0].name}?`; 
+                this.placeholderText = `What's on your mind, ${this.userInfo[0].name}?`;
             },
 
             // 查詢貼文
             async getPosts() {
                 try {
-                    const queryId= this.showUserId? this.showUserId: this.loginUserId
+                    const queryId = this.showUserId ? this.showUserId : this.loginUserId
 
                     const response = await axios.get(`/api/Profile/GetPostsList/${queryId}`);
                     // console.log('getPosts:', response.data);
@@ -341,6 +340,8 @@
                         Time: post.time,
                         Pictures: post.picturePath,
                         Like: post.like,
+                        LikeUserList: post.likeUserList,
+                        LikeCount: post.likeCount,
                         Replies: (post.replies || []).map(reply => ({
                             Id: reply.id,
                             UserId: reply.userId,
@@ -363,7 +364,7 @@
                             showNestedForm: false,
                             nestedReplyContent: ''
                         })),
-                        showPostPicture: post.picturePath ? true:false,
+                        showPostPicture: post.picturePath ? true : false,
                         showComments: false,
                         showReplyForm: false,
                         newReply: ''
@@ -407,6 +408,7 @@
                         Time: createdPost.time,
                         Pictures: createdPost.picturePath,
                         Like: createdPost.like || [],
+                        LikeCount: createdPost.likeCount,
                         Replies: createdPost.replies || [],
                         showPostPicture: createdPost.picturePath ? true : false,
                         showComments: false,
@@ -549,13 +551,13 @@
 
             // Like 圖示變化
             clickLikeOrNot(post) {
-                console.log('clickLikeOrNot')
+                // console.log('clickLikeOrNot')
                 return post.likedByUser || false;
             },
 
             // 貼文Like
             clickLike(post) {
-                console.log('clickLike')
+                // console.log('clickLike')
                 const Like = event.target;
                 let like = {
                     "PostId": post.Id,
@@ -567,14 +569,16 @@
                         // console.log(data);
                         if (data === 'CancelLike') {
                             post.likedByUser = false;
+                            post.LikeCount-= 1;
                             // Like.firstChild.classList.add('fa-regular');
                             // Like.firstChild.classList.remove('fa-solid');
                         } else if (data === 'Like') {
                             post.likedByUser = true;
+                            post.LikeCount+= 1;
                             // Like.firstChild.classList.remove('fa-regular');
                             // Like.firstChild.classList.add('fa-solid');
                         }
-                        console.log("post" + post);
+                        // console.log("post" + post);
                     })
                     .catch(error => {
                         console.log('Error clickLike:', error);
@@ -618,7 +622,7 @@
 
                 axios.post('/api/Profile/RatPostReview', ratpost)
                     .then(response => {
-                        console.log(response.data);
+                        // console.log(response.data);
                         // 清空檢舉表單並關閉檢舉視窗
                         this.resetRatBox();
                     })
@@ -650,7 +654,7 @@
             deletePost() {
                 axios.put(`/api/Profile/Unpost/${this.deletePostId}`)
                     .then(response => {
-                        console.log(response.data);
+                        // console.log(response.data);
                         this.posts = this.posts.filter(p => p.Id !== this.deletePostId);
                         this.showDeleteBox = false;
                         this.deletePostId = null;
