@@ -42,12 +42,6 @@
                                                     <img class="Post-Preview-img" />
                                                     <button v-if="newPostPic != null" @@click="removeNewPostPic">移除</button>
                                                 </div>
-                                                @*  <div class="image-container" v-if="newPostPic">
-                                                <div class="img-preview-container">
-                                                <img class="imgPreview" :src="previewImageUrl" alt="Image Preview" @@mouseover="showDeleteBtn = true" @@mouseleave="showDeleteBtn = false" />
-                                                <button class="remove-btn" @@click="removeNewPostPic" v-show="showDeleteBtn">X</button>
-                                                </div>
-                                                </div> *@
                                                 <div class="content-type">
                                                     <ul class="content-list">
                                                         <li class="text"><a href="#"><i class="fa-solid fa-pen-to-square"></i>Text</a></li>
@@ -123,7 +117,12 @@
                                     @* 貼文功能按鈕 *@
                                     <div class="post-meta">
                                         <div v-if="post.LikeCount>0" class="post-meta-top">
-                                            <p><a href="#"><i class="fa-solid fa-heart"></i> <span>{{post.LikeCount}}</span></a></p>
+                                            <p>
+                                                <a href="#" @@click.prevent="showLikeUserList(post)">
+                                                    <i class="fa-solid fa-heart"></i>
+                                                    <span>{{post.LikeCount}}</span>
+                                                </a>
+                                            </p>
                                             @* <p><a href="#" @@click.prevent="showCommentsAlert">Show Comments</a></p> *@
                                         </div>
                                         <div class="post-meta-bottom">
@@ -239,6 +238,22 @@
                 <button class="btn btn-outline-secondary" @@click="cancleDeleteBox">取消</button>
             </div>
         </div>
+        <!-- Like用戶列表模態視窗 -->
+        <div v-if="showLikeUserListModal" class="likeUser-overlay">
+            <div class="likeUser-content">
+                @* <span class="close-button" @@click="closeLikeUserListModal">&times;</span> *@
+                <h4>有誰喜歡這篇貼文</h4>
+                <ul class="likeUser-list">
+                    <li v-for="user in LikeUserList" :key="user.userId">
+                        <a :href="`/Profile/Index?userId=${user.userId}`">
+                            <img :src="user.userPicture" alt="user picture">
+                            {{ user.userName }}
+                        </a>
+                    </li>
+                </ul>         
+                <button class="likeUser-close-button" @@click="closeLikeUserListModal">關閉</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -266,6 +281,8 @@
                 showDeleteBox: false, // 顯示刪除視窗
                 deletePostId: null,
                 showDeleteBtn: false,
+                LikeUserList: [],             // LikeUser清單
+                showLikeUserListModal: false, // 顯示LikeUser清單
                 displayPostsSelect: true, // 個人/朋友 選項
                 displayPersonalPosts: true, // 個人貼文
                 FriendPostList: [], // 朋友列表
@@ -578,11 +595,21 @@
                             // Like.firstChild.classList.remove('fa-regular');
                             // Like.firstChild.classList.add('fa-solid');
                         }
-                        // console.log("post" + post);
                     })
                     .catch(error => {
                         console.log('Error clickLike:', error);
                     });
+            },
+
+            // 顯示LikeUserList
+            showLikeUserList(post) {
+                this.LikeUserList = post.LikeUserList;
+                this.showLikeUserListModal = true;
+            },
+
+            // 關閉LikeUserList
+            closeLikeUserListModal() {
+                this.showLikeUserListModal = false;
             },
 
             // 取得檢舉項目
