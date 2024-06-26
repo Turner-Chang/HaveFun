@@ -23,7 +23,7 @@
                                 :key="friend.id"
                                 :class="{ 'clearfix': true, 'active': friend.id === activeFriendId }"
                             @@click="selectFriend(friend)">
-                                <img :src="friend.avatarUrl" >
+                                <img :src="friend.avatarUrl" :alt="friend.name + '\'s avatar'">
                                 <div class="about">
                                     <div class="name">{{ friend.name }}</div>
                                     <div class="status">
@@ -41,8 +41,8 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                     <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
-                                        <img :src="activeFriend ? activeFriend.avatarUrl : '/images/NoImgSomeone.png'"
-                                             :alt="activeFriend ? activeFriend.name  : 'Default avatar'">
+                                        <img :src="activeFriend ? activeFriend.avatarUrl : '/img/default-avatar.png'"
+                                             :alt="activeFriend ? activeFriend.name + '\'s avatar' : 'Default avatar'">
                                     </a>
                                     <div class="chat-about">
                                         <h6 class="m-b-0">{{ activeFriend ? activeFriend.name : 'Please select a friend' }}</h6>
@@ -107,8 +107,7 @@
                     chatHistory: [],
                     messageText: '',
                     currentUserId: window.currentUserId,
-                    connection: null,
-                    myInfo:[],
+                    connection: null
                 };
             },
             computed: {
@@ -122,7 +121,6 @@
                 }
             },
             methods: {
-                
                 setInitialFriend() {
                     if (this.friends.length > 0) {
                         this.selectFriend(this.friends[0]);
@@ -146,7 +144,7 @@
                             name: friend.name,
                             avatarUrl: friend.profilePicture ?
                                 (friend.profilePicture.startsWith('http') ? friend.profilePicture : `/api/UserInfo/GetPicture/${friend.id}`) :
-                                '/images/NoImgSomeone.png',
+                                '/img/default-avatar.png',
                             isOnline: false,
                             status: 'offline',
                             isBlocked: friend.isBlocked
