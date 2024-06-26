@@ -22,7 +22,7 @@ namespace HaveFun.Controllers.APIs
         {
             var friendList = await _dbContext.FriendLists
                 .Where(x => x.Clicked == id && x.state == 1)
-                .Select(x => x.Clicked == id ? x.User2 : x.User1)
+                .Select(x => x.User2)
                 .Select(u => new FriendDTO
                 {
                     Id = u.Id,

@@ -98,14 +98,21 @@ if (!app.Environment.IsDevelopment())
 }
 app.UseSwagger();
 app.UseSwaggerUI();
+
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+
 app.UseRouting();
+
+app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseSession();
+
+// 註冊自定義中介軟體
+app.UseMiddleware<BackendAuthMiddleware>();
 
 app.MapControllerRoute(
     name: "Areas",
@@ -117,5 +124,8 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 //添加chathub
 app.MapHub<ChatHub>("/chathub");
+
+
+
 
 app.Run();

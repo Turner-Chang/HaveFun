@@ -75,10 +75,10 @@ namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
 
         public async Task<string> UserCount()
         {
-            var MCount = _context.UserInfos.Where(user => user.Gender == 0).Count();
+            var MCount = _context.UserInfos.Where(user => user.Gender == 0 && user.Status==0).Count();
             string M = MCount.ToString();
 
-            var FCount = _context.UserInfos.Where(user => user.Gender == 1).Count();
+            var FCount = _context.UserInfos.Where(user => user.Gender == 1 && user.Status == 0).Count();
             string F = FCount.ToString();
 
             return M + "," + F;
@@ -87,8 +87,8 @@ namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
 
 		[HttpGet]
 		public async Task<string> LevelCount() {
-			var count0 = _context.UserInfos.Where(user=>user.Level==0).Count().ToString();
-			var count1 = _context.UserInfos.Where(user=>user.Level==1).Count().ToString();
+			var count0 = _context.UserInfos.Where(user=>user.Level==0 && user.Status == 0).Count().ToString();
+			var count1 = _context.UserInfos.Where(user=>user.Level==1 && user.Status == 0).Count().ToString();
 			return count0+","+count1;
 		}
     }
