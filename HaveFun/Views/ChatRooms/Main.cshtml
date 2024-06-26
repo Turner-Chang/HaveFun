@@ -114,7 +114,8 @@
                 filteredFriends() {
                     return this.friends.filter(friend =>
                         friend.name.toLowerCase().includes(this.searchQuery.toLowerCase())
-                    );,
+                    );
+                },
                  sortedChatHistory() {
                         return [...this.chatHistory].sort((a, b) => new Date(a.createTime) - new Date(b.createTime));
                 }
