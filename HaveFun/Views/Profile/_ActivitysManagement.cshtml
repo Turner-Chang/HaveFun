@@ -52,7 +52,7 @@
 					<details @@toggle="act.expandState = !act.expandState">
 						<summary>{{act.expandState? '隱藏詳細內容' : '展開詳細內容'}}</summary>
 						<div class="col-xs-2">
-							<div :id="'commingupMap' + index" class="map"></div>
+							<div :id="'map' + index" class="map"></div>
 							<span class="infoTitle">活動類型：</span>
 							{{act.type}}<br>
 							<span class="infoTitle">活動開始報名時間：</span>
@@ -175,7 +175,7 @@
 					<details @@toggle="act.expandState = !act.expandState">
 						<summary>{{act.expandState? '隱藏詳細內容' : '展開詳細內容'}}</summary>
 						<div>
-							<div :id="'pastMap' + index" class="map"></div>
+							<div :id="'map' + index" class="map"></div>
 							<span class="infoTitle">活動類型：</span>
 							{{act.type}}<br>
 							<span class="infoTitle">活動費用：</span>
@@ -196,7 +196,8 @@
 		</div>
 	</div>
 </div>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDh0olCmLq7Tpu-ktNN0_JYyt9G529C4qA&libraries=places,geocoding"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDh0olCmLq7Tpu-ktNN0_JYyt9G529C4qA&libraries=geocoding,places"></script>@*
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDh0olCmLq7Tpu-ktNN0_JYyt9G529C4qA&libraries=places"></script> *@
 <script>
 	const activityPlatform = Vue.createApp({
 		data() {
@@ -280,21 +281,16 @@
 					$('#submit').css("display", "inline-block");
 				}
 			},
-			// commingupActivities(newVal,oldVal) {
-			// 	if (newVal !== oldVal && this.currentType === 'commingup') {
+			// commingupActivities(newVal, oldVal){
+			// 	if (newVal !== oldVal){
 			// 		this.showCommingupMap(newVal);
 			// 	}
 			// },
 			// pastActivities(newVal, oldVal) {
-			// 	if (newVal !== oldVal && this.currentType === 'past') {
-			// 		this.showPastMap(newVal);
+			// 	if (newVal !== oldVal) {
+			// 		this.showCommingupMap(newVal);
 			// 	}
 			// },
-			commingupActivities(newVal, oldVal){
-				if (newVal !== oldVal){
-					this.showCommingupMap(newVal);
-				}
-			}
 		},
 		computed: {
 			hasTitle(){
@@ -381,6 +377,14 @@
 			//切換狀態顯示活動
 			switchType(type) {
 				this.currentType = type;
+				// if (type === 'commingup'){
+				// 	this.showMap(this.commingupActivities);
+				// }
+				// if(type === 'past') {
+				// 	// this.showMap(this.pastActivities);
+				// 	alert('ok');
+				// }
+				
 			},
 			buttonText(type, text) {
 				return this.currentType === type ? '● ' + text : text;
@@ -578,7 +582,7 @@
 				return new Date(registrationTime) > new Date(this.currentDateTime);
 			},
 			// 藉由地址顯示活動地圖
-			showCommingupMap(activityType) {
+			showMap(activityType) {
 				activityType.forEach((act, index) => {
 					let geocoder = new google.maps.Geocoder();
 					geocoder.geocode({ address: act.location }, function (result, status) {
@@ -587,7 +591,7 @@
 								center: result[0].geometry.location,
 								zoom: 16
 							};
-							let map = new google.maps.Map(document.getElementById('commingupMap' + index), mapOptions);
+							let map = new google.maps.Map(document.getElementById('map' + index), mapOptions);
 							new google.maps.Marker({
 								position: result[0].geometry.location,
 								map: map
@@ -598,51 +602,36 @@
 					});
 				});
 			},
-			// showPastMap() {
-			// 	this.commingupActivities.forEach((act, index) => {
-			// 		let geocoder = new google.maps.Geocoder();
-			// 		geocoder.geocode({ address: act.location }, function (result, status) {
-			// 			if (status === 'OK') {
-			// 				let mapOptions = {
-			// 					center: result[0].geometry.location,
-			// 					zoom: 16
-			// 				};
-			// 				let map = new google.maps.Map(document.getElementById('pastMap' + index), mapOptions);
-			// 				new google.maps.Marker({
-			// 					position: result[0].geometry.location,
-			// 					map: map
-			// 				});
-			// 			} else {
-			// 				console.error('求取活動地圖失敗!');
-			// 			}
-			// 		});
+			// 修改活動地址自動完成內容
+			// siteAuto() {
+			// 	let options = {
+			// 		componentRestrictions: { country: "tw" },
+			// 	};
+			// 	this.autocomplete = new google.maps.places.Autocomplete(document.querySelector('#editLoaction'), options);
+			// 	this.autocomplete.addListener("place_changed", () => {
+			// 		let place = this.autocomplete.getPlace();
+			// 		if (place.geometry) {
+			// 			this.site = place.formatted_address;
+			// 		}
 			// 	});
 			// },
-			// 修改活動地址自動完成內容
-			siteAuto() {
-				let options = {
-					componentRestrictions: { country: "tw" },
-				};
-				this.autocomplete = new google.maps.places.Autocomplete(document.querySelector('#editLoaction'), options);
-				this.autocomplete.addListener("place_changed", () => {
-					let place = this.autocomplete.getPlace();
-					if (place.geometry) {
-						this.site = place.formatted_address;
-					}
-				});
-			},
 		},
 		mounted() {
 			this.getCommingupList(this.loginUserId);
 			this.getHostList(this.loginUserId);
 			this.getPastList(this.loginUserId);
 			this.getActivityTypeList();
-			// //這樣子失敗 一開始地圖就顯示不出來@@
-			// if (this.commingupActivities.length > 0) {
-			// 	this.showMap(this.commingupActivities);
-			// }
-			this.siteAuto();
+			// this.siteAuto();
 		},
+		//這個方法可能不太好
+		updated() {
+			if (this.currentType === 'commingup') {
+				this.showMap(this.commingupActivities);
+			}
+			if (this.currentType === 'past') {
+				this.showMap(this.pastActivities);
+			}
+		}
 	})
 		.mount('#activityPlatform');
 </script>
