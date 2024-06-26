@@ -74,6 +74,16 @@ namespace HaveFun.Controllers.APIs
                 return BadRequest(ModelState);
             }
 
+            var IsFriend = _context.FriendLists.FirstOrDefault(
+                f => f.Clicked == loginUserId && f.BeenClicked == showUserId && f.state == 1 
+                || f.Clicked == showUserId && f.BeenClicked == loginUserId && f.state == 1
+            );
+
+            if (IsFriend != null)
+            {
+                return Content("好友");
+            }
+
             var followData = _context.FriendLists.FirstOrDefault(f => f.Clicked == loginUserId && f.BeenClicked == showUserId && f.state == 0);
 
             if (followData != null)
