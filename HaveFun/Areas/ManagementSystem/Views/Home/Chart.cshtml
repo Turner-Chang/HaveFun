@@ -1,14 +1,13 @@
-﻿<div class="container" id="ChartApp">
+﻿
+<div class="container" id="ChartApp">
 	<h2 class="text-center">圖表分析</h2>
 	總人數 : {{countUser}}
 
 	<br />
 	<button class="btn btn-success m-3" @@click="changeStyle()">圓餅/長條切換</button>
 	<div class="row">
-		<div class="col-4">
-
-
-			<div class="card m-4" style="width:300px;height:300px;">
+		<div class="co-12 col-lg-6">
+			<div class="card m-4 " style="width:350px;height:300px;">
 				<div class="card-header">
 					<i class="fas fa-chart-area me-1"></i>
 					<span class="ps-4">
@@ -16,16 +15,14 @@
 					</span>
 				</div>
 				<div class="card-body" style="width:300px;height:250px;">
-					<canvas id="GenderChart"></canvas>
+					<canvas id="GenderChart" style="margin:auto;"></canvas>
 				</div>
 
 			</div>
 
 		</div>
-		<div class="col-4">
-
-
-			<div class="card m-4" style="width:300px;height:300px;">
+		<div class="co-12 col-lg-6">
+			<div class="card m-4"  style="width:350px;height:300px;">
 				<div class="card-header">
 					<i class="fas fa-chart-area me-1"></i>
 					<span class="ps-4">
@@ -33,16 +30,16 @@
 					</span>
 				</div>
 				<div class="card-body" style="width:300px;height:250px;">
-					<canvas id="LevelChart"></canvas>
+					<canvas id="LevelChart" style="margin:auto;"></canvas>
 				</div>
 
 			</div>
 
 		</div>
-		<div class="col-4">
+		<div class="co-12 col-lg-6">
 
 
-			<div class="card m-4" style="width:300px;height:300px;">
+			<div class="card m-4" style="width:350px;height:300px;">
 				<div class="card-header">
 					<i class="fas fa-chart-area me-1"></i>
 					<span class="ps-4">
@@ -50,7 +47,7 @@
 					</span>
 				</div>
 				<div class="card-body" style="width:300px;height:250px;">
-					<canvas id="AgeRangeChart"></canvas>
+					<canvas id="AgeRangeChart" style="margin:auto;"></canvas>
 				</div>
 
 			</div>
@@ -99,7 +96,7 @@
 			},
 			methods: {
 				DrawGenderChart() {
-					$('#GenderChart').replaceWith($('<canvas id="GenderChart" ></canvas>'));
+					$('#GenderChart').replaceWith($('<canvas id="GenderChart" style="margin:auto;"></canvas>'));
 					const chartElement = document.getElementById('GenderChart');
 					new Chart(chartElement, {
 						type: this.chartType,
@@ -125,7 +122,7 @@
 				},
 
 				DrawLevelChart() {
-					$('#LevelChart').replaceWith($('<canvas id="LevelChart" ></canvas>'));
+					$('#LevelChart').replaceWith($('<canvas id="LevelChart" style="margin:auto;"></canvas>'));
 
 					const chartElement = document.getElementById('LevelChart');
 					new Chart(chartElement, {
@@ -151,7 +148,7 @@
 				},
 				DrawAgeRangeChart() {
 					ChartApp.Age();
-					$('#AgeRangeChart').replaceWith($('<canvas id="AgeRangeChart" ></canvas>'));
+					$('#AgeRangeChart').replaceWith($('<canvas id="AgeRangeChart" style="margin:auto;" ></canvas>'));
 					const chartElement = document.getElementById('AgeRangeChart');
 					new Chart(chartElement, {
 						type: this.chartType,

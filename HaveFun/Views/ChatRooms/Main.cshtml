@@ -23,7 +23,7 @@
                                 :key="friend.id"
                                 :class="{ 'clearfix': true, 'active': friend.id === activeFriendId }"
                             @@click="selectFriend(friend)">
-                                <img :src="friend.avatarUrl" :alt="friend.name + '\'s avatar'">
+                                <img :src="friend.avatarUrl" >
                                 <div class="about">
                                     <div class="name">{{ friend.name }}</div>
                                     <div class="status">
@@ -42,7 +42,7 @@
                                 <div class="col-lg-6">
                                     <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
                                         <img :src="activeFriend ? activeFriend.avatarUrl : '/img/default-avatar.png'"
-                                             :alt="activeFriend ? activeFriend.name + '\'s avatar' : 'Default avatar'">
+                                             >
                                     </a>
                                     <div class="chat-about">
                                         <h6 class="m-b-0">{{ activeFriend ? activeFriend.name : 'Please select a friend' }}</h6>
@@ -62,7 +62,7 @@
                             <ul class="m-b-0" ref="chatHistoryList">
                                 <li v-for="chat in sortedChatHistory" :key="chat.id" class="clearfix">
                                     <div :class="['message-data', chat.senderId === currentUserId ? 'text-right' : '']">
-                                        <img :src="chat.senderAvatar" :alt="chat.senderId === currentUserId ? 'My Avatar' : 'Friend Avatar'" class="rounded-circle mr-1">
+                                        @* <img :src="chat.senderAvatar" :alt="chat.senderId === currentUserId ? 'My Avatar' : 'Friend Avatar'" class="rounded-circle mr-1"> *@
                                         <span class="message-data-time">{{ formatTime(chat.createTime) }}</span>
                                     </div>
                                     <div :class="['message', chat.senderId === currentUserId ? 'my-message float-right' : 'other-message']">
@@ -71,9 +71,8 @@
                                 </li>
                             </ul>
                         </div>
-                                </li>
-                            </ul>
-                        </div>
+                               
+                       
 
                         <div class="chat-message clearfix">
                             <div class="input-group mb-0">
@@ -144,7 +143,7 @@
                             name: friend.name,
                             avatarUrl: friend.profilePicture ?
                                 (friend.profilePicture.startsWith('http') ? friend.profilePicture : `/api/UserInfo/GetPicture/${friend.id}`) :
-                                '/img/default-avatar.png',
+                                '/images/NoImgSomeone.png',
                             isOnline: false,
                             status: 'offline',
                             isBlocked: friend.isBlocked
