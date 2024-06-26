@@ -1,6 +1,6 @@
 ﻿<div class="tab-pane fade" id="gt6" role="tabpanel" aria-labelledby="gt6-tab">
 	<title>您的購買記錄</title>
-    <div id="app_PayHistory">
+    <div id="app_PayHistory" class="card-container">
         <h1>會員購買記錄</h1>
         <div v-if="transactions.length === 0">
             <p>沒有找到購買紀錄。</p>
@@ -34,6 +34,7 @@
     </div>
 
 </div>
+
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -53,20 +54,70 @@
     }
 
     th {
-        background-color: #f4f4f4;
+        background-color: #FFC1E0; /* 原有表頭背景色 */
     }
 
     button {
         padding: 5px 10px;
-        background-color: #ff5722;
+        background-color: #FF0000; /* 原有按鈕背景色 */
         color: white;
         border: none;
         cursor: pointer;
     }
 
         button:hover {
-            background-color: #e64a19;
+            background-color: #e64a19; /* 原有按鈕懸停背景色 */
         }
+
+    /* 卡片樣式 */
+    .card-container {
+        background-color: #fff; /* 卡片背景色 */
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 卡片陰影 */
+        margin: 20px auto; /* 上下外邊距，水平居中 */
+        width: 90%; /* 寬度設置為父容器的 90% */
+        max-width: 1200px; /* 最大寬度 */
+        min-width: 600px; /* 最小寬度 */
+    }
+
+        .card-container h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .card-container table {
+            background-color: #fff; /* 表格背景色，與卡片一致 */
+        }
+
+        .card-container th, .card-container td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .card-container th {
+            background-color: #FFC1E0; /* 保持表頭原有顏色 */
+            color: #333;
+            font-weight: bold;
+        }
+
+        .card-container tr:nth-child(even) {
+            background-color: #f9f9f9; /* 偶數行背景色 */
+        }
+
+        .card-container button {
+            background-color: #FF0000; /* 保持按鈕原有顏色 */
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            .card-container button:hover {
+                background-color: #e64a19; /* 保持按鈕懸停顏色 */
+            }
 </style>
 
 <script>    
@@ -82,7 +133,7 @@
                 fetch(`/api/TransactionsPayApi/user/${@ViewBag.UserId}`)
                     .then(response => response.json())
                     .then(data => {
-                        this.transactions = data;
+                        this.transactions = data.sort((a, b) => new Date(b.date) - new Date(a.date));
                     })
                     .catch(error => {
                         console.error('Error fetching data:', error);
