@@ -86,9 +86,9 @@ namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
         }
 
 		[HttpGet]
-		public async Task<string> AcountStatusCount() {
-			var count0 = _context.UserInfos.Where(user=>user.AccountStatus==0).Count().ToString();
-			var count1 = _context.UserInfos.Where(user=>user.AccountStatus==1).Count().ToString();
+		public async Task<string> LevelCount() {
+			var count0 = _context.UserInfos.Where(user=>user.Level==0).Count().ToString();
+			var count1 = _context.UserInfos.Where(user=>user.Level==1).Count().ToString();
 			return count0+","+count1;
 		}
     }

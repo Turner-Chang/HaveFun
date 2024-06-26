@@ -50,7 +50,7 @@ namespace HaveFun.Models
 
         public DbSet<UserReview> UserReviews { get; set; }
         public DbSet<ConId_UserId> ConId_UserId { get; set; }
-
+        public DbSet<ManagemenLogin> ManagemenLogins { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

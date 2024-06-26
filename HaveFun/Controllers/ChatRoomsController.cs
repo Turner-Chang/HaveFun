@@ -23,7 +23,15 @@ namespace HaveFun.Controllers
             _context = context;
            
         }
-	
+		//
+		[Authorize(AuthenticationSchemes = "Bearer,Cookies")]
+		public async Task<IActionResult> Main()
+        {
+            var loginUser = Convert.ToInt32(Request.Cookies["userId"]);
+            ViewBag.UserId = loginUser;
+            var haveFunDbContext = _context.ChatRooms.Include(c => c.Receiver).Include(c => c.Sender);
+               return View(await haveFunDbContext.ToListAsync());
+        }
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             base.OnActionExecuting(context);
@@ -39,13 +47,7 @@ namespace HaveFun.Controllers
             }
         }
         //
-        [Authorize(AuthenticationSchemes = "Bearer,Cookies")]
-        public async Task<IActionResult> Main()
-        {
-            var loginUser = Convert.ToInt32(Request.Cookies["userId"]);
-            ViewBag.UserId = loginUser;
-            return View();
-        }
+        
         //
         [Authorize(AuthenticationSchemes = "Bearer,Cookies")]
         public IActionResult TRY()

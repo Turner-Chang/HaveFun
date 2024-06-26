@@ -161,6 +161,12 @@ namespace HaveFun.Controllers.APIs
                     Time = p.Time.ToString("yyyy-MM-dd HH:mm:ss"),
                     p.Pictures,
                     p.Like,
+                    Likes = p.Like.Select(l => new LikeDTO
+                    {
+                        UserId = l.User != null ? l.User.Id : 0,
+                        UserName = l.User != null ? l.User.Name : "",
+                        UserPicture = l.User != null ? l.User.ProfilePicture : ""
+                    }).ToList(),
                     Replies = p.Comments
                         .Where(c => c.ParentCommentId == null)
                         .Select(c => new
@@ -168,7 +174,7 @@ namespace HaveFun.Controllers.APIs
                             c.Id,
                             c.UserId,
                             UserName = c.User.Name,
-                            UserPicture= c.User.ProfilePicture,
+                            UserPicture = c.User.ProfilePicture,
                             c.PostId,
                             c.ParentCommentId,
                             c.Contents,
@@ -185,19 +191,27 @@ namespace HaveFun.Controllers.APIs
                                 Time = nc.Time.ToString("yyyy-MM-dd HH:mm:ss")
                             }).ToList()
                         }).ToList()
-                })
-                .ToListAsync();
+                }).ToListAsync();
+
+            //Console.WriteLine(posts);
 
             var postDTOs = posts.Select(p => new PostsDTO
             {
                 Id = p.Id,
                 UserId = p.UserId,
                 UserName = p.UserName,
-                UserPicture= string.IsNullOrEmpty(p.UserPicture) ? "" : CreatePictureUrl("GetPicture", "Profile", new { id = p.UserId }),
+                UserPicture = string.IsNullOrEmpty(p.UserPicture) ? "" : CreatePictureUrl("GetPicture", "Profile", new { id = p.UserId }),
                 Contents = p.Contents,
                 Time = p.Time,
                 PicturePath = string.IsNullOrEmpty(p.Pictures) ? "" : CreatePictureUrl("GetPostPicture", "Profile", new { id = p.Id }),
                 Like = p.Like,
+                LikeUserList = p.Likes.Select(l => new LikeDTO
+                {
+                    UserId = l.UserId ,
+                    UserName = l.UserName ,
+                    UserPicture = CreatePictureUrl("GetPicture", "Profile", new { id = l.UserId })
+                }).ToList(),
+                LikeCount = p.Likes.Count(),
                 FreindList = FriendPostList,
                 Replies = p.Replies.Select(c => new CommentsDTO
                 {

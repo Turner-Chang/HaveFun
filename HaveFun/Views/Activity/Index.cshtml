@@ -75,7 +75,7 @@
 											</div>
 											<ul class="img-stack">
 												<li v-for="participant in limitedParticipants(activity.participants)">
-													<a href="#">
+													<a :href="`/Profile/Index?userId=${participant.id}`">
 														<img :src="participant.profilePicture" alt="member-img" style="height:30px; width:30px;">
 														<div class="time-tooltip">
 															<div class="time-tooltip-holder">
@@ -86,7 +86,7 @@
 												</li>
 
 												<li v-if="remainingParticipants(activity.participants) > 0" class="bg-theme">
-													<a href="#">
+													<a>
 														{{ remainingParticipants(activity.participants) }}+
 														<div class="time-tooltip">
 															<div class="time-tooltip-holder">
@@ -179,7 +179,7 @@
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">篩選</h5>
+					<h5 class="modal-title" id="exampleModalLabel">活動篩選</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
@@ -200,8 +200,8 @@
 									<div class="banner__inputlist">
 										<select v-model="search.sortOrder">
 											<option value="">請選擇...</option>
-											<option value="mostRecent">Most Recent</option>
-											<option value="leastRecent">Least Recent</option>
+											<option value="mostRecent">最近期的活動</option>
+											<option value="leastRecent">充足時間準備</option>
 										</select>
 									</div>
 								</div>
@@ -216,7 +216,7 @@
 									</div>
 								</div>
 								<div class="col">
-								<button type="submit" class="default-btn reverse d-block" v-on:click="applyFilters"><span>Find Your Partner</span></button>
+								<button type="submit" class="default-btn reverse d-block" v-on:click="applyFilters"><span>篩選</span></button>
 								</div>
 							</div>
 						</div>
@@ -405,6 +405,11 @@
 					}
 
 					this.filteredActivities = activities;
+
+					this.search.type = '';
+					this.search.sortOrder = '';
+					this.search.sortAmount = '';
+					$('#exampleModal').modal('hide');
 				},
 			},
 			watch: {

@@ -62,7 +62,10 @@
 
 						<a class="btn nav-link" asp-area="ManagementSystem" asp-controller="Home" asp-action="RefundReview">退款審核</a>
 						
-						<a class="btn nav-link">心理測驗管理</a>
+						
+						<a class="btn nav-link" asp-area="ManagementSystem" asp-controller="Home" asp-action="Chart">圖表分析</a>
+						
+						@* <a class="btn nav-link">心理測驗管理</a> *@
 					</div>
 				</div>
 
@@ -94,7 +97,7 @@
 		</div>
 	</footer>
 	<!-- ================> Footer section end here <================== -->
-	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	<script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
 	<script>
 		const app = Vue.createApp({
 			data() {
