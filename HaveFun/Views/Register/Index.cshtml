@@ -207,7 +207,7 @@
                             }else{
                                     if (result.success === true) {
                                     this.sendEmail(result.id);
-                                    let path = '@Url.Action("SendMail", "Register")' + `?id=${result.id}`;
+                                    let path = '@Url.Action("SendMail", "Register")' + `/${result.id}`;
                                     window.location.href = path;
                                 }
                             }
