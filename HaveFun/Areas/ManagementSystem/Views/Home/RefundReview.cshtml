@@ -76,8 +76,7 @@
 
 
 <script>
-    const baseAddress = 'https://localhost:7152';
-
+    
     const app_RefundReview = Vue.createApp({
         data() {
             return {
@@ -87,7 +86,7 @@
         methods: {
             fetchRefundRequests() {
                 // 請求後端 API 獲取 Status 為 3 的退款請求
-                fetch(`${baseAddress}/api/TransactionsReviewApi?status=3`)
+                fetch(`/api/TransactionsReviewApi?status=3`)
                     .then(response => response.json())
                     .then(data => {
                         this.refundRequests = data;
@@ -126,7 +125,7 @@
             approveRefund(requestId) {
                 if (confirm("確定要核准退款嗎？")) {
                     // 更新退款請求狀態為 4（已退款）
-                    fetch(`${baseAddress}/api/TransactionsReviewApi/${requestId}/approve`, {
+                    fetch(`/api/TransactionsReviewApi/${requestId}/approve`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json'
@@ -150,7 +149,7 @@
             rejectRefund(requestId) {
                 if (confirm("確定要退回退款請求嗎？")) {
                     // 更新退款請求狀態為 0（失敗）
-                    fetch(`${baseAddress}/api/TransactionsReviewApi/${requestId}/reject`, {
+                    fetch(`/api/TransactionsReviewApi/${requestId}/reject`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json'

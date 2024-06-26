@@ -79,7 +79,7 @@
         methods: {
             fetchTransactions() {
                 // 請求後端 API 獲取購買紀錄
-                fetch(`${baseAddress}/api/TransactionsPayApi/user/${@ViewBag.UserId}`)
+                fetch(`/api/TransactionsPayApi/user/${@ViewBag.UserId}`)
                     .then(response => response.json())
                     .then(data => {
                         this.transactions = data;
