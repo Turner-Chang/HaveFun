@@ -1,35 +1,60 @@
 ﻿<div class="container" id="ChartApp">
 	<h2 class="text-center">圖表分析</h2>
 	總人數 : {{countUser}}
-	男女比 {{countMale}} :  {{countFeMale}}
-	課金比 {{countMoneyLevel}}:{{countNoMoneyLevel}}
-	年齡分布 ~20  20~30  30~40 40~50 50~
-	<div class="row">
-		
-		<div class="" style="width:250px;" >
-			<div class="card mb-4" style="height:250px;">
-				<div class="card-header">
-					<i class="fas fa-chart-area me-1"></i>
-					使用者男女比
-				</div>
-				<div class="card-body">
-					<canvas id="GenderChart" height="250px"></canvas>
-				</div>
-			<button class="btn btn-success" @@click="changeStyle(1)">圓餅/長條切換</button>
-			</div>
-		</div>
 
-		<div class="" style="width:250px;">
-			<div class="card mb-4" style="height:250px;">
+	<br />
+	<button class="btn btn-success m-3" @@click="changeStyle()">圓餅/長條切換</button>
+	<div class="row">
+		<div class="col-4">
+
+
+			<div class="card m-4" style="width:300px;height:300px;">
 				<div class="card-header">
 					<i class="fas fa-chart-area me-1"></i>
-					付費比
+					<span class="ps-4">
+						使用者男女比  {{fixed(countMale/countFeMale)}} :  1
+					</span>
 				</div>
-				<div class="card-body">
+				<div class="card-body" style="width:300px;height:250px;">
+					<canvas id="GenderChart"></canvas>
+				</div>
+
+			</div>
+
+		</div>
+		<div class="col-4">
+
+
+			<div class="card m-4" style="width:300px;height:300px;">
+				<div class="card-header">
+					<i class="fas fa-chart-area me-1"></i>
+					<span class="ps-4">
+						付費比 : {{countMoneyLevel/(countUser)*100}}%
+					</span>
+				</div>
+				<div class="card-body" style="width:300px;height:250px;">
 					<canvas id="LevelChart"></canvas>
 				</div>
-				<button class="btn btn-success" @@click="changeStyle(2)">圓餅/長條切換</button>
+
 			</div>
+
+		</div>
+		<div class="col-4">
+
+
+			<div class="card m-4" style="width:300px;height:300px;">
+				<div class="card-header">
+					<i class="fas fa-chart-area me-1"></i>
+					<span class="ps-4">
+						年齡分佈
+					</span>
+				</div>
+				<div class="card-body" style="width:300px;height:250px;">
+					<canvas id="AgeRangeChart"></canvas>
+				</div>
+
+			</div>
+
 		</div>
 	</div>
 
@@ -44,11 +69,11 @@
 		const ChartApp = Vue.createApp({
 			data() {
 				return {
-					genderArr:[],
-					LevelArr:[],
-					UserArr:[],
+					UserArr: [],
 					NoBlockUserArr: [],
-					chartType:'bar',
+					chartType: 'bar',
+					ageArr: [],
+					ageRangeArr: [],
 				}
 			},
 			computed: {
@@ -61,19 +86,20 @@
 				countMale() {
 					return this.NoBlockUserArr.filter(i => i.gender == 0).length;
 				},
+
 				countFeMale() {
 					return this.NoBlockUserArr.filter(i => i.gender == 1).length;
+				}, untMaleFemalePercent() {
+					return (this.countMale / (this.countUser - this.countMale)).toFixed(2);
 				},
 				countMoneyLevel() {
-					return this.NoBlockUserArr.filter(i => i.level == 0).length;
-				},
-				countNoMoneyLevel() {
 					return this.NoBlockUserArr.filter(i => i.level == 1).length;
-				}
+				},
+
 			},
 			methods: {
 				DrawGenderChart() {
-					$('#GenderChart').replaceWith($('<canvas id="GenderChart" height="250px"></canvas>'));
+					$('#GenderChart').replaceWith($('<canvas id="GenderChart" ></canvas>'));
 					const chartElement = document.getElementById('GenderChart');
 					new Chart(chartElement, {
 						type: this.chartType,
@@ -87,15 +113,23 @@
 								data: [this.countMale, this.countFeMale],
 							}]
 						},
+						options: {
+							scale: {
+								ticks: {
+									precision: 0
+								}
+							},
+						}
+
 					});
 				},
 
 				DrawLevelChart() {
-					$('#LevelChart').replaceWith($('<canvas id="LevelChart" height="250px"></canvas>'));
+					$('#LevelChart').replaceWith($('<canvas id="LevelChart" ></canvas>'));
 
 					const chartElement = document.getElementById('LevelChart');
 					new Chart(chartElement, {
-						type: 'pie',
+						type: this.chartType,
 						data: {
 							labels: [
 								'免費',
@@ -103,36 +137,89 @@
 							],
 							datasets: [{
 								label: '人數',
-								data: [this.countMoneyLevel, this.countNoMoneyLevel],
+								data: [this.countUser - this.countMoneyLevel, this.countMoneyLevel],
 							}]
 						},
+						options: {
+							scale: {
+								ticks: {
+									precision: 0
+								}
+							}
+						}
 					});
 				},
+				DrawAgeRangeChart() {
+					ChartApp.Age();
+					$('#AgeRangeChart').replaceWith($('<canvas id="AgeRangeChart" ></canvas>'));
+					const chartElement = document.getElementById('AgeRangeChart');
+					new Chart(chartElement, {
+						type: this.chartType,
+						data: {
+							labels: ['0-10', '10-20', '20-30', '30-40', '40-50', '50-60', '60-70', '70up']
+							,
+							datasets: [{
+								label: '人數',
+								data: this.ageRangeArr,
+							}]
+
+						},
+						options: {
+							scale: {
+								ticks: {
+									precision: 0
+								}
+							}
+						}
+					});
+				},
+
 				changeStyle(id) {
 					if (this.chartType == 'bar') {
 						this.chartType = 'pie';
 					}
 					else {
-						this.chartType = 'bar';	
+						this.chartType = 'bar';
 					}
-					this.ChoiseChart(id);
+					this.DrawGenderChart();
+					this.DrawLevelChart();
+					this.DrawAgeRangeChart();
+
 				},
-				ChoiseChart(id) {
-					if (id == 1)
-						this.DrawGenderChart();
-					if (id == 2)
-						this.DrawLevelChart();
+				Age() {
+					this.NoBlockUserArr.forEach((i, index) => {
+						var age = Math.floor((new Date - new Date(i.birthDay)) / (1000 * 60 * 60 * 24 * 365.25))
+						this.ageArr[index] = age;
+					});
+					this.ageArr = this.ageArr.map(age => Math.floor(age / 10));
+					this.ageRangeArr = [
+						this.ageArr.filter(age => age == 0).length,
+						this.ageArr.filter(age => age == 1).length,
+						this.ageArr.filter(age => age == 2).length,
+						this.ageArr.filter(age => age == 3).length,
+						this.ageArr.filter(age => age == 4).length,
+						this.ageArr.filter(age => age == 5).length,
+						this.ageArr.filter(age => age == 6).length,
+						this.ageArr.filter(age => age == 7).length,
+						this.ageArr.filter(age => age > 7).length,
+
+					]
+				},
+				fixed(num) {
+					return num.toFixed(2);
 				}
+				,
 			},
 
-			mounted() { 
+			mounted() {
 
 				axios.get('/api/UserInfo/GetAll').then(d => d.data).then(d => ChartApp.UserArr = d)
 					.then(d => ChartApp.filterStatus)
 					.then(d => ChartApp.DrawGenderChart())
 					.then(d => ChartApp.DrawLevelChart())
+					.then(d => ChartApp.DrawAgeRangeChart())
 
-					
+
 			},
 		}).mount("#ChartApp");
 	</script>
