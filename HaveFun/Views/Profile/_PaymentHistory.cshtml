@@ -136,7 +136,7 @@
             refund(transactionId) {
 				if (confirm("確定要退款嗎？")) {
 					// 將狀態更新為 3 (審核中)
-                    fetch(`${baseAddress}/api/TransactionsPayApi/${transactionId}/status`, {
+                    fetch(`/api/TransactionsPayApi/${transactionId}/status`, {
 						method: 'PATCH',
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify(3) // 更新狀態為審核中
