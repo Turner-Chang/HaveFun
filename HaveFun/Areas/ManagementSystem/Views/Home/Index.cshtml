@@ -84,7 +84,7 @@
                     付費比
                 </div>
                 <div class="card-body">
-                    <canvas id="AccountStatusChart"></canvas>
+                    <canvas id="LevelChart"></canvas>
                 </div>
             </div>
         </div>
@@ -105,7 +105,7 @@
                         ActReviewCount:0,
                         //tempNum:0,
                         genderArr:[],
-                        AcountStatusArr:[],
+                        LevelArr:[],
                     }
                 },
                 computed: {
@@ -137,8 +137,8 @@
                         });
                     },
 
-                    DrawAccountStatusChart() {
-                        const chartElement = document.getElementById('AccountStatusChart');
+                    DrawLevelChart() {
+                        const chartElement = document.getElementById('LevelChart');
                         new Chart(chartElement, {
                             type: 'pie',
                             data: {
@@ -148,7 +148,7 @@
                                 ],
                                 datasets: [{
                                     label: '人數',
-                                    data: AcountStatusArr,
+                                    data: LevelArr,
                                 }]
                             },
                         });
@@ -194,11 +194,11 @@
                         .then(d => genderArr = d)
                         .then(d => HomeApp.DrawGenderChart())
 
-                    fetch(`/api/UserInfo/AcountStatusCount`, { method: "GET" })
+                    fetch(`/api/UserInfo/LevelCount`, { method: "GET" })
                         .then(r => r.text())
                         .then(d => d.split(","))
-                        .then(d => AcountStatusArr = d)
-                        .then(d => HomeApp.DrawAccountStatusChart())
+                        .then(d => LevelArr = d)
+                        .then(d => HomeApp.DrawLevelChart())
                     
                     
 

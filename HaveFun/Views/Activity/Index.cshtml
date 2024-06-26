@@ -15,7 +15,7 @@
 
 <div id="activityApp">
 	<!-- ================> Page Header section start here <================== -->
-	<div class="pageheader bg_img" style="background-image: url(assets/images/bg-img/pageheader.jpg);">
+	<div class="pageheader bg_img" style="background-image: url(/assets/images/bg-img/pageheader.jpg);">
 		<div class="container">
 			<div class="pageheader__content text-center">
 				<h2>All Activities</h2>
@@ -30,20 +30,20 @@
 	</div>
 	<!-- ================> Member section start here <================== -->
 	<div class="row">
-		<div class="member story story--style2 padding-top padding-bottom overflow-hidden col-lg-9" style="outline: 2px solid red; padding-top: 20px;">
+		<div class="member story story--style2 padding-top padding-bottom overflow-hidden col-lg-9" style="border-right: 2px solid grey; padding-top: 20px; margin-top: 20px;">
 			<div class="overflow-hidden">
 				<a type="button" class="default-btn float-end" style="background-color:#f24570; color:white; margin-right: 20px;" asp-controller="Activity" asp-action="Create"><b>主辦活動 <i class="fa-solid fa-plus"></i></b></a>
 			</div>
-			<div class="container" style="outline: 2px solid blue;">
+			<div class="container" style="/* outline: 2px solid blue; */">
 				<div class="section__wrapper">
 					<div class="member__info mb-4">
 						<div class="member__info--left">
 							<div class="member__info--filter">
-								<div class="default-btn" data-bs-toggle="modal" data-bs-target="#exampleModal"><span>Filter Your Search <i class="fa-solid fa-sliders"></i></span></div>
+								<div class="default-btn" data-bs-toggle="modal" data-bs-target="#exampleModal"><span>篩選 <i class="fa-solid fa-sliders"></i></span></div>
 							</div>
 							<div class="member__info--count">
-								<div class="default-btn"><span>All Activities</span></div>
-								<p>{{activities.length}}</p>
+								<div class="default-btn"><span>All Upcoming Activities</span></div>
+								<p>{{filteredActivities.length}}</p>
 							</div>
 						</div>
 						@* <div class="member__info--right">
@@ -59,15 +59,15 @@
 						</div> *@
 					</div>
 					<div class="row g-4 justify-content-left row-cols-lg-3 row-cols-sm-2 row-cols-1">
-						<div class="col" v-for="activity in sortActivityTime.slice(pageStart,pageEnd)" :id="activity.id">
+						<div class="col" v-for="activity in filteredActivities.slice(pageStart,pageEnd)" :id="activity.id">
 							<div class="story__item style2 story--theme-color">
 								<div class="story__inner">
 									<div class="story__thumb position-relative">
-										<a href="group-single.html"><img :src=`${baseAddress}/api/ActivityApi/GetPicture/${activity.id}` alt="dating thumb" style="height:160px;width:280px"></a>
+										<a :href="`/Activity/Detail/${activity.id}`"><img :src=`${baseAddress}/api/ActivityApi/GetPicture/${activity.id}` alt="dating thumb" style="height:160px;width:280px"></a>
 										<span class="member__activity member__activity--ofline">{{activity.pastDay}} days ago</span>
 									</div>
 									<div class="story__content px-0 pb-0">
-										<a href="group-single.html"><h4>{{activity.title}}</h4></a>
+										<a :href="`/Activity/Detail/${activity.id}`"><h4>{{activity.title}}</h4></a>
 										<p class="card-text">{{activity.content}}</p>
 										<div class="story__content--author justify-content-between border-top pt-3">
 											<div class="story__content--content">
@@ -75,7 +75,7 @@
 											</div>
 											<ul class="img-stack">
 												<li v-for="participant in limitedParticipants(activity.participants)">
-													<a href="#">
+													<a :href="`/Profile/Index?userId=${participant.id}`">
 														<img :src="participant.profilePicture" alt="member-img" style="height:30px; width:30px;">
 														<div class="time-tooltip">
 															<div class="time-tooltip-holder">
@@ -86,7 +86,7 @@
 												</li>
 
 												<li v-if="remainingParticipants(activity.participants) > 0" class="bg-theme">
-													<a href="#">
+													<a>
 														{{ remainingParticipants(activity.participants) }}+
 														<div class="time-tooltip">
 															<div class="time-tooltip-holder">
@@ -105,7 +105,7 @@
 					</div>
 					<div class="member__pagination mt-4">
 						<div class="member__pagination--left">
-							<p>Viewing {{pageStart + 1}} - {{pageEnd}} of {{activities.length}} Activities</p>
+							<p>Viewing {{pageStart + 1}} - {{pageEnd}} of {{filteredActivities.length}} Activities</p>
 						</div>
 						<div class="member__pagination--right">
 							<ul class="default-pagination">
@@ -127,15 +127,15 @@
 		<div class="col-lg-3 p-4">
 			<h3>歷史活動</h3>
 			<div class="row g-4 row-cols-lg-1 row-cols-sm-2 row-cols-1">
-				<div class="col" v-for="activity in activities.slice(pageStart,pageEnd)" :id="activity.id">
+				<div class="col" v-for="activity in pastActivities" :id="activity.id">
 					<div class="story__item style2 story--theme-color">
 						<div class="story__inner">
 							<div class="story__thumb position-relative">
-								<a href="group-single.html"><img :src=`${baseAddress}/api/ActivityApi/GetPicture/${activity.id}` alt="dating thumb" style="height:160px;width:280px"></a>
+								<a :href="`/Activity/Detail/${activity.id}`"><img :src=`${baseAddress}/api/ActivityApi/GetPicture/${activity.id}` alt="dating thumb" style="height:160px;width:280px"></a>
 								<span class="member__activity member__activity--ofline">{{activity.pastDay}} days ago</span>
 							</div>
 							<div class="story__content px-0 pb-0">
-								<a href="group-single.html"><h4>{{activity.title}}</h4></a>
+								<a :href="`/Activity/Detail/${activity.id}`"><h4>{{activity.title}}</h4></a>
 								<p class="card-text">{{activity.content}}</p>
 								<div class="story__content--author justify-content-between border-top pt-3">
 									<div class="story__content--content">
@@ -179,19 +179,18 @@
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Filter your search</h5>
+					<h5 class="modal-title" id="exampleModalLabel">活動篩選</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-					<form action="#">
 						<div class="banner__list">
 							<div class="row align-items-center row-cols-1">
 								<div class="col">
 									<label>活動種類</label>
 									<div class="banner__inputlist">
-										<select v-model="selectedActivityTypes">
-											<option  disabled value="">Select Category...</option>
-											<option v-for="activityType in activityTypes" :key="activityType.id" :value="activityType.id">{{activityType.typeName}}</option>
+										<select v-model="search.type">
+											<option value="">請選擇...</option>
+											<option v-for="activityType in activityTypes" :key="activityType.id" :value="activityType.typeName">{{activityType.typeName}}</option>
 											
 										</select>
 									</div>
@@ -200,71 +199,27 @@
 									<label>排序依據</label>
 									<div class="banner__inputlist">
 										<select v-model="search.sortOrder">
-											<option value="mostRecent">Most Recent</option>
-											<option value="leastRecent">Least Recent</option>
+											<option value="">請選擇...</option>
+											<option value="mostRecent">最近期的活動</option>
+											<option value="leastRecent">充足時間準備</option>
 										</select>
 									</div>
 								</div>
 								<div class="col">
 									<label>依預算排序</label>
 									<div class="banner__inputlist">
-										<select v-model="sortAmount" @@change="">
+										<select v-model="search.sortAmount">
+											<option value="">請選擇...</option>
 											<option value="amountAsc">從小到大</option>
 											<option value="amountDesc">從大到小</option>
 										</select>
 									</div>
 								</div>
 								<div class="col">
-									<label>Looking for</label>
-									<div class="banner__inputlist">
-										<select>
-											<option>Select Gender</option>
-											<option value="male">Male</option>
-											<option value="female" selected>Female</option>
-											<option value="others">Others</option>
-										</select>
-									</div>
-								</div>
-								<div class="col">
-									<label>Age</label>
-									<div class="row g-3">
-										<div class="col-6">
-											<div class="banner__inputlist">
-												<select>
-													<option value="18" selected>18</option>
-													<option value="19">19</option>
-													<option value="20">20</option>
-												</select>
-											</div>
-										</div>
-										<div class="col-6">
-											<div class="banner__inputlist">
-												<select>
-													<option value="18">18</option>
-													<option value="19">19</option>
-													<option value="20">20</option>
-												</select>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col">
-									<label>Country</label>
-									<div class="banner__inputlist">
-										<select id="country2" name="country2">
-											<option value="Afganistan">Afghanistan</option>
-											<option value="Albania">Albania</option>
-											<option value="Algeria">Algeria</option>
-											<option value="American Samoa">American Samoa</option>
-										</select>
-									</div>
-								</div>
-								<div class="col">
-									<button type="submit" class="default-btn reverse d-block"><span>Find Your Partner</span></button>
+								<button type="submit" class="default-btn reverse d-block" v-on:click="applyFilters"><span>篩選</span></button>
 								</div>
 							</div>
 						</div>
-					</form>
 				</div>
 			</div>
 		</div>
@@ -295,20 +250,20 @@
 				return {
 					baseAddress: "https://localhost:7152",
 					activities:[],
-					perpage: 4,
-					currentPage: 1,
-					
+					perpage: 6,
+					currentPage: 1,					
 					activityTypes:[],
-					selectedActivityTypes: '',
 					search: {
-						sortOrder: 'mostRecent',
-						sortAmount: 'asc'
+						sortOrder: '',
+						sortAmount: '',
+						type:'',
 					},
+					filteredActivities:[],
 				}
 			},
 			computed: {
 				totalPage() {
-					return Math.ceil(this.activities.length / this.perpage)
+					return Math.ceil(this.filteredActivities.length / this.perpage)
 					//Math.ceil()取最小整數
 				},
 				pageStart() {
@@ -316,25 +271,60 @@
 					//取得該頁第一個值的index
 				},
 				pageEnd() {
-					const remainder = this.activities.length - this.currentPage * this.perpage
-					return remainder > 0 ? this.currentPage * this.perpage : this.activities.length;
+					const remainder = this.filteredActivities.length - this.currentPage * this.perpage
+					return remainder > 0 ? this.currentPage * this.perpage : this.filteredActivities.length;
 					//取得該頁最後一個值的index
 				},
-				sortActivityTime() {
-					let _this = this;
+				// sortActivityTime() {
+				// 	let _this = this.upcomingActivities;
 
-					if (this.search.sortOrder != "") {
-						return this.activities.sort((a, b) => {
-							if (this.search.sortOrder === 'leastRecent') {
-								return new Date(b.activityTime) - new Date(a.activityTime);
-							}
-							else {
-								return new Date(a.activityTime) - new Date(b.activityTime);
-							}
-						});
-					}
-					return _this;
-				}
+				// 	if (this.search.sortOrder != "") {
+				// 		return this.upcomingActivities.sort((a, b) => {
+				// 			if (this.search.sortOrder === 'leastRecent') {
+				// 				return new Date(b.activityTime) - new Date(a.activityTime);
+				// 			}
+				// 			else {
+				// 				return new Date(a.activityTime) - new Date(b.activityTime);
+				// 			}
+				// 		});
+				// 	}
+				// 	return _this;
+				// },
+				// filterType() {
+				// 	let _this = this.sortActivityTime;
+				// 	if (this.search.type != '') {
+				// 		return this.sortActivityTime.filter(a => a.activityTypeName == this.search.type);
+				// 	}
+				// 	return _this;
+				// },
+				// sortAmout() { 
+				// 	let _this = this.filterType;
+				// 	if (this.search.sortAmount != '') {
+				// 		return this.filterType.sort((a, b) => {
+				// 			if (this.search.sortAmount === 'amountAsc') {
+				// 				return a.amount - b.amount
+				// 			}
+				// 			else {
+				// 				return b.amount - a.amount;
+				// 			}
+				// 		});
+				// 	}
+				// 	return _this;
+				// },
+				pastActivities() 
+				{
+					const now = new Date();
+					return this.activities.filter(activity => {
+						return new Date(activity.activityTime) <= now;
+					});
+				},
+				upcomingActivities() 
+				{
+					const now = new Date();
+					return this.activities.filter(activity => {
+						return new Date(activity.activityTime) > now;
+					});
+				},
 			},
 			methods: {
 				getActivities()
@@ -344,6 +334,9 @@
 						.then(response => { 
 							this.activities = response.data;
 							this.processProfilePictures();
+						})
+						.then(() => { 
+							this.applyFilters();
 						})
 						.catch(err => alert(err));
 				},
@@ -381,7 +374,43 @@
 							this.activityTypes = response.data;
 						})
 						.catch(err => alert(err));
-				}
+				},
+				applyFilters() {
+					let activities = this.upcomingActivities;
+					// 按活动时间排序
+					if (this.search.sortOrder != '') {
+						activities = activities.sort((a, b) => {
+							if (this.search.sortOrder === 'leastRecent') {
+								return new Date(b.activityTime) - new Date(a.activityTime);
+							} else {
+								return new Date(a.activityTime) - new Date(b.activityTime);
+							}
+						});
+					}
+
+					// 按活动类型筛选
+					if (this.search.type != '') {
+						activities = activities.filter(a => a.activityTypeName === this.search.type);
+					}
+
+					// 按预算排序
+					if (this.search.sortAmount != '') {
+						activities = activities.sort((a, b) => {
+							if (this.search.sortAmount === 'amountAsc') {
+								return a.amount - b.amount;
+							} else {
+								return b.amount - a.amount;
+							}
+						});
+					}
+
+					this.filteredActivities = activities;
+
+					this.search.type = '';
+					this.search.sortOrder = '';
+					this.search.sortAmount = '';
+					$('#exampleModal').modal('hide');
+				},
 			},
 			watch: {
 			},
