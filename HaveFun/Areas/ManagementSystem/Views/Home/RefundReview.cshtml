@@ -23,7 +23,7 @@
                     <td>{{ formatDate(request.date) }}</td>
                     <td>{{ formatCurrency(request.amount) }}</td>
                     <td>{{ getProductDisplayName(request.product) }}</td>
-                    <td>{{ getPaymentMethod(request.paymentMethod) }}</td>
+                    <td>{{ getPaymentMethod(request.method) }}</td>
                     <td>
                         <button type="button" class="btn btn-primary" @@click="approveRefund(request.id)">核准</button>
                         <button type="button" class="btn btn-danger" @@click="rejectRefund(request.id)">退回</button>
@@ -112,18 +112,16 @@
                     return "未知產品";
                 }
             },
-            getPaymentMethod(paymentMethod) {
-                // 假設 paymentMethod 是退款請求中包含的付款方式屬性
-                switch (paymentMethod) {
-                    case 0:
-                        return "信用卡";
-                    case 1:
-                        return "街口支付";
-                    case 2:
-                        return "LINE PAY";
-                    default:
-                        return "未知";
-                }
+            getPaymentMethod(methodId) {                
+                if (methodId === 0) {
+                    return "信用卡";
+                } else if (methodId === 1) {
+                    return "街口支付";
+                } else if (methodId === 2) {
+                    return "LINE PAY";
+                } else {
+                    return "其他付款方式";
+                }                    
             },
             approveRefund(requestId) {
                 if (confirm("確定要核准退款嗎？")) {

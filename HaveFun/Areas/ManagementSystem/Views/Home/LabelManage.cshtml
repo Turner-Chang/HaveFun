@@ -226,6 +226,7 @@
                 axios.delete(`${baseAddress}/api/LabelsManageApi/${id}`)
                     .then(() => {
                         this.labels = this.labels.filter(label => label.id !== id);
+                        alert("標籤刪除成功");
                     })
                     .catch(error => {
                         console.error("刪除標籤時發生錯誤:", error);
@@ -237,6 +238,7 @@
                     .then(response => {
                         this.labels.push(response.data);
                         this.hideLabelForm();
+                        alert("新增標籤成功");
                     })
                     .catch(error => {
                         if (error.response && error.response.status === 409) {
@@ -262,6 +264,7 @@
                     .then(() => {
                         this.categories = this.categories.filter(category => category.id !== id);
                         this.labels = this.labels.filter(label => label.categoryId !== id);
+                        alert("刪除標籤種類成功");
                     })
                     .catch(error => {
                         console.error("刪除標籤種類時發生錯誤:", error);
@@ -273,6 +276,7 @@
                     .then(response => {
                         this.categories.push(response.data);
                         this.hideCategoryForm();
+                        alert("新增標籤種類成功");
                     })
                     .catch(error => {
                         if (error.response && error.response.status === 409) {
