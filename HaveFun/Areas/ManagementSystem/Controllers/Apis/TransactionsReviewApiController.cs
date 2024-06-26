@@ -37,7 +37,8 @@ namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
                     Amount = t.Amount,
                     Product = t.Product,
                     Date = t.Date,
-                    Status = t.Status
+                    Status = t.Status,
+                    Method = t.Method
                 }).ToListAsync();
 
             return refundRequests;
