@@ -19,5 +19,6 @@ namespace HaveFun.Areas.ManagementSystem.DTOs
 
 		public DateTime Date { get; set; }
 		public int Status { get; set; }
-	}
+        public int Method { get; set; }
+    }
 }

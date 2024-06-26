@@ -23,7 +23,7 @@
                     <td>{{ formatDate(request.date) }}</td>
                     <td>{{ formatCurrency(request.amount) }}</td>
                     <td>{{ getProductDisplayName(request.product) }}</td>
-                    <td>{{ getPaymentMethod(request.paymentMethod) }}</td>
+                    <td>{{ getPaymentMethod(request.method) }}</td>
                     <td>
                         <button type="button" class="btn btn-primary" @@click="approveRefund(request.id)">核准</button>
                         <button type="button" class="btn btn-danger" @@click="rejectRefund(request.id)">退回</button>
@@ -76,8 +76,7 @@
 
 
 <script>
-    const baseAddress = 'https://localhost:7152';
-
+    
     const app_RefundReview = Vue.createApp({
         data() {
             return {
@@ -87,7 +86,7 @@
         methods: {
             fetchRefundRequests() {
                 // 請求後端 API 獲取 Status 為 3 的退款請求
-                fetch(`${baseAddress}/api/TransactionsReviewApi?status=3`)
+                fetch(`/api/TransactionsReviewApi?status=3`)
                     .then(response => response.json())
                     .then(data => {
                         this.refundRequests = data;
@@ -112,23 +111,21 @@
                     return "未知產品";
                 }
             },
-            getPaymentMethod(paymentMethod) {
-                // 假設 paymentMethod 是退款請求中包含的付款方式屬性
-                switch (paymentMethod) {
-                    case 0:
-                        return "信用卡";
-                    case 1:
-                        return "街口支付";
-                    case 2:
-                        return "LINE PAY";
-                    default:
-                        return "未知";
-                }
+            getPaymentMethod(methodId) {                
+                if (methodId === 0) {
+                    return "信用卡";
+                } else if (methodId === 1) {
+                    return "街口支付";
+                } else if (methodId === 2) {
+                    return "LINE PAY";
+                } else {
+                    return "其他付款方式";
+                }                    
             },
             approveRefund(requestId) {
                 if (confirm("確定要核准退款嗎？")) {
                     // 更新退款請求狀態為 4（已退款）
-                    fetch(`${baseAddress}/api/TransactionsReviewApi/${requestId}/approve`, {
+                    fetch(`/api/TransactionsReviewApi/${requestId}/approve`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json'
@@ -152,7 +149,7 @@
             rejectRefund(requestId) {
                 if (confirm("確定要退回退款請求嗎？")) {
                     // 更新退款請求狀態為 0（失敗）
-                    fetch(`${baseAddress}/api/TransactionsReviewApi/${requestId}/reject`, {
+                    fetch(`/api/TransactionsReviewApi/${requestId}/reject`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json'

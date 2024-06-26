@@ -165,7 +165,17 @@ namespace HaveFun.Controllers.APIs
 
             return NoContent();
         }
-     
+        [HttpGet("GetAllChatHistory/{user1Id}/{user2Id}")]
+        public async Task<ActionResult<IEnumerable<ChatRoom>>> GetAllChatHistory(int user1Id, int user2Id)
+        {
+            var chatHistory = await _context.ChatRooms
+                .Where(c => (c.User1Id == user1Id && c.User2Id == user2Id) || (c.User1Id == user2Id && c.User2Id == user1Id))
+                .OrderBy(c => c.CreateTime)
+                .ToListAsync();
+
+            return chatHistory;
+        }
+
         private bool ChatRoomExists(int id)
         {
             return _context.ChatRooms.Any(e => e.Id == id);

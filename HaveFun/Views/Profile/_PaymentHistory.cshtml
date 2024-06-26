@@ -13,6 +13,7 @@
                         <th>購買品項</th>
                         <th>購買金額</th>
                         <th>購買狀態</th>
+                        <th>付款方式</th>
                         <th>操作</th>
                     </tr>
                 </thead>
@@ -22,6 +23,7 @@
                         <td>{{ getProductDisplayName(transaction.product) }}</td>                        
                         <td>{{ formatCurrency(transaction.amount) }}</td>
                         <td>{{ getStatusDisplay(transaction.status) }}</td>
+                        <td>{{ getPaymentMethod(transaction.method) }}</td>
                         <td v-if="transaction.status === 0" >
                             <button @@click="refund(transaction.id)">退款申請</button>
                         </td>
@@ -77,7 +79,7 @@
         methods: {
             fetchTransactions() {
                 // 請求後端 API 獲取購買紀錄
-                fetch(`${baseAddress}/api/TransactionsPayApi/user/${@ViewBag.UserId}`)
+                fetch(`/api/TransactionsPayApi/user/${@ViewBag.UserId}`)
                     .then(response => response.json())
                     .then(data => {
                         this.transactions = data;
@@ -103,6 +105,17 @@
                     return "未知產品";
                 }
             },
+            getPaymentMethod(methodId) {
+                if (methodId === 0) {
+                    return "信用卡";
+                } else if (methodId === 1) {
+                    return "街口支付";
+                } else if (methodId === 2) {
+                    return "LINE PAY";
+                } else {
+                    return "其他付款方式";
+                }
+            },
             getStatusDisplay(status) {
                 // 根據 Status 返回對應的顯示文本
                 switch (status) {
@@ -123,7 +136,7 @@
             refund(transactionId) {
 				if (confirm("確定要退款嗎？")) {
 					// 將狀態更新為 3 (審核中)
-                    fetch(`${baseAddress}/api/TransactionsPayApi/${transactionId}/status`, {
+                    fetch(`/api/TransactionsPayApi/${transactionId}/status`, {
 						method: 'PATCH',
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify(3) // 更新狀態為審核中
