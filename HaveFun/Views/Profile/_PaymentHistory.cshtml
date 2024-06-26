@@ -1,30 +1,40 @@
 ﻿<div class="tab-pane fade" id="gt6" role="tabpanel" aria-labelledby="gt6-tab">
-	<title>會員購買記錄</title>
-    <div id="app_PayHistory">
+	<title>您的購買記錄</title>
+    <div id="app_PayHistory" class="card-container">
         <h1>會員購買記錄</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>日期時間</th>
-                    <th>購買品項</th>
-                    <th>購買金額</th>
-                    <th>操作</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="transaction in transactions" :key="transaction.id">
-                    <td>{{ formatDate(transaction.date) }}</td>
-                    <td>{{ transaction.productName }}</td>
-                    <td>{{ formatCurrency(transaction.amount) }}</td>
-                    <td>
-                        <button @@click="refund(transaction.id)">退款</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div v-if="transactions.length === 0">
+            <p>沒有找到購買紀錄。</p>
+        </div>
+        <div v-else>
+            <table>
+                <thead>
+                    <tr>
+                        <th>購買日期</th>
+                        <th>購買品項</th>
+                        <th>購買金額</th>
+                        <th>購買狀態</th>
+                        <th>付款方式</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="transaction in transactions" :key="transaction.id">
+                        <td>{{ formatDate(transaction.date) }}</td>
+                        <td>{{ getProductDisplayName(transaction.product) }}</td>                        
+                        <td>{{ formatCurrency(transaction.amount) }}</td>
+                        <td>{{ getStatusDisplay(transaction.status) }}</td>
+                        <td>{{ getPaymentMethod(transaction.method) }}</td>
+                        <td v-if="transaction.status === 0" >
+                            <button @@click="refund(transaction.id)">退款申請</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
 </div>
+
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -44,27 +54,164 @@
     }
 
     th {
-        background-color: #f4f4f4;
+        background-color: #FFC1E0; /* 原有表頭背景色 */
     }
 
     button {
         padding: 5px 10px;
-        background-color: #ff5722;
+        background-color: #FF0000; /* 原有按鈕背景色 */
         color: white;
         border: none;
         cursor: pointer;
     }
 
         button:hover {
-            background-color: #e64a19;
+            background-color: #e64a19; /* 原有按鈕懸停背景色 */
         }
-</style>
-<script>
-    var app_PayHistory = Vue.createApp({
-        data() { },
-        methods: {},
-        mounted() { },
-    }).mount("#app_PayHistory");
 
+    /* 卡片樣式 */
+    .card-container {
+        background-color: #fff; /* 卡片背景色 */
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 卡片陰影 */
+        margin: 20px auto; /* 上下外邊距，水平居中 */
+        width: 90%; /* 寬度設置為父容器的 90% */
+        max-width: 1200px; /* 最大寬度 */
+        min-width: 600px; /* 最小寬度 */
+    }
+
+        .card-container h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .card-container table {
+            background-color: #fff; /* 表格背景色，與卡片一致 */
+        }
+
+        .card-container th, .card-container td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .card-container th {
+            background-color: #FFC1E0; /* 保持表頭原有顏色 */
+            color: #333;
+            font-weight: bold;
+        }
+
+        .card-container tr:nth-child(even) {
+            background-color: #f9f9f9; /* 偶數行背景色 */
+        }
+
+        .card-container button {
+            background-color: #FF0000; /* 保持按鈕原有顏色 */
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            .card-container button:hover {
+                background-color: #e64a19; /* 保持按鈕懸停顏色 */
+            }
+</style>
+
+<script>    
+    var app_PayHistory = Vue.createApp({
+        data() {
+            return {
+                transactions: [] // 存儲交易記錄
+            };
+        },
+        methods: {
+            fetchTransactions() {
+                // 請求後端 API 獲取購買紀錄
+                fetch(`/api/TransactionsPayApi/user/${@ViewBag.UserId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        this.transactions = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                    });
+            },
+            formatDate(date) {
+                const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+                return new Date(date).toLocaleString('zh-Hant', options);
+            },
+            formatCurrency(amount) {
+                return new Intl.NumberFormat('zh-Hant', { style: 'currency', currency: 'TWD' }).format(amount);
+            },
+            getProductDisplayName(productId) {
+                // 根據產品 ID 返回對應的顯示名稱
+                if (productId === 0) {
+                    return "白金會員";
+                } else if (productId === 2) {
+                    return "其他產品名稱"; // 根據實際情況調整
+                } else {
+                    return "未知產品";
+                }
+            },
+            getPaymentMethod(methodId) {
+                if (methodId === 0) {
+                    return "信用卡";
+                } else if (methodId === 1) {
+                    return "街口支付";
+                } else if (methodId === 2) {
+                    return "LINE PAY";
+                } else {
+                    return "其他付款方式";
+                }
+            },
+            getStatusDisplay(status) {
+                // 根據 Status 返回對應的顯示文本
+                switch (status) {
+                    case 0:
+                        return "成功";
+                    case 1:
+                        return "失敗";
+                    case 2:
+                        return "等待";
+                    case 3:
+                        return "審核中";
+                    case 4:
+                        return "已退款";
+                    default:
+                        return "未知";
+                }
+            },
+            refund(transactionId) {
+				if (confirm("確定要退款嗎？")) {
+					// 將狀態更新為 3 (審核中)
+                    fetch(`/api/TransactionsPayApi/${transactionId}/status`, {
+						method: 'PATCH',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify(3) // 更新狀態為審核中
+					})
+				    .then(response => {
+						if (response.ok) {
+							alert('退款申請成功！');
+							// 更新交易記錄列表
+							this.fetchTransactions();
+						} else {
+							alert('退款申請失敗！');
+						}
+					})
+					.catch(error => {
+						console.error('Error refunding:', error);
+						alert('退款失敗！');
+					});
+				}
+            }
+        },
+        mounted() { 
+            // 在 mounted 階段加載購買紀錄
+            this.fetchTransactions();
+        },
+    }).mount("#app_PayHistory");
 </script>
 

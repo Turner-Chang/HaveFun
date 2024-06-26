@@ -1,60 +1,4 @@
 ﻿<link href="~/assets/css/profile_poststyle.css" rel="stylesheet" />
-<style>
-    .imgPreview {
-        width: 60%;
-        margin: 20px;
-    }
-
-    .Post-size-img {
-        max-width: 80%; /* 确保图片宽度不会超过容器宽度 */
-        height: auto; /* 自动调整高度以保持比例 */
-        display: block; /* 避免图片下方的空白间距 */
-        margin: 0 auto; /* 圖片置中 */
-    }
-</style>
-<style scoped>
-    .image-container {
-        position: relative;
-        display: inline-block;
-        width: 100%; /* 调整宽度以适应需要 */
-        max-width: 100%;
-    }
-
-    .img-preview-container {
-        position: relative;
-        display: inline-block;
-        width: 100%;
-    }
-
-    .imgPreview {
-        display: block;
-        width: 60%; /* 调整宽度以适应需要 */
-        height: auto; /* 保持纵横比 */
-    }
-
-    .remove-btn {
-        position: absolute;
-        top: 5px; /* 调整按钮位置 */
-        right: 5px; /* 调整按钮位置 */
-        background-color: rgba(255, 0, 0, 0.8); /* 按钮背景颜色 */
-        color: white; /* 按钮文字颜色 */
-        border: none; /* 去掉边框 */
-        border-radius: 50%; /* 圆形按钮 */
-        width: 20px; /* 按钮宽度 */
-        height: 20px; /* 按钮高度 */
-        text-align: center; /* 文字居中 */
-        cursor: pointer; /* 鼠标指针样式 */
-        font-size: 12px; /* 文字大小 */
-        line-height: 20px; /* 行高 */
-        z-index: 10; /* 确保按钮位于图片之上 */
-        display: none; /* 默认隐藏删除按钮 */
-    }
-
-    .img-preview-container:hover .remove-btn {
-        display: block; /* 鼠标悬停时显示删除按钮 */
-    }
-</style>
-
 
 <div class="tab-pane fade show active" id="gt1" role="tabpanel" aria-labelledby="gt1-tab">
     <div id="post">
@@ -70,10 +14,17 @@
                                         <div class="lab-thumb">
                                             <div class="thumb-inner">
                                                 <div class="thumb-img">
-                                                    <img src="assets/images/member/profile/profile.jpg" alt="datting thumb">
+                                                    <a :href="`/Profile/Index?userId=${loginUserId}`">
+                                                        <img :src="loginUserPicture" alt="datting thumb">
+                                                    </a>
                                                 </div>
                                                 <div class="thumb-content">
-                                                    <h6><a href="#">{{userName}}</a></h6>
+                                                    <h6>
+                                                        <a :href="`/Profile/Index?userId=${loginUserId}`">
+                                                            @* <a :href="`/Index?userId=${post.UserId}`"> *@
+                                                            {{loginUserName}}
+                                                        </a>
+                                                    </h6>
                                                     <div class="custom-select">
                                                         <select v-model="postPrivacy">
                                                             <option value="Public"> Public</option>
@@ -88,14 +39,14 @@
                                             <form class="post-form">
                                                 <textarea v-model="postContent" :placeholder="placeholderText" rows="3"></textarea>
                                                 <div class="img-preview-container">
-                                                <img class="imgPreview" />
-                                                <button v-if="newPostPic != null" @@click="removeNewPostPic">移除</button>
+                                                    <img class="Post-Preview-img" />
+                                                    <button v-if="newPostPic != null" @@click="removeNewPostPic">移除</button>
                                                 </div>
-                                               @*  <div class="image-container" v-if="newPostPic">
-                                                    <div class="img-preview-container">
-                                                        <img class="imgPreview" :src="previewImageUrl" alt="Image Preview" @@mouseover="showDeleteBtn = true" @@mouseleave="showDeleteBtn = false" />
-                                                        <button class="remove-btn" @@click="removeNewPostPic" v-show="showDeleteBtn">X</button>
-                                                    </div>
+                                                @*  <div class="image-container" v-if="newPostPic">
+                                                <div class="img-preview-container">
+                                                <img class="imgPreview" :src="previewImageUrl" alt="Image Preview" @@mouseover="showDeleteBtn = true" @@mouseleave="showDeleteBtn = false" />
+                                                <button class="remove-btn" @@click="removeNewPostPic" v-show="showDeleteBtn">X</button>
+                                                </div>
                                                 </div> *@
                                                 <div class="content-type">
                                                     <ul class="content-list">
@@ -118,17 +69,32 @@
                                     </div>
                                 </div>
 
+                                @* <a class="default-btn" asp-area="" asp-controller="Profile" asp-action="Index" asp-route-userId="16">
+                                個人主頁
+                                </a> *@
+                                <div v-if="displayPostsSelect" class="button-container_displayPostsSelect">
+                                    <button :class="{ 'active': displayPersonalPosts }" @@click="showPersonalPosts">個人貼文</button>
+                                    <button :class="{ 'active': !displayPersonalPosts }" @@click="showFriendPosts">朋友貼文</button>
+                                </div>
+
                                 @* 顯示貼文 *@
-                                <div v-for="post in postsWithLikeStatus" :key="post.id" class="post-item mb-4">
+                                <div v-for="post in filteredPosts" :key="post.id" class="post-item mb-4">
                                     @* 貼文內容 *@
                                     <div class="post-content">
                                         <div class="post-author">
                                             <div class="post-author-inner">
                                                 <div class="author-thumb">
-                                                    <img src="assets/images/member/profile/member1.jpg" alt="datting thumb">
+                                                    <a :href="`/Profile/Index?userId=${post.UserId}`">
+                                                        <img alt="" :src="post.UserPicture">
+                                                    </a>
                                                 </div>
                                                 <div class="author-details">
-                                                    <h6><a href="#">{{ post.UserName }}</a></h6>
+                                                    <h6>
+                                                        @* <a :href="'Profile/Index?userId='+post.UserId"> *@
+                                                        <a :href="`/Profile/Index?userId=${post.UserId}`">
+                                                            {{ post.UserName }}
+                                                        </a>
+                                                    </h6>
                                                     <ul class="post-status">
                                                         <li class="post-privacy"><i class="icofont-world"></i>{{postPrivacy}}</li>
                                                         <li class="post-time">{{post.Time}}</li>
@@ -140,8 +106,8 @@
                                                     <i class="fa-solid fa-ellipsis"></i>
                                                 </button>
                                                 <ul class="dropdown-menu">
-                                                    @* <li @@click.prevent="showDelete(post)"><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop">刪除貼文</a></li> *@
-                                                    <li @@click.prevent="showDelete(post)"><a class="dropdown-item" >刪除貼文</a></li>
+
+                                                    <li @@click.prevent="showDelete(post)"><a class="dropdown-item">刪除貼文</a></li>
                                                     <li @@click.prevent="showRat(post)"></i><a class="dropdown-item">檢舉貼文</a></li>
                                                 </ul>
                                             </div>
@@ -151,13 +117,13 @@
                                             <div v-if="post.showPostPicture">
                                                 <img :src="post.Pictures" class="Post-size-img" alt="Post Picture" />
                                             </div>
-                                            
+
                                         </div>
                                     </div>
                                     @* 貼文功能按鈕 *@
                                     <div class="post-meta">
-                                        <div class="post-meta-top">
-                                            <p><a href="#"><i class="fa-solid fa-thumbs-up"></i> <i class="fa-solid fa-heart"></i> <i class="fa-solid fa-face-laugh"></i> <span>Julia, Petrova and 306 like this</span></a></p>
+                                        <div v-if="post.LikeCount>0" class="post-meta-top">
+                                            <p><a href="#"><i class="fa-solid fa-heart"></i> <span>{{post.LikeCount}}</span></a></p>
                                             @* <p><a href="#" @@click.prevent="showCommentsAlert">Show Comments</a></p> *@
                                         </div>
                                         <div class="post-meta-bottom">
@@ -179,12 +145,16 @@
                                             <li class="comment" v-for="reply in post.Replies" :key="reply.Id">
                                                 <div class="com-item">
                                                     <div class="com-thumb">
-                                                        <img alt="" src="assets/images/member/profile/member1.jpg">
+                                                        <a :href="`/Profile/Index?userId=${reply.UserId}`">
+                                                            <img alt="" :src="reply.UserPicture">
+                                                        </a>
                                                     </div>
                                                     <div class="com-content">
                                                         <div class="com-title">
                                                             <div class="com-title-meta">
-                                                                <a href="#">{{reply.UserName}}</a>
+                                                                <a :href="`/Profile/Index?userId=${reply.UserId}`">
+                                                                    {{reply.UserName}}
+                                                                </a>
                                                                 <span> || {{reply.Time}}</span>
                                                             </div>
                                                             <span class="reply">
@@ -200,12 +170,16 @@
                                                 <ul class="lab-ul comment-list">
                                                     <li class="comment" v-for="nestedReply in reply.nestedReplies" :key="nestedReply.Id">
                                                         <div class="com-thumb">
-                                                            <img alt="" src="assets/images/blog/author/03.jpg">
+                                                            <a :href="`/Profile/Index?userId=${nestedReply.UserId}`">
+                                                                <img alt="" :src="nestedReply.UserPicture">
+                                                            </a>
                                                         </div>
                                                         <div class="com-content">
                                                             <div class="com-title">
                                                                 <div class="com-title-meta">
-                                                                    <a href="#">{{ nestedReply.UserName }}</a>
+                                                                    <a :href="`/Profile/Index?userId=${nestedReply.UserId}`">
+                                                                        {{ nestedReply.UserName }}
+                                                                    </a>
                                                                     <span> || {{nestedReply.Time}} </span>
                                                                 </div>
                                                             </div>
@@ -276,12 +250,14 @@
             return {
                 postContent: '',
                 placeholderText: '',
-                newPostPic:null, // 發文圖片 
+                newPostPic: null, // 發文圖片
                 postPrivacy: 'Public',
                 posts: [],
-                userName: '',
+                showUserId: @ViewBag.ShowUserId, // 指定顯示的UserId
                 loginUserId: @ViewBag.UserId, // 使用者ID
-                userInfo:[],    // 使用者資料
+                loginUserName: '',
+                loginUserPicture: '',
+                userInfo: [],       // 使用者資料
                 showRatBox: false, // 顯示檢舉視窗
                 ratContent: "",
                 ratReason: "",
@@ -289,17 +265,41 @@
                 ratPostId: null, // 檢舉貼文Id
                 showDeleteBox: false, // 顯示刪除視窗
                 deletePostId: null,
-                showDeleteBtn:false,
+                showDeleteBtn: false,
+                displayPostsSelect: true, // 個人/朋友 選項
+                displayPersonalPosts: true, // 個人貼文
+                FriendPostList: [], // 朋友列表
             };
         },
         computed: {
             postsWithLikeStatus() {
                 return this.posts.map(post => {
                     // console.log('postsWithLikeStatus:', post);
+                    // console.log("post.LikeUserList", post.LikeUserList);
                     const userIds = post.Like.map(like => like.userId);
                     post.likedByUser = userIds.includes(this.loginUserId);
                     return post;
                 });
+            },
+            filteredPosts() {
+                if (this.showUserId == this.loginUserId) {
+                    this.displayPostsSelect = true;
+                    if (this.displayPersonalPosts) {
+                        // 顯示個人貼文
+                        return this.postsWithLikeStatus.filter(post => {
+                            // console.log('post.UserId:', post.UserId);
+                            return post.UserId === this.loginUserId;
+                        });
+                    } else {
+                        // 顯示朋友貼文
+                        return this.postsWithLikeStatus.filter(post => {
+                            // console.log('post.UserId:', post.UserId);
+                            return this.FriendPostList.includes(post.UserId.toString());
+                        });
+                    }
+                }
+                this.displayPostsSelect = false;
+                return this.postsWithLikeStatus;
             },
         },
         methods: {
@@ -318,27 +318,35 @@
 
             // 設置基本資料
             setUserInfo() {
-                this.userName = this.userInfo[0].name;
+                this.loginUserName = this.userInfo[0].name;
+                this.loginUserPicture = this.userInfo[0].profilePicture
                 this.placeholderText = `What's on your mind, ${this.userInfo[0].name}?`;
             },
 
             // 查詢貼文
             async getPosts() {
                 try {
-                    const response = await axios.get('/api/Profile/GetPostsList');
+                    const queryId = this.showUserId ? this.showUserId : this.loginUserId
+
+                    const response = await axios.get(`/api/Profile/GetPostsList/${queryId}`);
                     // console.log('getPosts:', response.data);
+                    this.FriendPostList = response.data[0].freindList
                     this.posts = response.data.map(post => ({
                         Id: post.id,
                         UserId: post.userId,
                         UserName: post.userName,
+                        UserPicture: post.userPicture,
                         Contents: post.contents,
                         Time: post.time,
                         Pictures: post.picturePath,
                         Like: post.like,
+                        LikeUserList: post.likeUserList,
+                        LikeCount: post.likeCount,
                         Replies: (post.replies || []).map(reply => ({
                             Id: reply.id,
                             UserId: reply.userId,
                             UserName: reply.userName,
+                            UserPicture: reply.userPicture,
                             PostId: reply.postId,
                             ParentCommentId: reply.parentCommentId,
                             Content: reply.contents,
@@ -347,6 +355,7 @@
                                 Id: nestedReply.id,
                                 UserId: nestedReply.userId,
                                 UserName: nestedReply.userName,
+                                UserPicture: nestedReply.userPicture,
                                 PostId: nestedReply.postId,
                                 ParentCommentId: nestedReply.parentCommentId,
                                 Content: nestedReply.contents,
@@ -355,7 +364,7 @@
                             showNestedForm: false,
                             nestedReplyContent: ''
                         })),
-                        showPostPicture: post.picturePath ? true:false,
+                        showPostPicture: post.picturePath ? true : false,
                         showComments: false,
                         showReplyForm: false,
                         newReply: ''
@@ -394,10 +403,12 @@
                         Id: createdPost.id,
                         UserId: createdPost.userId,
                         UserName: createdPost.userName,
+                        UserPicture: createdPost.userPicture,
                         Contents: createdPost.contents,
                         Time: createdPost.time,
                         Pictures: createdPost.picturePath,
                         Like: createdPost.like || [],
+                        LikeCount: createdPost.likeCount,
                         Replies: createdPost.replies || [],
                         showPostPicture: createdPost.picturePath ? true : false,
                         showComments: false,
@@ -422,20 +433,20 @@
                         let blob = new Blob([e.target.result], { type: "image/jpeg" });
                         let uriCreator = window.URL || window.webkitURL;
                         let imgUrl = uriCreator.createObjectURL(blob);
-                        $('.imgPreview').attr("src", imgUrl);
+                        $('.Post-Preview-img').attr("src", imgUrl);
                     };
                     reader.readAsArrayBuffer(file);
                     this.newPostPic = file;
                 } else {
                     this.newPostPic = null;
-                    $('.imgPreview').attr("src", null);
+                    $('.Post-Preview-img').attr("src", null);
                 }
             },
 
             // 移除貼文圖片
             removeNewPostPic() {
                 this.newPostPic = null;
-                $('.imgPreview').attr("src", null);
+                $('.Post-Preview-img').attr("src", null);
             },
 
             // 貼文回覆
@@ -453,7 +464,7 @@
                 if (post) {
                     const newReply = {
                         UserId: this.loginUserId,
-                        UserName: this.userName,
+                        UserName: this.loginUserName,
                         PostId: PostId,
                         Contents: post.newReply,
                         Time: '',
@@ -469,6 +480,7 @@
                             Id: createdReply.id,
                             UserId: createdReply.userId,
                             UserName: createdReply.userName,
+                            UserPicture: createdReply.userPicture,
                             PostId: createdReply.postId,
                             ParentCommentId: createdReply.parentCommentId,
                             Content: createdReply.contents,
@@ -503,7 +515,7 @@
                     if (reply && reply.nestedReplyContent.trim()) {
                         const newNestedReply = {
                             UserId: this.loginUserId,
-                            UserName: this.userName,
+                            UserName: this.loginUserName,
                             PostId: PostId,
                             Contents: reply.nestedReplyContent,
                             Time: '',
@@ -519,6 +531,7 @@
                                 Id: createdNestedReply.id,
                                 UserId: createdNestedReply.userId,
                                 UserName: createdNestedReply.userName,
+                                UserPicture: createdNestedReply.userPicture,
                                 PostId: createdNestedReply.postId,
                                 ParentCommentId: createdNestedReply.parentCommentId,
                                 Content: createdNestedReply.contents,
@@ -538,13 +551,13 @@
 
             // Like 圖示變化
             clickLikeOrNot(post) {
-                console.log('clickLikeOrNot')
+                // console.log('clickLikeOrNot')
                 return post.likedByUser || false;
             },
 
             // 貼文Like
             clickLike(post) {
-                console.log('clickLike')
+                // console.log('clickLike')
                 const Like = event.target;
                 let like = {
                     "PostId": post.Id,
@@ -556,14 +569,16 @@
                         // console.log(data);
                         if (data === 'CancelLike') {
                             post.likedByUser = false;
+                            post.LikeCount-= 1;
                             // Like.firstChild.classList.add('fa-regular');
                             // Like.firstChild.classList.remove('fa-solid');
                         } else if (data === 'Like') {
                             post.likedByUser = true;
+                            post.LikeCount+= 1;
                             // Like.firstChild.classList.remove('fa-regular');
                             // Like.firstChild.classList.add('fa-solid');
                         }
-                        console.log("post" + post);
+                        // console.log("post" + post);
                     })
                     .catch(error => {
                         console.log('Error clickLike:', error);
@@ -607,7 +622,7 @@
 
                 axios.post('/api/Profile/RatPostReview', ratpost)
                     .then(response => {
-                        console.log(response.data);
+                        // console.log(response.data);
                         // 清空檢舉表單並關閉檢舉視窗
                         this.resetRatBox();
                     })
@@ -639,7 +654,7 @@
             deletePost() {
                 axios.put(`/api/Profile/Unpost/${this.deletePostId}`)
                     .then(response => {
-                        console.log(response.data);
+                        // console.log(response.data);
                         this.posts = this.posts.filter(p => p.Id !== this.deletePostId);
                         this.showDeleteBox = false;
                         this.deletePostId = null;
@@ -685,6 +700,16 @@
                         textarea.focus(); // 聚焦到 nested-reply-input
                     }
                 });
+            },
+
+            // 顯示個人貼文
+            showPersonalPosts() {
+                this.displayPersonalPosts = true;
+            },
+
+            // 顯示朋友貼文
+            showFriendPosts() {
+                this.displayPersonalPosts = false;
             },
 
             // 調整高度

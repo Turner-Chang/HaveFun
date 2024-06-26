@@ -79,5 +79,45 @@ textarea{
     overflow: auto;
     word-break: break-all;
 }
-
-
+.participantsBox {
+    display: none;
+    width: 350px;
+    height: 450px;
+    background-color: white;
+    position: sticky;
+    left: 40%;
+    top: 30%;
+    border-radius: 30px;
+    box-shadow: 0 3px 10px #888888;
+    z-index: 2;
+    align-content: center;
+    text-align: center;
+}
+.joinMember {
+    width: 250px;
+    height: 300px;
+    overflow: auto;
+    margin: 0 auto;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap:wrap;
+}
+.memberProfile {
+    padding-top: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.memberPic {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin-right: 15px;
+    margin-bottom:15px;
+}
+.map{
+    width:60%;
+    height:300px;
+    margin:10px;
+}
