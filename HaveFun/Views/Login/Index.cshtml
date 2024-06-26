@@ -23,7 +23,6 @@
                 </div>
                 <div class="col-lg-4 col-5">
                     <a href="https://localhost:7152" class="backto-home"><i class="fas fa-chevron-left"></i> 回到首頁</a>
-                  @* 更改首頁連結 *@
                 </div>
             </div>
         </div>
@@ -134,11 +133,9 @@
                             this.errorMessage.push('帳號或密碼錯誤');
                         } 
                             if (data.success == true && data.emailLink != '' && data.id != '') {
-                            this.sendEmail(data.id);
-                            window.location.href = data.emailLink;
-                        }else{
-                            //window.location.href = '';
-                        }
+                                this.sendEmail(data.id);
+                                window.location.href = '/Profile/Index';
+                            }
                     })
                     .catch()     
                 },

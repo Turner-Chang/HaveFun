@@ -66,7 +66,39 @@ namespace HaveFun.Controllers.APIs
         //
         // Post: api/ProfileIndex/FollowUser
         [HttpPost]
-        public async Task<ActionResult> FollowUser(int showUserId, int loginUserId)
+        public async Task<ActionResult> GetFollowUser(int showUserId, int loginUserId)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var IsFriend = _context.FriendLists.FirstOrDefault(
+                f => f.Clicked == loginUserId && f.BeenClicked == showUserId && f.state == 1 
+                || f.Clicked == showUserId && f.BeenClicked == loginUserId && f.state == 1
+            );
+
+            if (IsFriend != null)
+            {
+                return Content("好友");
+            }
+
+            var followData = _context.FriendLists.FirstOrDefault(f => f.Clicked == loginUserId && f.BeenClicked == showUserId && f.state == 0);
+
+            if (followData != null)
+            {
+                return Content("已關注");
+            }
+            else
+            {
+                return Content("關注我");
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> SetFollowUser(int showUserId, int loginUserId)
         {
             
             if (!ModelState.IsValid)

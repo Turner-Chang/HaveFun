@@ -7,6 +7,7 @@ namespace HaveFun.Areas.ManagementSystem.Controllers
 	{
 		public IActionResult Index()
 		{
+		ViewBag.AdminId=HttpContext.Session.GetString("Login");
 			return View();
 		}
 		public IActionResult login()
