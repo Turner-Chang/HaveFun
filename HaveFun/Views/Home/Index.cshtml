@@ -466,7 +466,7 @@
 						
 				</div>
 				<div class="tab-content work__tabcontent" id="v-pills-tabContent">
-					<div v-for="(anc, index) in announcement" class="tab-pane fade" :id="`work__tab${index +1}`" role="tabpanel" :aria-labelledby="`work__tab${index + 1}-tab`">
+					<div v-for="(anc, index) in announcement" :class="`tab-pane fade AA${index}`" :id="`work__tab${index +1}`" role="tabpanel" :aria-labelledby="`work__tab${index + 1}-tab`">
 							<div class="work__item">
 							<div class="work__inner">
 								
@@ -846,12 +846,18 @@
 						.catch(error => { console.log('fetch announcement failed!') });
 				},
 				fixFirstAnnouncement() {
-					document.querySelector('#work__tab1').classList.add('active show');
-				}
+					const firstAnc = document.querySelector('.AA0');
+					firstAnc.classList.add('active', 'show');
+				},
 			},
 			mounted() {
 				this.getMostParticipantsActivity();
 				this.getAnnouncement();
+				// if(this.announcement.length > 0){
+				// 	alert('ok');
+				// };
+			},
+			updated() {
 				this.fixFirstAnnouncement();
 			}
 		}).mount('#homePage');
