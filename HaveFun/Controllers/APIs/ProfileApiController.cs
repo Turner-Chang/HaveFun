@@ -389,7 +389,14 @@ namespace HaveFun.Controllers.APIs
                 {
                     _context.Likes.Remove(record);
                     await _context.SaveChangesAsync();
-                    return new JsonResult("CancelLike");
+                    var response = new
+                    {
+                        State= "CancelLike",
+                        UserId= clcickLike.UserId,
+                        UserPicture = CreatePictureUrl("GetPicture", "Profile", new { id = clcickLike.UserId })
+                    };
+                    return new JsonResult(response);
+                    //return new JsonResult("CancelLike");
                 }
                 else
                 {
@@ -400,7 +407,15 @@ namespace HaveFun.Controllers.APIs
                     };
                     _context.Likes.Add(like);
                     await _context.SaveChangesAsync();
-                    return new JsonResult("Like");
+                    var response = new
+                    {
+                        State = "Like",
+                        UserId= clcickLike.UserId,
+                        UserPicture = CreatePictureUrl("GetPicture", "Profile", new { id = clcickLike.UserId })
+                    };
+                    return new JsonResult(response);
+                    
+                    //return new JsonResult("Like");
                 }
             }
             catch (DbException ex)

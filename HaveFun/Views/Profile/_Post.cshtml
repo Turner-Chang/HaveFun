@@ -425,6 +425,7 @@
                         Time: createdPost.time,
                         Pictures: createdPost.picturePath,
                         Like: createdPost.like || [],
+                        LikeUserList: createdPost.likeUserList || [],
                         LikeCount: createdPost.likeCount,
                         Replies: createdPost.replies || [],
                         showPostPicture: createdPost.picturePath ? true : false,
@@ -583,15 +584,21 @@
                 axios.post('/api/Profile/AddLike', like)
                     .then(response => response.data)
                     .then(data => {
-                        // console.log(data);
-                        if (data === 'CancelLike') {
+                        console.log(data);
+                        if (data.state === 'CancelLike') {
                             post.likedByUser = false;
                             post.LikeCount-= 1;
+                            post.LikeUserList = post.LikeUserList.filter(user => user.userId !== data.userId); // 排除取消Like者
                             // Like.firstChild.classList.add('fa-regular');
                             // Like.firstChild.classList.remove('fa-solid');
-                        } else if (data === 'Like') {
+                        } else if (data.state === 'Like') {
                             post.likedByUser = true;
                             post.LikeCount+= 1;
+                            post.LikeUserList.push({                  
+                                    "userId": this.loginUserId,
+                                    "userName": this.loginUserName,
+                                    "userPicture": data.userPicture
+                            })
                             // Like.firstChild.classList.remove('fa-regular');
                             // Like.firstChild.classList.add('fa-solid');
                         }
