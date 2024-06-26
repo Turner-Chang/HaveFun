@@ -79,5 +79,40 @@ namespace HaveFun.Controllers.APIs
 			var activityTypes = _context.ActivityTypes;
 			return Ok(activityTypes);
 		}
+
+		[HttpPost("SignUp")]
+		public async Task<IActionResult> SignUp(ActivitySignUpDTO request) 
+		{
+			var activity = await _context.Activities
+			.Include(a => a.ActivityParticipants)
+			.FirstOrDefaultAsync(a => a.Id == request.ActivityId);
+
+			if (activity == null)
+			{
+				return NotFound("活动不存在" );
+			}
+
+			var isUserParticipating = activity.ActivityParticipants.Any(ap => ap.UserId == request.UserId);
+			if (isUserParticipating)
+			{
+				return BadRequest("用户已经报名参加此活动");
+			}
+
+			if (activity.ActivityParticipants.Count >= activity.MaxParticipants)
+			{
+				return BadRequest("活动已经满员");
+			}
+
+			var activityParticipant = new ActivityParticipant
+			{
+				UserId = request.UserId,
+				ActivityId = request.ActivityId,
+			};
+
+			_context.ActivityParticipantes.Add(activityParticipant);
+			await _context.SaveChangesAsync();
+
+			return Ok("报名成功");
+		}
 	}
 }

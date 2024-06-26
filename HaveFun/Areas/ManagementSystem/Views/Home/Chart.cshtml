@@ -1,52 +1,54 @@
 ﻿
 <div class="container" id="ChartApp">
 	<h2 class="text-center">圖表分析</h2>
-	總人數 : {{countUser}}
+	<label class="form-label">
+	總使用人數 : {{countUser}}
+	</label>
 
 	<br />
-	<button class="btn btn-success m-3" @@click="changeStyle()">圓餅/長條切換</button>
-	<div class="row">
-		<div class="co-12 col-lg-6">
-			<div class="card m-4 " style="width:350px;height:300px;">
+	<button class="btn btn-success m-auto" @@click="changeStyle()">圓餅/長條切換</button>
+	<div class="row ">
+		<div class="co-12 col-lg-6 " >
+			<div class="card m-4 " >
 				<div class="card-header">
 					<i class="fas fa-chart-area me-1"></i>
 					<span class="ps-4">
 						使用者男女比  {{fixed(countMale/countFeMale)}} :  1
 					</span>
 				</div>
-				<div class="card-body" style="width:300px;height:250px;">
-					<canvas id="GenderChart" style="margin:auto;"></canvas>
+				<div class="card-body" style="width:100%;height:250px;">
+					<canvas id="GenderChart"></canvas>
 				</div>
 
 			</div>
 
 		</div>
-		<div class="co-12 col-lg-6">
-			<div class="card m-4"  style="width:350px;height:300px;">
+		<div class="col-12 col-md-6 ">
+			<div class="card m-4" >
 				<div class="card-header">
 					<i class="fas fa-chart-area me-1"></i>
 					<span class="ps-4">
 						付費比 : {{countMoneyLevel/(countUser)*100}}%
 					</span>
 				</div>
-				<div class="card-body" style="width:300px;height:250px;">
+				<div class="card-body" style="width:100%;height:250px;">
 					<canvas id="LevelChart" style="margin:auto;"></canvas>
 				</div>
 
 			</div>
 
 		</div>
-		<div class="co-12 col-lg-6">
+		<div class="co-12 col-lg-6" >
 
 
-			<div class="card m-4" style="width:350px;height:300px;">
+			<div class="card m-4" >
 				<div class="card-header">
 					<i class="fas fa-chart-area me-1"></i>
 					<span class="ps-4">
 						年齡分佈
 					</span>
 				</div>
-				<div class="card-body" style="width:300px;height:250px;">
+				<div class="card-body" style="width:100%;height:250px;">
 					<canvas id="AgeRangeChart" style="margin:auto;"></canvas>
 				</div>
 
