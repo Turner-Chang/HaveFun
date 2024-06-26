@@ -594,11 +594,11 @@
                         } else if (data.state === 'Like') {
                             post.likedByUser = true;
                             post.LikeCount+= 1;
-                            post.LikeUserList.push({                  
-                                    "userId": this.loginUserId,
-                                    "userName": this.loginUserName,
-                                    "userPicture": data.userPicture
-                            })
+                            post.LikeUserList.push({
+                                "userId": this.loginUserId,
+                                "userName": this.loginUserName,
+                                "userPicture": data.userPicture
+                            });
                             // Like.firstChild.classList.remove('fa-regular');
                             // Like.firstChild.classList.add('fa-solid');
                         }

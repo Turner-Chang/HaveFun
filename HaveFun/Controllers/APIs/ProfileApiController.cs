@@ -60,8 +60,9 @@ namespace HaveFun.Controllers.APIs
         [HttpGet]
         public async Task<IEnumerable<WhoLikeListDTO>> GetWhoLikeList()
         {
+            string loginId = Request.Cookies["userId"];
             var whoLikeListData = await _context.FriendLists
-                .Where(f => f.state == 0 && f.BeenClicked == 2)
+                .Where(f => f.state == 0 && f.BeenClicked.ToString() == loginId)
                 .Select(f => new
                 {
                     f.User1.Id,
