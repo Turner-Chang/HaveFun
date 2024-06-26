@@ -67,7 +67,8 @@ namespace HaveFun.Controllers.APIs
 					Date = t.Date,
 					Product = t.Product, 
 					Amount = t.Amount,
-                    Status = t.Status
+                    Status = t.Status,
+                    Method = t.Method
                     // 根據需求添加其他屬性
                 })
 				.ToListAsync();
