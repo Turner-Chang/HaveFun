@@ -3,60 +3,75 @@ using System.Threading.Tasks;
 using HaveFun.Models;
 using Microsoft.EntityFrameworkCore;
 
-public class ChatHub : Hub
-{
-    private readonly HaveFunDbContext _context;
 
-    public ChatHub(HaveFunDbContext context)
+    public class ChatHub : Hub
     {
-        _context = context;
+        private readonly HaveFunDbContext _context;
+        private readonly ILogger<ChatHub> _logger;
+
+        public ChatHub(HaveFunDbContext context, ILogger<ChatHub> logger)
+        {
+            _context = context;
+            _logger = logger;
+        }
+
+        public override async Task OnConnectedAsync()
+        {
+            try
+            {
+                await Clients.All.SendAsync("SomeOneOnline", Context.ConnectionId);
+                var userId = GetUserIdFromContext();
+                _logger.LogInformation($"User connected. UserId: {userId}, ConnectionId: {Context.ConnectionId}");
+
+                var existingConnIdUserId = await _context.ConId_UserId
+                    .FirstOrDefaultAsync(c => c.ConnId == Context.ConnectionId);
+
+                if (existingConnIdUserId == null)
+                {
+                    var userInfo = await _context.UserInfos.FindAsync(userId);
+                    if (userInfo != null)
+                    {
+                        var connIdUserId = new ConId_UserId
+                        {
+                            Id = userId,
+                            ConnId = Context.ConnectionId,
+                        };
+                        _context.ConId_UserId.Add(connIdUserId);
+                        try
+                        {
+                            await _context.SaveChangesAsync();
+                            _logger.LogInformation($"Added new connection for UserId: {userId}");
+                        }
+                        catch (DbUpdateException ex)
+                        {
+                            _logger.LogError(ex, $"DbUpdateException when adding connection for UserId: {userId}. Error: {ex.InnerException?.Message}");
+                            // 可能需要在這裡進行一些錯誤處理，例如重試或清理
+                        }
+                    }
+                    else
+                    {
+                        _logger.LogWarning($"UserInfo not found for UserId: {userId}");
+                    }
+                }
+                else
+                {
+                    _logger.LogInformation($"Connection already exists for UserId: {userId}");
+                }
+
+                await base.OnConnectedAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error in OnConnectedAsync. Message: {ex.Message}, StackTrace: {ex.StackTrace}");
+                throw;
+            }
+        }
+
+        private int GetUserIdFromContext()
+        {
+            // 實現此方法以從連接上下文獲取用戶ID
+            // 這可能涉及讀取聲明、查詢數據庫等
+            // 目前返回一個佔位符值
+            return 1; // 替換為實際實現
+        }
     }
-
-    public override Task OnConnectedAsync()
-    {
-        Clients.All.SendAsync("SomeOneOnline", Context.ConnectionId);
-        //int userId = 2; // 替換為實際的用戶 ID 獲取邏輯
-
-        //// 檢查是否已存在相同的 connId
-        //var existingConnIdUserId = _context.ConId_UserId
-        //    .FirstOrDefault(c => c.connId == Context.ConnectionId);
-
-        //if (existingConnIdUserId == null)
-        //{
-        //    var userInfo = _context.UserInfos.Find(userId); // 查找 UserInfo 實體
-
-        //    if (userInfo != null)
-        //    {
-        //        var connIdUserId = new ConId_UserId
-        //        {
-        //            Id = userId,
-        //            connId = Context.ConnectionId,
-        //        };
-
-        //        // 將新物件添加到 DbContext 中
-        //        _context.ConId_UserId.Add(connIdUserId);
-        //    }
-        //}
-        //else
-        //{
-        //    // 如果存在，則不需要新增
-        //}
-
-        //// 保存變更到資料庫
-        //await _context.SaveChangesAsync();
-
-        return base.OnConnectedAsync();
-    }
-
-    public async Task SendMessage(string user, string message)
-    {
-        await Clients.Others.SendAsync("ReceiveMessage", user, message);
-    }
-
-    private int GetUserIdFromContext()
-    {
-        // 實現這個方法來從連接上下文獲取用戶ID
-        // 這可能涉及讀取聲明、查詢數據庫等
-        throw new NotImplementedException("GetUserIdFromContext 需要被實現");
-    }
-}
