@@ -74,7 +74,7 @@
             el: '#app',
             data: {
                 activeTab: 'Newest',
-                userId: 5, // 實際用戶ID
+                userId: "", // 實際用戶ID
                 friends: [],
                 blacklistedFriends: []
             },
@@ -91,7 +91,7 @@
                 },
                 // 獲取好友列表
                 fetchFriends() {
-                    axios.get(`/api/FriendApi/GetFriend/${this.userId}`)
+                    axios.get(`/api/FriendApi/GetFriend/${@ViewBag.UserId}`)
                         .then(response => {
                             this.friends = response.data;
                         })
@@ -101,7 +101,7 @@
                 },
                 // 獲取黑名單列表
                 fetchBlacklist() {
-                    axios.get(`/api/FriendApi/GetBlacklist/${this.userId}`)
+                axios.get(`/api/FriendApi/GetBlacklist/${@ViewBag.UserId}`)
                         .then(response => {
                             this.blacklistedFriends = response.data;
                         })
@@ -111,7 +111,7 @@
                 },
                 // 封鎖用戶
                 blockUser(friendId) {
-                    axios.post(`/api/FriendApi/BlockUser`, { userId: this.userId, friendId: friendId })
+                    axios.post(`/api/FriendApi/BlockUser`, { userId: @ViewBag.UserId, friendId: friendId })
                         .then(() => {
                             this.fetchFriends(); // 重新加載好友列表
                             this.fetchBlacklist(); // 重新加載黑名單列表
@@ -122,7 +122,7 @@
                 },
                 // 解鎖用戶
                 unblockUser(friendId) {
-                    axios.post(`/api/FriendApi/UnblockUser`, { userId: this.userId, friendId: friendId })
+                    axios.post(`/api/FriendApi/UnblockUser`, { userId: @ViewBag.UserId, friendId: friendId })
                         .then(() => {
                             this.fetchFriends(); // 重新加載好友列表
                             this.fetchBlacklist(); // 重新加載黑名單列表
