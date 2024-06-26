@@ -22,8 +22,8 @@
                             <li v-for="friend in filteredFriends"
                                 :key="friend.id"
                                 :class="{ 'clearfix': true, 'active': friend.id === activeFriendId }"
-                                @@click="selectFriend(friend)">
-                                <img :src="friend.avatarUrl" alt="avatar">
+                            @@click="selectFriend(friend)">
+                                <img :src="friend.avatarUrl" :alt="friend.name + '\'s avatar'">
                                 <div class="about">
                                     <div class="name">{{ friend.name }}</div>
                                     <div class="status">
@@ -42,11 +42,11 @@
                                 <div class="col-lg-6">
                                     <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
                                         <img :src="activeFriend ? activeFriend.avatarUrl : '/img/default-avatar.png'"
-                                             :alt="activeFriend ? activeFriend.name + '的頭像' : '默認頭像'">
+                                             :alt="activeFriend ? activeFriend.name + '\'s avatar' : 'Default avatar'">
                                     </a>
                                     <div class="chat-about">
-                                        <h6 class="m-b-0">{{ activeFriend ? activeFriend.name : '請選擇一位朋友' }}</h6>
-                                        <small>{{ activeFriend ? (activeFriend.isOnline ? '在線' : '離線') : '' }}</small>
+                                        <h6 class="m-b-0">{{ activeFriend ? activeFriend.name : 'Please select a friend' }}</h6>
+                                        <small>{{ activeFriend ? (activeFriend.isOnline ? 'Online' : 'Offline') : '' }}</small>
                                     </div>
                                 </div>
                                 <div class="col-lg-6 hidden-sm text-right">
@@ -60,25 +60,27 @@
 
                         <div class="chat-history">
                             <ul class="m-b-0" ref="chatHistoryList">
-                                <li v-for="chat in chatHistory" :key="chat.time" class="clearfix">
-                                    <div :class="['message-data', chat.type === 'my' ? 'text-right' : '']">
-                                        <img :src="chat.img" :alt="chat.type === 'my' ? 'My Avatar' : 'Friend Avatar'">
-                                        <span class="message-data-time">{{ chat.time }}</span>
+                                <li v-for="chat in sortedChatHistory" :key="chat.id" class="clearfix">
+                                    <div :class="['message-data', chat.senderId === currentUserId ? 'text-right' : '']">
+                                        <img :src="chat.senderAvatar" :alt="chat.senderId === currentUserId ? 'My Avatar' : 'Friend Avatar'" class="rounded-circle mr-1">
+                                        <span class="message-data-time">{{ formatTime(chat.createTime) }}</span>
                                     </div>
-                                    <div :class="['message', chat.type === 'my' ? 'my-message' : 'other-message']">
-                                        {{ chat.message }}
+                                    <div :class="['message', chat.senderId === currentUserId ? 'my-message float-right' : 'other-message']">
+                                        {{ chat.messageText }}
                                     </div>
                                 </li>
                             </ul>
                         </div>
-
+                                </li>
+                            </ul>
+                        </div>
 
                         <div class="chat-message clearfix">
                             <div class="input-group mb-0">
                                 <div class="input-group-prepend">
                                     <span id="sendButton" class="input-group-text" @@click="sendMessage"><i class="fa fa-send"></i></span>
                                 </div>
-                                <input type="text" id="messageInput" class="form-control" placeholder="Enter text here..." v-model="messageText">
+                                <input type="text" id="messageInput" class="form-control" placeholder="Enter text here..." v-model="messageText" @@keyup.enter="sendMessage">
                             </div>
                         </div>
                     </div>
@@ -103,7 +105,9 @@
                     activeFriendId: null,
                     activeFriend: null,
                     chatHistory: [],
-                    messageText: ''
+                    messageText: '',
+                    currentUserId: window.currentUserId,
+                    connection: null
                 };
             },
             computed: {
@@ -111,6 +115,9 @@
                     return this.friends.filter(friend =>
                         friend.name.toLowerCase().includes(this.searchQuery.toLowerCase())
                     );
+                },
+                 sortedChatHistory() {
+                        return [...this.chatHistory].sort((a, b) => new Date(a.createTime) - new Date(b.createTime));
                 }
             },
             methods: {
@@ -124,31 +131,28 @@
                         this.activeFriendId = friend.id;
                         this.activeFriend = friend;
                         console.log('Selected friend:', friend);
-                        this.updateUserIds(window.currentUserId, friend.id);
-                        this.updateChatHeader(friend);
                         this.fetchChatHistory();
                     } else {
                         console.log('Cannot select blocked friend');
                     }
                 },
-                fetchFriends() {
-                    axios.get(`/api/FriendApi/GetFriend/${window.currentUserId}`)
-                        .then(response => {
-                            this.friends = response.data.map(friend => ({
-                                id: friend.id,
-                                name: friend.name,
-                                avatarUrl: friend.profilePicture ?
-                                    (friend.profilePicture.startsWith('http') ? friend.profilePicture : `/api/UserInfo/GetPicture/${friend.id}`) :
-                                    '/img/default-avatar.png',
-                                isOnline: false,
-                                status: 'offline',
-                                isBlocked: friend.isBlocked
-                            }));
-                            this.setInitialFriend();
-                        })
-                        .catch(error => {
-                            console.error('Failed to fetch friends:', error);
-                        });
+                async fetchFriends() {
+                    try {
+                        const response = await axios.get(`/api/FriendApi/GetFriend/${this.currentUserId}`);
+                        this.friends = response.data.map(friend => ({
+                            id: friend.id,
+                            name: friend.name,
+                            avatarUrl: friend.profilePicture ?
+                                (friend.profilePicture.startsWith('http') ? friend.profilePicture : `/api/UserInfo/GetPicture/${friend.id}`) :
+                                '/img/default-avatar.png',
+                            isOnline: false,
+                            status: 'offline',
+                            isBlocked: friend.isBlocked
+                        }));
+                        this.setInitialFriend();
+                    } catch (error) {
+                        console.error('Failed to fetch friends:', error);
+                    }
                 },
                 updateFriendStatus(friendId, isOnline) {
                     const friend = this.friends.find(f => f.id === friendId);
@@ -157,58 +161,44 @@
                         friend.status = isOnline ? 'online' : 'offline';
                     }
                 },
-                updateChatHeader(friend) {
-                    // You can update any additional header information here
-                },
-                updateUserIds(newCurrentUserId, newOtherUserId) {
-                    window.currentUserId = newCurrentUserId;
-                    window.otherUserId = newOtherUserId;
-                    this.fetchChatHistory();
-                    console.log(`User IDs updated. Current User: ${window.currentUserId}, Other User: ${window.otherUserId}`);
-                },
                 async fetchChatHistory() {
                     try {
-                        const [response1, response2] = await Promise.all([
-                            axios.get(`/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/${window.otherUserId}/${window.currentUserId}`),
-                            axios.get(`/api/ChatRoom/ChatRoomsApi/GetByUser1IdAndUser2Id/${window.currentUserId}/${window.otherUserId}`)
-                        ]);
-                        if (response1.data.length === 0 || response2.data.length === 0) {
-                            this.chatHistory = [];
-                            return;
-                        }
-                        const processMessages = (data, isOther) => data.map(message => ({
-                            time: moment(message.createTime).format("h:mm A, MMMM D"),
-                            img: isOther ? `/api/UserInfo/GetPicture/${window.otherUserId}` : `/api/UserInfo/GetPicture/${window.currentUserId}`,
-                            message: message.messageText,
-                            type: isOther ? "other" : "my"
+                        const response = await axios.get(`/api/ChatRoom/ChatRoomsApi/GetAllChatHistory/${this.currentUserId}/${this.activeFriendId}`);
+                        this.chatHistory = response.data.map(message => ({
+                            id: message.id,
+                            senderId: message.user1Id,
+                            senderAvatar: `/api/UserInfo/GetPicture/${message.user1Id}`,
+                            messageText: message.messageText,
+                            createTime: message.createTime
                         }));
-
-                        this.chatHistory = [
-                            ...processMessages(response1.data, true),
-                            ...processMessages(response2.data, false)
-                        ].sort((a, b) => new Date(a.time) - new Date(b.time));
-
+                        this.$nextTick(() => {
+                            this.scrollToBottom();
+                        });
                     } catch (error) {
                         console.error('Error fetching chat history:', error);
                     }
                 },
+                formatTime(time) {
+                    return moment(time).format("h:mm A, MMMM D");
+                },
                 async sendMessage() {
-                    if (!this.messageText.trim()) return;
+                    if (!this.messageText.trim() || !this.activeFriend) return;
 
                     const newChat = {
-                        time: moment().format("h:mm A, MMMM D"),
-                        img: `/api/UserInfo/GetPicture/${window.currentUserId}`,
-                        message: this.messageText,
-                        type: "my"
+                        id: Date.now(),
+                        senderId: this.currentUserId,
+                        senderAvatar: `/api/UserInfo/GetPicture/${this.currentUserId}`,
+                        messageText: this.messageText,
+                        createTime: new Date().toISOString()
                     };
                     this.chatHistory.push(newChat);
 
                     try {
-                        await this.connection.invoke("SendMessage", window.currentUserId.toString(), this.messageText);
+                        await this.connection.invoke("SendMessage", this.currentUserId.toString(), this.messageText);
 
                         const response = await axios.post('/api/ChatRoom/ChatRoomsApi', {
-                            User1Id: window.currentUserId,
-                            User2Id: window.otherUserId,
+                            User1Id: this.currentUserId,
+                            User2Id: this.activeFriend.id,
                             MessageText: this.messageText,
                             CreateTime: new Date(),
                             IsRead: false
@@ -217,48 +207,67 @@
                         console.log('Message saved:', response.data);
 
                         this.messageText = '';
+                        this.$nextTick(() => {
+                            this.scrollToBottom();
+                        });
                     } catch (error) {
                         console.error('Error sending/saving message:', error);
                     }
+                },
+                scrollToBottom() {
+                    const chatHistory = this.$refs.chatHistoryList;
+                    chatHistory.scrollTop = chatHistory.scrollHeight;
+                },
+                setupSignalRConnection() {
+                    this.connection = new signalR.HubConnectionBuilder()
+                        .withUrl("/chatHub")
+                        .build();
+
+                    this.connection.on("UserOnline", (userId) => {
+                        this.updateFriendStatus(userId, true);
+                    });
+
+                    this.connection.on("UserOffline", (userId) => {
+                        this.updateFriendStatus(userId, false);
+                    });
+
+                        this.connection.on("ReceiveMessage", (user, message) => {
+                            if (user != this.currentUserId) {
+                                const chat = {
+                                    id: Date.now(),
+                                    senderId: user,
+                                    senderAvatar: `/api/UserInfo/GetPicture/${user}`,
+                                    messageText: message,
+                                    createTime: new Date().toISOString()
+                                };
+                                this.chatHistory.push(chat);
+                                this.$nextTick(() => {
+                                    this.scrollToBottom();
+                                });
+                            }
+                        });
+
+
+                    this.connection.on("SomeOneOnline", (connid) => {
+                        console.log(`Someone connected, ID: ${connid}`);
+                    });
+
+                    this.connection.on("SomeOneOffline", (connid) => {
+                        console.log(`Someone disconnected, ID: ${connid}`);
+                    });
+
+                    this.connection.start().catch(err => console.error(err.toString()));
                 }
             },
             mounted() {
                 this.fetchFriends();
-                this.connection = new signalR.HubConnectionBuilder()
-                    .withUrl("/chatHub")
-                    .build();
-
-                this.connection.on("UserOnline", (userId) => {
-                    this.updateFriendStatus(userId, true);
-                });
-
-                this.connection.on("UserOffline", (userId) => {
-                    this.updateFriendStatus(userId, false);
-                });
-
-                this.connection.on("ReceiveMessage", (user, message) => {
-                    if (user != window.currentUserId) {
-                        const chat = {
-                            time: moment().format("h:mm A, MMMM D"),
-                            img: `/api/UserInfo/GetPicture/${window.otherUserId}`,
-                            message: message,
-                            type: "other"
-                        };
-                        this.chatHistory.push(chat);
-                    }
-                });
-
-                this.connection.on("SomeOneOnline", (connid) => {
-                    console.log(`有人連接，ID: ${connid}`);
-                });
-
-                this.connection.on("SomeOneOffline", (connid) => {
-                    console.log(`有人斷開連接，ID: ${connid}`);
-                });
-
-                this.connection.start().catch(err => console.error(err.toString()));
+                this.setupSignalRConnection();
+            },
+            beforeUnmount() {
+                if (this.connection) {
+                    this.connection.stop();
+                }
             }
         }).mount('#appc');
-
     </script>
 }
