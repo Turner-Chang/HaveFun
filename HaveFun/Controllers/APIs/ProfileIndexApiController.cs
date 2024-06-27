@@ -136,7 +136,7 @@ namespace HaveFun.Controllers.APIs
                          || (f.Clicked == showUserId && f.BeenClicked == loginUserId && f.state == 1))
                 .ToListAsync();
 
-            if (friends != null)
+            if (friends.Count!= 0)
             {
                 foreach (var friend in friends)
                 {
