@@ -75,7 +75,7 @@ namespace HaveFun.Controllers.APIs
             }
 
             var IsFriend = _context.FriendLists.FirstOrDefault(
-                f => f.Clicked == loginUserId && f.BeenClicked == showUserId && f.state == 1 
+                f => f.Clicked == loginUserId && f.BeenClicked == showUserId && f.state == 1
                 || f.Clicked == showUserId && f.BeenClicked == loginUserId && f.state == 1
             );
 
@@ -100,31 +100,80 @@ namespace HaveFun.Controllers.APIs
         [HttpPost]
         public async Task<ActionResult> SetFollowUser(int showUserId, int loginUserId)
         {
-            
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var followData = _context.FriendLists.FirstOrDefault(f => f.Clicked == loginUserId && f.BeenClicked == showUserId && f.state == 0);
+            // 檢查對方是否已關注
+            var IsFocus = _context.FriendLists.FirstOrDefault(
+                        f => f.Clicked == showUserId && f.BeenClicked == loginUserId && f.state == 0
+            );
+            
+            if (IsFocus != null)
+            {   
+                // 對方已關注，兩人成為好友
+                IsFocus.state = 1;
+                _context.FriendLists.Update(IsFocus);
+                await _context.SaveChangesAsync();
 
-            if (followData == null)
-            {
                 var followUserData = new FriendList
                 {
                     Clicked = loginUserId,
                     BeenClicked = showUserId,
-                    state = 0  // 關注
+                    state = 1
+                };
+
+                _context.FriendLists.Add(followUserData);
+                await _context.SaveChangesAsync();
+                return Content("好友");
+            }
+
+            // 檢查雙方是否為好友
+            var friends = await _context.FriendLists
+                .Where(f => (f.Clicked == loginUserId && f.BeenClicked == showUserId && f.state == 1)
+                         || (f.Clicked == showUserId && f.BeenClicked == loginUserId && f.state == 1))
+                .ToListAsync();
+
+            if (friends != null)
+            {
+                foreach (var friend in friends)
+                {
+                    if (friend.Clicked == loginUserId)
+                    {
+                        friend.state = 0; // 修改狀態
+                        _context.FriendLists.Update(friend); // 標記為更新
+                    }
+                    else
+                    {
+                        _context.FriendLists.Remove(friend); // 刪除
+                    }
+                }
+                await _context.SaveChangesAsync();
+            }
+
+            // 對方未關注，加入關注
+            var followData = _context.FriendLists.FirstOrDefault(f => f.Clicked == loginUserId && f.BeenClicked == showUserId && f.state == 0);
+
+            if (followData == null)
+            {
+                // 關注
+                var followUserData = new FriendList
+                {   
+                    Clicked = loginUserId,
+                    BeenClicked = showUserId,
+                    state = 0
                 };
                 _context.FriendLists.Add(followUserData);
                 await _context.SaveChangesAsync();
                 return Content("已關注");
             }
             else
-            {
+            {   // 取消關注
                 _context.FriendLists.Remove(followData);
                 await _context.SaveChangesAsync();
-                return Content("取消關注");
+                return Content("關注我");
             }
         }
     }
