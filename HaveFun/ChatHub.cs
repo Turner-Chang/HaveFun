@@ -4,7 +4,9 @@ using HaveFun.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
-
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Azure.Core;
 public class ChatHub : Hub
 {
     private readonly HaveFunDbContext _context;
@@ -15,11 +17,11 @@ public class ChatHub : Hub
         _context = context;
         _logger = logger;
     }
-
+   [Authorize(AuthenticationSchemes = "Bearer,Cookies")]
     public override async Task OnConnectedAsync()
     {
-        try
-        {
+        try 
+        {   
             await Clients.All.SendAsync("SomeOneOnline", Context.ConnectionId);
 
             int userId = GetUserIdFromContext();
@@ -66,12 +68,18 @@ public class ChatHub : Hub
 
     private int GetUserIdFromContext()
     {
-        // Implement this method to get the user ID from the connection context
-        // This might involve reading claims, querying the database, etc.
-        // For now, we'll throw an exception to ensure it's properly implemented
-        throw new NotImplementedException("GetUserIdFromContext needs to be implemented");
+        var userIdClaim = Context.User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
+        {
+            return userId;
+        }
+
+        // If the user ID is not found in claims, you might want to handle this case
+        // For example, you could throw an exception or return a default value
+        throw new InvalidOperationException("User ID not found in the connection context");
     }
 
+    [Authorize(AuthenticationSchemes = "Bearer,Cookies")]
     public override async Task OnDisconnectedAsync(Exception exception)
     {
         try
