@@ -60,8 +60,9 @@ namespace HaveFun.Controllers.APIs
         [HttpGet]
         public async Task<IEnumerable<WhoLikeListDTO>> GetWhoLikeList()
         {
+            string loginId = Request.Cookies["userId"];
             var whoLikeListData = await _context.FriendLists
-                .Where(f => f.state == 0 && f.BeenClicked == 2)
+                .Where(f => f.state == 0 && f.BeenClicked.ToString() == loginId)
                 .Select(f => new
                 {
                     f.User1.Id,
@@ -87,6 +88,38 @@ namespace HaveFun.Controllers.APIs
 
             return whoLikeList;
         }
+
+        [HttpPost]
+        public async Task<ActionResult> setLikeUser(int loginUserId, int likeUserId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // 找出原始 Clicked to BeenClicked 
+            var LikeUser = _context.FriendLists.FirstOrDefault(f => f.Clicked == likeUserId && f.BeenClicked == loginUserId && f.state == 0);
+
+            if (LikeUser != null)
+            {
+                LikeUser.state = 1; // 好友
+                _context.FriendLists.Update(LikeUser);
+                await _context.SaveChangesAsync();
+            }
+
+            // 寫入 BeenClicked to Clicked
+            var LikeUserData = new FriendList
+            {
+                Clicked = loginUserId,
+                BeenClicked = likeUserId,
+                state = 1  // 好友
+            };
+            _context.FriendLists.Add(LikeUserData);
+            await _context.SaveChangesAsync();
+
+            return Ok("資料新增成功");
+        }
+
         [HttpGet]
         public string CreatePictureUrl(string action, string controller, object routeValues)
         {
@@ -207,8 +240,8 @@ namespace HaveFun.Controllers.APIs
                 Like = p.Like,
                 LikeUserList = p.Likes.Select(l => new LikeDTO
                 {
-                    UserId = l.UserId ,
-                    UserName = l.UserName ,
+                    UserId = l.UserId,
+                    UserName = l.UserName,
                     UserPicture = CreatePictureUrl("GetPicture", "Profile", new { id = l.UserId })
                 }).ToList(),
                 LikeCount = p.Likes.Count(),
@@ -389,7 +422,14 @@ namespace HaveFun.Controllers.APIs
                 {
                     _context.Likes.Remove(record);
                     await _context.SaveChangesAsync();
-                    return new JsonResult("CancelLike");
+                    var response = new
+                    {
+                        State = "CancelLike",
+                        UserId = clcickLike.UserId,
+                        UserPicture = CreatePictureUrl("GetPicture", "Profile", new { id = clcickLike.UserId })
+                    };
+                    return new JsonResult(response);
+                    //return new JsonResult("CancelLike");
                 }
                 else
                 {
@@ -400,7 +440,15 @@ namespace HaveFun.Controllers.APIs
                     };
                     _context.Likes.Add(like);
                     await _context.SaveChangesAsync();
-                    return new JsonResult("Like");
+                    var response = new
+                    {
+                        State = "Like",
+                        UserId = clcickLike.UserId,
+                        UserPicture = CreatePictureUrl("GetPicture", "Profile", new { id = clcickLike.UserId })
+                    };
+                    return new JsonResult(response);
+
+                    //return new JsonResult("Like");
                 }
             }
             catch (DbException ex)

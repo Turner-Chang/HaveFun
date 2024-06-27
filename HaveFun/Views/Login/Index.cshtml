@@ -133,11 +133,9 @@
                             this.errorMessage.push('帳號或密碼錯誤');
                         } 
                             if (data.success == true && data.emailLink != '' && data.id != '') {
-                            this.sendEmail(data.id);
-                            window.location.href = data.emailLink;
-                        }else{
-                            //window.location.href = '';
-                        }
+                                this.sendEmail(data.id);
+                                window.location.href = '/Profile/Index';
+                            }
                     })
                     .catch()     
                 },
