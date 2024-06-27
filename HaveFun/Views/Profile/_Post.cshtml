@@ -1,4 +1,8 @@
 ﻿<link href="~/assets/css/profile_poststyle.css" rel="stylesheet" />
+<style>
+
+
+</style>
 
 <div class="tab-pane fade show active" id="gt1" role="tabpanel" aria-labelledby="gt1-tab">
     <div id="post">
@@ -9,7 +13,7 @@
                         <div class="tab-content" id="myTabContent2">
                             <div class="tab-pane fade show active" id="Personal" role="tabpanel" aria-labelledby="Personal-tab">
                                 @* 發送貼文 *@
-                                <div class="create-post mb-4">
+                                <div v-if="displayPostForm" class="create-post mb-4">
                                     <div class="lab-inner">
                                         <div class="lab-thumb">
                                             <div class="thumb-inner">
@@ -29,7 +33,7 @@
                                                         <select v-model="postPrivacy">
                                                             <option value="Public"> Public</option>
                                                             @* <option value="Private"> Private</option> *@
-                                                            @* <option value="Friends"> Friends</option>k *@
+                                                            @* <option value="Friends"> Friends</option> *@
                                                         </select>
                                                     </div>
                                                 </div>
@@ -44,13 +48,13 @@
                                                 </div>
                                                 <div class="content-type">
                                                     <ul class="content-list">
-                                                        <li class="text"><a href="#"><i class="fa-solid fa-pen-to-square"></i>Text</a></li>
+                                                        @* <li class="text"><a href="#"><i class="fa-solid fa-pen-to-square"></i>Text</a></li> *@
                                                         <li class="image-video">
                                                             <div class="file-btn"><i class="fa-solid fa-camera"></i>Photo</div>
                                                             <input type="file" v-model="newPostPic" @@change.prevent="previewPic" accept="image/*">
                                                         </li>
                                                         <li class="attach-file">
-                                                            <div class="file-btn"><i class="fa-solid fa-link"></i>Attach File</div>
+                                                            @* <div class="file-btn"><i class="fa-solid fa-link"></i>Attach File</div> *@
                                                             @* <input type="file" @@change.prevent="handleFileUpload"> *@
                                                         </li>
                                                         <li class="post-submit">
@@ -135,7 +139,8 @@
                                                         <i v-else class="fa-heart fa-regular"></i> Like
                                                     </a>
                                                 <li class="react"><a href="#" @@click.prevent="commentOnPost(post)"><i class="fa-solid fa-comment"></i>Comment</a></li>
-                                                <li class="react"><a href="#"><i class="fa-solid fa-share-nodes"></i>Share</a></li>
+                                                <li class="react"><a href="#" @@click="shareToFacebook(post)"><i class="fa-solid fa-share"></i> Share</a></li>
+                                                    
                                             </ul>
                                         </div>
                                     </div>
@@ -215,7 +220,7 @@
                                     <div class="row justify-content-center">
                                         <div class="col-auto">
                                             <a href="#" class="default-btn" @@click.prevent="loadMore">
-                                                <span><i class="fa-solid fa-spinner"></i> Load More</span>
+                                                <span><i class="fa-solid fa-spinner"></i> Load More Post</span>
                                             </a>
                                         </div>
                                     </div>
@@ -297,6 +302,7 @@
                 showDeleteBtn: false,
                 LikeUserList: [],             // LikeUser清單
                 showLikeUserListModal: false, // 顯示LikeUser清單
+                displayPostForm:true,     // 發文區塊
                 displayPostsSelect: true, // 個人/朋友 選項
                 displayPersonalPosts: true, // 個人貼文
                 FriendPostList: [], // 朋友列表
@@ -329,6 +335,7 @@
                         });
                     }
                 }
+                this.displayPostForm = false;
                 this.displayPostsSelect = false;
                 return this.postsWithLikeStatus;
             },
@@ -655,6 +662,12 @@
             // 關閉LikeUserList
             closeLikeUserListModal() {
                 this.showLikeUserListModal = false;
+            },
+
+            shareToFacebook(post) {
+                event.preventDefault();
+                const shareUrl = `https://www.facebook.com/share.php?u=${window.location.origin + '/post/' + post.postId}&quote=${post.contents}`;
+                window.open(shareUrl, 'facebook-share-dialog', 'width=800,height=600');
             },
 
             // 取得檢舉項目
