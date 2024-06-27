@@ -58,7 +58,7 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
-    window.currentUserId = @Html.Raw(Json.Serialize(ViewBag.UserId));
+    window.currentUserId = @ViewBag.UserId;
 
     const { createApp } = Vue;
 
