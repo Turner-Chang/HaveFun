@@ -5,8 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
-using Azure.Core;
+
 public class ChatHub : Hub
 {
     private readonly HaveFunDbContext _context;
