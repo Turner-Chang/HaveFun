@@ -1,10 +1,10 @@
 ﻿<div class="row   p-5 text-center border-2 m-auto" id="AnnouncementApp">
 	<h2 class="col-12 text-center">公告管理</h2>
 	<hr>
-	<button class="btn btn-warning col-3 mb-3 m-auto" @@click="showModal">
+	<button class="btn btn-warning col-3 mb-3 m-auto" @@click="showCreateModal">
 		新增公告
 	</button>
-	<hr>
+	
 	<div class="table-responsive-md">
 		<table class="table table-secondary">
 			<thead>
@@ -13,14 +13,18 @@
 					<th scope="col">內容</th>
 					<th scope="col">開始時間</th>
 					<th scope="col">結束時間</th>
+					<th scope="col">修改</th>
+
 				</tr>
 			</thead>
 			<tbody>
-				<tr v-for="ann of announces">
+				<tr v-for="ann of announces.slice(tableStart,tableEnd)">
 					<td scope="row">{{ann.title}}</td>
 					<td>{{ann.content}}</td>
 					<td>{{TimeSplit(ann.startTime)}}</td>
 					<td>{{TimeSplit(ann.endTime)}}</td>
+					<td><a class="btn btn-info" @@click="showEditModal(),GetById(ann.id)">修改</a></td>
+
 				</tr>
 			</tbody>
 		</table>
@@ -45,14 +49,13 @@
 			 role="document">
 			<div class="modal-content">
 				<div class="modal-header" style="background-color:burlywood;">
-					<span style="width:150px"></span>
+					<span style="width:120px"></span>
 					<h5 class="modal-title m-auto" id="modalTitleId">
 						新增公告
 					</h5>
 					<button type="button"
 							class="btn-close"
-							data-bs-dismiss="modal"
-							aria-label="Close"></button>
+							@@click="hideCreateModal"></button>
 				</div>
 				<div class="modal-body">
 					<label class="form-label col-3 text-start">標題:</label>
@@ -73,6 +76,18 @@
 					</h5>
 				</template>
 
+				<template v-if="TitleIsValid">
+					<h5 class="text-danger">
+						標題未填寫完成
+					</h5>
+				</template>
+
+				<template v-if="ContentIsValid">
+					<h5 class="text-danger">
+						內容未填寫完成
+					</h5>
+				</template>
+
 				<template v-if="TimeisValid">
 					<h5 class="text-danger">
 						開始日比結束日晚
@@ -82,10 +97,76 @@
 				<div class="modal-footer">
 					<button type="button"
 							class="btn btn-secondary"
-							data-bs-dismiss="modal">
+							@@click="hideCreateModal">
 						取消
 					</button>
-					<button type="button" class="btn btn-primary" @@click="CreateComplete()">新增</button>
+					<button type="button" class="btn btn-primary" @@click="CreateComplete">新增</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade"
+		 id="EditAnnouncemodal"
+		 tabindex="-1"
+		 data-bs-backdrop="static"
+		 data-bs-keyboard="false"
+		 role="dialog"
+		 aria-labelledby="modalTitleId"
+		 aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md"
+			 role="document">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color:hotpink;">
+					<span style="width:120px"></span>
+					<h5 class="modal-title m-auto" id="modalTitleId">
+						修改公告
+					</h5>
+					<button type="button"
+							class="btn-close"
+							@@click="hideEditModal"></button>
+				</div>
+				<div class="modal-body">
+					<label class="form-label col-3 text-start">標題:</label>
+					<input v-model="Edit.title" type="text" class="col-8" />
+					<label class="form-label col-11 text-start">內容:</label>
+					<textarea v-model="Edit.content" class="col-11"></textarea>
+					<label class="form-label col-3 text-start">開始時間:</label>
+					<input v-model="Edit.startTime" type="datetime-local" class="col-8" />
+					<label class="form-label col-3 text-start">結束時間:</label>
+					<input v-model="Edit.endTime" type="datetime-local" class="col-8" />
+				</div>
+				<template v-if="isValid">
+					<h5 class="text-danger">
+						未填寫完成
+					</h5>
+				</template>
+
+				<template v-if="TitleIsValid">
+					<h5 class="text-danger">
+						標題未填寫完成
+					</h5>
+				</template>
+
+				<template v-if="ContentIsValid">
+					<h5 class="text-danger">
+						內容未填寫完成
+					</h5>
+				</template>
+
+				<template v-if="TimeisValid">
+					<h5 class="text-danger">
+						開始日比結束日晚
+					</h5>
+				</template>
+
+
+				<div class="modal-footer">
+					<button type="button"
+							class="btn btn-secondary"
+							data-bs-dismiss="modal" @@click="hideEditModal">
+						取消
+					</button>
+					<button type="button" class="btn btn-primary" @@click="EditById(Edit.id)">修改</button>
 				</div>
 			</div>
 		</div>
@@ -104,14 +185,17 @@
 					temp: {title:"",content:"",startTime:"",endTime:""},
 					isValid:false,
 					TimeisValid: false,
+					TitleIsValid:false,
+					ContentIsValid:false,
+					Edit: { title: "", content: "", startTime: "", endTime: "" },
 				}
 			},
 			methods: {
 				CreateComplete() { 
 					//alert("complete")
-					if (this.hasStartTime && this.hasEndTime) { 
-						var startD = Date(this.hasStartTime);
-						var endD = Date(this.hasEndTime);
+					if (this.hasStartTime && this.hasEndTime) {
+						var startD =new Date(this.temp.startTime);
+						var endD =new Date(this.temp.endTime);
 						if (startD > endD) { TimeisValid = True;  }
 					}
 					if (this.hasContent && this.hasTitle && this.hasStartTime && this.hasEndTime && ! this.TimeisValid) {
@@ -123,6 +207,7 @@
 						}
 						axios.post('/api/Announcement/Create', body,
 							{ headers: { "Content-type": "application/json" } }).then(res => console.log(res))
+						this.hideCreateModal();
 					}
 					else 
 					{ 
@@ -130,18 +215,49 @@
 					}
 				},
 				GetAll() {
-
+					axios.get('/api/Announcement/GetAll')
+						.then(d => d.data)
+						.then(d => AnnounceApp.announces = d)
+						.then(d=> AnnounceApp.GetAll());
 				},
-
-				showModal() {
+				GetById(id) {
+					axios.get(`/api/Announcement/Get/id?id=${id}`).then(res => this.Edit=res.data)
+				},
+				EditById(id) {
+					if (this.Edit.title == false ||
+						this.Edit.content == false ||
+						this.Edit.startTime == false ||
+						this.Edit.endTime == false) {
+						this.isValid = true;
+					}
+					else { this.isValid = false; }
+					if (!this.isValid && !this.TimeisValid) {
+						var body = this.Edit;
+						axios.put(`/api/Announcement/Edit?id=${id}`, body).then(res => console.log(res));
+						this.hideEditModal();
+					}
+					else { this.isValid = true; }
+				},
+				showCreateModal() {
+					this.isValid = false;
+					this.TimeisValid = false;
+					this.TitleIsValid = false;
+					this.ContentIsValid = false;
 					$("#CreateAnnouncemodal").modal("show");
 				},
-				hideModal() {
-					
-					$("#PostModal").modal("hide");
+				showEditModal() {
+					$("#EditAnnouncemodal").modal("show");
+				},
+				hideCreateModal() {
+					$("#CreateAnnouncemodal").modal("hide");
+					this.temp = { title: "", content: "", startTime: "", endTime: "" };
 
 				},
+				hideEditModal() {
+					$("#EditAnnouncemodal").modal("hide");
+					this.Edit = { title: "", content: "", startTime: "", endTime: "" };
 
+				},
 				btnColor(id) {
 					if (id == 0) { return "btn-warning"; }
 					if (id == 1) { return "btn-secondary "; }
@@ -158,7 +274,7 @@
 					}
 				},
 				LowerFive() {
-					if (this.tableEnd < this.reports.length) {
+					if (this.tableEnd < this.announces.length) {
 						this.tableStart += 5;
 						this.tableEnd += 5;
 					}
@@ -182,30 +298,30 @@
 			},
 			computed: { 
 				hasTitle(){
-					return this.temp.title == true; 
+					return this.temp.title; 
 				},
 				hasContent(){
-					return this.temp.content == true; 
+					return this.temp.content; 
 				},
 				hasStartTime(){
-					return this.temp.startTime == true; 
+					return this.temp.startTime; 
 				},
 				hasEndTime(){
-					return this.temp.endTime == true; 
+					return this.temp.endTime; 
 				}
 			
 			},
 			watch: {
 				'temp.title': {
 					handler(newval, oldval) {
-						if (newval == false) { this.isValid = true }
-						else { this.isValid = false }
+						if (newval == false) { this.TitleIsValid = true }
+						else { this.TitleIsValid = false; this.isValid = false; }
 					},
 				},
 				'temp.content': {
 					handler(newval, oldval) {
-						if (newval == false) { this.isValid = true }
-						else { this.isValid = false }
+						if (newval == false) { this.ContentIsValid = true }
+						else { this.ContentIsValid = false; this.isValid = false; }
 					},
 				},
 				'temp.startTime': {
@@ -234,12 +350,46 @@
 						}
 					}, deep: true,
 				},
+				'Edit.title': {
+					handler(newval, oldval) {
+						if (newval == false) { this.TitleIsValid = true }
+						else { this.TitleIsValid = false; this.isValid = false; }
+					},
+				},
+				'Edit.content': {
+					handler(newval, oldval) {
+						if (newval == false) { this.ContentIsValid = true }
+						else { this.ContentIsValid = false; this.isValid = false; }
+					},
+				},
+				'Edit.startTime': {
+					handler(newval, oldval) {
+						if (newval == false) { this.isValid = true }
+						else { this.isValid = false }
+					},
+				},
+				'Edit.endTime': {
+					handler(newval, oldval) {
+						if (newval == false) { this.isValid = true }
+						else { this.isValid = false }
+					},
+				},
+				Edit: {
+					handler(newval, oldval) {
+						if (newval.startTime && newval.endTime) {
+							var Dstart = new Date(newval.startTime);
+							var Dend = new Date(newval.endTime);
+							if (Dstart > Dend) {
+								this.TimeisValid = true;
+							}
+							else { this.TimeisValid = false; }
+						}
+					}, deep: true,
+				},
 
 			},
 			mounted() {
-				 axios.get('/api/Announcement/GetAll')
-				.then(d=>d.data).then(d => AnnounceApp.announces=d);
-
+				this.GetAll();
 
 
 			},
