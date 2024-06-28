@@ -127,7 +127,7 @@
 		<div class="col-lg-3 p-4">
 			<h3>歷史活動</h3>
 			<div class="row g-4 row-cols-lg-1 row-cols-sm-2 row-cols-1">
-				<div class="col" v-for="activity in pastActivities" :id="activity.id">
+				<div class="col" v-for="activity in displayedActivities" :id="activity.id">
 					<div class="story__item style2 story--theme-color">
 						<div class="story__inner">
 							<div class="story__thumb position-relative">
@@ -167,6 +167,13 @@
 								</div>
 							</div>
 						</div>
+					</div>
+				</div>
+				<div class="row justify-content-center mt-5 top-right-button">
+					<div class="col-auto">
+						<a href="#" class="default-btn" style="background-color:#f24570; color:white;" v-on:click.prevent="loadMore" v-if="hasMore">
+							<span><i class="fa-solid fa-spinner"></i> Load More</span>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -259,6 +266,10 @@
 						type:'',
 					},
 					filteredActivities:[],
+					pageSize: 2,
+					currentPagePast: 1,
+					hasMore:true,
+					displayedActivities:[],
 				}
 			},
 			computed: {
@@ -337,6 +348,7 @@
 						})
 						.then(() => { 
 							this.applyFilters();
+							this.loadMore();
 						})
 						.catch(/* err => alert(err) */);
 				},
@@ -412,6 +424,19 @@
 					$(document).ready(function () {
 						$('#exampleModal').modal('hide');
 					});
+				},
+				loadMore() 
+				{
+					const start = (this.currentPagePast - 1) * this.pageSize;
+					const end = this.currentPagePast * this.pageSize;
+					const moreActivities = this.pastActivities.slice(start, end);
+
+					this.displayedActivities = [...this.displayedActivities, ...moreActivities];
+					this.currentPagePast++;
+
+					if (moreActivities.length < this.pageSize) {
+						this.hasMore = false;
+					}
 				},
 			},
 			watch: {
