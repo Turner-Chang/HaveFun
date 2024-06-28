@@ -48,17 +48,17 @@
                                         <small>{{ activeFriend ? (activeFriend.isOnline ? 'Online' : 'Offline') : '' }}</small>
                                     </div>
                                 </div>
-                                <div class="col-lg-6 hidden-sm text-right">
+                               @*  <div class="col-lg-6 hidden-sm text-right">
                                     <a href="javascript:void(0);" class="btn btn-outline-secondary"><i class="fa fa-camera"></i></a>
                                     <a href="javascript:void(0);" class="btn btn-outline-primary"><i class="fa fa-image"></i></a>
                                     <a href="javascript:void(0);" class="btn btn-outline-info"><i class="fa fa-cogs"></i></a>
                                     <a href="javascript:void(0);" class="btn btn-outline-warning"><i class="fa fa-question"></i></a>
                                 </div>
-                            </div>
+                            </div> *@
                         </div>
 
-                        <div class="chat-history">
-                            <ul class="m-b-0" ref="chatHistoryList">
+                        <div class="chat-history" ref="chatHistoryList">
+                            <ul class="m-b-0" >
                                 <li v-for="chat in sortedChatHistory" :key="chat.id" class="clearfix">
                                     <div :class="['message-data', chat.senderId === currentUserId ? 'text-right' : '']">
                                         @* <img :src="chat.senderAvatar" :alt="chat.senderId === currentUserId ? 'My Avatar' : 'Friend Avatar'" class="rounded-circle mr-1"> *@
