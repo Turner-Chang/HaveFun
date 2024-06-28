@@ -3,13 +3,13 @@
 	<div id="activityPlatform">
 		<ul class="tags lab-ul justify-content-center">
 			<li>
-				<button class="default-btn" @@click="switchType('commingup')">{{ buttonText('commingup', '即將舉辦活動') }}</button>
+				<button class="default-btn actType" @@click="switchType('commingup')">{{ buttonText('commingup', '即將舉辦活動') }}</button>
 			</li>
 			<li>
-				<button class="default-btn" @@click="switchType('host')">{{ buttonText('host', '修改主辦活度內容') }}</button>
+				<button class="default-btn actType" @@click="switchType('host')">{{ buttonText('host', '修改主辦活動內容') }}</button>
 			</li>
 			<li>
-				<button class="default-btn" @@click="switchType('past')">{{ buttonText('past', '已結束的活動') }}</button>
+				<button class="default-btn actType" @@click="switchType('past')">{{ buttonText('past', '已結束的活動') }}</button>
 			</li>
 		</ul>
 		<!-- 彈出視窗們 -->
@@ -24,7 +24,7 @@
 			<span>參加者: {{members.length}} 位</span><br>
 			<div class="joinMember">
 				<div class="memberProfile" v-for="member in members">
-					<a href="#">
+					<a :href="`/Profile/Index?userId=${member.id}`">
 					<img class="memberPic" v-bind:src=`${baseAddress}/api/personalActivities/GetUserProfile/${member.id}`>
 					{{member.name}}</a>
                 </div>
@@ -125,7 +125,7 @@
 					<input :class="['form-control',{'is-invalid':errorStyle.activityTime}]" type="datetime-local" v-model="editActivityTime">
 					<div class="invalid-feedback">請輸入有效時間</div>
 					<span> 活動地點：</span>
-					<input id="editLoaction" :class="['form-control',{'is-invalid':errorStyle.location}]"  maxlength="200" v-model="site">
+					<input id="editLocation" :class="['form-control',{'is-invalid':errorStyle.location}]"  maxlength="200" v-model="site">
 					<div class="invalid-feedback">活動地點為必填</div>
 					<span>活動類型：</span>
 					<select :class="['form-control',{'is-invalid':errorStyle.type}]" id="inputState" v-model="editActType">
@@ -196,8 +196,7 @@
 		</div>
 	</div>
 </div>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDh0olCmLq7Tpu-ktNN0_JYyt9G529C4qA&libraries=geocoding,places"></script>@*
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDh0olCmLq7Tpu-ktNN0_JYyt9G529C4qA&libraries=places"></script> *@
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDh0olCmLq7Tpu-ktNN0_JYyt9G529C4qA&libraries=geocoding,places"></script>
 <script>
 	const activityPlatform = Vue.createApp({
 		data() {
@@ -281,16 +280,6 @@
 					$('#submit').css("display", "inline-block");
 				}
 			},
-			// commingupActivities(newVal, oldVal){
-			// 	if (newVal !== oldVal){
-			// 		this.showCommingupMap(newVal);
-			// 	}
-			// },
-			// pastActivities(newVal, oldVal) {
-			// 	if (newVal !== oldVal) {
-			// 		this.showCommingupMap(newVal);
-			// 	}
-			// },
 		},
 		computed: {
 			hasTitle(){
@@ -329,8 +318,8 @@
 		},
 		methods: {
 			//取得登入者即將發生活動
-			getCommingupList(userId) {
-				fetch(`api/personalActivities/GetCommingupActivities/${this.loginUserId}`)
+			getCommingupList() {
+				fetch(`/api/personalActivities/GetCommingupActivities/${this.loginUserId}`)
 					.then(res => res.json())
 					.then(data => {
 						this.commingupActivities = data.map(activity => ({
@@ -341,8 +330,8 @@
 					.catch(error => { console.log('fetch commingupActivities failed!') });
 			},
 			//取得登入者主辦活動
-			getHostList(userId) {
-				fetch(`api/personalActivities/GetHostActivities/${this.loginUserId}`)
+			getHostList() {
+				fetch(`/api/personalActivities/GetHostActivities/${this.loginUserId}`)
 					.then(res => res.json())
 					.then(data => {
 						this.hostActivities = data.map(activity => ({
@@ -354,8 +343,8 @@
 					.catch(error => { console.log('fetch hostActivities failed!') });
 			},
 			//取得已結束活動
-			getPastList(userId) {
-				fetch(`api/personalActivities/GetPastActivities/${this.loginUserId}`)
+			getPastList() {
+				fetch(`/api/personalActivities/GetPastActivities/${this.loginUserId}`)
 					.then(res => res.json())
 					.then(data => {
 						this.pastActivities = data.map(activity => ({
@@ -367,7 +356,7 @@
 			},
 			//取得所有活動類型
 			getActivityTypeList() {
-				fetch(`api/personalActivities/GetActivityType`)
+				fetch(`/api/personalActivities/GetActivityType`)
 					.then(res => res.json())
 					.then(data => {
 						this.activitiyType = data;
@@ -421,7 +410,7 @@
 					"ActivityId": this.waitingToCancel,
 					"UserId": this.loginUserId
 				};
-				fetch(`api/personalActivities/NotAttending`, {
+				fetch(`/api/personalActivities/NotAttending`, {
 					method: 'DELETE',
 					headers: {
 						"Content-Type": "application/json"
@@ -453,7 +442,7 @@
 			//刪除活動
 			deleteActivity() {
 				event.preventDefault();
-				fetch(`api/personalActivities/DeleteActivity/${this.waitingToDelete}`, {
+				fetch(`/api/personalActivities/DeleteActivity/${this.waitingToDelete}`, {
 					method: 'PUT',
 					headers: {
 						"Content-Type": "application/json"
@@ -520,7 +509,7 @@
 				formData.append('ActivityTime', this.editActivityTime);
 				formData.append('Pictures', this.editPic);
 				
-				fetch(`api/personalActivities/EditActivity/${act.id}`, {
+				fetch(`/api/personalActivities/EditActivity/${act.id}`, {
 					method:'PUT',
 					body: formData
 				})
@@ -603,23 +592,24 @@
 				});
 			},
 			// 修改活動地址自動完成內容
-			// siteAuto() {
-			// 	let options = {
-			// 		componentRestrictions: { country: "tw" },
-			// 	};
-			// 	this.autocomplete = new google.maps.places.Autocomplete(document.querySelector('#editLoaction'), options);
-			// 	this.autocomplete.addListener("place_changed", () => {
-			// 		let place = this.autocomplete.getPlace();
-			// 		if (place.geometry) {
-			// 			this.site = place.formatted_address;
-			// 		}
-			// 	});
-			// },
+			siteAuto() {
+				let options = {
+					componentRestrictions: { country: "tw" },
+				};
+				this.autocomplete = new google.maps.places.Autocomplete(document.querySelector('#editLocation'), options);
+				this.autocomplete.addListener("place_changed", () => {
+					let place = this.autocomplete.getPlace();
+					this.site = document.querySelector('#editLocation').value;
+					// if (place.geometry) {
+					// 	this.site = place.formatted_address;
+					// }
+				});
+			},
 		},
 		mounted() {
-			this.getCommingupList(this.loginUserId);
-			this.getHostList(this.loginUserId);
-			this.getPastList(this.loginUserId);
+			this.getCommingupList();
+			this.getHostList();
+			this.getPastList();
 			this.getActivityTypeList();
 			// this.siteAuto();
 		},
@@ -630,6 +620,10 @@
 			}
 			if (this.currentType === 'past') {
 				this.showMap(this.pastActivities);
+			}
+			const locationInput = document.querySelector('#editLocation');
+			if (locationInput !== null) {
+				this.siteAuto();
 			}
 		}
 	})

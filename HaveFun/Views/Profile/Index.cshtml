@@ -840,12 +840,10 @@
                     const queryId = this.showUserId ? this.showUserId : this.loginUserId
                     axios.post(`/api/ProfileIndex/GetUser/${queryId}`)
                         .then(response => {
-                            // console.log("getUserInfo data",response.data)
                             this.userInfo = response.data;
                             this.name = this.userInfo[0].name
                             this.introduction = this.userInfo[0].introduction
                             this.profilePicture = this.userInfo[0].profilePicture
-                            // console.log("profilePicture:", this.profilePicture)
                             this.getFollowStatus()
                             this.showFollowUser = this.showUserId === this.loginUserId ? false : true
                         })
@@ -853,6 +851,7 @@
                             console.log("Erro getUserInforation:", error)
                         })
                 },
+
                 async getFollowStatus() {
                     axios.post(`/api/ProfileIndex/GetFollowUser?showUserId=${this.showUserId}&loginUserId=${this.loginUserId}`)
                         .then(response => {
@@ -866,11 +865,7 @@
                 async setFollowUser() {
                     axios.post(`/api/ProfileIndex/SetFollowUser?showUserId=${this.showUserId}&loginUserId=${this.loginUserId}`)
                         .then(response => {
-                            if (response.data === '已關注') {
-                                this.followButtonText = '已關注';
-                            } else {
-                                this.followButtonText = '關注我';
-                            }
+                            this.followButtonText = response.data;
                         })
                         .catch(error => {
                             console.log("Error setFollowUser：", error)

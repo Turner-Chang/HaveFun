@@ -1,0 +1,249 @@
+﻿<div class="row   p-5 text-center border-2 m-auto" id="AnnouncementApp">
+	<h2 class="col-12 text-center">公告管理</h2>
+	<hr>
+	<button class="btn btn-warning col-3 mb-3 m-auto" @@click="showModal">
+		新增公告
+	</button>
+	<hr>
+	<div class="table-responsive-md">
+		<table class="table table-secondary">
+			<thead>
+				<tr>
+					<th scope="col">標題</th>
+					<th scope="col">內容</th>
+					<th scope="col">開始時間</th>
+					<th scope="col">結束時間</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-for="ann of announces">
+					<td scope="row">{{ann.title}}</td>
+					<td>{{ann.content}}</td>
+					<td>{{TimeSplit(ann.startTime)}}</td>
+					<td>{{TimeSplit(ann.endTime)}}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div >
+		<button class="btn btn-secondary m-3" @@click="UpperFive()">上五筆</button>
+		<button class="btn btn-secondary m-3" @@click="LowerFive()">下五筆</button>
+	</div>
+
+	<template v-if="announces.length==0"><h1>沒有公告資料</h1> </template>
+
+
+	<div class="modal fade"
+		 id="CreateAnnouncemodal"
+		 tabindex="-1"
+		 data-bs-backdrop="static"
+		 data-bs-keyboard="false"
+		 role="dialog"
+		 aria-labelledby="modalTitleId"
+		 aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md"
+			 role="document">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color:burlywood;">
+					<span style="width:150px"></span>
+					<h5 class="modal-title m-auto" id="modalTitleId">
+						新增公告
+					</h5>
+					<button type="button"
+							class="btn-close"
+							data-bs-dismiss="modal"
+							aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<label class="form-label col-3 text-start">標題:</label>
+					<input v-model="temp.title" type="text"class="col-8"/>
+					<label  class="form-label col-11 text-start">內容:</label>
+					<textarea v-model="temp.content" class="col-11"></textarea>
+					<label class="form-label col-3 text-start">開始時間:</label>
+					<input v-model="temp.startTime" type="datetime-local" class="col-8" />
+					<label class="form-label col-3 text-start">結束時間:</label>
+					<input v-model="temp.endTime" type="datetime-local" class="col-8" />
+
+				</div>
+
+
+				<template v-if="isValid" >
+					<h5 class="text-danger">
+						未填寫完成 
+					</h5>
+				</template>
+
+				<template v-if="TimeisValid">
+					<h5 class="text-danger">
+						開始日比結束日晚
+					</h5>
+				</template>
+
+				<div class="modal-footer">
+					<button type="button"
+							class="btn btn-secondary"
+							data-bs-dismiss="modal">
+						取消
+					</button>
+					<button type="button" class="btn btn-primary" @@click="CreateComplete()">新增</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+@section Scripts {
+
+	<script>
+
+		var AnnounceApp = Vue.createApp({
+			data() {
+				return {
+					tableStart:0,
+					tableEnd:5,
+					announces:[],
+					temp: {title:"",content:"",startTime:"",endTime:""},
+					isValid:false,
+					TimeisValid: false,
+				}
+			},
+			methods: {
+				CreateComplete() { 
+					//alert("complete")
+					if (this.hasStartTime && this.hasEndTime) { 
+						var startD = Date(this.hasStartTime);
+						var endD = Date(this.hasEndTime);
+						if (startD > endD) { TimeisValid = True;  }
+					}
+					if (this.hasContent && this.hasTitle && this.hasStartTime && this.hasEndTime && ! this.TimeisValid) {
+						var body = {
+							"title": this.temp.title,
+							"content": this.temp.content,
+							"startTime": this.temp.startTime,
+							"endTime": this.temp.endTime,
+						}
+						axios.post('/api/Announcement/Create', body,
+							{ headers: { "Content-type": "application/json" } }).then(res => console.log(res))
+					}
+					else 
+					{ 
+						this.isValid = true;
+					}
+				},
+				GetAll() {
+
+				},
+
+				showModal() {
+					$("#CreateAnnouncemodal").modal("show");
+				},
+				hideModal() {
+					
+					$("#PostModal").modal("hide");
+
+				},
+
+				btnColor(id) {
+					if (id == 0) { return "btn-warning"; }
+					if (id == 1) { return "btn-secondary "; }
+					if (id == 2) { return "btn-success"; }
+
+				},
+				UpperFive() {
+					if (this.tableStart > 0) {
+						this.tableStart -= 5;
+						this.tableEnd -= 5;
+					}
+					else {
+						//alert("已經是第一頁")
+					}
+				},
+				LowerFive() {
+					if (this.tableEnd < this.reports.length) {
+						this.tableStart += 5;
+						this.tableEnd += 5;
+					}
+					else {
+						//alert("已經是最後一頁")
+					}
+				},
+				ReviewStatusToString(s) {
+					if (s == 0) { return "申訴中"; }
+					else if (s == 1) { return "已封鎖"; }
+					else { return "無須封鎖"; }
+				},
+
+				TimeSplit(timeStr) {
+					if (timeStr != null) {
+						var timeArr = timeStr.split('T').join('-').split('-').join(':').split(":");
+						return `${timeArr[0]}年 ${timeArr[1]}月 ${timeArr[2]}日 ${timeArr[3]}時 ${timeArr[4]}分`;
+					}
+				},
+
+			},
+			computed: { 
+				hasTitle(){
+					return this.temp.title == true; 
+				},
+				hasContent(){
+					return this.temp.content == true; 
+				},
+				hasStartTime(){
+					return this.temp.startTime == true; 
+				},
+				hasEndTime(){
+					return this.temp.endTime == true; 
+				}
+			
+			},
+			watch: {
+				'temp.title': {
+					handler(newval, oldval) {
+						if (newval == false) { this.isValid = true }
+						else { this.isValid = false }
+					},
+				},
+				'temp.content': {
+					handler(newval, oldval) {
+						if (newval == false) { this.isValid = true }
+						else { this.isValid = false }
+					},
+				},
+				'temp.startTime': {
+					handler(newval, oldval) {
+						if (newval == false) { this.isValid = true }
+						else { this.isValid = false }
+					},
+				},
+				'temp.endTime': {
+					handler(newval, oldval) {
+						if (newval == false) { this.isValid = true }
+						else { this.isValid = false }
+					},
+				},
+				temp: {
+					handler(newval, oldval) {
+					
+
+						if (newval.startTime && newval.endTime) {
+							var Dstart =new Date(newval.startTime);
+							var Dend =new Date(newval.endTime);
+							if (Dstart > Dend) {
+								this.TimeisValid = true;
+							}
+							else { this.TimeisValid = false; }
+						}
+					}, deep: true,
+				},
+
+			},
+			mounted() {
+				 axios.get('/api/Announcement/GetAll')
+				.then(d=>d.data).then(d => AnnounceApp.announces=d);
+
+
+
+			},
+		}).mount("#AnnouncementApp");
+
+	</script>
+}
