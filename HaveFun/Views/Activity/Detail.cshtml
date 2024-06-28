@@ -1,0 +1,331 @@
+﻿@model Activity;
+
+@section Styles
+{
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+}
+
+@* <h5>@Model.Title</h5> *@
+
+<div id="detailApp">
+	<!-- ================> Page Header section start here <================== -->
+	<div class="pageheader bg_img" style="background-image: url(/assets/images/bg-img/pageheader.jpg);">
+		<div class="container">
+			<div class="pageheader__content text-center">
+				<h2>活動詳情</h2>
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb justify-content-center mb-0">
+						<li class="breadcrumb-item"><a href="">Home</a></li>
+						<li class="breadcrumb-item" aria-current="page">Activity</li>
+						<li class="breadcrumb-item active" aria-current="page">Detail</li>
+					</ol>
+				</nav>
+			</div>
+		</div>
+	</div>
+	<!-- ================> Page Header section end here <================== -->
+	<!-- ================> Blog section start here <================== -->
+	<div class="blog blog--style2 padding-top padding-bottom aside-bg">
+		<div class="container">
+			<div class="section-wrapper">
+				<div class="row justify-content-center pb-15 p-5">
+					<div class="col-lg-9 col-12">
+						<article>
+							<div class="blog__item">
+								<div class="blog__inner">
+									<div class="blog__thumb">
+										<img :src=`${baseAddress}/api/ActivityApi/GetPicture/${activityId}` alt="dating thumb" style="width:100%">
+									</div>
+									<div class="blog__content">
+										<h2>@Model.Title</h2>
+										<ul class="blog__date">
+											<li><span><i class="fa-solid fa-calendar-days"></i>@Model.ActivityTime</span></li>
+											<li><span><i class="fa-solid fa-user"></i><a href="#">@Model.User.Name</a></span></li>
+										</ul>
+										<h2>活動内容</h2>
+										<div class="mb-3">
+											@Html.Raw(Model.Content);
+										</div>
+										
+										<h2>活動注意事項</h2>				
+										<blockquote class="single-quote mb-4">
+											<div class="quotes mb-3">
+												@Html.Raw(Model.Notes);
+											</div>
+										</blockquote>
+										<ul class="blog__date d-flex justify-content-evenly">
+											<li><h4><i class="fa-solid fa-dollar-sign fa-lg"></i></i> @Model.Amount</h4></li>
+											<li><h4><i class="fa-solid fa-user fa-lg"></i> @Model.MaxParticipants 人</h4></li>
+										</ul>
+
+										<h2>活動成員</h2>
+										<div class="story__content story__content--author justify-content-between pt-3">
+											@{
+												var participants = Model.ActivityParticipants.ToList();
+												int remainingParticipantsCount = participants.Count - 5;
+											}
+
+											
+											<ul class="img-stack">
+												@foreach (var participant in participants.Take(5))
+												{
+													<li>
+														<a href="/Profile/Index?userId=@participant.User.Id">
+															<img src="/@participant.User.ProfilePicture" alt="member-img" style="height:30px; width:30px;" />
+														</a>
+														<div class="time-tooltip">
+															<div class="time-tooltip-holder">
+																<span class="tooltip-info">@participant.User.Name</span>
+															</div>
+														</div>
+													</li>
+												}
+
+												@if (remainingParticipantsCount > 0)
+												{
+													<li class="bg-theme">
+														<a>
+															@remainingParticipantsCount +
+															<div class="time-tooltip">
+																<div class="time-tooltip-holder">
+																	<span class="tooltip-info">More</span>
+																</div>
+															</div>
+														</a>
+													</li>
+												}
+											</ul>
+										</div>
+
+										
+
+											@* <li v-for="participant in limitedParticipants(activity.participants)">
+												<a :href="`/Profile/Index?userId=${participant.id}`">
+													<img :src="participant.profilePicture" alt="member-img" style="height:30px; width:30px;">
+													<div class="time-tooltip">
+														<div class="time-tooltip-holder">
+															<span class="tooltip-info">{{participant.name}}</span>
+														</div>
+													</div>
+												</a>
+											</li>
+
+											<li v-if="remainingParticipants(activity.participants) > 0" class="bg-theme">
+												<a>
+													{{ remainingParticipants(activity.participants) }}+
+													<div class="time-tooltip">
+														<div class="time-tooltip-holder">
+															<span class="tooltip-info">More</span>
+														</div>
+													</div>
+												</a>
+											</li> *@
+
+										<h2>活動地點</h2>
+										<P><i class="fa-solid fa-location-crosshairs fa-lg"></i>@Model.Location</P>
+										
+										@{
+											var currentUserId = (int)ViewBag.LoginUserId;
+											var isUserParticipating = Model.ActivityParticipants.Any(p => p.UserId == currentUserId);
+										}
+
+										<button disabled="@isUserParticipating" class="default-btn" style=" @(isUserParticipating ? "background-color:gray; color:white; margin-right: 20px;" : "background-color:#f24570; color:white; margin-right: 20px;")" v-on:click="signUp">
+											@(isUserParticipating ? "已经报名" : "参加")
+										</button>
+
+										@* <div class="blog__thumb mb-4">
+											<img src="assets/images/blog/single/02.jpg" alt="blog-img">
+										</div>
+
+										<P>Serenity hassir taken posseson of mying entire soung like these sweet mornngs is whch enjoy with my whole heart create am alonesi and feel the charm of exstenceth spotens whch was the blis of souls like mineing am soo happy my dearsi frend absoribed the em exquste sense enjoy with my whole heart inaming alone and feel the charm of exstensc spotsi whch was the blis of souls like mineing am soing happyr my dear frend soingu ize absoribed the exqust sense tranquil existence that neglect my talentsr Ins should byers ncapable ofing is drawng and singe wonderful.</P>
+
+										<div class="blog__thumb mb-4">
+											<img src="assets/images/blog/single/03.jpg" alt="blog">
+											<a href="https://www.youtube.com/embed/U9O8G5AreXE" class="play-btn"
+											   data-rel="lightcase">
+												<i class="fa-solid fa-play"></i>
+												<span class="pluse_2"></span>
+											</a>
+										</div>
+										<P>Serenity hassir taken posseson of mying entire soung like these sweet mornngs is whch enjoy with my whole heart create am alonesi and feel the charm of exstenceth spotens whch was the blis of souls like mineing am soo happy my dearsi frend absoribed the em exquste sense enjoy with my whole heart inaming alone and feel the charm of exstensc spotsi whch was the blis of souls like mineing am soing happyr my dear frend soingu ize absoribed the exqust sense tranquil existence that neglect my talentsr Ins should byers ncapable ofing is drawng and singe wonderful.</P>
+
+										<div class="tags-area">
+											<ul class="tags lab-ul justify-content-center">
+												<li>
+													<a href="#">Charity</a>
+												</li>
+												<li>
+													<a href="#" class="active">NoneProfit</a>
+												</li>
+												<li>
+													<a href="#">Admission</a>
+												</li>
+												<li>
+													<a href="#">Exams</a>
+												</li>
+											</ul>
+											<ul class="share lab-ul justify-content-center">
+												<li>
+													<a href="#" class="facebook"><i class="fa-brands fa-facebook-f"></i></a>
+												</li>
+												<li>
+													<a href="#" class="dribble"><i class="fa-brands fa-dribbble"></i></a>
+												</li>
+												<li>
+													<a href="#" class="twitter"><i class="fa-brands fa-twitter"></i></a>
+												</li>
+												<li>
+													<a href="#" class="google"><i class="fa-brands fa-google"></i></a>
+												</li>
+											</ul>
+										</div> *@
+									</div>
+								</div>
+							</div>
+
+							@* <div class="article-pagination">
+								<div class="prev-article">
+									<a href="#"><i class="icofont-rounded-double-left"></i>Previous Article</a>
+									<p>Evisculate Parallel Processes via Technica Sound Models Authoritative</p>
+								</div>
+								<div class="next-article">
+									<a href="#">Next Article <i class="icofont-rounded-double-right"></i></a>
+									<p>Qvisculate Parallel Processes via Technica Sound Models Authoritative</p>
+								</div>
+							</div>
+
+							<div class="author">
+								<div class="author__thumb">
+									<img src="assets/images/blog/author/01.jpg" alt="author">
+								</div>
+								<div class="author__content">
+									<h6 class="mb-2">Rajib Ahmed</h6>
+									<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque, ipsa autem reprehenderit dolorem necessitatibus numquam illo in commodi cum. Quidem odit neque laudantium sequi exercitationem quas aspernatur, dolores vero earum.</p>
+									<div class="social-media">
+										<a href="#" class="twitter"><i class="fa-brands fa-twitter"></i></a>
+										<a href="#" class="behance"><i class="fa-brands fa-behance"></i></a>
+										<a href="#" class="instagram"><i class="fa-brands fa-instagram"></i></a>
+										<a href="#" class="vimeo"><i class="fa-brands fa-vimeo-v"></i></a>
+										<a href="#" class="linkedin"><i class="fa-brands fa-linkedin-in"></i></a>
+									</div>
+								</div>
+							</div>
+
+							<div class="comments">
+								<h4 class="comment-title">02 Comment</h4>
+								<ul class="lab-ul comment-list">
+									<li class="comment">
+										<div class="com-item">
+											<div class="com-thumb">
+												<img alt="" src="assets/images/blog/author/02.jpg" srcset="assets/images/blog/author/02.jpg">
+											</div>
+											<div class="com-content">
+												<div class="com-title">
+													<div class="com-title-meta">
+														<a href="member-single.html">Linsa Faith</a>
+														<span> January 5, 2022 at 12:41 pm </span>
+													</div>
+													<span class="reply">
+														<a class="comment-reply-link" href="#"><i class="icofont-reply-all"></i>Reply</a>
+													</span>
+												</div>
+												<p>The inner sanctuary, I throw myself down among the tall grass bye the trckli stream and, as I lie close to the earth</p>
+											</div>
+										</div>
+										<ul class="lab-ul comment-list">
+											<li class="comment">
+												<div class="com-thumb">
+													<img alt="" src="assets/images/blog/author/03.jpg" srcset="assets/images/blog/author/03.jpg">
+												</div>
+												<div class="com-content">
+													<div class="com-title">
+														<div class="com-title-meta">
+															<a href="member-single.html">James Jusse</a>
+															<span> January 5, 2022 at 12:41 pm </span>
+														</div>
+														<span class="reply">
+															<a class="comment-reply-link" href="#"><i class="icofont-reply-all"></i>Reply</a>
+														</span>
+													</div>
+													<p>A wonderful serenity has taken possession of my entire soul, like these sweet mornings spring which I enjoy with my whole heart </p>
+												</div>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</div>
+
+							<div class="comment-respond">
+								<h4>Leave a Comment</h4>
+								<div class="add-comment">
+									<form action="#" class="comment-form">
+										<input name="name" type="text" placeholder="Name*">
+										<input name="email" type="text" placeholder="Email*">
+										<input name="url" type="text" placeholder="Website*" class="w-100">
+										<textarea name="comment" rows="7" placeholder="Type Here Your Comment*"></textarea>
+										<button type="submit" class="default-btn reverse"><span>Send Comment</span></button>
+									</form>
+								</div>
+							</div> *@
+						</article>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- ================> Blog section end here <================== -->
+</div>
+
+
+
+
+@section Scripts
+{
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer" asp-append-version="true">
+	</script>
+	<script>
+		const detailApp = Vue.createApp({
+			data() {
+				return {
+					baseAddress: "https://localhost:7152",
+					activityId: @Model.Id,
+					loginUserId: @ViewBag.LoginUserId,
+				}
+			},
+			computed: {
+				
+			},
+			methods: {
+				async signUp() {
+					try {
+						const response = await axios.post('/api/ActivityApi/SignUp', {
+							Userid: this.loginUserId,
+							ActivityId: this.activityId
+						});
+
+						Swal.fire({
+							icon: 'success',
+							title: '报名成功',
+							text: response.data
+						});
+
+					} catch (error) {
+
+						Swal.fire({
+							icon: 'error',
+							title: '报名失败',
+							text: error.response.data
+						});
+
+					}
+				}
+			},
+			watch: {
+			},
+			mounted() {
+				
+			},
+		}).mount("#detailApp");
+	</script>
+}

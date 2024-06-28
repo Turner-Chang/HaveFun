@@ -1,5 +1,6 @@
 using HaveFun.Common;
 using HaveFun.Models;
+//using HaveFun.Service;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.FileProviders;
@@ -34,6 +35,7 @@ builder.Services.AddSingleton<DESSecure>();
 builder.Services.AddSingleton<GoogleOAuth>();
 
 builder.Services.AddScoped<MembershipService>();
+//builder.Services.AddScoped<PostServices>();
 
 // 設定Cookie + JWT驗證
 var jwt = builder.Configuration.GetSection("Jwt:secret").Get<string>();
@@ -96,14 +98,21 @@ if (!app.Environment.IsDevelopment())
 }
 app.UseSwagger();
 app.UseSwaggerUI();
+
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+
 app.UseRouting();
+
+app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseSession();
+
+// 註冊自定義中介軟體
+app.UseMiddleware<BackendAuthMiddleware>();
 
 app.MapControllerRoute(
     name: "Areas",
@@ -115,5 +124,8 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 //添加chathub
 app.MapHub<ChatHub>("/chathub");
+
+
+
 
 app.Run();

@@ -1,0 +1,59 @@
+﻿@model HaveFun.DTOs.GoogleRegisterDTO
+@section Styles{
+    <style>
+        .form-group {
+            margin: 20px auto 0px auto;
+            width: 50%;
+        }
+
+        #ProfilePicture{
+            margin-top: 15px;
+        }
+
+        #googleSubmit{
+            margin:0 auto;
+        }
+        h3{
+            text-align:center;
+        }
+    </style>
+}
+<h3>會員資料填寫</h3>
+<div id="GoogleRegisterContent">
+    <form asp-action="GoogleRegister" asp-controller="Register" method="post">
+        <input type="text" asp-for="Account" style="display:none" value="@ViewData["Account"]" />
+        <input type="password" style="display:none" asp-for="Password" value="@ViewData["Password"]" />
+        <input type="text" style="display:none" asp-for="Name" value="@ViewData["Name"]" />
+        <div class="form-group">
+            <label class="form-label" asp-for="BirthDay">生日*</label>
+            <input class="form-control" type="date" asp-for="BirthDay">
+            <span class="text-danger" asp-validation-for="BirthDay"></span>
+        </div>
+        <div class="form-group">
+            <label class="form-label">性別*</label>
+            <div class="banner__inputlist">
+                <div class="s-input me-3">
+                    <input type="radio" id="males1" value="0" asp-for="Gender" ><label for="males1">男性</label>
+                </div>
+                <div class="s-input">
+                    <input type="radio" id="females1" value="1" asp-for="Gender"><label for="females1">女性</label>
+                </div>
+            </div>
+            <span class="text-danger" asp-validation-for="Gender"></span>
+        </div>
+        <div class="form-group">
+            <label class="form-label">電話</label>
+            <input class="form-control" type="text" maxlength="20" class="my-form-control" placeholder="請填入電話" asp-for="PhoneNumber">
+            <span class="text-danger" asp-validation-for="PhoneNumber"></span>
+        </div>
+        <div class="form-group">
+            <label class="form-label">地址</label>
+            <input class="form-control" type="text" maxlength="100" class="my-form-control" placeholder="請填入地址" asp-for="Address" max="100">
+            <span class="text-danger" asp-validation-for="Address"></span>
+        </div>
+        <div class="form-group" style="text-align:center">
+            <button id="googleSubmit" class="btn btn-primary" type="submit">送出</button>
+        </div >       
+    </form>
+</div>
+

@@ -1,57 +1,105 @@
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
-using HaveFun.Models;  // 確保引用模型命名空間
+using HaveFun.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Security.Claims;
 
 public class ChatHub : Hub
 {
-    private readonly HaveFunDbContext _context;  // DbContext名稱
-    //注入
-    public ChatHub(HaveFunDbContext context)
+    private readonly HaveFunDbContext _context;
+    private readonly ILogger<ChatHub> _logger;
+
+    public ChatHub(HaveFunDbContext context, ILogger<ChatHub> logger)
     {
         _context = context;
-
+        _logger = logger;
     }
 
-    public  override   Task OnConnectedAsync()
+    public override async Task OnConnectedAsync()
     {
-        Clients.All.SendAsync("SomeOneOnline", Context.ConnectionId);
-        //int userId = 2; // 替換為實際的用戶 ID 獲取邏輯
+        try 
+        {   
+            await Clients.All.SendAsync("SomeOneOnline", Context.ConnectionId);
 
-        //// 檢查是否已存在相同的 connId
-        //var existingConnIdUserId = _context.ConId_UserId
-        //    .FirstOrDefault(c => c.connId == Context.ConnectionId);
+            int userId = GetUserIdFromContext();
 
-        //if (existingConnIdUserId == null)
-        //{
-        //    var userInfo = _context.UserInfos.Find(userId); // 查找 UserInfo 實體
+            var existingConnIdUserId = await _context.ConId_UserId
+                .FirstOrDefaultAsync(c => c.ConnId == Context.ConnectionId);
 
-        //    if (userInfo != null)
-        //    {
-        //        var connIdUserId = new ConId_UserId
-        //        {
-        //            Id = userId,
-        //            connId = Context.ConnectionId,
-        //        };
+            if (existingConnIdUserId == null)
+            {
+                var userInfo = await _context.UserInfos.FindAsync(userId);
+                if (userInfo != null)
+                {
+                    var connIdUserId = new ConId_UserId
+                    {
+                        Id = userId,
+                        ConnId = Context.ConnectionId,
+                    };
+                    _context.ConId_UserId.Add(connIdUserId);
+                    await _context.SaveChangesAsync();
+                    _logger.LogInformation($"New connection added for user {userId}: {Context.ConnectionId}");
+                }
+                else
+                {
+                    _logger.LogWarning($"User {userId} not found in UserInfos");
+                }
+            }
+            else
+            {
+                _logger.LogInformation($"Existing connection found for user {existingConnIdUserId.Id}: {Context.ConnectionId}");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred in OnConnectedAsync");
+        }
 
-        //        // 將新物件添加到 DbContext 中
-        //        _context.ConId_UserId.Add(connIdUserId);
-        //    }
-        //}
-        //else
-        //{
-        //    // 如果存在，則不需要新增
-        //}
-
-        //// 保存變更到資料庫
-        //await _context.SaveChangesAsync();
-
-        return   base.OnConnectedAsync();
+        await base.OnConnectedAsync();
     }
 
-
-    // Commented code
     public async Task SendMessage(string user, string message)
     {
         await Clients.Others.SendAsync("ReceiveMessage", user, message);
+    }
+
+    private int GetUserIdFromContext()
+    {
+        var userIdClaim = Context.User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
+        {
+            return userId;
+        }
+
+        // If the user ID is not found in claims, you might want to handle this case
+        // For example, you could throw an exception or return a default value
+        throw new InvalidOperationException("User ID not found in the connection context");
+    }
+
+  
+    public override async Task OnDisconnectedAsync(Exception exception)
+    {
+        try
+        {
+            var connIdUserId = await _context.ConId_UserId
+                .FirstOrDefaultAsync(c => c.ConnId == Context.ConnectionId);
+
+            if (connIdUserId != null)
+            {
+                _context.ConId_UserId.Remove(connIdUserId);
+                await _context.SaveChangesAsync();
+                _logger.LogInformation($"Connection removed for user {connIdUserId.Id}: {Context.ConnectionId}");
+            }
+
+            await Clients.All.SendAsync("SomeOneOffline", Context.ConnectionId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred in OnDisconnectedAsync");
+        }
+
+        await base.OnDisconnectedAsync(exception);
     }
 }

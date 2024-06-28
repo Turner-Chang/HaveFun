@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using System.Security.Policy;
 
@@ -36,7 +37,8 @@ namespace HaveFun.Controllers
 			}
 		}
 
-		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+		[Authorize(AuthenticationSchemes = "Bearer,Cookies")]
+		//[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public IActionResult Index()
 		{
 			ViewBag.UserId = _userId;
@@ -95,5 +97,39 @@ namespace HaveFun.Controllers
             }
         }
 
+		[HttpGet("Activity/Detail/{id}")]
+		public async Task<IActionResult> Detail(int? id)
+		{
+			ViewBag.LoginUserId = _userId;
+			if (id == null)
+			{
+				return NotFound();
+			}
+			var activity = await _context.Activities
+				.Include(a => a.User)
+				.Include(a => a.ActivityParticipants)
+					.ThenInclude(ap => ap.User)
+				.FirstOrDefaultAsync(a => a.Id == id);
+
+			if (activity == null)
+			{
+				return NotFound();
+			}
+
+			foreach (var participant in activity.ActivityParticipants)
+			{
+				if (participant.User != null && !string.IsNullOrEmpty(participant.User.ProfilePicture))
+				{
+					participant.User.ProfilePicture = participant.User.ProfilePicture.Replace(@"\", "/");
+					var index = participant.User.ProfilePicture.LastIndexOf("images/");
+					if (index != -1)
+					{
+						participant.User.ProfilePicture = participant.User.ProfilePicture.Substring(index);
+					}
+				}
+			}
+
+			return View(activity);
+		}
     }
 }

@@ -15,7 +15,7 @@ namespace HaveFun.Controllers.APIs
 		private readonly HaveFunDbContext _context;
 
 		public ActivityApiController(HaveFunDbContext context)
-		{ 
+		{
 			_context = context;
 		}
 
@@ -25,6 +25,7 @@ namespace HaveFun.Controllers.APIs
 			string fileName = Path.Combine("StaticFiles", "images", "NOimg.jpg");
 			DateTime today = DateTime.Today;
 			var activities = _context.Activities
+			.Where(a => a.Status == 0)
 			.Include(a => a.ActivityType) // 包含活動類型
 			.Include(a => a.ActivityParticipants) // 包含活動參與者
 			.ThenInclude(ap => ap.User) // 包含參與者的用戶信息
@@ -33,7 +34,7 @@ namespace HaveFun.Controllers.APIs
 			{
 				Id = a.Id,
 				Title = a.Title,
-				User = new MatchUserInfoDTO 
+				User = new MatchUserInfoDTO
 				{
 					Id = a.User.Id,
 					Name = a.User.Name,
@@ -71,6 +72,48 @@ namespace HaveFun.Controllers.APIs
 			Activity? a = await _context.Activities.FindAsync(id);
 			byte[] imageContent = a?.Picture != null ? a.Picture : System.IO.File.ReadAllBytes(fileName);
 			return File(imageContent, "image/jpg");
+		}
+
+		[HttpGet("GetActivityType")]
+		public ActionResult<ActivityType> GetActivityType()
+		{
+			var activityTypes = _context.ActivityTypes;
+			return Ok(activityTypes);
+		}
+
+		[HttpPost("SignUp")]
+		public async Task<IActionResult> SignUp(ActivitySignUpDTO request) 
+		{
+			var activity = await _context.Activities
+			.Include(a => a.ActivityParticipants)
+			.FirstOrDefaultAsync(a => a.Id == request.ActivityId);
+
+			if (activity == null)
+			{
+				return NotFound("活动不存在" );
+			}
+
+			var isUserParticipating = activity.ActivityParticipants.Any(ap => ap.UserId == request.UserId);
+			if (isUserParticipating)
+			{
+				return BadRequest("用户已经报名参加此活动");
+			}
+
+			if (activity.ActivityParticipants.Count >= activity.MaxParticipants)
+			{
+				return BadRequest("活动已经满员");
+			}
+
+			var activityParticipant = new ActivityParticipant
+			{
+				UserId = request.UserId,
+				ActivityId = request.ActivityId,
+			};
+
+			_context.ActivityParticipantes.Add(activityParticipant);
+			await _context.SaveChangesAsync();
+
+			return Ok("报名成功");
 		}
 	}
 }

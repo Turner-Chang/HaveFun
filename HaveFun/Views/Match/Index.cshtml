@@ -21,8 +21,9 @@
 			border: 2px solid white;
 			border-radius: 25px;
 			position: relative;
-			width: 26rem; /* 23rem */
+			width: 90%;
 			height: 550px; /* 500px */
+			padding: 10px;
 		}
 
 		.collapseCard {
@@ -33,7 +34,7 @@
 			/* outline: 2px solid blue; */
 
 			height: 500px;
-			width: 23rem;
+			width: 90%;
 			left: 0;
 			right: 0;
 			top: 0px;
@@ -138,7 +139,6 @@
 							<p>Serious dating with your perfect match is just a click away.</p>
 						</div>
 						<div class="banner__form">
-							<form action="#">
 								<div class="banner__list">
 									<label>Looking for</label>
 									<div class="row">
@@ -190,15 +190,15 @@
 									</div>
 									</div> *@
 								</div>
-								<button type="submit" class="default-btn reverse d-block mt-5"><span>Find Your Partner</span></button>
-							</form>
+								<button type="submit" class="default-btn reverse d-block mt-5" v-on:click="applyFilter"><span>Find Your Partner</span></button>
+							
 						</div>
 					</div>
 				</div>
 				<div class="col-lg-7 col-12">
 					<div id="out" class="wow fadeInUp" data-wow-duration="1.5s" data-wow-delay="1s">
 						<div id="card-container">
-							<div v-for="(user, index) in filterAge" :id="user.id" class="card cards" :style="{'z-index': index}" @@mousedown="startDrag($event, index)"
+							<div v-for="(user, index) in filteredNotMatchUsers" :id="user.id" class="card cards" :style="{'z-index': index}" @@mousedown="startDrag($event, index)"
 								 @@touchstart="startDrag($event, index)">
 								<div class="button-container">
 									<button class="top-right-button" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="fa-solid fa-circle-exclamation" style="color: #ff3838;" @@click="setCurrentCard($event.target)"></i></button>
@@ -262,7 +262,6 @@
 			</div>
 		</div>
 	</div>
-	<button @@click="canUserSwipeRequest">按鈕</button>
 
 	<!-- Modal -->
 	<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -299,6 +298,7 @@
 				return {
 					baseAddress: "https://localhost:7152",
 					notMatchUsers: [],
+					filteredNotMatchUsers: [],
 					startX: 0,
 					startY: 0,
 					currentCard: null,
@@ -314,14 +314,16 @@
 					complaintCategories:[],
 					selectedComplaintCategory:'',
 					canSwipe: true,
+					lastChecked:null,
 				}
 			},
 			computed: {
 				filterGender() {
+					let temp = this.notMatchUsers;
 					if (this.filter.gender != "") {
 						return this.notMatchUsers.filter(u => u.gender == this.filter.gender);
 					}
-					return this.notMatchUsers;
+					return temp;
 				},
 				filterAge() { 
 					let temp = this.filterGender;
@@ -340,6 +342,7 @@
 					fetch(`${this.baseAddress}/api/MatchApi/@ViewBag.UserId`)
 						.then(res => res.json())
 						.then(u => this.notMatchUsers = u)
+						.then(()=>this.applyFilter())
 				},
 				getComplaintCategories() {
 					axios.get(`${this.baseAddress}/api/MatchApi/GetComplaintCategory`)
@@ -531,13 +534,52 @@
 					this.notMatchUsers = this.notMatchUsers.filter(u => u.id != this.currentCard.id);
 					this.currentCard = null;
 				},
+				toggleRadio: function (event) {
+					const value = event.target.value;
+					if (this.filter.gender == value) {
+						this.filter.gender = "";
+					}
+					else {
+						this.filter.gender = value;
+					}
+					this.lastChecked = value;
+				},
+				applyFilter() { 
+					let users = this.notMatchUsers;
+
+					if (this.filter.gender != "") {
+						users = users.filter(u => u.gender == this.filter.gender);
+					}
+
+					if (this.filter.age.max != "") {
+						users = users.filter(u => u.age <= Number(this.filter.age.max));
+					}
+
+					if (this.filter.age.min != "") {
+						users = users.filter(u => u.age >= Number(this.filter.age.min));
+					}
+
+					this.filteredNotMatchUsers = users;
+				},
 			},
 			watch: {
+				'filter.gender': function (newVal, oldVal) {
+					if (newVal === "") {
+						this.$nextTick(() => {
+							document.querySelectorAll('input[type="radio"]').forEach(radio => {
+								radio.checked = false;
+							});
+						});
+					}
+				}
 			},
 			mounted() {
 				this.getNotMatchUsers();
 				this.getComplaintCategories();
 				this.canUserSwipeRequest();
+				document.querySelectorAll('input[type="radio"]').forEach(radio => {
+					radio.addEventListener('click', this.toggleRadio);
+				});
 			},
 		}).mount("#matchApp");
 	</script>

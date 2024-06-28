@@ -17,5 +17,7 @@ namespace HaveFun.DTOs
 		public int Product { get; set; }
 		
 		public DateTime Date { get; set; }
-	}
+        public int Status { get; set; }
+        public int Method { get; set; }
+    }
 }

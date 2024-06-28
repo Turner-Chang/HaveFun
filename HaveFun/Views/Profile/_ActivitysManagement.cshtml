@@ -3,13 +3,13 @@
 	<div id="activityPlatform">
 		<ul class="tags lab-ul justify-content-center">
 			<li>
-				<button class="default-btn" @@click="switchType('commingup')">{{ buttonText('commingup', '即將舉辦活動') }}</button>
+				<button class="default-btn actType" @@click="switchType('commingup')">{{ buttonText('commingup', '即將舉辦活動') }}</button>
 			</li>
 			<li>
-				<button class="default-btn" @@click="switchType('host')">{{ buttonText('host', '修改主辦活度內容') }}</button>
+				<button class="default-btn actType" @@click="switchType('host')">{{ buttonText('host', '修改主辦活動內容') }}</button>
 			</li>
 			<li>
-				<button class="default-btn" @@click="switchType('past')">{{ buttonText('past', '已結束的活動') }}</button>
+				<button class="default-btn actType" @@click="switchType('past')">{{ buttonText('past', '已結束的活動') }}</button>
 			</li>
 		</ul>
 		<!-- 彈出視窗們 -->
@@ -19,6 +19,18 @@
 			<button class="btn btn-danger" @@click="cancelAttendActivity">是</button>
 			<button class="btn btn-outline-secondary" @@click="escCancelAttendBox">否</button>
 		</div>
+		<!-- 活動參加會員們視窗 -->
+		<div class="participantsBox">
+			<span>參加者: {{members.length}} 位</span><br>
+			<div class="joinMember">
+				<div class="memberProfile" v-for="member in members">
+					<a :href="`/Profile/Index?userId=${member.id}`">
+					<img class="memberPic" v-bind:src=`${baseAddress}/api/personalActivities/GetUserProfile/${member.id}`>
+					{{member.name}}</a>
+                </div>
+			</div>
+			<button class="btn btn-danger" @@click="escParticipantsBox">關閉</button>
+		</div>
 		<!-- 刪除活動視窗 -->
 		<div class="deleteActBox">
 			<span>確定要刪除活動嗎？</span><br><br>
@@ -26,7 +38,7 @@
 			<button class="btn btn-outline-secondary" @@click="escdeleteActBox">否</button>
 		</div>
 		<!-- ================> 即將發生的活動 <================== -->
-		<div v-if="currentType === 'commingup'" v-for="act in commingupActivities" class="blog__item">
+		<div v-if="currentType === 'commingup'" v-for="(act, index) in commingupActivities" class="blog__item">
 			<div class="blog__inner">
 				<div class="blog__content">
 					<img v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}?rand=${rand}`>
@@ -34,12 +46,13 @@
 					<ul class="lab-ul blog__date">
 						<li><span><i class="fa-solid fa-calendar-days"></i> 活動時間：{{act.activityTime}} </span></li>
 						<li><span><i class="fa-solid fa-user"></i> 主辦者：{{act.host}}</span> </li>
-						<li><span><i class="fa-solid fa-users"></i> {{act.participant.length}} 位參加者</span></li>
+						<li><a href="#" @@click="showParticipantsBox(act)"><span><i class="fa-solid fa-users"></i> {{act.participant.length}}位參加者</span> </a></li>
 						<li><span><i class="fa-solid fa-map-location-dot"></i> 活動地點：{{act.location}}</span></li>
 					</ul>
 					<details @@toggle="act.expandState = !act.expandState">
 						<summary>{{act.expandState? '隱藏詳細內容' : '展開詳細內容'}}</summary>
 						<div class="col-xs-2">
+							<div :id="'map' + index" class="map"></div>
 							<span class="infoTitle">活動類型：</span>
 							{{act.type}}<br>
 							<span class="infoTitle">活動開始報名時間：</span>
@@ -75,7 +88,7 @@
 					<ul class="lab-ul blog__date">
 						<li><span><i class="fa-solid fa-calendar-days"></i> 活動時間：{{act.activityTime}} </span></li>
 						<li><span><i class="fa-solid fa-user"></i> 主辦者：{{act.host}}</span> </li>
-						<li><span><i class="fa-solid fa-users"></i> {{act.participant.length}} 位參加者</span></li>
+						<li><a href="#" @@click="showParticipantsBox(act)"><span><i class="fa-solid fa-users"></i> {{act.participant.length}}位參加者</span> </a></li>
 						<li><span><i class="fa-solid fa-map-location-dot"></i> 活動地點：{{act.location}}</span></li>
 					</ul>
 					<details @@toggle="act.expandState = !act.expandState">
@@ -102,7 +115,6 @@
 				</div>
 				<!-- 編輯活動內容 -->
 				<div v-if="act.inEdit === true" class="blog__content">
-					<form>
 					<img class="imgPreview" v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}?rand=${rand}`><br>
 					<input type="file" id="picFile" v-model="EditPic" accept="image/*" @@change="previewPic">
 					<button v-if="editPic != null" @@click="removeEditPic">移除</button><br>
@@ -113,7 +125,7 @@
 					<input :class="['form-control',{'is-invalid':errorStyle.activityTime}]" type="datetime-local" v-model="editActivityTime">
 					<div class="invalid-feedback">請輸入有效時間</div>
 					<span> 活動地點：</span>
-					<input :class="['form-control',{'is-invalid':errorStyle.location}]"  maxlength="200" v-model="editLocation">
+					<input id="editLocation" :class="['form-control',{'is-invalid':errorStyle.location}]"  maxlength="200" v-model="site">
 					<div class="invalid-feedback">活動地點為必填</div>
 					<span>活動類型：</span>
 					<select :class="['form-control',{'is-invalid':errorStyle.type}]" id="inputState" v-model="editActType">
@@ -142,7 +154,6 @@
 					<br><br>
 					<button class="btn btn-outline-secondary" @@click="cancelToEdit(act)">取消修改</button>&nbsp;
 					<button type="submit" id="submit" class="default-btn" @@click="editActivity(act)">確定修改</button>
-					</form>
 				</div>
 			</div>
 		</div>
@@ -150,7 +161,7 @@
 			<p class="empty">目前沒有主辦活動可以顯示</p>
 		</div>
 		<!-- ================> 已經結束的活動 <================== -->
-		<div v-if="currentType === 'past'" v-for="act in pastActivities" class="blog__item">
+		<div v-if="currentType === 'past'" v-for="(act, index) in pastActivities" class="blog__item">
 			<div class="blog__inner">
 				<div class="blog__content">
 					<img v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}?rand=${rand}`>
@@ -158,12 +169,13 @@
 					<ul class="lab-ul blog__date">
 						<li><span><i class="fa-solid fa-calendar-days"></i> 活動時間：{{act.activityTime}} </span></li>
 						<li><span><i class="fa-solid fa-user"></i> 主辦者：{{act.host}}</span> </li>
-						<li><span><i class="fa-solid fa-users"></i> {{act.participant.length}} 位參加者</span></li>
+						<li><a href="#" @@click="showParticipantsBox(act)"><span><i class="fa-solid fa-users"></i> {{act.participant.length}}位參加者</span> </a></li>
 						<li><span><i class="fa-solid fa-map-location-dot"></i> 活動地點：{{act.location}}</span></li>
 					</ul>
 					<details @@toggle="act.expandState = !act.expandState">
 						<summary>{{act.expandState? '隱藏詳細內容' : '展開詳細內容'}}</summary>
 						<div>
+							<div :id="'map' + index" class="map"></div>
 							<span class="infoTitle">活動類型：</span>
 							{{act.type}}<br>
 							<span class="infoTitle">活動費用：</span>
@@ -184,6 +196,7 @@
 		</div>
 	</div>
 </div>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDh0olCmLq7Tpu-ktNN0_JYyt9G529C4qA&libraries=geocoding,places"></script>
 <script>
 	const activityPlatform = Vue.createApp({
 		data() {
@@ -196,6 +209,7 @@
 				pastActivities: [],
 				activitiyType: [],
 				wannaEdit:0,
+				members:[],
 				editPic:null,
 				editTitle:'',
 				editActivityTime:'',
@@ -224,6 +238,8 @@
 				currentDateTime: new Date().toISOString().slice(0, 16),
 				min: 0,
 				rand:1,
+				site:"",
+				autocomplete:null,
 			}
 		},
 		watch: {
@@ -263,7 +279,6 @@
 				} else {
 					$('#submit').css("display", "inline-block");
 				}
-				
 			},
 		},
 		computed: {
@@ -286,7 +301,7 @@
 				return this.editRegistrationTime > this.currentDateTime;
 			},
 			validDeadlineTime() {
-				return this.editDeadlineTime > this.currentDateTime;
+				return this.editDeadlineTime > this.currentDateTime && this.editDeadlineTime > this.editRegistrationTime;
 			},
 			validAmount() {
 				return this.editAmount >= this.min;
@@ -303,8 +318,8 @@
 		},
 		methods: {
 			//取得登入者即將發生活動
-			getCommingupList(userId) {
-				fetch(`api/personalActivities/GetCommingupActivities/${this.loginUserId}`)
+			getCommingupList() {
+				fetch(`/api/personalActivities/GetCommingupActivities/${this.loginUserId}`)
 					.then(res => res.json())
 					.then(data => {
 						this.commingupActivities = data.map(activity => ({
@@ -315,8 +330,8 @@
 					.catch(error => { console.log('fetch commingupActivities failed!') });
 			},
 			//取得登入者主辦活動
-			getHostList(userId) {
-				fetch(`api/personalActivities/GetHostActivities/${this.loginUserId}`)
+			getHostList() {
+				fetch(`/api/personalActivities/GetHostActivities/${this.loginUserId}`)
 					.then(res => res.json())
 					.then(data => {
 						this.hostActivities = data.map(activity => ({
@@ -328,8 +343,8 @@
 					.catch(error => { console.log('fetch hostActivities failed!') });
 			},
 			//取得已結束活動
-			getPastList(userId) {
-				fetch(`api/personalActivities/GetPastActivities/${this.loginUserId}`)
+			getPastList() {
+				fetch(`/api/personalActivities/GetPastActivities/${this.loginUserId}`)
 					.then(res => res.json())
 					.then(data => {
 						this.pastActivities = data.map(activity => ({
@@ -341,7 +356,7 @@
 			},
 			//取得所有活動類型
 			getActivityTypeList() {
-				fetch(`api/personalActivities/GetActivityType`)
+				fetch(`/api/personalActivities/GetActivityType`)
 					.then(res => res.json())
 					.then(data => {
 						this.activitiyType = data;
@@ -351,9 +366,29 @@
 			//切換狀態顯示活動
 			switchType(type) {
 				this.currentType = type;
+				// if (type === 'commingup'){
+				// 	this.showMap(this.commingupActivities);
+				// }
+				// if(type === 'past') {
+				// 	// this.showMap(this.pastActivities);
+				// 	alert('ok');
+				// }
+				
 			},
 			buttonText(type, text) {
 				return this.currentType === type ? '● ' + text : text;
+			},
+			//顯示活動參加者視窗
+			showParticipantsBox(act){
+				event.preventDefault();
+				this.members = act.participant;
+				console.log(this.members);
+				$('.participantsBox').css("display", "block");
+			},
+			//關閉活動參加者視窗
+			escParticipantsBox(){
+				event.preventDefault();
+				$('.participantsBox').css("display", "none");
 			},
 			//顯示退出活動視窗
 			showCancelAttend(id) {
@@ -375,7 +410,7 @@
 					"ActivityId": this.waitingToCancel,
 					"UserId": this.loginUserId
 				};
-				fetch(`api/personalActivities/NotAttending`, {
+				fetch(`/api/personalActivities/NotAttending`, {
 					method: 'DELETE',
 					headers: {
 						"Content-Type": "application/json"
@@ -407,7 +442,7 @@
 			//刪除活動
 			deleteActivity() {
 				event.preventDefault();
-				fetch(`api/personalActivities/DeleteActivity/${this.waitingToDelete}`, {
+				fetch(`/api/personalActivities/DeleteActivity/${this.waitingToDelete}`, {
 					method: 'PUT',
 					headers: {
 						"Content-Type": "application/json"
@@ -431,6 +466,7 @@
 				this.editTitle = act.title;
 				this.editActivityTime = act.activityTime;
 				this.editLocation = act.location;
+				this.site = act.location;
 				this.editActType = act.typeId;
 				this.editRegistrationTime = act.registrationTime;
 				this.editDeadlineTime = act.deadlineTime;
@@ -467,13 +503,13 @@
 				formData.append('Notes', this.editNote);
 				formData.append('Amount', this.editAmount);
 				formData.append('MaxParticipants', this.editMax);
-				formData.append('Location', this.editLocation);
+				formData.append('Location', this.site);
 				formData.append('RegistrationTime', this.editRegistrationTime);
 				formData.append('DeadlineTime', this.editDeadlineTime);
 				formData.append('ActivityTime', this.editActivityTime);
 				formData.append('Pictures', this.editPic);
 				
-				fetch(`api/personalActivities/EditActivity/${act.id}`, {
+				fetch(`/api/personalActivities/EditActivity/${act.id}`, {
 					method:'PUT',
 					body: formData
 				})
@@ -495,6 +531,7 @@
 					this.editMax = 0;
 					this.editActContent = '';
 					this.editNote = '';
+					this.site = '';
 					this.getCommingupList(this.loginUserId);
 					this.getHostList(this.loginUserId);
 					this.rand = ++this.rand
@@ -533,13 +570,62 @@
 			canRegistrationEdit(registrationTime) {
 				return new Date(registrationTime) > new Date(this.currentDateTime);
 			},
+			// 藉由地址顯示活動地圖
+			showMap(activityType) {
+				activityType.forEach((act, index) => {
+					let geocoder = new google.maps.Geocoder();
+					geocoder.geocode({ address: act.location }, function (result, status) {
+						if (status === 'OK') {
+							let mapOptions = {
+								center: result[0].geometry.location,
+								zoom: 16
+							};
+							let map = new google.maps.Map(document.getElementById('map' + index), mapOptions);
+							new google.maps.Marker({
+								position: result[0].geometry.location,
+								map: map
+							});
+						} else {
+							console.error('求取活動地圖失敗!');
+						}
+					});
+				});
+			},
+			// 修改活動地址自動完成內容
+			siteAuto() {
+				let options = {
+					componentRestrictions: { country: "tw" },
+				};
+				this.autocomplete = new google.maps.places.Autocomplete(document.querySelector('#editLocation'), options);
+				this.autocomplete.addListener("place_changed", () => {
+					let place = this.autocomplete.getPlace();
+					this.site = document.querySelector('#editLocation').value;
+					// if (place.geometry) {
+					// 	this.site = place.formatted_address;
+					// }
+				});
+			},
 		},
 		mounted() {
-			this.getCommingupList(this.loginUserId);
-			this.getHostList(this.loginUserId);
-			this.getPastList(this.loginUserId);
+			this.getCommingupList();
+			this.getHostList();
+			this.getPastList();
 			this.getActivityTypeList();
+			// this.siteAuto();
 		},
+		//這個方法可能不太好
+		updated() {
+			if (this.currentType === 'commingup') {
+				this.showMap(this.commingupActivities);
+			}
+			if (this.currentType === 'past') {
+				this.showMap(this.pastActivities);
+			}
+			const locationInput = document.querySelector('#editLocation');
+			if (locationInput !== null) {
+				this.siteAuto();
+			}
+		}
 	})
 		.mount('#activityPlatform');
 </script>
