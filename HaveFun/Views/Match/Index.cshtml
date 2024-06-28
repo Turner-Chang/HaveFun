@@ -555,8 +555,8 @@
 						users = users.filter(u => u.age <= Number(this.filter.age.max));
 					}
 
-					if (this.filter.age.max != "") {
-						users = users.filter(u => u.age <= Number(this.filter.age.max));
+					if (this.filter.age.min != "") {
+						users = users.filter(u => u.age >= Number(this.filter.age.min));
 					}
 
 					this.filteredNotMatchUsers = users;
