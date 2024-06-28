@@ -5,8 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
-using Azure.Core;
+
 public class ChatHub : Hub
 {
     private readonly HaveFunDbContext _context;
@@ -17,7 +16,7 @@ public class ChatHub : Hub
         _context = context;
         _logger = logger;
     }
-   [Authorize(AuthenticationSchemes = "Bearer,Cookies")]
+
     public override async Task OnConnectedAsync()
     {
         try 
@@ -79,7 +78,7 @@ public class ChatHub : Hub
         throw new InvalidOperationException("User ID not found in the connection context");
     }
 
-    [Authorize(AuthenticationSchemes = "Bearer,Cookies")]
+  
     public override async Task OnDisconnectedAsync(Exception exception)
     {
         try
