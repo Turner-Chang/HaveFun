@@ -21,8 +21,11 @@ namespace HaveFun.Controllers.APIs
         public async Task<IActionResult> GetFriend(int id)
         {
             var friendList = await _dbContext.FriendLists
-                .Where(x => x.Clicked == id && x.state == 1)
-                .Select(x => x.User2)
+                .Where(x => 
+                    (x.Clicked == id && x.state == 1 && _dbContext.FriendLists.Any(y => y.Clicked == x.BeenClicked && y.BeenClicked == id && y.state == 1)) ||
+                    (x.BeenClicked == id && x.state == 1 && _dbContext.FriendLists.Any(y => y.Clicked == x.Clicked && y.BeenClicked == id && y.state == 1))
+                )
+                .Select(x => x.Clicked == id ? x.User2 : x.User1)
                 .Select(u => new FriendDTO
                 {
                     Id = u.Id,
@@ -53,10 +56,10 @@ namespace HaveFun.Controllers.APIs
 
             return Ok(blacklist);
         }
-        
+
         // 封鎖用戶
         [HttpPost]
-        public async Task<IActionResult> BlockUser(data data)
+        public async Task<IActionResult> BlockUser([FromBody] data data)
         {
             var friendRelation = await _dbContext.FriendLists
                 .FirstOrDefaultAsync(x =>
@@ -77,7 +80,7 @@ namespace HaveFun.Controllers.APIs
 
         // 解除封鎖用戶
         [HttpPost]
-        public async Task<IActionResult> UnblockUser(data data)
+        public async Task<IActionResult> UnblockUser([FromBody] data data)
         {
             var friendRelation = await _dbContext.FriendLists
                 .FirstOrDefaultAsync(x =>
@@ -95,7 +98,5 @@ namespace HaveFun.Controllers.APIs
 
             return Ok("解除封鎖成功");
         }
-
-      
     }
 }
