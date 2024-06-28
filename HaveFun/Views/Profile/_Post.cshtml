@@ -28,8 +28,8 @@
                                                     <div class="custom-select">
                                                         <select v-model="postPrivacy">
                                                             <option value="Public"> Public</option>
-                                                            <option value="Private"> Private</option>
-                                                            <option value="Friends"> Friends</option>
+                                                            @* <option value="Private"> Private</option> *@
+                                                            @* <option value="Friends"> Friends</option>k *@
                                                         </select>
                                                     </div>
                                                 </div>
@@ -72,7 +72,8 @@
                                 </div>
 
                                 @* 顯示貼文 *@
-                                <div v-for="post in filteredPosts" :key="post.id" class="post-item mb-4">
+                                <div id="post-container">
+                                    <div v-for="post in filteredPosts" :key="post.id" class="post-item mb-4">
                                     @* 貼文內容 *@
                                     <div class="post-content">
                                         <div class="post-author">
@@ -211,6 +212,15 @@
                                         </div>
                                     </div>
                                 </div>
+                                    <div class="row justify-content-center">
+                                        <div class="col-auto">
+                                            <a href="#" class="default-btn" @@click.prevent="loadMore">
+                                                <span><i class="fa-solid fa-spinner"></i> Load More</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    @* <a v-if="!allLoaded" href="#" class="default-btn" @@click.prevent="loadMore"><span><i class="fa-solid fa-spinner"></i> Load More</span></a> *@
+                                </div> 
                             </div>
                         </div>
                     </div>
@@ -268,6 +278,10 @@
                 newPostPic: null, // 發文圖片
                 postPrivacy: 'Public',
                 posts: [],
+                currentPage: 1,     // 表示當前頁碼
+                pageSize: 5,        // 每次增加顯示貼文筆數
+                loading: false,     // 加載貼文標記
+                allLoaded: false,   // 表示貼文已加載完畢
                 showUserId: @ViewBag.ShowUserId, // 指定顯示的UserId
                 loginUserId: @ViewBag.UserId, // 使用者ID
                 loginUserName: '',
@@ -342,13 +356,23 @@
 
             // 查詢貼文
             async getPosts() {
-                try {
-                    const queryId = this.showUserId ? this.showUserId : this.loginUserId
+                if (this.loading || this.allLoaded) return;
+                this.loading = true;
 
-                    const response = await axios.get(`/api/Profile/GetPostsList/${queryId}`);
-                    // console.log('getPosts:', response.data);
-                    this.FriendPostList = response.data[0].freindList
-                    this.posts = response.data.map(post => ({
+                try {
+                    const queryId = this.showUserId ? this.showUserId : this.loginUserId;
+                    const response = await axios.get(`/api/Profile/GetPostsList/${queryId}`, {
+                        params: {
+                            page: this.currentPage,
+                            pageSize: this.pageSize
+                        }
+                    });
+
+                    if (this.FriendPostList.length === 0) {
+                        this.FriendPostList = response.data[0]?.freindList || []
+                    }
+
+                    const newPosts = response.data.map(post => ({
                         Id: post.id,
                         UserId: post.userId,
                         UserName: post.userName,
@@ -386,9 +410,23 @@
                         showReplyForm: false,
                         newReply: ''
                     }));
+
+                    // 當回傳的貼文數，小於設定顯示的筆數，表示貼文已加載完畢
+                    if (newPosts.length < this.pageSize) {
+                        this.allLoaded = true;
+                    }
+
+                    this.posts = [...this.posts, ...newPosts]; // 將回傳的貼文合併到this.posts
+                    this.currentPage += 1; 
                 } catch (error) {
                     console.error('Error getPosts:', error);
+                } finally {
+                    this.loading = false;
                 }
+            },
+
+            loadMore() {
+                this.getPosts();
             },
 
             // 新增貼文

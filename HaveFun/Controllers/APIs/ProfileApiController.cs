@@ -152,7 +152,7 @@ namespace HaveFun.Controllers.APIs
         //GET: api/Profile/GetPostsList
         [Authorize(AuthenticationSchemes = "Bearer,Cookies")]
         [HttpGet("{userId}")]
-        public async Task<IEnumerable<PostsDTO>> GetPostsList([FromRoute] string userId)
+        public async Task<IEnumerable<PostsDTO>> GetPostsList([FromRoute] string userId, [FromQuery] int page = 1, [FromQuery] int pageSize = 5)
         {
             string loginId = Request.Cookies["userId"]; // 取得loginId
 
@@ -182,8 +182,10 @@ namespace HaveFun.Controllers.APIs
                 }
             }
             var posts = await _context.Posts
-                .Where(p => p.UserId.ToString() == userId || FriendPostList.Contains(p.UserId.ToString()) && p.Status == 0)
+                .Where(p => (p.UserId.ToString() == userId || FriendPostList.Contains(p.UserId.ToString())) && p.Status == 0)
                 .OrderByDescending(p => p.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .Select(p => new
                 {
                     p.Id,
@@ -226,7 +228,7 @@ namespace HaveFun.Controllers.APIs
                         }).ToList()
                 }).ToListAsync();
 
-            //Console.WriteLine(posts);
+            Console.WriteLine(posts);
 
             var postDTOs = posts.Select(p => new PostsDTO
             {
