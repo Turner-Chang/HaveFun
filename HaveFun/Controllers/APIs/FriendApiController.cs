@@ -92,8 +92,7 @@ namespace HaveFun.Controllers.APIs
         {
             var friendRelation = await _dbContext.FriendLists
                 .FirstOrDefaultAsync(x =>
-                    (x.Clicked == data.userId && x.BeenClicked == data.friendId) ||
-                    (x.Clicked == data.friendId && x.BeenClicked == data.userId));
+                    x.Clicked == data.userId && x.BeenClicked == data.friendId);
 
             if (friendRelation == null)
             {
@@ -113,8 +112,7 @@ namespace HaveFun.Controllers.APIs
         {
             var friendRelation = await _dbContext.FriendLists
                 .FirstOrDefaultAsync(x =>
-                    (x.Clicked == data.userId && x.BeenClicked == data.friendId) ||
-                    (x.Clicked == data.friendId && x.BeenClicked == data.userId));
+                    x.Clicked == data.userId && x.BeenClicked == data.friendId);
 
             if (friendRelation == null)
             {
