@@ -1,3 +1,4 @@
+using HaveFun;
 using HaveFun.Common;
 using HaveFun.Models;
 //using HaveFun.Service;
@@ -33,7 +34,7 @@ builder.Services.AddScoped<SendEmail>();
 builder.Services.AddSingleton<Jwt>();
 builder.Services.AddSingleton<DESSecure>();
 builder.Services.AddSingleton<GoogleOAuth>();
-
+//builder.Services.AddTransient<ExceptionHandleMiddleware>();
 builder.Services.AddScoped<MembershipService>();
 //builder.Services.AddScoped<PostServices>();
 
@@ -99,7 +100,7 @@ if (!app.Environment.IsDevelopment())
 app.UseSwagger();
 app.UseSwaggerUI();
 
-
+app.UseMiddleware<ExceptionHandleMiddleware>();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

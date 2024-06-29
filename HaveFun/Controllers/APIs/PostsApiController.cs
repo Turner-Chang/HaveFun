@@ -99,7 +99,7 @@ namespace HaveFun.Controllers.APIs
             if(postDTO.Pictures != null)
             {
                 string Current = DateTime.Now.ToString("yyyyMMddHHmmss");
-                string imgPath = "../HaveFun/wwwroot/images/postImgs";
+                string imgPath = "\\wwwroot\\images\\postImgs";
                 string imgName = postDTO.UserId + Current + postDTO.Pictures.FileName;
                 _saveImage.Path = imgPath;
                 _saveImage.Name = imgName;
