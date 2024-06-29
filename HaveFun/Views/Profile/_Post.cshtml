@@ -1,4 +1,8 @@
 ﻿<link href="~/assets/css/profile_poststyle.css" rel="stylesheet" />
+<style>
+
+
+</style>
 
 <div class="tab-pane fade show active" id="gt1" role="tabpanel" aria-labelledby="gt1-tab">
     <div id="post">
@@ -9,7 +13,7 @@
                         <div class="tab-content" id="myTabContent2">
                             <div class="tab-pane fade show active" id="Personal" role="tabpanel" aria-labelledby="Personal-tab">
                                 @* 發送貼文 *@
-                                <div class="create-post mb-4">
+                                <div v-if="displayPostForm" class="create-post mb-4">
                                     <div class="lab-inner">
                                         <div class="lab-thumb">
                                             <div class="thumb-inner">
@@ -29,7 +33,7 @@
                                                         <select v-model="postPrivacy">
                                                             <option value="Public"> Public</option>
                                                             @* <option value="Private"> Private</option> *@
-                                                            @* <option value="Friends"> Friends</option>k *@
+                                                            @* <option value="Friends"> Friends</option> *@
                                                         </select>
                                                     </div>
                                                 </div>
@@ -39,18 +43,19 @@
                                             <form class="post-form">
                                                 <textarea v-model="postContent" :placeholder="placeholderText" rows="3"></textarea>
                                                 <div class="img-preview-container">
-                                                    <img class="Post-Preview-img" />
-                                                    <button v-if="newPostPic != null" @@click="removeNewPostPic">移除</button>
+                                                    <img class="Post-Preview-img" :src="previewImageUrl" />
+                                                    <button v-if="newPostPic" class="default-btn" @@click.prevent="removeNewPostPic">取消</button>
                                                 </div>
                                                 <div class="content-type">
                                                     <ul class="content-list">
-                                                        <li class="text"><a href="#"><i class="fa-solid fa-pen-to-square"></i>Text</a></li>
+                                                        @* <li class="text"><a href="#"><i class="fa-solid fa-pen-to-square"></i>Text</a></li> *@
                                                         <li class="image-video">
                                                             <div class="file-btn"><i class="fa-solid fa-camera"></i>Photo</div>
-                                                            <input type="file" v-model="newPostPic" @@change.prevent="previewPic" accept="image/*">
+                                                            <input type="file" ref="fileInput" @@change.prevent="previewPic" accept="image/*">
+                                                        </li>
                                                         </li>
                                                         <li class="attach-file">
-                                                            <div class="file-btn"><i class="fa-solid fa-link"></i>Attach File</div>
+                                                            @* <div class="file-btn"><i class="fa-solid fa-link"></i>Attach File</div> *@
                                                             @* <input type="file" @@change.prevent="handleFileUpload"> *@
                                                         </li>
                                                         <li class="post-submit">
@@ -135,7 +140,8 @@
                                                         <i v-else class="fa-heart fa-regular"></i> Like
                                                     </a>
                                                 <li class="react"><a href="#" @@click.prevent="commentOnPost(post)"><i class="fa-solid fa-comment"></i>Comment</a></li>
-                                                <li class="react"><a href="#"><i class="fa-solid fa-share-nodes"></i>Share</a></li>
+                                                <li class="react"><a href="#" @@click="shareToFacebook(post)"><i class="fa-solid fa-share"></i> Share</a></li>
+                                                    
                                             </ul>
                                         </div>
                                     </div>
@@ -214,12 +220,14 @@
                                 </div>
                                     <div class="row justify-content-center">
                                         <div class="col-auto">
-                                            <a href="#" class="default-btn" @@click.prevent="loadMore">
-                                                <span><i class="fa-solid fa-spinner"></i> Load More</span>
+                                            <a v-if="displayPersonalPosts && !allUserLoaded" href="#" class="default-btn" @@click.prevent="loadMore">
+                                                <span><i class="fa-solid fa-spinner"></i> Load More User Post</span>
+                                            </a>
+                                            <a v-if="!displayPersonalPosts && !allFriendLoaded" href="#" class="default-btn" @@click.prevent="loadMore">
+                                                <span><i class="fa-solid fa-spinner"></i> Load More Friend Post</span>
                                             </a>
                                         </div>
                                     </div>
-                                    @* <a v-if="!allLoaded" href="#" class="default-btn" @@click.prevent="loadMore"><span><i class="fa-solid fa-spinner"></i> Load More</span></a> *@
                                 </div> 
                             </div>
                         </div>
@@ -275,13 +283,15 @@
             return {
                 postContent: '',
                 placeholderText: '',
-                newPostPic: null, // 發文圖片
+                newPostPic: null,       // 上傳發文圖片
+                previewImageUrl: null,  // 上傳發文圖片預覽
                 postPrivacy: 'Public',
                 posts: [],
-                currentPage: 1,     // 表示當前頁碼
+                userCurrentPage: 1,     // User Post表示當前頁碼
+                friendCurrentPage: 1,     // Friend Post表示當前頁碼
                 pageSize: 5,        // 每次增加顯示貼文筆數
-                loading: false,     // 加載貼文標記
-                allLoaded: false,   // 表示貼文已加載完畢
+                allUserLoaded: false,   // 表示User貼文已加載完畢
+                allFriendLoaded: false,   // 表示Friend貼文已加載完畢
                 showUserId: @ViewBag.ShowUserId, // 指定顯示的UserId
                 loginUserId: @ViewBag.UserId, // 使用者ID
                 loginUserName: '',
@@ -297,6 +307,7 @@
                 showDeleteBtn: false,
                 LikeUserList: [],             // LikeUser清單
                 showLikeUserListModal: false, // 顯示LikeUser清單
+                displayPostForm:true,     // 發文區塊
                 displayPostsSelect: true, // 個人/朋友 選項
                 displayPersonalPosts: true, // 個人貼文
                 FriendPostList: [], // 朋友列表
@@ -329,6 +340,7 @@
                         });
                     }
                 }
+                this.displayPostForm = false;
                 this.displayPostsSelect = false;
                 return this.postsWithLikeStatus;
             },
@@ -355,16 +367,18 @@
             },
 
             // 查詢貼文
-            async getPosts() {
-                if (this.loading || this.allLoaded) return;
-                this.loading = true;
+            async getPosts(queryFriend) {
+                // 如果所有貼文都loading完畢，則不進入此方法
+                if ( this.allUserLoaded && this.allFriendLoaded) return;
 
                 try {
                     const queryId = this.showUserId ? this.showUserId : this.loginUserId;
                     const response = await axios.get(`/api/Profile/GetPostsList/${queryId}`, {
                         params: {
-                            page: this.currentPage,
-                            pageSize: this.pageSize
+                            // page: this.currentPage,
+                            page: queryFriend ? this.friendCurrentPage :this.userCurrentPage ,
+                            pageSize: this.pageSize,
+                            queryFriend: queryFriend
                         }
                     });
 
@@ -413,20 +427,20 @@
 
                     // 當回傳的貼文數，小於設定顯示的筆數，表示貼文已加載完畢
                     if (newPosts.length < this.pageSize) {
-                        this.allLoaded = true;
+                        queryFriend ? this.allFriendLoaded = true : this.allUserLoaded = true
                     }
 
                     this.posts = [...this.posts, ...newPosts]; // 將回傳的貼文合併到this.posts
-                    this.currentPage += 1; 
+                    queryFriend ? this.friendCurrentPage += 1 : this.userCurrentPage += 1;
+                    // this.currentPage += 1; 
                 } catch (error) {
                     console.error('Error getPosts:', error);
-                } finally {
-                    this.loading = false;
-                }
+                } 
             },
 
             loadMore() {
-                this.getPosts();
+                let query = this.displayPersonalPosts? false :true
+                this.getPosts(query);
             },
 
             // 新增貼文
@@ -483,26 +497,26 @@
             previewPic(event) {
                 const allowType = "image.*";
                 let file = event.target.files[0];
-                if (file.type.match(allowType)) {
+                if (file && file.type.match(allowType)) {
                     var reader = new FileReader();
                     reader.onload = (e) => {
                         let blob = new Blob([e.target.result], { type: "image/jpeg" });
                         let uriCreator = window.URL || window.webkitURL;
-                        let imgUrl = uriCreator.createObjectURL(blob);
-                        $('.Post-Preview-img').attr("src", imgUrl);
+                        this.previewImageUrl = uriCreator.createObjectURL(blob);
                     };
                     reader.readAsArrayBuffer(file);
                     this.newPostPic = file;
                 } else {
                     this.newPostPic = null;
-                    $('.Post-Preview-img').attr("src", null);
+                    this.previewImageUrl = null;
                 }
             },
 
             // 移除貼文圖片
             removeNewPostPic() {
                 this.newPostPic = null;
-                $('.Post-Preview-img').attr("src", null);
+                this.previewImageUrl = null;
+                this.$refs.fileInput.value = ""; // 重置文件输入的值
             },
 
             // 貼文回覆
@@ -655,6 +669,12 @@
             // 關閉LikeUserList
             closeLikeUserListModal() {
                 this.showLikeUserListModal = false;
+            },
+
+            shareToFacebook(post) {
+                event.preventDefault();
+                const shareUrl = `https://www.facebook.com/share.php?u=${window.location.origin + '/post/' + post.postId}&quote=${post.contents}`;
+                window.open(shareUrl, 'facebook-share-dialog', 'width=800,height=600');
             },
 
             // 取得檢舉項目
@@ -815,7 +835,10 @@
         },
         mounted() {
             this.getUserInfo();
-            this.getPosts();
+            // 第一次取個人Post，第二次取朋友Post
+            this.getPosts(false).then(() => {
+                this.getPosts(true);
+            });
             this.getRatItemsList();
         }
     }).mount('#post');
