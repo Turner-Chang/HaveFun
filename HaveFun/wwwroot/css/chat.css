@@ -202,6 +202,31 @@
     padding: 20px;
 }
 
+.friend-item {
+    position: relative;
+}
+
+.friend-status {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+    .friend-status.online {
+        background-color: #28a745;
+    }
+
+    .friend-status.offline {
+        background-color: #dc3545;
+    }
+
+    .friend-status.limit-reached {
+        background-color: #ffc107;
+    }
+
 .online,
 .offline,
 .me {

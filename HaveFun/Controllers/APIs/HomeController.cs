@@ -17,22 +17,6 @@ namespace HaveFun.Controllers.APIs
 		{
 			_context = context;
 		}
-		// 請求登入者有無
-		// GET: api/Home/GetLoginUser
-		[Authorize(AuthenticationSchemes = "Bearer,Cookies")]
-		[HttpGet]
-		public string GetLoginUser()
-		{
-			string loginUserId = Request.Cookies["userId"];
-			if (!string.IsNullOrEmpty(loginUserId) )
-			{
-				return loginUserId;
-			}
-			else
-			{
-				return null;
-			}
-		}
 		//請求現在最多人參加的活動
 		// GET: api/Home/GetPopularActivity
 		[HttpGet]
