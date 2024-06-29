@@ -213,8 +213,12 @@
 						.then(d => LevelArr = d)
 						.then(d => HomeApp.DrawLevelChart())
 
-
-
+						/ api / TransactionsReviewApi / Count
+					fetch(`/api/TransactionsReviewApi/Count`, { method: "GET" })
+						.then(r => r.text())
+						.then(d => d.split(","))
+						.then(d => LevelArr = d)
+						.then(d => HomeApp.DrawLevelChart())
 
 
 				},
