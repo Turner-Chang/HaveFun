@@ -152,7 +152,7 @@ namespace HaveFun.Controllers.APIs
         //GET: api/Profile/GetPostsList
         [Authorize(AuthenticationSchemes = "Bearer,Cookies")]
         [HttpGet("{userId}")]
-        public async Task<IEnumerable<PostsDTO>> GetPostsList([FromRoute] string userId, [FromQuery] int page = 1, [FromQuery] int pageSize = 5)
+        public async Task<IEnumerable<PostsDTO>> GetPostsList([FromRoute] string userId, [FromQuery] int page = 1, [FromQuery] int pageSize = 5, [FromQuery] bool queryFriend = false)
         {
             string loginId = Request.Cookies["userId"]; // 取得loginId
 
@@ -181,7 +181,21 @@ namespace HaveFun.Controllers.APIs
                     }
                 }
             }
-            var posts = await _context.Posts
+
+            var query = _context.Posts.AsQueryable();
+            if (queryFriend)
+            {
+                // 只搜尋朋友的貼文
+                //query = query.Where(p => FriendPostList.Contains(p.UserId.ToString()) && p.Status == 0);
+                query = query.Where(p => p.UserId.ToString() == "16" && p.Status == 0);
+            }
+            else
+            {
+                // 只搜尋使用者自己的貼文
+                query = query.Where(p => p.UserId.ToString() == userId && p.Status == 0);
+            }
+
+            var posts = await query
                 .Where(p => (p.UserId.ToString() == userId || FriendPostList.Contains(p.UserId.ToString())) && p.Status == 0)
                 .OrderByDescending(p => p.Id)
                 .Skip((page - 1) * pageSize)

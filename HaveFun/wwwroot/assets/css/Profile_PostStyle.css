@@ -284,12 +284,13 @@ textarea {
     text-align: center;
 }
 
-<style >
+/*上傳圖片顯示區域*/
 .Post-Preview-img {
-    width: 60%;
+    width: 70%;
     margin: 20px;
 }
 
+/*貼文圖片顯示區域*/
 .Post-size-img {
     max-width: 80%; /* 确保图片宽度不会超过容器宽度 */
     height: auto; /* 自动调整高度以保持比例 */
