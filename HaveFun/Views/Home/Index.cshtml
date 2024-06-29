@@ -219,6 +219,7 @@
 		const homePage = Vue.createApp({
 			data() {
 				return {
+					isLogin: null,
 					baseAddress: window.location.origin,
 					rand: 1,
 					popularAct:[],
@@ -226,6 +227,23 @@
 				}
 			},
 			methods: {
+				// 取得是否登入
+				getLoginUser() {
+					fetch(`api/Home/GetLoginUser`)
+						.then(res => res.json())
+						.then(data => {
+							this.isLogin = data;
+						})
+						.catch(error => { console.log('fetch loginUser failed!') });
+				},
+				// 判斷註冊鈕是否顯示
+				showBtnRegister() {
+					if (this.isLogin !== null) {
+						$('#btnRegister').hide();
+					} else {
+						$('#btnRegister').show()
+					}
+				},
 				//取得最熱門活動
 				getMostParticipantsActivity() {
 					fetch(`api/Home/GetPopularActivity`)
@@ -252,9 +270,11 @@
 			mounted() {
 				this.getMostParticipantsActivity();
 				this.getAnnouncement();
+				this.getLoginUser();
 			},
 			updated() {
 				this.fixFirstAnnouncement();
+				this.showBtnRegister();
 			}
 		}).mount('#homePage');
 	</script>
