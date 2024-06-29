@@ -1,9 +1,13 @@
 ﻿body {
 }
-.blog__content{
+.searchBar{
+    width: 300px;
+    margin: 10px auto;
+}
+.blog__content {
     line-height: 1.6;
-    margin:10px;
-    word-break:break-all;
+    margin: 10px;
+    word-break: break-all;
 }
 .blog__content > img {
     margin-bottom:10px;
@@ -120,4 +124,11 @@ textarea{
     width:60%;
     height:300px;
     margin:10px;
+}
+
+/* ----- 斷點 767 ----- */
+@media screen and (max-width: 767px) {
+    .actType {
+        width: 300px;
+    }
 }

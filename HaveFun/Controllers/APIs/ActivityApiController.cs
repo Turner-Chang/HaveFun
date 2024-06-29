@@ -25,6 +25,7 @@ namespace HaveFun.Controllers.APIs
 			string fileName = Path.Combine("StaticFiles", "images", "NOimg.jpg");
 			DateTime today = DateTime.Today;
 			var activities = _context.Activities
+			.Where(a => a.Status == 0)
 			.Include(a => a.ActivityType) // 包含活動類型
 			.Include(a => a.ActivityParticipants) // 包含活動參與者
 			.ThenInclude(ap => ap.User) // 包含參與者的用戶信息
@@ -67,7 +68,7 @@ namespace HaveFun.Controllers.APIs
 		[HttpGet("GetPicture/{id}")]
 		public async Task<FileResult> GetPicture(int id)
 		{
-			string fileName = Path.Combine("StaticFiles", "images", "NOimg.jpg");
+			string fileName = Path.Combine("wwwroot", "images", "NOimg.jpg");
 			Activity? a = await _context.Activities.FindAsync(id);
 			byte[] imageContent = a?.Picture != null ? a.Picture : System.IO.File.ReadAllBytes(fileName);
 			return File(imageContent, "image/jpg");

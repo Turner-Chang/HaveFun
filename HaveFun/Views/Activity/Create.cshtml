@@ -3,6 +3,15 @@
 @section Styles
 {
     <script src="https://cdn.tiny.cloud/1/dfdu8pl3r7ylmaojvuaphoovgsuggr5frctmfo2mfdooyp67/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+
+    <style>
+        #map
+        {
+            width: 100%;
+            height: 400px;
+            margin: 10px;
+        }
+    </style>
 }
 
 <div class="container-fluid p-5" style="width: 70%; background-color: white; border-radius: 20px;">
@@ -56,15 +65,26 @@
         </div>
 
         <div class="row">
-            <div class="col-md-8 mb-3">
+            <div class="col-md-6 mb-3">
                 <label asp-for="Activity.Location" class="form-label"></label>
                 <input asp-for="Activity.Location" id="autocomplete" type="text" placeholder="Enter a place" class="form-control" />
                 <span asp-validation-for="Activity.Location" class="text-danger"></span>
+            </div>          
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 mb-3">
+                <div id="map" class="map"></div>
             </div>
-            <div class="col-md-4 mb-3">
-                <label asp-for="Activity.MaxParticipants" class="form-label"></label>
-                <input asp-for="Activity.MaxParticipants" class="form-control" />
-                <span asp-validation-for="Activity.MaxParticipants" class="text-danger"></span>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Activity.MaxParticipants" class="form-label"></label>
+                    <input asp-for="Activity.MaxParticipants" class="form-control" />
+                    <span asp-validation-for="Activity.MaxParticipants" class="text-danger"></span>
+                </div>
             </div>
         </div>
 
@@ -134,19 +154,120 @@
 
     <script>
 
-        let autocomplete;
-        function initAutocomplete() {
+        let map, autocomplete, infowindow;
+        let currentMarker = null;  // 用于存储当前标记
+
+        function initMap() {
+            // 初始化 Autocomplete
             autocomplete = new google.maps.places.Autocomplete(
                 document.getElementById('autocomplete'),
                 {
                     types: ['establishment'],
-                    componentRestrctions: { 'country': ['TW'] },
+                    componentRestrictions: { 'country': ['TW'] },
                     fields: ['place_id', 'geometry', 'name']
                 }
             );
+
+            // 初始化地图的中心点和初始缩放级别
+            const sydney = new google.maps.LatLng(-33.867, 151.195);
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: sydney,
+                zoom: 15,
+            });
+
+            // 初始化信息窗口
+            infowindow = new google.maps.InfoWindow();
+
+            // 监听 Autocomplete 的 place_changed 事件
+            autocomplete.addListener('place_changed', function () {
+                let place = autocomplete.getPlace();
+                if (!place.geometry) {
+                    window.alert("未找到該地點的詳細信息");
+                    return;
+                }
+
+                // 在地图上显示选定地点并放置标记
+                showPlaceOnMap(place);
+            });
+
+            // 监听地图的点击事件
+            map.addListener('click', function (event) {
+                placeMarker(event.latLng);
+            });
         }
+
+        function showPlaceOnMap(place) {
+            if (!place.geometry || !place.geometry.location) return;
+
+            // 移除当前标记
+            removeCurrentMarker();
+
+            // 设置地图中心为所选地点的位置
+            map.setCenter(place.geometry.location);
+
+            // 创建新标记并添加到地图上
+            currentMarker = new google.maps.Marker({
+                map: map,
+                position: place.geometry.location,
+                title: place.name || ""
+            });
+
+            // 设置标记的点击事件，显示信息窗口
+            google.maps.event.addListener(currentMarker, "click", function () {
+                infowindow.setContent(place.name || "");
+                infowindow.open(map, currentMarker);
+            });
+        }
+
+        function placeMarker(location) {
+            // 移除当前标记
+            removeCurrentMarker();
+
+            // 创建新的标记
+            currentMarker = new google.maps.Marker({
+                position: location,
+                map: map,
+                draggable: true  // 可拖动标记
+            });
+
+            // 将地图中心设置为新标记的位置
+            map.setCenter(location);
+
+            // 更新 Autocomplete 输入框的值为标记的位置名称（或地址）
+            geocodeLatLng(location);
+        }
+
+        function removeCurrentMarker() {
+            // 如果当前标记存在，则移除
+            if (currentMarker) {
+                currentMarker.setMap(null);
+                currentMarker = null;
+            }
+        }
+
+        function geocodeLatLng(location) {
+            // 创建一个地理编码服务对象
+            const geocoder = new google.maps.Geocoder();
+
+            // 调用地理编码服务，获取位置信息
+            geocoder.geocode({ 'location': location }, function (results, status) {
+                if (status === 'OK') {
+                    if (results[0]) {
+                        // 更新 Autocomplete 输入框的值为地点的名称或地址
+                        autocomplete.set('place', results[0]);
+                        document.getElementById('autocomplete').value = results[0].formatted_address;
+                    } else {
+                        window.alert('未找到該地點的詳細信息');
+                    }
+                } else {
+                    window.alert('地理編碼失敗: ' + status);
+                }
+            });
+        }
+
+
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdtbEsD7WwvYlwDGF1Gz04zJnHXlIwBEs&libraries=places&callback=initAutocomplete" async defer>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdtbEsD7WwvYlwDGF1Gz04zJnHXlIwBEs&libraries=places&callback=initMap" async defer>
     </script>
 
     <script>

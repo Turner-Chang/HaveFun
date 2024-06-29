@@ -40,20 +40,19 @@
 		<span class=" navbar-brand"></span>
 		<span class=" navbar-brand"></span>
 		<div id="app">
-			<a v-if="!loginState" class="btn nav-link navbar-brand" asp-area="ManagementSystem" asp-controller="Home" asp-action="login">登入</a>
-			<a v-else class=" nav-link " asp-area="ManagementSystem" asp-controller="Home" asp-action="Management">Admin</a>
-
+			<a v-if="!loginState" class="btn nav-link navbar-brand" asp-area="ManagementSystem" asp-controller="Login" asp-action="index">登入</a>
+			<a v-if="loginState" class=" btn nav-link navbar-brand" @@click="logOut">登出</a>
 		</div>
 	</nav>
 	<div id="layoutSidenav">
 		<div id="layoutSidenav_nav">
 			<nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-				<div class="sb-sidenav-menu" >
+				<div class="sb-sidenav-menu">
 					<div class="nav">
 						<div class="sb-sidenav-menu-heading">管理選項</div>
 						<a class="btn nav-link" asp-area="ManagementSystem" asp-controller="Home" asp-action="Index">首頁</a>
-						<a  class="btn nav-link navbar-brand" asp-area="ManagementSystem" asp-controller="Home" asp-action="PostManagement">檢舉個人貼文管理</a>
-						
+						<a class="btn nav-link navbar-brand" asp-area="ManagementSystem" asp-controller="Home" asp-action="PostManagement">檢舉個人貼文管理</a>
+
 						<a class="btn nav-link" asp-area="ManagementSystem" asp-controller="Home" asp-action="UserManagement">檢舉個人資料管理</a>
 
 						<a class="btn nav-link" asp-area="ManagementSystem" asp-controller="Home" asp-action="ActivityManagement">檢舉活動貼文管理</a>
@@ -61,10 +60,11 @@
 						<a class="btn nav-link" asp-area="ManagementSystem" asp-controller="Home" asp-action="LabelManage">標籤管理</a>
 
 						<a class="btn nav-link" asp-area="ManagementSystem" asp-controller="Home" asp-action="RefundReview">退款審核</a>
-						
-						
+
+						<a class="btn nav-link" asp-area="ManagementSystem" asp-controller="Home" asp-action="Announcement">公告審核</a>
+
 						<a class="btn nav-link" asp-area="ManagementSystem" asp-controller="Home" asp-action="Chart">圖表分析</a>
-						
+
 						@* <a class="btn nav-link">心理測驗管理</a> *@
 					</div>
 				</div>
@@ -97,25 +97,38 @@
 		</div>
 	</footer>
 	<!-- ================> Footer section end here <================== -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
 	<script>
-		const app = Vue.createApp({
+		const ManageLayoutApp = Vue.createApp({
 			data() {
 				return {
 					loginState: false,
-				}
-			},
-			computed: {
-				islogin() { 
-					if (false) 
-					{ this.loginState = true; }
-					else { this.loginState = false; }
-				}
-
+					adminId: "-1",
+				};
 			},
 			methods: {
+				logOut() {
+					axios.post('/api/Login/Logout')
+						.then(() => {
+							this.loginState = false;
+							this.adminId = "-1";
+							location.reload();
+						})
+						.catch(error => {
+							console.error('Error logging out:', error);
+						});
+				},
 			},
-			watch: {
+			mounted() {
+				axios.get('/api/Login/Get')
+					.then(response => {
+						this.adminId = response.data;
+						this.loginState = this.adminId > 0;
+					})
+					.catch(error => {
+						console.error('Error fetching login state:', error);
+					});
 			},
 		}).mount("#app");
 	</script>
@@ -123,8 +136,8 @@
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-	
-	
+
+
 	<script src="~/js/site.js" asp-append-version="true"></script>
 	<script src="~/js/scripts.js"></script>
 	@await RenderSectionAsync("Scripts", required: false)

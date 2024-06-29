@@ -63,12 +63,12 @@
 							<div class="story__item style2 story--theme-color">
 								<div class="story__inner">
 									<div class="story__thumb position-relative">
-										<a :href="`/Activity/Detail/${activity.id}`"><img :src=`${baseAddress}/api/ActivityApi/GetPicture/${activity.id}` alt="dating thumb" style="height:160px;width:280px"></a>
+										<a :href="`/Activity/Detail/${activity.id}`"><img :src=`/api/ActivityApi/GetPicture/${activity.id}` alt="dating thumb" style="height:160px;width:280px"></a>
 										<span class="member__activity member__activity--ofline">{{activity.pastDay}} days ago</span>
 									</div>
 									<div class="story__content px-0 pb-0">
 										<a :href="`/Activity/Detail/${activity.id}`"><h4>{{activity.title}}</h4></a>
-										<p class="card-text">{{activity.content}}</p>
+										<p class="card-text" v-html="activity.content"></p>
 										<div class="story__content--author justify-content-between border-top pt-3">
 											<div class="story__content--content">
 												<p><i class="fa-solid fa-earth-africa"></i> Public Group</p>
@@ -127,11 +127,11 @@
 		<div class="col-lg-3 p-4">
 			<h3>歷史活動</h3>
 			<div class="row g-4 row-cols-lg-1 row-cols-sm-2 row-cols-1">
-				<div class="col" v-for="activity in pastActivities" :id="activity.id">
+				<div class="col" v-for="activity in displayedActivities" :id="activity.id">
 					<div class="story__item style2 story--theme-color">
 						<div class="story__inner">
 							<div class="story__thumb position-relative">
-								<a :href="`/Activity/Detail/${activity.id}`"><img :src=`${baseAddress}/api/ActivityApi/GetPicture/${activity.id}` alt="dating thumb" style="height:160px;width:280px"></a>
+								<a :href="`/Activity/Detail/${activity.id}`"><img :src=`/api/ActivityApi/GetPicture/${activity.id}` alt="dating thumb" style="height:160px;width:280px"></a>
 								<span class="member__activity member__activity--ofline">{{activity.pastDay}} days ago</span>
 							</div>
 							<div class="story__content px-0 pb-0">
@@ -167,6 +167,13 @@
 								</div>
 							</div>
 						</div>
+					</div>
+				</div>
+				<div class="row justify-content-center mt-5 top-right-button">
+					<div class="col-auto">
+						<a href="#" class="default-btn" style="background-color:#f24570; color:white;" v-on:click.prevent="loadMore" v-if="hasMore">
+							<span><i class="fa-solid fa-spinner"></i> Load More</span>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -259,6 +266,10 @@
 						type:'',
 					},
 					filteredActivities:[],
+					pageSize: 2,
+					currentPagePast: 1,
+					hasMore:true,
+					displayedActivities:[],
 				}
 			},
 			computed: {
@@ -329,7 +340,7 @@
 			methods: {
 				getActivities()
 				{
-					axios.get(`${this.baseAddress}/api/ActivityApi`)
+					axios.get(`/api/ActivityApi`)
 						//JSON.stringify(response.data)就可以用眼睛看到結果確認正確
 						.then(response => { 
 							this.activities = response.data;
@@ -337,11 +348,13 @@
 						})
 						.then(() => { 
 							this.applyFilters();
+							this.loadMore();
 						})
 						.catch(/* err => alert(err) */);
 				},
 				//將資料庫圖片路徑字串處理
 				processProfilePictures() {
+					const defaultImage = "images/NOimg.jpg";
 					this.activities.forEach(activity => {
 						activity.participants.forEach(participant => {
 							if (participant.profilePicture) {
@@ -351,6 +364,10 @@
 									participant.profilePicture = participant.profilePicture.substring(index);
 									//alert(participant.profilePicture);
 								}
+							}
+							else 
+							{
+								participant.profilePicture = defaultImage;
 							}
 						});
 					});
@@ -368,7 +385,7 @@
 					this.currentPage = page
 				},
 				getActivityTypes() {
-					axios.get(`${this.baseAddress}/api/ActivityApi/GetActivityType`)
+					axios.get(`/api/ActivityApi/GetActivityType`)
 						//JSON.stringify(response.data)就可以用眼睛看到結果確認正確
 						.then(response => {
 							this.activityTypes = response.data;
@@ -412,6 +429,19 @@
 					$(document).ready(function () {
 						$('#exampleModal').modal('hide');
 					});
+				},
+				loadMore() 
+				{
+					const start = (this.currentPagePast - 1) * this.pageSize;
+					const end = this.currentPagePast * this.pageSize;
+					const moreActivities = this.pastActivities.slice(start, end);
+
+					this.displayedActivities = [...this.displayedActivities, ...moreActivities];
+					this.currentPagePast++;
+
+					if (moreActivities.length < this.pageSize) {
+						this.hasMore = false;
+					}
 				},
 			},
 			watch: {

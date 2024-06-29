@@ -164,13 +164,13 @@
 										<div class="col-6">
 											<label>Min: {{filter.age.min}}</label>
 											<div class="form-control">
-												<input type="text" v-model.number="filter.age.min"/>
+												<input type="number" v-model.number="filter.age.min"/>
 											</div>
 										</div>
 										<div class="col-6">
 											<label>Max: {{filter.age.max}}</label>
 											<div class="form-control">
-												<input type="text" v-model.number="filter.age.max"/>
+												<input type="number" v-model.number="filter.age.max"/>
 											</div>
 										</div>
 									</div>
@@ -339,13 +339,13 @@
 			},
 			methods: {
 				getNotMatchUsers() {
-					fetch(`${this.baseAddress}/api/MatchApi/@ViewBag.UserId`)
+					fetch(`/api/MatchApi/@ViewBag.UserId`)
 						.then(res => res.json())
 						.then(u => this.notMatchUsers = u)
 						.then(()=>this.applyFilter())
 				},
 				getComplaintCategories() {
-					axios.get(`${this.baseAddress}/api/MatchApi/GetComplaintCategory`)
+					axios.get(`/api/MatchApi/GetComplaintCategory`)
 						.then(response => this.complaintCategories = response.data)
 						.catch(err => alert(err));
 				},
@@ -387,7 +387,7 @@
 								icon: "error",
 								title: "抱歉",
 								text: "已達到上限!",
-								footer: '<a href="#">是否升級會員等級?</a>'
+								footer: '<a href="/MemberLevel">是否升級會員等級?</a>'
 							});
 							this.currentCard.style.transform = '';
 							return;
@@ -480,7 +480,7 @@
 					let request = {};
 					request.clicked = clickedId;
 					request.beenClicked = beenClickedId;
-					axios.post(`${this.baseAddress}/api/MatchApi/Like`, request)
+					axios.post(`/api/MatchApi/Like`, request)
 						.then(response => { 
 							if (response.data != "") {
 								Swal.fire({
@@ -498,7 +498,7 @@
 					let request = {};
 					request.clicked = clickedId;
 					request.beenClicked = beenClickedId;
-					axios.post(`${this.baseAddress}/api/MatchApi/Dislike`, request)
+					axios.post(`/api/MatchApi/Dislike`, request)
 						.then(response => {
 						})
 						.catch(err => {
@@ -506,13 +506,13 @@
 						});
 				},
 				async canUserSwipeRequest() {
-					const response = await fetch(`${this.baseAddress}/api/MatchApi/CanUserSwipe/@ViewBag.UserId`);
+					const response = await fetch(`/api/MatchApi/CanUserSwipe/@ViewBag.UserId`);
 					const data = await response.json();
 					this.canSwipe = data;
 				},
 				async swipeHistoryRequest(userId) 
 				{					
-					await axios.post(`${this.baseAddress}/api/MatchApi/PostSwipeHistory/${userId}`)
+					await axios.post(`/api/MatchApi/PostSwipeHistory/${userId}`)
 						.then(response => {
 						})
 						.catch(err => {
@@ -525,7 +525,7 @@
 				},
 				reportUser() 
 				{
-					axios.post(`${this.baseAddress}/api/MatchApi/ReportUser`,{
+					axios.post(`/api/MatchApi/ReportUser`,{
 						reportUserId: @ViewBag.UserId,
 						complaintCategoryId: this.selectedComplaintCategory,
 						beReportedUserId: this.currentCard.id
@@ -555,8 +555,8 @@
 						users = users.filter(u => u.age <= Number(this.filter.age.max));
 					}
 
-					if (this.filter.age.max != "") {
-						users = users.filter(u => u.age <= Number(this.filter.age.max));
+					if (this.filter.age.min != "") {
+						users = users.filter(u => u.age >= Number(this.filter.age.min));
 					}
 
 					this.filteredNotMatchUsers = users;

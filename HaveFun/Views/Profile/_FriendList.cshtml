@@ -1,136 +1,147 @@
-    <div class="tab-pane fade" id="gt4" role="tabpanel" aria-labelledby="gt4-tab">
-        <div class="active-member bg-white mb-4">
-            <div id="app">
-                <div class="modal-header">
-                    <h6>好友列表</h6> 
-                    <ul class="nav nav-tabs" id="myTab4" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" :class="{ active: activeTab === 'Newest' }" @@click="switchTab('Newest')" id="Newest-tab" type="button" role="tab" aria-controls="Newest" aria-selected="true">好友</button> <!-- 好友 -->
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" :class="{ active: activeTab === 'BlackList' }" @@click="switchTab('BlackList')" id="BlackList-tab" type="button" role="tab" aria-controls="BlackList" aria-selected="false">黑名單</button> <!-- 黑名單 -->
-                        </li>
-                    </ul>
-                </div>
-                <div class="modal-body group__bottom--body">
-                    <div class="tab-content" id="myTabContent4">
-                        <div v-if="activeTab === 'Newest'" class="tab-pane fade show active" id="Newest" role="tabpanel" aria-labelledby="Newest-tab">
-                            <ul>
-                                <li v-for="friend in friends" :key="friend.id">
-                                    <div class="top">
-                                        <div class="left member--style2">
-                                            <div class="member__thumb">
-                                                <img :src="friend.profilePicture" alt="member-img">
-                                            </div>
+<div class="tab-pane fade" id="gt4" role="tabpanel" aria-labelledby="gt4-tab">
+    <div class="active-member bg-white mb-4">
+        <div id="app">
+            <div class="modal-header">
+                <h6>好友列表</h6>
+                <ul class="nav nav-tabs" id="myTab4" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" :class="{ active: data.activeTab === 'Newest' }" @@click="switchTab('Newest')" id="Newest-tab" type="button" role="tab" aria-controls="Newest" aria-selected="true">好友</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" :class="{ active: data.activeTab === 'BlackList' }" @@click="switchTab('BlackList')" id="BlackList-tab" type="button" role="tab" aria-controls="BlackList" aria-selected="false">黑名單</button>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-body group__bottom--body">
+                <div class="tab-content" id="myTabContent4">
+                    <div v-if="data.activeTab === 'Newest'" class="tab-pane fade show active" id="Newest" role="tabpanel" aria-labelledby="Newest-tab">
+                        <ul>
+                            <li v-for="friend in data.friends" :key="friend.id">
+                                <div class="top d-flex justify-content-between align-items-center">
+                                    <div class="left member--style2 d-flex align-items-center">
+                                        <div class="member__thumb">
+                                            <img :src="friend.profilePicture" alt="member-img">
                                         </div>
-                                        <div class="right">
-                                            <a href="member-single.html"><h6>{{ friend.name }}</h6></a>
-                                            <button class="btn btn-danger" @@click="blockUser(friend.id)" v-if="friend.state !== 2">封鎖</button> <!-- 封鎖 -->
-                                        </div>
+                                        <a href="member-single.html"><h6>{{ friend.name }}</h6></a>
                                     </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <div v-if="activeTab === 'BlackList'" class="tab-pane fade show active" id="BlackList" role="tabpanel" aria-labelledby="BlackList-tab">
-                            <ul>
-                                <li v-for="friend in blacklistedFriends" :key="friend.id">
-                                    <div class="top">
-                                        <div class="left member--style2">
-                                            <div class="member__thumb">
-                                                <img :src="friend.profilePicture" alt="member-img">
-                                            </div>
-                                        </div>
-                                        <div class="right">
-                                            <a href="member-single.html"><h6>{{ friend.name }}</h6></a>
-                                            <button class="btn btn-success" @@click="unblockUser(friend.id)">解鎖</button> <!-- 解鎖 -->
-                                        </div>
+                                    <div class="button-container">
+                                        <button class="btn btn-danger" @@click="blockUser(friend.id)" v-if="friend.state !== 3">封鎖</button>
                                     </div>
-                                </li>
-                            </ul>
-                        </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div v-if="data.activeTab === 'BlackList'" class="tab-pane fade show active" id="BlackList" role="tabpanel" aria-labelledby="BlackList-tab">
+                        <ul>
+                            <li v-for="friend in data.blacklistedFriends" :key="friend.id">
+                                <div class="top d-flex justify-content-between align-items-center">
+                                    <div class="left member--style2 d-flex align-items-center">
+                                        <div class="member__thumb">
+                                            <img :src="friend.profilePicture" alt="member-img">
+                                        </div>
+                                        <a href="member-single.html"><h6>{{ friend.name }}</h6></a>
+                                    </div>
+                                    <div class="button-container">
+                                        <button class="btn btn-success" @@click="unblockUser(friend.id)">解鎖</button>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+<style>
+.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+.left {
+    display: flex;
+    align-items: center;
+}
 
-    <style>
-        .right {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+.button-container {
+    margin-left: auto; /* Ensures the button container is pushed to the right */
+}
 
-        .member__activity {
-            display: none;
-        }
-    </style>
+.member__thumb img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+</style>
+<script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-    <script>
-        new Vue({
-            el: '#app',
-            data: {
-                activeTab: 'Newest',
-                userId: 5, // 實際用戶ID
-                friends: [],
-                blacklistedFriends: []
+<script>
+    window.currentUserId = @ViewBag.UserId;
+    const app = Vue.createApp({
+        data() {
+            return {
+                data: {
+                    activeTab: 'Newest',
+                    userId: window.currentUserId, // Use window.currentUserId as the userId
+                    friends: [],
+                    blacklistedFriends: []
+                }
+            };
+        },
+        mounted() {
+            this.fetchFriends();
+        },
+        methods: {
+            switchTab(tab) {
+                this.data.activeTab = tab;
+                if (tab === 'BlackList') {
+                    this.fetchBlacklist();
+                }
             },
-            mounted() {
-                this.fetchFriends();
+            fetchFriends() {
+                axios.get(`/api/FriendApi/GetFriend/${this.data.userId}`)
+                    .then(response => {
+                        this.data.friends = response.data;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching friends:', error);
+                    });
             },
-            methods: {
-                // 切換標籤頁
-                switchTab(tab) {
-                    this.activeTab = tab;
-                    if (tab === 'BlackList') {
-                        this.fetchBlacklist(); // 切換到黑名單時重新加載黑名單數據
-                    }
-                },
-                // 獲取好友列表
-                fetchFriends() {
-                    axios.get(`/api/FriendApi/GetFriend/${this.userId}`)
-                        .then(response => {
-                            this.friends = response.data;
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
-                },
-                // 獲取黑名單列表
-                fetchBlacklist() {
-                    axios.get(`/api/FriendApi/GetBlacklist/${this.userId}`)
-                        .then(response => {
-                            this.blacklistedFriends = response.data;
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
-                },
-                // 封鎖用戶
-                blockUser(friendId) {
-                    axios.post(`/api/FriendApi/BlockUser`, { userId: this.userId, friendId: friendId })
-                        .then(() => {
-                            this.fetchFriends(); // 重新加載好友列表
-                            this.fetchBlacklist(); // 重新加載黑名單列表
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
-                },
-                // 解鎖用戶
-                unblockUser(friendId) {
-                    axios.post(`/api/FriendApi/UnblockUser`, { userId: this.userId, friendId: friendId })
-                        .then(() => {
-                            this.fetchFriends(); // 重新加載好友列表
-                            this.fetchBlacklist(); // 重新加載黑名單列表
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
-                },
+            fetchBlacklist() {
+                axios.get(`/api/FriendApi/GetBlacklist/${this.data.userId}`)
+                    .then(response => {
+                        this.data.blacklistedFriends = response.data;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching blacklist:', error);
+                    });
+            },
+            blockUser(friendId) {
+                axios.post(`/api/FriendApi/BlockUser`, { userId: this.data.userId, friendId: friendId })
+                    .then(() => {
+                        this.fetchFriends();
+                        this.fetchBlacklist();
+                    })
+                    .catch(error => {
+                        console.error('Error blocking user:', error);
+                    });
+            },
+            unblockUser(friendId) {
+                axios.post(`/api/FriendApi/UnblockUser`, { userId: this.data.userId, friendId: friendId })
+                    .then(() => {
+                        this.fetchFriends();
+                        this.fetchBlacklist();
+                    })
+                    .catch(error => {
+                        console.error('Error unblocking user:', error);
+                    });
             }
-        });
-    </script>
+        }
+    });
+
+    app.mount('#app');
+</script>
