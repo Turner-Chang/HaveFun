@@ -68,7 +68,7 @@ namespace HaveFun.Controllers.APIs
 		[HttpGet("GetPicture/{id}")]
 		public async Task<FileResult> GetPicture(int id)
 		{
-			string fileName = Path.Combine("StaticFiles", "images", "NOimg.jpg");
+			string fileName = Path.Combine("wwwroot", "images", "NOimg.jpg");
 			Activity? a = await _context.Activities.FindAsync(id);
 			byte[] imageContent = a?.Picture != null ? a.Picture : System.IO.File.ReadAllBytes(fileName);
 			return File(imageContent, "image/jpg");

@@ -81,10 +81,7 @@
 
 <script>
     window.currentUserId = @ViewBag.UserId;
-
-    const { createApp } = Vue;
-
-    const app = createApp({
+    const app = Vue.createApp({
         data() {
             return {
                 data: {
