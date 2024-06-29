@@ -1,5 +1,6 @@
 ﻿using HaveFun.Common;
 using HaveFun.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

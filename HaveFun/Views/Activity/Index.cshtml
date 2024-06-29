@@ -68,7 +68,7 @@
 									</div>
 									<div class="story__content px-0 pb-0">
 										<a :href="`/Activity/Detail/${activity.id}`"><h4>{{activity.title}}</h4></a>
-										<p class="card-text">{{activity.content}}</p>
+										<p class="card-text" v-html="activity.content"></p>
 										<div class="story__content--author justify-content-between border-top pt-3">
 											<div class="story__content--content">
 												<p><i class="fa-solid fa-earth-africa"></i> Public Group</p>
@@ -354,6 +354,7 @@
 				},
 				//將資料庫圖片路徑字串處理
 				processProfilePictures() {
+					const defaultImage = "images/NOimg.jpg";
 					this.activities.forEach(activity => {
 						activity.participants.forEach(participant => {
 							if (participant.profilePicture) {
@@ -363,6 +364,10 @@
 									participant.profilePicture = participant.profilePicture.substring(index);
 									//alert(participant.profilePicture);
 								}
+							}
+							else 
+							{
+								participant.profilePicture = defaultImage;
 							}
 						});
 					});
