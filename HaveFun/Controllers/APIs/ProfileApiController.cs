@@ -186,8 +186,8 @@ namespace HaveFun.Controllers.APIs
             if (queryFriend)
             {
                 // 只搜尋朋友的貼文
-                //query = query.Where(p => FriendPostList.Contains(p.UserId.ToString()) && p.Status == 0);
-                query = query.Where(p => p.UserId.ToString() == "16" && p.Status == 0);
+                query = query.Where(p => FriendPostList.Contains(p.UserId.ToString()) && p.Status == 0);
+                //query = query.Where(p => p.UserId.ToString() == "16" && p.Status == 0);
             }
             else
             {
