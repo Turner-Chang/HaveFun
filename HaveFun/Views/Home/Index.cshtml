@@ -77,9 +77,14 @@
 				<span class="carousel-control-next-icon" aria-hidden="true"></span>
 				<span class="visually-hidden">Next</span>
 			</button>
-			<div class="register-btn-container">
-				<a href="/Register"><button class="default-btn" id="btnRegister">註冊</button></a>
-			</div>
+			@{
+				if (!User.Identity.IsAuthenticated)
+				{
+					<div class="register-btn-container">
+						<a href="/Register"><button class="default-btn" id="btnRegister">註冊</button></a>
+					</div>
+				}
+			}
 		</div>
 	</div>
 <!-- ================> Announcement section start here <================== -->
@@ -227,23 +232,6 @@
 				}
 			},
 			methods: {
-				// 取得是否登入
-				getLoginUser() {
-					fetch(`api/Home/GetLoginUser`)
-						.then(res => res.json())
-						.then(data => {
-							this.isLogin = data;
-						})
-						.catch(error => { console.log('fetch loginUser failed!') });
-				},
-				// 判斷註冊鈕是否顯示
-				showBtnRegister() {
-					if (this.isLogin !== null) {
-						$('#btnRegister').hide();
-					} else {
-						$('#btnRegister').show()
-					}
-				},
 				//取得最熱門活動
 				getMostParticipantsActivity() {
 					fetch(`api/Home/GetPopularActivity`)
@@ -270,11 +258,9 @@
 			mounted() {
 				this.getMostParticipantsActivity();
 				this.getAnnouncement();
-				this.getLoginUser();
 			},
 			updated() {
 				this.fixFirstAnnouncement();
-				this.showBtnRegister();
 			}
 		}).mount('#homePage');
 	</script>
