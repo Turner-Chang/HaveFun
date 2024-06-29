@@ -23,12 +23,12 @@
                                 :key="friend.id"
                                 :class="{ 'clearfix': true, 'active': friend.id === activeFriendId }"
                             @@click="selectFriend(friend)">
-                                <img :src="friend.avatarUrl" >
+                                <img :src="friend.avatarUrl" alt="avatar">
                                 <div class="about">
                                     <div class="name">{{ friend.name }}</div>
                                     <div class="status">
                                         <i :class="{ 'fa fa-circle': true, 'online': friend.isOnline, 'offline': !friend.isOnline }"></i>
-                                        {{ friend.status }}
+                                        {{ friend.isOnline ? 'Online' : 'Offline' }}
                                     </div>
                                 </div>
                             </li>
@@ -41,27 +41,23 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                     <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
-                                        <img :src="activeFriend ? activeFriend.avatarUrl : '/images/NoImgSomeone.png'">
+                                        <img :src="activeFriend ? activeFriend.avatarUrl : '/images/NoImgSomeone.png'" alt="avatar">
                                     </a>
                                     <div class="chat-about">
                                         <h6 class="m-b-0">{{ activeFriend ? activeFriend.name : 'Please select a friend' }}</h6>
-                                        <small>{{ activeFriend ? (activeFriend.isOnline ? 'Online' : 'Offline') : '' }}</small>
+                                        <small v-if="activeFriend">
+                                            <i :class="{ 'fa fa-circle': true, 'text-success': activeFriend.isOnline, 'text-secondary': !activeFriend.isOnline }"></i>
+                                            {{ activeFriend.isOnline ? 'Online' : 'Offline' }}
+                                        </small>
                                     </div>
                                 </div>
-                               @*  <div class="col-lg-6 hidden-sm text-right">
-                                    <a href="javascript:void(0);" class="btn btn-outline-secondary"><i class="fa fa-camera"></i></a>
-                                    <a href="javascript:void(0);" class="btn btn-outline-primary"><i class="fa fa-image"></i></a>
-                                    <a href="javascript:void(0);" class="btn btn-outline-info"><i class="fa fa-cogs"></i></a>
-                                    <a href="javascript:void(0);" class="btn btn-outline-warning"><i class="fa fa-question"></i></a>
-                                </div>
-                            </div> *@
+                            </div>
                         </div>
 
                         <div class="chat-history" ref="chatHistoryList">
-                            <ul class="m-b-0" >
+                            <ul class="m-b-0">
                                 <li v-for="chat in sortedChatHistory" :key="chat.id" class="clearfix">
                                     <div :class="['message-data', chat.senderId === currentUserId ? 'text-right' : '']">
-                                        @* <img :src="chat.senderAvatar" :alt="chat.senderId === currentUserId ? 'My Avatar' : 'Friend Avatar'" class="rounded-circle mr-1"> *@
                                         <span class="message-data-time">{{ formatTime(chat.createTime) }}</span>
                                     </div>
                                     <div :class="['message', chat.senderId === currentUserId ? 'my-message float-right' : 'other-message']">
@@ -70,8 +66,6 @@
                                 </li>
                             </ul>
                         </div>
-                               
-                       
 
                         <div class="chat-message clearfix">
                             <div class="input-group mb-0">
@@ -87,15 +81,11 @@
         </div>
     </div>
 </div>
-
 @section Scripts
 {
     <script>
         window.currentUserId = @ViewBag.UserId;
-
-        const { createApp } = Vue;
-
-        const app = createApp({
+        const app = Vue.createApp({
             data() {
                 return {
                     friends: [],
@@ -105,7 +95,8 @@
                     chatHistory: [],
                     messageText: '',
                     currentUserId: window.currentUserId,
-                    connection: null
+                    connection: null,
+                    allUserStatuses: []
                 };
             },
             computed: {
@@ -136,28 +127,50 @@
                 },
                 async fetchFriends() {
                     try {
-                        const response = await axios.get(`/api/FriendApi/GetFriend/${this.currentUserId}`);
-                        this.friends = response.data.map(friend => ({
-                            id: friend.id,
-                            name: friend.name,
-                            avatarUrl: friend.profilePicture ?
-                                (friend.profilePicture.startsWith('http') ? friend.profilePicture : `/api/UserInfo/GetPicture/${friend.id}`) :
-                                '/images/NoImgSomeone.png',
-                            isOnline: false,
-                            status: 'offline',
-                            isBlocked: friend.isBlocked
-                        }));
+                        const [friendsResponse, statusesResponse] = await Promise.all([
+                            axios.get(`/api/FriendApi/GetFriend/${this.currentUserId}`),
+                            axios.get('/api/ConId_User/GetAll')
+                        ]);
+
+                        const friends = friendsResponse.data;
+                        this.allUserStatuses = statusesResponse.data;
+
+                        this.friends = friends.map(friend => {
+                            const userStatus = this.allUserStatuses.find(status => status.userId === friend.id);
+                            return {
+                                id: friend.id,
+                                name: friend.name,
+                                avatarUrl: friend.profilePicture ?
+                                    (friend.profilePicture.startsWith('http') ? friend.profilePicture : `/api/UserInfo/GetPicture/${friend.id}`) :
+                                    '/images/NoImgSomeone.png',
+                                isOnline: userStatus ? userStatus.isOnline : false,
+                                status: userStatus ? (userStatus.isOnline ? 'online' : 'offline') : 'offline',
+                                isBlocked: friend.isBlocked
+                            };
+                        });
+
                         this.setInitialFriend();
                     } catch (error) {
-                        console.error('Failed to fetch friends:', error);
+                        console.error('Failed to fetch friends or statuses:', error);
                     }
                 },
-                updateFriendStatus(friendId, isOnline) {
-                    const friend = this.friends.find(f => f.id === friendId);
-                    if (friend) {
-                        friend.isOnline = isOnline;
-                        friend.status = isOnline ? 'online' : 'offline';
+                async fetchAllUserStatuses() {
+                    try {
+                        const response = await axios.get('/api/ConId_User/GetAll');
+                        this.allUserStatuses = response.data;
+                        this.updateFriendsOnlineStatus();
+                    } catch (error) {
+                        console.error('Failed to fetch all user statuses:', error);
                     }
+                },
+                updateFriendsOnlineStatus() {
+                    this.friends.forEach(friend => {
+                        const userStatus = this.allUserStatuses.find(status => status.userId === friend.id);
+                        if (userStatus) {
+                            friend.isOnline = userStatus.isOnline;
+                            friend.status = userStatus.isOnline ? 'online' : 'offline';
+                        }
+                    });
                 },
                 async fetchChatHistory() {
                     try {
@@ -192,7 +205,7 @@
                     this.chatHistory.push(newChat);
 
                     try {
-                        await this.connection.invoke("SendMessage", this.currentUserId.toString(), this.messageText);
+                        await this.connection.invoke("SendMessage", this.currentUserId.toString(), this.activeFriend.toString(), this.messageText);
 
                         const response = await axios.post('/api/ChatRoom/ChatRoomsApi', {
                             User1Id: this.currentUserId,
@@ -259,7 +272,9 @@
             },
             mounted() {
                 this.fetchFriends();
+                this.fetchAllUserStatuses();
                 this.setupSignalRConnection();
+               
             },
             beforeUnmount() {
                 if (this.connection) {

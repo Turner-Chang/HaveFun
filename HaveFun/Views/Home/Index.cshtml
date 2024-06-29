@@ -77,9 +77,14 @@
 				<span class="carousel-control-next-icon" aria-hidden="true"></span>
 				<span class="visually-hidden">Next</span>
 			</button>
-			<div class="register-btn-container">
-				<a href="/Register"><button class="default-btn" id="btnRegister">註冊</button></a>
-			</div>
+			@{
+				if (!User.Identity.IsAuthenticated)
+				{
+					<div class="register-btn-container">
+						<a href="/Register"><button class="default-btn" id="btnRegister">註冊</button></a>
+					</div>
+				}
+			}
 		</div>
 	</div>
 <!-- ================> Announcement section start here <================== -->
@@ -219,6 +224,7 @@
 		const homePage = Vue.createApp({
 			data() {
 				return {
+					isLogin: null,
 					baseAddress: window.location.origin,
 					rand: 1,
 					popularAct:[],

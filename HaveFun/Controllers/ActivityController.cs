@@ -66,11 +66,11 @@ namespace HaveFun.Controllers
             model.Activity.UserId = _userId;
             if (ModelState.IsValid)
 			{
-                //if (model.UploadedPicture != null && model.UploadedPicture.Length > 0)
-                if (Request.Form.Files["UploadedPicture"] != null)
-                {
-                    ReadUploadImage(model);
-                }
+				//if (model.UploadedPicture != null && model.UploadedPicture.Length > 0)
+				if (Request.Form.Files["UploadedPicture"] != null)
+				{
+					ReadUploadImage(model);
+				}
 
                 _context.Activities.Add(model.Activity);
                 await _context.SaveChangesAsync();
@@ -126,6 +126,10 @@ namespace HaveFun.Controllers
 					{
 						participant.User.ProfilePicture = participant.User.ProfilePicture.Substring(index);
 					}
+				}
+				else
+				{
+					participant.User.ProfilePicture = "images/NOimg.jpg";
 				}
 			}
 

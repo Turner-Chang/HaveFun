@@ -63,12 +63,12 @@
 							<div class="story__item style2 story--theme-color">
 								<div class="story__inner">
 									<div class="story__thumb position-relative">
-										<a :href="`/Activity/Detail/${activity.id}`"><img :src=`${baseAddress}/api/ActivityApi/GetPicture/${activity.id}` alt="dating thumb" style="height:160px;width:280px"></a>
+										<a :href="`/Activity/Detail/${activity.id}`"><img :src=`/api/ActivityApi/GetPicture/${activity.id}` alt="dating thumb" style="height:160px;width:280px"></a>
 										<span class="member__activity member__activity--ofline">{{activity.pastDay}} days ago</span>
 									</div>
 									<div class="story__content px-0 pb-0">
 										<a :href="`/Activity/Detail/${activity.id}`"><h4>{{activity.title}}</h4></a>
-										<p class="card-text">{{activity.content}}</p>
+										<p class="card-text" v-html="activity.content"></p>
 										<div class="story__content--author justify-content-between border-top pt-3">
 											<div class="story__content--content">
 												<p><i class="fa-solid fa-earth-africa"></i> Public Group</p>
@@ -131,7 +131,7 @@
 					<div class="story__item style2 story--theme-color">
 						<div class="story__inner">
 							<div class="story__thumb position-relative">
-								<a :href="`/Activity/Detail/${activity.id}`"><img :src=`${baseAddress}/api/ActivityApi/GetPicture/${activity.id}` alt="dating thumb" style="height:160px;width:280px"></a>
+								<a :href="`/Activity/Detail/${activity.id}`"><img :src=`/api/ActivityApi/GetPicture/${activity.id}` alt="dating thumb" style="height:160px;width:280px"></a>
 								<span class="member__activity member__activity--ofline">{{activity.pastDay}} days ago</span>
 							</div>
 							<div class="story__content px-0 pb-0">
@@ -340,7 +340,7 @@
 			methods: {
 				getActivities()
 				{
-					axios.get(`${this.baseAddress}/api/ActivityApi`)
+					axios.get(`/api/ActivityApi`)
 						//JSON.stringify(response.data)就可以用眼睛看到結果確認正確
 						.then(response => { 
 							this.activities = response.data;
@@ -354,6 +354,7 @@
 				},
 				//將資料庫圖片路徑字串處理
 				processProfilePictures() {
+					const defaultImage = "images/NOimg.jpg";
 					this.activities.forEach(activity => {
 						activity.participants.forEach(participant => {
 							if (participant.profilePicture) {
@@ -363,6 +364,10 @@
 									participant.profilePicture = participant.profilePicture.substring(index);
 									//alert(participant.profilePicture);
 								}
+							}
+							else 
+							{
+								participant.profilePicture = defaultImage;
 							}
 						});
 					});
@@ -380,7 +385,7 @@
 					this.currentPage = page
 				},
 				getActivityTypes() {
-					axios.get(`${this.baseAddress}/api/ActivityApi/GetActivityType`)
+					axios.get(`/api/ActivityApi/GetActivityType`)
 						//JSON.stringify(response.data)就可以用眼睛看到結果確認正確
 						.then(response => {
 							this.activityTypes = response.data;
