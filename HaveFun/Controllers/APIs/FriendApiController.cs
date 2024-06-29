@@ -20,10 +20,11 @@ namespace HaveFun.Controllers.APIs
         [HttpGet("{id}")]
         public async Task<IActionResult> GetFriend(int id)
         {
+            var toFriendList = _dbContext.FriendLists.Where(x => x.BeenClicked == id);
+
             var friendList = await _dbContext.FriendLists
                 .Where(x =>
-                    (x.Clicked == id && x.state == 1 && _dbContext.FriendLists.Any(y => y.Clicked == x.BeenClicked && y.BeenClicked == id && y.state == 1)) ||
-                    (x.BeenClicked == id && x.state == 1 && _dbContext.FriendLists.Any(y => y.Clicked == x.Clicked && y.BeenClicked == id && y.state == 1))
+                    (x.Clicked == id && x.state == 1)
                 )
                 .Select(x => new
                 {
@@ -57,7 +58,7 @@ namespace HaveFun.Controllers.APIs
         public async Task<IActionResult> GetBlacklist(int id)
         {
             var blacklist = await _dbContext.FriendLists
-                .Where(x => (x.Clicked == id || x.BeenClicked == id) && x.state == 3)
+                .Where(x => x.Clicked == id && x.state == 3)
                 .Select(x => new
                 {
                     Id = x.Clicked == id ? x.User2.Id : x.User1.Id,
