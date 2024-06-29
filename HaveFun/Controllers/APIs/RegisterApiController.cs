@@ -79,7 +79,7 @@ namespace HaveFun.Controllers.APIs
             if (userRegisterDTO.ProfilePicture != null)
             {
                 // 把大頭照丟到wwwtoot的images的headshots資料夾內
-                string imgPath = "../HaveFun/wwwroot/images/headshots";
+                string imgPath = "wwwroot\\images\\headshots";
 
                 // 檔案名為帳號+檔案名
                 string imgName = userRegisterDTO.Account + userRegisterDTO.ProfilePicture.FileName;
@@ -87,17 +87,31 @@ namespace HaveFun.Controllers.APIs
                 _saveImage.Path = imgPath;
                 _saveImage.Name = imgName;
                 _saveImage.Picture = userRegisterDTO.ProfilePicture;
-                bool isSave = _saveImage.Save(out fullPath);
-                if (isSave == false)
+                try
+                {
+                    bool isSave = _saveImage.Save(out fullPath);
+                    if (isSave == false)
+                    {
+                        return new JsonResult(
+                            new
+                            {
+                                success = false,
+                                profilePictureError = "圖片存取失敗"
+                            }
+                        );
+                    }
+                }
+                catch (Exception ex)
                 {
                     return new JsonResult(
                         new
                         {
                             success = false,
-                            profilePictureError = "圖片存取失敗"
+                            message = ex.Message,
                         }
                     );
                 }
+ 
             }
 
             // 把資料放到資料庫中
@@ -119,21 +133,23 @@ namespace HaveFun.Controllers.APIs
                 await _dbContext.SaveChangesAsync();
                 userId = userInfo.Id;
             }
-            catch (DbException)
+            catch (DbException ex)
             {
                 return new JsonResult(
                     new
                     {
-                        success = false
+                        success = false,
+                        message = ex.Message
                     }
                 );
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return new JsonResult(
                     new
                     {
-                        success = false
+                        success = false,
+                        message = ex.Message
                     }
                 );
             }
