@@ -1,5 +1,9 @@
 ﻿body {
 }
+.searchBar{
+    width: 300px;
+    margin: 10px auto;
+}
 .blog__content {
     line-height: 1.6;
     margin: 10px;

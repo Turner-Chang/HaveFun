@@ -1,0 +1,18 @@
+﻿@{
+    Layout = "_Layout";
+}
+<div>
+    <h1>交易成功！</h1>
+    <p>您的交易已成功處理，感謝您的購買。</p>
+    <p>5秒後將自動返回首頁。</p>
+    <p>如果頁面沒有自動轉跳，請點擊下方按鈕手動返回首頁。</p>
+    <a class="btn btn-primary" asp-controller="Home" asp-action="Index">返回首頁</a>
+</div>
+
+@section Scripts {
+    <script>
+        setTimeout(() => {
+            window.location.href = '/Home/Index';
+        }, 5000);
+    </script>
+}

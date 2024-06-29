@@ -12,6 +12,7 @@
 				<button class="default-btn actType" @@click="switchType('past')">{{ buttonText('past', '已結束的活動') }}</button>
 			</li>
 		</ul>
+		<input class="searchBar form-control" type="text" placeholder="搜尋活動名稱..." v-model="searchWord">
 		<!-- 彈出視窗們 -->
 		<!-- 取消參加活動視窗 -->
 		<div class="canelAttendBox">
@@ -38,7 +39,7 @@
 			<button class="btn btn-outline-secondary" @@click="escdeleteActBox">否</button>
 		</div>
 		<!-- ================> 即將發生的活動 <================== -->
-		<div v-if="currentType === 'commingup'" v-for="(act, index) in commingupActivities" class="blog__item">
+		<div v-if="currentType === 'commingup'" v-for="(act, index) in filteredWords" class="blog__item">
 			<div class="blog__inner">
 				<div class="blog__content">
 					<img v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}?rand=${rand}`>
@@ -80,7 +81,7 @@
 			<p class="empty">目前沒有即將發生的活動</p>
 		</div>
 		<!-- ================> 編輯主辦活動內容 <================== -->
-		<div v-if="currentType === 'host'" v-for="act in hostActivities" class="blog__item">
+		<div v-if="currentType === 'host'" v-for="act in filteredWords" class="blog__item">
 			<div class="blog__inner">
 				<div v-if="act.inEdit === false" class="blog__content">
 					<img v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}?rand=${rand}`>
@@ -109,7 +110,7 @@
 							<span class="infoTitle">注意事項：</span><br>
 							<p class="actContent">{{act.notes}}</p><br><br>
 							<button class="default-btn" @@click="showDeleteAct(act.id)">刪除活動</button>
-							<button class="default-btn" @@click="intoEditing(act)">修改活動內容</button>
+							<button class="default-btn btnEdit" @@click="intoEditing(act)">修改活動內容</button>
 						</div>
 					</details>
 				</div>
@@ -161,7 +162,7 @@
 			<p class="empty">目前沒有主辦活動可以顯示</p>
 		</div>
 		<!-- ================> 已經結束的活動 <================== -->
-		<div v-if="currentType === 'past'" v-for="(act, index) in pastActivities" class="blog__item">
+		<div v-if="currentType === 'past'" v-for="(act, index) in filteredWords" class="blog__item">
 			<div class="blog__inner">
 				<div class="blog__content">
 					<img v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}?rand=${rand}`>
@@ -208,6 +209,7 @@
 				hostActivities: [],
 				pastActivities: [],
 				activitiyType: [],
+				searchWord:'',
 				wannaEdit:0,
 				members:[],
 				editPic:null,
@@ -314,6 +316,23 @@
 			},
 			hasError() {
 				return Object.values(this.errorStyle).includes(true);
+			},
+			filteredWords() {
+				if (this.currentType === 'commingup') {
+					return this.commingupActivities.filter(activity =>
+						activity.title.toLowerCase().includes(this.searchWord.toLowerCase())
+					);
+				}
+				if (this.currentType === 'host') {
+					return this.hostActivities.filter(activity =>
+						activity.title.toLowerCase().includes(this.searchWord.toLowerCase())
+					);
+				}
+				if (this.currentType === 'past') {
+					return this.pastActivities.filter(activity =>
+						activity.title.toLowerCase().includes(this.searchWord.toLowerCase())
+					);
+				}
 			}
 		},
 		methods: {
@@ -366,14 +385,7 @@
 			//切換狀態顯示活動
 			switchType(type) {
 				this.currentType = type;
-				// if (type === 'commingup'){
-				// 	this.showMap(this.commingupActivities);
-				// }
-				// if(type === 'past') {
-				// 	// this.showMap(this.pastActivities);
-				// 	alert('ok');
-				// }
-				
+				this.searchWord = '';
 			},
 			buttonText(type, text) {
 				return this.currentType === type ? '● ' + text : text;
@@ -462,6 +474,7 @@
 			//進入修改活動畫面
 			intoEditing(act) {
 				act.inEdit = true;
+				$('.btnEdit').hide();
 				this.wannaEdit = act.id;
 				this.editTitle = act.title;
 				this.editActivityTime = act.activityTime;
@@ -478,6 +491,7 @@
 			//取消修改活動內容
 			cancelToEdit(act) {
 				act.inEdit = false;
+				$('.btnEdit').show();
 				this.wannaEdit = 0;
 				this.editPic = null;
 				this.editTitle = '';
@@ -519,6 +533,7 @@
 				.then(data => {
 					// console.log('成功', data);
 					act.inEdit = false;
+					$('.btnEdit').show();
 					this.wannaEdit = 0;
 					this.editPic = null;
 					this.editTitle = '';
@@ -593,8 +608,9 @@
 			},
 			// 修改活動地址自動完成內容
 			siteAuto() {
+				let country = ["tw", "jp", "hk", "mo", "cn"];
 				let options = {
-					componentRestrictions: { country: "tw" },
+					componentRestrictions: { country: country },
 				};
 				this.autocomplete = new google.maps.places.Autocomplete(document.querySelector('#editLocation'), options);
 				this.autocomplete.addListener("place_changed", () => {
