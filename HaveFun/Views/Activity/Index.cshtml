@@ -354,6 +354,7 @@
 				},
 				//將資料庫圖片路徑字串處理
 				processProfilePictures() {
+					const defaultImage = "images/NOimg.jpg";
 					this.activities.forEach(activity => {
 						activity.participants.forEach(participant => {
 							if (participant.profilePicture) {
@@ -363,6 +364,10 @@
 									participant.profilePicture = participant.profilePicture.substring(index);
 									//alert(participant.profilePicture);
 								}
+							}
+							else 
+							{
+								participant.profilePicture = defaultImage;
 							}
 						});
 					});
