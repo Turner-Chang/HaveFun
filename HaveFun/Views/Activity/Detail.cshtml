@@ -40,17 +40,17 @@
 										<h2>@Model.Title</h2>
 										<ul class="blog__date">
 											<li><span><i class="fa-solid fa-calendar-days"></i>@Model.ActivityTime</span></li>
-											<li><span><i class="fa-solid fa-user"></i><a href="#">@Model.User.Name</a></span></li>
+											<li><span><i class="fa-solid fa-user"></i><a href="/Profile/Index?userId=@Model.User.Id">@Model.User.Name</a></span></li>
 										</ul>
 										<h2>活動内容</h2>
 										<div class="mb-3">
-											@Html.Raw(Model.Content);
+											@Html.Raw(Model.Content)
 										</div>
 										
 										<h2>活動注意事項</h2>				
 										<blockquote class="single-quote mb-4">
 											<div class="quotes mb-3">
-												@Html.Raw(Model.Notes);
+												@Html.Raw(Model.Notes)
 											</div>
 										</blockquote>
 										<ul class="blog__date d-flex justify-content-evenly">
@@ -130,7 +130,7 @@
 										}
 
 										<button disabled="@isUserParticipating" class="default-btn" style=" @(isUserParticipating ? "background-color:gray; color:white; margin-right: 20px;" : "background-color:#f24570; color:white; margin-right: 20px;")" v-on:click="signUp">
-											@(isUserParticipating ? "已经报名" : "参加")
+											@(isUserParticipating ? "已經報名" : "參加")
 										</button>
 
 										@* <div class="blog__thumb mb-4">
