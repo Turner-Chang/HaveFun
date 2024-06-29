@@ -10,8 +10,12 @@
 
         // 從IFormFile存取來的圖片檔案
         public IFormFile Picture { get; set; }
+        private IHostEnvironment Environment { get; }
 
-        public SaveImage() { }
+        public SaveImage(IHostEnvironment environment)
+        {
+            Environment = environment;
+        }
 
         public SaveImage(string path, string name, IFormFile picture)
         {
@@ -28,7 +32,8 @@
                 if (isImage())
                 {
                     fullPath = Path + "\\" + Name;
-                    using (FileStream fileStream = new FileStream(fullPath, FileMode.Create))
+                    var NewfullPath = System.IO.Path.Combine(Environment.ContentRootPath, fullPath);
+                    using (FileStream fileStream = new FileStream(NewfullPath, FileMode.Create))
                     {
                         Picture.CopyTo(fileStream);
                         return true;
@@ -41,8 +46,9 @@
                 }
   
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                throw ex;
                 fullPath = string.Empty;
                 return false;
             }
