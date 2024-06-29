@@ -3,6 +3,13 @@
 @section Styles
 {
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<style>
+		#map {
+			width: 100%;
+			height: 400px;
+			margin: 10px;
+		}
+	</style>
 }
 
 @* <h5>@Model.Title</h5> *@
@@ -34,23 +41,23 @@
 							<div class="blog__item">
 								<div class="blog__inner">
 									<div class="blog__thumb">
-										<img :src=`${baseAddress}/api/ActivityApi/GetPicture/${activityId}` alt="dating thumb" style="width:100%">
+										<img :src=`/api/ActivityApi/GetPicture/${activityId}` alt="dating thumb" style="width:100%">
 									</div>
 									<div class="blog__content">
 										<h2>@Model.Title</h2>
 										<ul class="blog__date">
 											<li><span><i class="fa-solid fa-calendar-days"></i>@Model.ActivityTime</span></li>
-											<li><span><i class="fa-solid fa-user"></i><a href="#">@Model.User.Name</a></span></li>
+											<li><span><i class="fa-solid fa-user"></i><a href="/Profile/Index?userId=@Model.User.Id">@Model.User.Name</a></span></li>
 										</ul>
 										<h2>活動内容</h2>
 										<div class="mb-3">
-											@Html.Raw(Model.Content);
+											@Html.Raw(Model.Content)
 										</div>
 										
 										<h2>活動注意事項</h2>				
 										<blockquote class="single-quote mb-4">
 											<div class="quotes mb-3">
-												@Html.Raw(Model.Notes);
+												@Html.Raw(Model.Notes)
 											</div>
 										</blockquote>
 										<ul class="blog__date d-flex justify-content-evenly">
@@ -123,6 +130,10 @@
 
 										<h2>活動地點</h2>
 										<P><i class="fa-solid fa-location-crosshairs fa-lg"></i>@Model.Location</P>
+
+										<div id="map" class="map">
+
+										</div>
 										
 										@{
 											var currentUserId = (int)ViewBag.LoginUserId;
@@ -130,7 +141,7 @@
 										}
 
 										<button disabled="@isUserParticipating" class="default-btn" style=" @(isUserParticipating ? "background-color:gray; color:white; margin-right: 20px;" : "background-color:#f24570; color:white; margin-right: 20px;")" v-on:click="signUp">
-											@(isUserParticipating ? "已经报名" : "参加")
+											@(isUserParticipating ? "已經報名" : "參加")
 										</button>
 
 										@* <div class="blog__thumb mb-4">
@@ -284,6 +295,49 @@
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer" asp-append-version="true">
 	</script>
+	
+
+	<script>
+		let map
+		function initMap()
+		{
+			// 初始化地图的中心点和初始缩放级别
+			const sydney = new google.maps.LatLng(-33.867, 151.195);
+			map = new google.maps.Map(document.getElementById("map"), {
+				center: sydney,
+				zoom: 15,
+			});
+
+			// 获取从后端传递的地点信息
+			var locationString = '@Model.Location';
+
+			// 使用Google Places API进行地点解析
+			var geocoder = new google.maps.Geocoder();
+			geocoder.geocode({ 'address': locationString }, function (results, status) {
+				if (status === 'OK') {
+					var location = results[0].geometry.location;
+
+					// 初始化地图
+					var map = new google.maps.Map(document.getElementById('map'), {
+						center: location,
+						zoom: 15
+					});
+
+					// 添加标记
+					var marker = new google.maps.Marker({
+						position: location,
+						map: map
+					});
+				} else {
+					console.error('Geocode was not successful for the following reason: ' + status);
+				}
+			});
+		}
+	</script>
+
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdtbEsD7WwvYlwDGF1Gz04zJnHXlIwBEs&libraries=places&callback=initMap" async defer>
+	</script>
+
 	<script>
 		const detailApp = Vue.createApp({
 			data() {
@@ -306,7 +360,7 @@
 
 						Swal.fire({
 							icon: 'success',
-							title: '报名成功',
+							title: '報名成功',
 							text: response.data
 						});
 
@@ -314,7 +368,7 @@
 
 						Swal.fire({
 							icon: 'error',
-							title: '报名失败',
+							title: '報名失敗',
 							text: error.response.data
 						});
 

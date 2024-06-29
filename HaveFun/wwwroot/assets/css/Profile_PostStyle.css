@@ -284,12 +284,13 @@ textarea {
     text-align: center;
 }
 
-<style >
+/*上傳圖片顯示區域*/
 .Post-Preview-img {
-    width: 60%;
+    width: 70%;
     margin: 20px;
 }
 
+/*貼文圖片顯示區域*/
 .Post-size-img {
     max-width: 80%; /* 确保图片宽度不会超过容器宽度 */
     height: auto; /* 自动调整高度以保持比例 */
@@ -325,4 +326,66 @@ textarea {
             /* color: rgb(242, 69, 112); /* 文字顏色 */
         }
 
-</style >
+/*LikeUserList*/
+.likeUser-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.likeUser-content {
+    background: #fff;
+    padding: 20px;
+    padding-bottom: 40px;
+    border-radius: 5px;
+    width: 70%; /* 調整視窗寬度 */
+    max-width: 400px; /* 更小的最大寬度 */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.likeUser-close-button {
+    position: absolute;
+    bottom: 5px;
+    right: 20px;
+    padding: 5px 10px;
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.likeUser-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    max-height: 200px; /* 限制顯示高度 */
+    overflow-y: auto; /* 超過高度時顯示滾動條 */
+    border-top: 1px solid #ddd; /* 分隔線 */
+    flex-grow: 1; /* 使列表填滿剩餘空間 */
+}
+
+    .likeUser-list li {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #ddd; /* 每個用戶之間的分隔線 */
+    }
+
+    .likeUser-list img {
+        border-radius: 50%;
+        margin-right: 10px;
+        width: 40px;
+        height: 40px;
+    }

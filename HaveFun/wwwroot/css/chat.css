@@ -202,6 +202,31 @@
     padding: 20px;
 }
 
+.friend-item {
+    position: relative;
+}
+
+.friend-status {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+    .friend-status.online {
+        background-color: #28a745;
+    }
+
+    .friend-status.offline {
+        background-color: #dc3545;
+    }
+
+    .friend-status.limit-reached {
+        background-color: #ffc107;
+    }
+
 .online,
 .offline,
 .me {
@@ -261,7 +286,26 @@
         height: 300px;
         overflow-x: auto;
     }
+
+    .chat-list li {
+        padding: 8px 10px;
+    }
+
+    .chat-list img {
+        width: 35px;
+        height: 35px;
+        margin-right: 10px;
+    }
+
+    .chat-list .name {
+        font-size: 0.9em;
+    }
+
+    .chat-list .status {
+        font-size: 0.75em;
+    }
 }
+
 
 @media only screen and (min-width: 768px) and (max-width: 992px) {
     .chat-app .chat-list {
@@ -272,6 +316,15 @@
     .chat-app .chat-history {
         height: 300px;
         overflow-x: auto;
+    }
+    .chat-list li {
+        padding: 10px 12px;
+    }
+
+    .chat-list img {
+        width: 40px;
+        height: 40px;
+        margin-right: 12px;
     }
 }
 
@@ -285,4 +338,9 @@
         height: calc(100vh - 350px);
         overflow-x: auto;
     }
+
+    .chat-list li {
+        padding: 12px 15px;
+    }
 }
+/* Optional: Horizontal scrolling for very small screens */

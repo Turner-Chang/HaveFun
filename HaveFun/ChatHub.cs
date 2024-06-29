@@ -2,61 +2,89 @@ using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 using HaveFun.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Security.Claims;
+using Azure.Core;
 
 public class ChatHub : Hub
 {
     private readonly HaveFunDbContext _context;
+    private readonly ILogger<ChatHub> _logger;
 
-    public ChatHub(HaveFunDbContext context)
+    public ChatHub(HaveFunDbContext context, ILogger<ChatHub> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
-    public override Task OnConnectedAsync()
+    public override async Task OnConnectedAsync()
     {
-        Clients.All.SendAsync("SomeOneOnline", Context.ConnectionId);
-        //int userId = 2; // 替換為實際的用戶 ID 獲取邏輯
+        try
+        {
+            await Clients.All.SendAsync("SomeOneOnline", Context.ConnectionId);
+            string userid = Context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name).Value;
+            int userId = Convert.ToInt32(userid);
+            _context.ConId_UserId.Add(new ConId_UserId
+            {
+                UserId = userId,
+                ConnId = Context.ConnectionId,
+            });
+            await _context.SaveChangesAsync();
+            _logger.LogInformation($"New connection added for user {userId}: {Context.ConnectionId}");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred in OnConnectedAsync");
+        }
 
-        //// 檢查是否已存在相同的 connId
-        //var existingConnIdUserId = _context.ConId_UserId
-        //    .FirstOrDefault(c => c.connId == Context.ConnectionId);
-
-        //if (existingConnIdUserId == null)
-        //{
-        //    var userInfo = _context.UserInfos.Find(userId); // 查找 UserInfo 實體
-
-        //    if (userInfo != null)
-        //    {
-        //        var connIdUserId = new ConId_UserId
-        //        {
-        //            Id = userId,
-        //            connId = Context.ConnectionId,
-        //        };
-
-        //        // 將新物件添加到 DbContext 中
-        //        _context.ConId_UserId.Add(connIdUserId);
-        //    }
-        //}
-        //else
-        //{
-        //    // 如果存在，則不需要新增
-        //}
-
-        //// 保存變更到資料庫
-        //await _context.SaveChangesAsync();
-
-        return base.OnConnectedAsync();
+        await base.OnConnectedAsync();
     }
 
-    public async Task SendMessage(string user, string message)
+    public async Task SendMessage(string user, string friend, string message)
     {
-        await Clients.Others.SendAsync("ReceiveMessage", user, message);
+        //��Ʈw������friend��connid
+        IEnumerable<string> conn = new string[] { "123" };
+        var friendConnIds = await _context.ConId_UserId
+            .Where(c => c.UserId.ToString() == friend)
+            .Select(c => c.ConnId)
+            .ToListAsync();
+
+        if (friendConnIds.Any())
+        {
+            await Clients.Clients(friendConnIds).SendAsync("ReceiveMessage", user, message);
+        }
+        else
+        {
+            _logger.LogWarning($"No active connections found for friend ID: {friend}");
+        }
+        await Clients.Clients(conn).SendAsync("ReceiveMessage", user, message);
     }
 
-    private int GetUserIdFromContext()
+ 
+
+
+    public override async Task OnDisconnectedAsync(Exception exception)
     {
-        // 實現這個方法來從連接上下文獲取用戶ID
-        // 這可能涉及讀取聲明、查詢數據庫等
-        throw new NotImplementedException("GetUserIdFromContext 需要被實現");
+        try
+        {
+            var connIdUserId = await _context.ConId_UserId
+                .FirstOrDefaultAsync(c => c.ConnId == Context.ConnectionId);
+
+            if (connIdUserId != null)
+            {
+                _context.ConId_UserId.Remove(connIdUserId);
+                await _context.SaveChangesAsync();
+                _logger.LogInformation($"Connection removed for user {connIdUserId.Id}: {Context.ConnectionId}");
+            }
+
+            await Clients.All.SendAsync("SomeOneOffline", Context.ConnectionId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred in OnDisconnectedAsync");
+        }
+
+        await base.OnDisconnectedAsync(exception);
     }
 }
