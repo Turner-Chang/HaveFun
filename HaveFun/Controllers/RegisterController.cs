@@ -202,7 +202,10 @@ namespace HaveFun.Controllers
                     });
                     return Redirect("/Profile");
                 }
-                return View(user);
+                ViewData["Account"] = user.Account;
+                ViewData["Name"] = user.Name;
+                ViewData["Password"] = "Aa123456789";
+                return View();
             }
             catch (Exception)
             {

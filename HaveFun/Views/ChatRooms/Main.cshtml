@@ -205,7 +205,7 @@
                     this.chatHistory.push(newChat);
 
                     try {
-                        await this.connection.invoke("SendMessage", this.currentUserId.toString(), this.messageText);
+                        await this.connection.invoke("SendMessage", this.currentUserId.toString(), this.activeFriend.toString(), this.messageText);
 
                         const response = await axios.post('/api/ChatRoom/ChatRoomsApi', {
                             User1Id: this.currentUserId,

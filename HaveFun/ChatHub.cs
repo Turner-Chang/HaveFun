@@ -41,9 +41,24 @@ public class ChatHub : Hub
         await base.OnConnectedAsync();
     }
 
-    public async Task SendMessage(string user, string message)
+    public async Task SendMessage(string user, string friend, string message)
     {
-        await Clients.Others.SendAsync("ReceiveMessage", user, message);
+        //connId資料庫撈取該friend的connid
+        IEnumerable<string> conn = new string[] { "123" };
+        var friendConnIds = await _context.ConId_UserId
+            .Where(c => c.UserId.ToString() == friend)
+            .Select(c => c.ConnId)
+            .ToListAsync();
+
+        if (friendConnIds.Any())
+        {
+            await Clients.Clients(friendConnIds).SendAsync("ReceiveMessage", user, message);
+        }
+        else
+        {
+            _logger.LogWarning($"No active connections found for friend ID: {friend}");
+        }
+        await Clients.Clients(conn).SendAsync("ReceiveMessage", user, message);
     }
 
  

@@ -20,9 +20,13 @@ namespace HaveFun.Controllers.APIs
         [HttpGet("{id}")]
         public async Task<IActionResult> GetFriend(int id)
         {
+            var toFriendList = _dbContext.FriendLists.Where(x => x.BeenClicked == id);
+
             var friendList = await _dbContext.FriendLists
-                .Where(x => (x.Clicked == id || x.BeenClicked == id) && x.state == 1)
-                .Select(x => new FriendDTO
+                .Where(x =>
+                    (x.Clicked == id && x.state == 1)
+                )
+                .Select(x => new
                 {
                     Id = x.Clicked == id ? x.User2.Id : x.User1.Id,
                     Name = x.Clicked == id ? x.User2.Name : x.User1.Name,
@@ -33,7 +37,20 @@ namespace HaveFun.Controllers.APIs
                 .Distinct()
                 .ToListAsync();
 
-            return Ok(friendList);
+            var friendDTOList = friendList
+                .GroupBy(f => f.Id)
+                .Select(g => g.First())
+                .Select(f => new FriendDTO
+                {
+                    Id = f.Id,
+                    Name = f.Name,
+                    ProfilePicture = f.ProfilePicture,
+                    IsBlocked = f.IsBlocked,
+                    state = f.state
+                })
+                .ToList();
+
+            return Ok(friendDTOList);
         }
 
         // 取得黑名單
@@ -41,8 +58,8 @@ namespace HaveFun.Controllers.APIs
         public async Task<IActionResult> GetBlacklist(int id)
         {
             var blacklist = await _dbContext.FriendLists
-                .Where(x => (x.Clicked == id || x.BeenClicked == id) && x.state == 3)
-                .Select(x => new FriendDTO
+                .Where(x => x.Clicked == id && x.state == 3)
+                .Select(x => new
                 {
                     Id = x.Clicked == id ? x.User2.Id : x.User1.Id,
                     Name = x.Clicked == id ? x.User2.Name : x.User1.Name,
@@ -53,7 +70,20 @@ namespace HaveFun.Controllers.APIs
                 .Distinct()
                 .ToListAsync();
 
-            return Ok(blacklist);
+            var blacklistDTOList = blacklist
+                .GroupBy(b => b.Id)
+                .Select(g => g.First())
+                .Select(b => new FriendDTO
+                {
+                    Id = b.Id,
+                    Name = b.Name,
+                    ProfilePicture = b.ProfilePicture,
+                    IsBlocked = b.IsBlocked,
+                    state = b.state
+                })
+                .ToList();
+
+            return Ok(blacklistDTOList);
         }
 
         // 封鎖用戶
@@ -62,8 +92,7 @@ namespace HaveFun.Controllers.APIs
         {
             var friendRelation = await _dbContext.FriendLists
                 .FirstOrDefaultAsync(x =>
-                    (x.Clicked == data.userId && x.BeenClicked == data.friendId) ||
-                    (x.Clicked == data.friendId && x.BeenClicked == data.userId));
+                    x.Clicked == data.userId && x.BeenClicked == data.friendId);
 
             if (friendRelation == null)
             {
@@ -83,8 +112,7 @@ namespace HaveFun.Controllers.APIs
         {
             var friendRelation = await _dbContext.FriendLists
                 .FirstOrDefaultAsync(x =>
-                    (x.Clicked == data.userId && x.BeenClicked == data.friendId) ||
-                    (x.Clicked == data.friendId && x.BeenClicked == data.userId));
+                    x.Clicked == data.userId && x.BeenClicked == data.friendId);
 
             if (friendRelation == null)
             {
