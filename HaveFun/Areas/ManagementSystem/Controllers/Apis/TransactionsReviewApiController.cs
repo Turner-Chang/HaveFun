@@ -115,6 +115,12 @@ namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
 
             return NoContent();
         }
+        [HttpGet("Count")]
+        public async Task<int> Count() { 
+        var c= _context.Transactions.Where(t=>t.Status==3).Count();
+            return c;
+        }
+
 
         private bool TransactionExists(int id)
         {
