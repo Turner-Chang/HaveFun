@@ -1,5 +1,6 @@
 ﻿using HaveFun.Common;
 using HaveFun.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,22 @@ namespace HaveFun.Controllers.APIs
 		public HomeController(HaveFunDbContext context)
 		{
 			_context = context;
+		}
+		// 請求登入者有無
+		// GET: api/Home/GetLoginUser
+		[Authorize(AuthenticationSchemes = "Bearer,Cookies")]
+		[HttpGet]
+		public string GetLoginUser()
+		{
+			string loginUserId = Request.Cookies["userId"];
+			if (!string.IsNullOrEmpty(loginUserId) )
+			{
+				return loginUserId;
+			}
+			else
+			{
+				return null;
+			}
 		}
 		//請求現在最多人參加的活動
 		// GET: api/Home/GetPopularActivity
