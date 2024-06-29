@@ -85,10 +85,7 @@
 {
     <script>
         window.currentUserId = @ViewBag.UserId;
-
-        const { createApp } = Vue;
-
-        const app = createApp({
+        const app = Vue.createApp({
             data() {
                 return {
                     friends: [],
@@ -275,8 +272,9 @@
             },
             mounted() {
                 this.fetchFriends();
-                this.setupSignalRConnection();
                 this.fetchAllUserStatuses();
+                this.setupSignalRConnection();
+               
             },
             beforeUnmount() {
                 if (this.connection) {
