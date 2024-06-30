@@ -18,7 +18,7 @@
         <div class="canelAttendBox-overlay">
             <div class="canelAttendBox">
                 <span>確定要退出活動嗎？</span><br><br>
-                <button class="btn btn-danger" @@click="cancelAttendActivity">是</button>
+                <button class="btn btn-danger" @@click="cancelAttendActivity(act)">是</button>
                 <button class="btn btn-outline-secondary" @@click="escCancelAttendBox">否</button>
             </div>
         </div>
@@ -78,7 +78,7 @@
                                     <span class="infoTitle">注意事項：</span><br>
                                     <p class="actContent">{{act.notes}}</p><br><br>
                                     <!-- Host與登入會員不相同才有取消參加活動按鈕 -->
-                                    <button v-if="act.hostId != loginUserId" class="default-btn" id="cancelAttend" @@click="showCancelAttend(act.id)">
+                                    <button v-if="act.hostId != loginUserId" class="default-btn" id="cancelAttend" @@click="showCancelAttend(act)">
                                         取消參加活動
                                     </button>
                                 </div>
@@ -86,7 +86,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="comminupObserver"></div>
+                <div id="commingupObserver"></div>
             </div>
             <div v-else>
                 <p class="empty">目前沒有即將發生的活動</p>
@@ -95,7 +95,7 @@
         <!-- ================> 編輯主辦活動內容 <================== -->
         <div v-if="isActiveTab('host')">
             <div v-if="hostActivities.length > 0">
-                <div v-for="act in filteredWords" class="blog__item">
+                <div v-for="act in hostFilter" class="blog__item">
                     <div class="blog__inner">
                         <div v-if="act.inEdit === false" class="blog__content">
                             <img v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}?rand=${rand}`>
@@ -123,7 +123,7 @@
                                     <p class="actContent">{{act.content}}</p><br>
                                     <span class="infoTitle">注意事項：</span><br>
                                     <p class="actContent">{{act.notes}}</p><br><br>
-                                    <button class="default-btn" @@click="showDeleteAct(act.id)">刪除活動</button>
+                                    <button class="default-btn" @@click="showDeleteAct(act)">刪除活動</button>
                                     <button class="default-btn btnEdit" @@click="intoEditing(act)">修改活動內容</button>
                                 </div>
                             </details>
@@ -272,6 +272,7 @@
                 commingupObserver: {},
                 hostObserver: {},
                 pastObserver: {},
+                isFirstLoad: true,
             }
         },
         watch: {
@@ -380,9 +381,9 @@
                         this.commingupActivities.push(...temp);
                         this.commingupTotalCount = data.totalCount;
                         this.commingupLoadtime++;
-                        console.log('加載了一次即將發生的活動');
+                        //console.log('加載了一次即將發生的活動');
                         if (this.commingupActivities.length >= this.commingupTotalCount) {
-                            console.log("即將舉辦活動觀察者拔除");
+                            //console.log("即將舉辦活動觀察者拔除");
                             this.commingupObserver.unobserve(document.querySelector('#commingObserver'));
                         }
                     })
@@ -402,9 +403,9 @@
                         this.hostActivities.push(...temp);
                         this.hostTotalCount = data.totalCount;
                         this.hostLoadtime++;
-                        console.log('加載了一次主辦的活動');
-                        if(this.hostActivities >= this.hostTotalCount){
-                            console.log("主辦活動觀察者拔除");
+                        //console.log('加載了一次主辦的活動');
+                        if(this.hostActivities.length >= this.hostTotalCount){
+                            //console.log("主辦活動觀察者拔除");
                             this.hostObserver.unobserve(document.querySelector('#hostObserver'));
                         }
                     })
@@ -422,9 +423,9 @@
                         this.pastActivities.push(...temp);
                         this.pastLoadtime++;
                         this.pastTotalCount = data.totalCount;
-                        console.log('加載了一次過去的活動');
+                        //console.log('加載了一次過去的活動');
                         if (this.pastActivities.length >= this.pastTotalCount) {
-                            console.log("過去活動觀察者拔除");
+                            //console.log("過去活動觀察者拔除");
                             this.pastObserver.unobserve(document.querySelector('#pastObserver'));
                         }
                     })
@@ -450,7 +451,7 @@
                         this.commingupObserver.observe(commingupLoadingNew);
                     });
                 }
-                if (type = "host") {
+                if (type == "host") {
                     this.$nextTick(x => {
                         const hostLoadingNew = document.querySelector('#hostObserver');
                         console.log(hostLoadingNew);
@@ -482,13 +483,13 @@
                 $('.participantsBox-overlay').css("display", "none");
             },
             //顯示退出活動視窗
-            showCancelAttend(id) {
+            showCancelAttend(act) {
                 event.preventDefault();
                 $('.canelAttendBox').css("display", "block");
                 $('.canelAttendBox-overlay').css("display", "flex");
-                this.waitingToCancel = id;
+                this.waitingToCancel = act.id;
             },
-            //取消刪除貼文視窗
+            //取消退出活動視窗
             escCancelAttendBox() {
                 event.preventDefault();
                 $('.canelAttendBox').css("display", "none");
@@ -513,7 +514,10 @@
                     .then(response => response.json())
                     .then(data => {
                         console.log(data);
-                        this.getCommingupList(this.loginUserId);
+                        this.commingupLoadtime = 1;
+                        this.commingupActivities = [];
+                        this.getCommingupList();
+                        setTimeout(() => { this.switchType('commingup'); }, 500);
                     })
                     .catch(error => {
                         console.log('fetch cancel attend activity failed!', error)
@@ -522,11 +526,11 @@
                 $('.canelAttendBox-overlay').css("display", "none");
             },
             //顯示刪除活動視窗
-            showDeleteAct(id) {
+            showDeleteAct(act) {
                 event.preventDefault();
                 $('.deleteActBox').css("display", "block");
                 $('.deleteActBox-overlay').css("display", "flex");
-                this.waitingToDelete = id;
+                this.waitingToDelete = act.id;
             },
             //取消顯示刪除活動視窗
             escdeleteActBox() {
@@ -547,14 +551,20 @@
                     .then(response => response.json())
                     .then(data => {
                         console.log(data);
-                        this.getCommingupList(this.loginUserId);
-                        this.getHostList(this.loginUserId);
+                        this.commingupLoadtime = 1;
+                        this.hostLoadtime = 1;
+                        this.commingupActivities = [];
+                        this.hostActivities = [];
+                        this.getCommingupList();
+                        this.getHostList();
+                        setTimeout(() => { this.switchType('host'); }, 500);
                     })
                     .catch(error => {
                         console.log('fetch delete activity failed!', error)
                     });
                 $('.deleteActBox').css("display", "none");
                 $('.deleteActBox-overlay').css("display", "none");
+                this.wannaDeleteIndex = null;
             },
             //進入修改活動畫面
             intoEditing(act) {
@@ -632,9 +642,14 @@
                         this.editActContent = '';
                         this.editNote = '';
                         this.site = '';
-                        this.getCommingupList(this.loginUserId);
-                        this.getHostList(this.loginUserId);
-                        this.rand = ++this.rand
+                        this.rand = ++this.rand;
+                        this.commingupLoadtime = 1;
+                        this.hostLoadtime = 1;
+                        this.commingupActivities = [];
+                        this.hostActivities = [];
+                        this.getCommingupList();
+                        this.getHostList();
+                        setTimeout(() => { this.switchType('host'); }, 500);
                     })
                     .catch(err => {
                         console.log('fetch edit activity failed!', err);
@@ -749,11 +764,11 @@
             if (locationInput !== null) {
                 this.siteAuto();
             }
-            // if (document.querySelector('#commingupObserver') !== null) {
-            //         const commingupLoadingNew = document.querySelector('#commingupObserver');
-            //         console.log(commingupLoadingNew);
-            //         this.commingupObserver.observe(commingupLoadingNew);
-            // }
+
+            if (this.isFirstLoad) {
+                this.switchType('commingup');
+                this.isFirstLoad = false;
+            }
         }
     })
         .mount('#activityPlatform');
