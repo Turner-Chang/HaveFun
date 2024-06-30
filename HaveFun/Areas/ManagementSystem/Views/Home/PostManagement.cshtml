@@ -99,7 +99,7 @@
 						<label class="col-6 text-decoration-underline">
 							被檢舉圖片:
 						</label>
-						<img class="col-12 img-fluid" :src="imgSrc(Post.pictures)" />
+						<img class="col-12 img-fluid" :src="imgSrc" />
 
 					</div>
 					<div>
@@ -144,7 +144,8 @@
 					tableStart: 0,
 					tableEnd: 5,
 					complaint: [],
-					baseAdress: "",			/*"https://localhost:7152" */
+					baseAdress: "",
+					imgSrc: "",
 				}
 			},
 			methods: {
@@ -155,20 +156,13 @@
 						.then(data =>
 							JSON.stringify(data))
 						.then(d => {
-							App.reports = JSON.parse(d);
+							App.reports = JSON.parse(d).reverse();
 
 						})
 						.catch(error => {
 							console.error('發生錯誤:', error);
 							alert("錯誤");
 						});
-				}
-				,
-				imgSrc(src) {
-					if (src == null || src == "null" || src == "")
-						return "/images/NOimg.jpg"
-					else
-						return src.substr(18);
 				}
 				,
 				check(postId, postReviewId) {
@@ -198,6 +192,10 @@
 						.then(d => {
 							App.Post = JSON.parse(d);
 							console.log(App.Post);
+							if (!App.Post.pictures) {
+								this.imgSrc = "/images/NOimg.jpg";
+							}
+							else { this.getpicture(PostId); }
 						}
 						)
 						.catch(error => {
@@ -314,6 +312,12 @@
 			// 	headers: { 'Content-Type': 'application/json' }
 			// })
 			// 			},
+				getpicture(PostId) {
+					this.imgSrc = "/api/Profile/GetPostPicture/" + PostId;
+				
+				},
+
+
 					},
 		mounted: async () => {
 
@@ -324,7 +328,7 @@
 				method: "GET"
 			});
 			var data = await resp.json();
-			App.reports = data;
+			App.reports = data.reverse();
 			//alert(JSON.stringify(data));
 
 			fetch(`${baseAdress}/api/complaint/Getall`, { method: "GET" }).then(r => r.json()).then(d => App.complaint = d);

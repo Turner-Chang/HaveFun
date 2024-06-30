@@ -227,6 +227,22 @@
         background-color: #ffc107;
     }
 
+.unread-badge {
+    background-color: #ff4d4f;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.read-status {
+    font-size: 12px;
+    color: #999;
+    margin-left: 5px;
+}
 .online,
 .offline,
 .me {
