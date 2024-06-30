@@ -135,18 +135,22 @@
 
                         const friends = friendsResponse.data;
                         this.allUserStatuses = statusesResponse.data;
+                        for (id of this.allUserStatuses) {
+                            var f = friends.find(friend => friend.id == id);
+                            f.isOnline = "online";
+                        
+                        }
 
                         this.friends = friends.map(friend => {
-                            const userStatus = this.allUserStatuses.find(status => status.userId === friend.id);
+                            
                             return {
                                 id: friend.id,
                                 name: friend.name,
                                 avatarUrl: friend.profilePicture ?
                                     (friend.profilePicture.startsWith('http') ? friend.profilePicture : `/api/UserInfo/GetPicture/${friend.id}`) :
                                     '/images/NoImgSomeone.png',
-                                isOnline: userStatus ? userStatus.isOnline : false,
-                                status: userStatus ? (userStatus.isOnline ? 'online' : 'offline') : 'offline',
-                                isBlocked: friend.isBlocked
+                                isOnline:  friend.isOnline,
+                                status: friend.status
                             };
                         });
 
@@ -262,23 +266,30 @@
 
                     this.connection.on("SomeOneOnline", (connid) => {
                         console.log(`Someone connected, ID: ${connid}`);
+                        this.setonline(); this.fetchFriends();
                     });
 
                     this.connection.on("SomeOneOffline", (connid) => {
                         console.log(`Someone disconnected, ID: ${connid}`);
+                        this.fetchFriends();
                     });
 
                     this.connection.start().catch(err => console.error(err.toString()));
                 }, 
                 async setonline() {
                     try {
-                        axios.get(`/api/ChatRoom/ChatRoomsApi/OnlineUserId?userId=${this.currentUserId}`).then(response => response.data)
-                        .then(data => {
-                            console.log(data);                            
-                        });
-                    }
-                    catch (error) {
-                        console.error('Failed to update on:', error);
+                        const response = await axios.get(`/api/ChatRoom/ChatRoomsApi/OnlineUserId?userId=${this.currentUserId}`);
+                        if (response.data) {
+                            this.isOnline = response.data;
+                            this.updateFriendsOnlineStatus();
+                        } else {
+                            this.isOnline = [];
+                            this.updateFriendsOnlineStatus();
+                        }
+                    } catch (error) {
+                        console.error('Failed to update status:', error);
+                        this.isOnline = false;
+                        this.updateFriendsOnlineStatus();
                     }
                 } 
                 ,
