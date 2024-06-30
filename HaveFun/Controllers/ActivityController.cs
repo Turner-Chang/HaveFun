@@ -44,6 +44,7 @@ namespace HaveFun.Controllers
 			ViewBag.UserId = _userId;
 			return View();
 		}
+		[Authorize(AuthenticationSchemes = "Bearer,Cookies")]
 
 		public IActionResult Create()
 		{
@@ -61,7 +62,9 @@ namespace HaveFun.Controllers
         //設定上傳檔案限制, 位元組為單位
         [RequestFormLimits(MultipartBodyLengthLimit = 4096000)]
         [RequestSizeLimit(4096000)]
-        public async Task<IActionResult> Create(ActivityViewModel model)
+		[Authorize(AuthenticationSchemes = "Bearer,Cookies")]
+
+		public async Task<IActionResult> Create(ActivityViewModel model)
 		{
             model.Activity.UserId = _userId;
             if (ModelState.IsValid)
@@ -96,6 +99,7 @@ namespace HaveFun.Controllers
                 model.Activity.Picture = br.ReadBytes((int)Request.Form.Files["UploadedPicture"].Length);
             }
         }
+		[Authorize(AuthenticationSchemes = "Bearer,Cookies")]
 
 		[HttpGet("Activity/Detail/{id}")]
 		public async Task<IActionResult> Detail(int? id)
