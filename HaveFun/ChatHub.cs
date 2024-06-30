@@ -33,6 +33,7 @@ public class ChatHub : Hub
                     UserId = userId,
                     ConnId = Context.ConnectionId,
                 });
+                
                 await _context.SaveChangesAsync();
                 _logger.LogInformation($"New connection added for user {userId}: {Context.ConnectionId}");
             }

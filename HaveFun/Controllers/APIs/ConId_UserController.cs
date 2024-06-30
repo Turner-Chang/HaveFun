@@ -58,29 +58,13 @@ namespace HaveFun.Controllers.APIs
             return Ok(conIdUserDTOs);
         }
         #endregion
+ 
 
-        #region filter
-        [HttpGet("Id")]
-        public async Task<ActionResult<IEnumerable<ConId_UserIdDTO>>> filterfriend(int id)
-        {
-            var conIdUsers = await _context.ConId_UserId.ToListAsync();
 
-            if (conIdUsers == null || !conIdUsers.Any())
-            {
-                return new List<ConId_UserIdDTO>();
-            }
-           
-                var friendConnIds = await _context.ConId_UserId
-            .Where(c => c.UserId== id)
-            .Select(c => c.ConnId)
-            .ToListAsync();
+       
 
-            return Ok(friendConnIds);
-        }
-        #endregion
-
-        #region delete
-        [HttpDelete("delete")]
+    #region delete
+    [HttpDelete("delete")]
         public async Task<ActionResult<IEnumerable<ConId_UserIdDTO>>> delete()
         {
             try
