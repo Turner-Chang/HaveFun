@@ -22,6 +22,7 @@ namespace HaveFun.Controllers
         {
             _context = context;
            
+           
         }
 		//
 		[Authorize(AuthenticationSchemes = "Bearer,Cookies")]
