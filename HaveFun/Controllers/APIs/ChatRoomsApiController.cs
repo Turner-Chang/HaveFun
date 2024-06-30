@@ -175,6 +175,27 @@ namespace HaveFun.Controllers.APIs
 
             return chatHistory;
         }
+        [HttpGet("OnlineUserId")]
+        public async Task<IActionResult> GetFriendsByConnId(int userId)
+        {
+            // 從UserIdConnId表中取得所有UserId
+            var userIds = await _context.ConId_UserId
+                .Select(uci => uci.UserId)
+                .ToListAsync();
+
+            if (userIds == null || !userIds.Any())
+            {
+                return NoContent();
+            }
+
+            // 用所有UserId篩選FriendList中的User
+            var friends = await _context.FriendLists
+                .Where(fl => fl.Clicked == userId && userIds.Contains(fl.BeenClicked))
+                .Select(f => f.BeenClicked)
+                .ToListAsync();
+
+            return Ok(friends);
+        }
 
         private bool ChatRoomExists(int id)
         {
