@@ -73,7 +73,7 @@
 							<textarea v-model="material.introduction" placeholder="請開始介紹自己"></textarea>
 							<div class="form-group">
 								<label>大頭貼</label>
-								<input type="file" class="form-control"  @@change="isImage" accept="image/*">
+								<input type="file" class="form-control" v-model="profilePicture" @@change="isImage" accept="image/*">
 								<div class="text-danger">{{ profilePictureError }}</div>
 								<img :src="imagePreview" class="imgPreview img-thumbnail" />
 							</div>
@@ -214,7 +214,7 @@
 					1: '女'
 				},
 				profilePictureError: '',
-				profilePicture: null,
+				profilePicture: '',
 				profilePictureUri: "", /* 圖片URL */
 				imagePreview: "", /* 新增圖片預覽URL */
 
@@ -248,11 +248,7 @@
 				} else if (file.type.startsWith("image/")) {
 					this.imagePreview = URL.createObjectURL(file);
 					this.profilePictureError = '';
-					const reader = new FileReader();
-					reader.onload = (e) => {
-						this.profilePicture = e.target.result;
-					};
-					reader.readAsArrayBuffer(file);
+					this.profilePicture = file;
 				} else {
 					this.profilePictureError = '請傳入圖片檔'
 				}
@@ -290,17 +286,13 @@
 				if (this.material.phoneNumber) {
 					formData.append('PhoneNumber', this.material.phoneNumber);
 				}
-
-				let blob = null;
-				if (this.profilePicture) {	blob = new Blob([this.profilePicture], { type: "image/*" }); }
-
-				formData.append("ProfilePicture", blob);
+				formData.append("ProfilePicture", this.profilePicture);
 
 				axios.post(`/api/UserInfo/SaveData`, formData)
 					.then(response => {
 						console.log(response.data); alert("已儲存"); $("#saveModal").modal("hide");
 						// 更新圖片 URL 來保證即時顯示新圖片
-						this.profilePictureUri = `${baseAddress}/api/UserInfo/GetPicture/${this.material.id}?t=${new Date().getTime()}`;
+						this.profilePictureUri = `/api/UserInfo/GetPicture/${this.material.id}?t=${new Date().getTime()}`;
 						this.profilePicture = null; // 重置圖片
 						this.imagePreview = ""; // 清除圖片預覽
 					})
@@ -314,7 +306,9 @@
 						console.error(error); alert("儲存錯誤.請檢查");
 					});
 			},
-			fetchData() {									/* 呼叫資料 */
+			fetchData() {
+				/* 呼叫資料 */
+
 				axios.get(`/api/UserInfo/GetUserinfos/${@ViewBag.UserId}`)
 					.then(response => {
 						this.material = response.data;
@@ -340,7 +334,9 @@
 			},
 			validatePhoneNumber(phoneNumber) {
 				// 檢查電話號碼是否有效 (假設台灣電話號碼格式)
-				return /^(\+886-)?(\d{2,4}-)?\d{6,8}$/.test(phoneNumber);
+				const phoneNumberRex = /^[\d\+\-\(\) ]+$/;
+				
+				return phoneNumberRex.test(phoneNumber);
 			},
 		},
 		mounted() {

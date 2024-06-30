@@ -140,13 +140,6 @@ namespace HaveFun.Controllers.APIs
 				ModelState.AddModelError(nameof(userInfoDTO.PhoneNumber), "電話號碼格式不正確");
 				return BadRequest(ModelState);
 			}
-			// 檢查電話號碼唯一性
-			var existingUser = await _context.UserInfos.FirstOrDefaultAsync(u => u.PhoneNumber == userInfoDTO.PhoneNumber && u.Id != userInfoDTO.Id);
-			if (existingUser != null)
-			{
-				ModelState.AddModelError(nameof(userInfoDTO.PhoneNumber), "電話號碼已存在");
-				return BadRequest(ModelState);
-			}
 
 			UserInfo? user = await _context.UserInfos.FindAsync(userInfoDTO.Id);
             if (user == null)
@@ -172,18 +165,17 @@ namespace HaveFun.Controllers.APIs
 			if (userInfoDTO.ProfilePicture != null)
             {
                 // 把大頭照丟到wwwtoot的images的headshots資料夾內
-                string imgPath = "../HaveFun/wwwroot/images/headshots";
+                string imgPath = "wwwroot\\images\\headshots";
                 // 檔案名為帳號+檔案名
                 string imgName = user.Account+userInfoDTO.ProfilePicture.FileName; // Use unique name
-                string fullPath = Path.Combine(imgPath, imgName);
+                // string fullPath = Path.Combine(imgPath, imgName);
+                string fullPath = string.Empty;
+                _saveImage.Name = imgName;
+                _saveImage.Path = imgPath;
+                _saveImage.Picture = userInfoDTO.ProfilePicture;
+                _saveImage.Save(out fullPath);
 
-                // Save image to disk
-                using (var stream = new FileStream(fullPath, FileMode.Create))
-                {
-                    await userInfoDTO.ProfilePicture.CopyToAsync(stream);
-                }
-
-                user.ProfilePicture = fullPath; // Save path in the database
+				user.ProfilePicture = fullPath; // Save path in the database
             }
             _context.UserInfos.Update(user);
             await _context.SaveChangesAsync();
