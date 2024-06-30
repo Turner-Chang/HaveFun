@@ -168,7 +168,7 @@
 					if (src == null || src == "null" || src == "")
 						return "/images/NOimg.jpg"
 					else
-						return src.substr(18);
+						return src.slice(src.indexOf('images') - 1);
 				}
 				,
 				check(postId, postReviewId) {
