@@ -1,4 +1,6 @@
-﻿<!-- preloader start here -->
+﻿@using HaveFun.Common
+
+<!-- preloader start here -->
 <div class="preloader">
     <div class="preloader-inner">
         <div class="preloader-icon">
@@ -38,21 +40,28 @@
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="gt1-tab" data-bs-toggle="tab" data-bs-target="#gt1" type="button" role="tab" aria-controls="gt1" aria-selected="true"><i class="fa-solid fa-house"></i> 個人貼文</button>
                         </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="gt2-tab" data-bs-toggle="tab" data-bs-target="#gt2" type="button" role="tab" aria-controls="gt2" aria-selected="false"><i class="fa-solid fa-users"></i> 個人資料 </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="gt3-tab" data-bs-toggle="tab" data-bs-target="#gt3" type="button" role="tab" aria-controls="gt3" aria-selected="false"><i class="fa-solid fa-video"></i> 活動管理 </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="gt4-tab" data-bs-toggle="tab" data-bs-target="#gt4" type="button" role="tab" aria-controls="gt4" aria-selected="false"><i class="fa-solid fa-users"></i> 好友清單 </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="gt5-tab" data-bs-toggle="tab" data-bs-target="#gt5" type="button" role="tab" aria-controls="gt5" aria-selected="false"><i class="fa-solid fa-layer-group"></i> 誰喜歡我 </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="gt6-tab" data-bs-toggle="tab" data-bs-target="#gt6" type="button" role="tab" aria-controls="gt6" aria-selected="false"><i class="fa-solid fa-photo-film"></i> 付款紀錄 </button>
-                        </li>
+                        @{
+                            var pageUserId = @Context.Request.Query["userId"].FirstOrDefault();
+                            if (pageUserId == null || User.GetUserId().ToString() == pageUserId)
+                            {
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="gt2-tab" data-bs-toggle="tab" data-bs-target="#gt2" type="button" role="tab" aria-controls="gt2" aria-selected="false"><i class="fa-solid fa-users"></i> 個人資料 </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="gt3-tab" data-bs-toggle="tab" data-bs-target="#gt3" type="button" role="tab" aria-controls="gt3" aria-selected="false"><i class="fa-solid fa-video"></i> 活動管理 </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="gt4-tab" data-bs-toggle="tab" data-bs-target="#gt4" type="button" role="tab" aria-controls="gt4" aria-selected="false"><i class="fa-solid fa-users"></i> 好友清單 </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="gt5-tab" data-bs-toggle="tab" data-bs-target="#gt5" type="button" role="tab" aria-controls="gt5" aria-selected="false"><i class="fa-solid fa-layer-group"></i> 誰喜歡我 </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="gt6-tab" data-bs-toggle="tab" data-bs-target="#gt6" type="button" role="tab" aria-controls="gt6" aria-selected="false"><i class="fa-solid fa-photo-film"></i> 付款紀錄 </button>
+                                </li>
+                            }                           
+                        }
+                        
                     </ul>
                 </div>
             </div>
@@ -80,7 +89,7 @@
                 </div>
                 <!--個人主頁-左側基本資料-->
                 <div class="col-xl-3 order-xl-0">
-                    <div id="Profile_Left_UserInfo">
+                    <div class="Profile_Left_UserInfo">
                         <div class="group__bottom--center">
                             <div class="story__item style2">
                                 <div class="story__inner">
@@ -90,7 +99,6 @@
                                     <div class="story__content px-0 pb-0">
                                         <h4>
                                             <a :href="`/Profile/Index?userId=${showUserId}`">
-                                                @* <a :href="`/Index?userId=${post.UserId}`"> *@
                                                 {{name}}
                                             </a>
                                         </h4>
@@ -877,7 +885,7 @@
                 this.getUserInforation()
             },
 
-        }).mount('#Profile_Left_UserInfo')
+        }).mount('.Profile_Left_UserInfo')
 
     </script>
 }

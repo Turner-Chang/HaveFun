@@ -58,37 +58,10 @@ namespace HaveFun.Controllers.APIs
             return Ok(conIdUserDTOs);
         }
         #endregion
-
-        #region filter
-        [HttpGet("{id}")]
-        public async Task<ActionResult<IEnumerable<FriendStatus>>> GetFriendStatus(int id)
-        {
-            // Get the friend list
-            var friendList = await _context.FriendLists
-                .Where(f => f.Clicked == id && f.state == 1)
-                .ToListAsync();
-
-            // Get the list of online user IDs
-            var onlineUserIds = await _context.ConId_UserId
-                .Select(c => c.UserId)
-                .Distinct()
-                .ToListAsync();
-
-            // Create friend statuses
-            var friendStatuses = friendList.Select(friend => new FriendStatus
-            {
-                FriendId = friend.BeenClicked,
-                IsOnline = onlineUserIds.Contains(friend.BeenClicked),
-                BeenClicked = friend.BeenClicked,
-                State = friend.state,
-            }).ToList();
-
-            return friendStatuses;
-        }
+ 
 
 
-   
-    #endregion
+       
 
     #region delete
     [HttpDelete("delete")]

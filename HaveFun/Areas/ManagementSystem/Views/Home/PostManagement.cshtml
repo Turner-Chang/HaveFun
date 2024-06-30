@@ -328,7 +328,7 @@
 				method: "GET"
 			});
 			var data = await resp.json();
-			App.reports = data;
+			App.reports = data.reverse();
 			//alert(JSON.stringify(data));
 
 			fetch(`${baseAdress}/api/complaint/Getall`, { method: "GET" }).then(r => r.json()).then(d => App.complaint = d);

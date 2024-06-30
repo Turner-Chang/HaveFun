@@ -577,7 +577,30 @@ namespace HaveFun.Controllers.APIs
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
-    }
+
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> DeleteUserPicture(int id)
+		{
+			try
+			{
+				var userPicture = await _context.UserPictures.FindAsync(id);
+				if (userPicture == null)
+				{
+					return NotFound($"Picture with ID {id} not found.");
+				}
+
+				_context.UserPictures.Remove(userPicture);
+				await _context.SaveChangesAsync();
+
+				return NoContent();
+			}
+			catch (Exception ex)
+			{
+				// Log the exception details here if necessary
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+	}
 
 
 }
