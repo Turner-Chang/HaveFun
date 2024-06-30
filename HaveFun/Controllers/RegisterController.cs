@@ -161,7 +161,11 @@ namespace HaveFun.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    
+                    if (_dbContext.UserInfos.FirstOrDefault(u => u.Account == user.Account) != null)
+                    {
+                        return BadRequest("重複提交");
+                    }
+
                     byte[] salt = _passwordSecure.CreateSalt();
                     UserInfo userInfo = new UserInfo
                     {

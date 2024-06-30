@@ -234,7 +234,7 @@
 			methods: {
 				//取得最熱門活動
 				getMostParticipantsActivity() {
-					fetch(`api/Home/GetPopularActivity`)
+					fetch(`/api/Home/GetPopularActivity`)
 						.then(res => res.json())
 						.then(data => {
 							this.popularAct = data;
@@ -243,7 +243,7 @@
 				},
 				//取得進行中公告
 				getAnnouncement() {
-					fetch(`api/Home/GetAnnouncement`)
+					fetch(`/api/Home/GetAnnouncement`)
 						.then(res => res.json())
 						.then(data => {
 							this.announcement = data;

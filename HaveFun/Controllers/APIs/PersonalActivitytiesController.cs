@@ -4,6 +4,7 @@ using HaveFun.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol.Plugins;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Common;
@@ -21,25 +22,21 @@ namespace HaveFun.Controllers.APIs
             _context = context;
         }
         // 請求即將發生的活動
-        // GET: api/personalActivities/GetCommingupActivities/5
-        [HttpGet("{loginUserId}")]
-        public async Task<JsonResult> GetCommingupActivities(int loginUserId)
+        // GET: api/personalActivities/GetCommingupActivities/5/1
+        [HttpGet("{page}/{pagePerCount}")]
+        public async Task<JsonResult> GetCommingupActivities(int page, int pagePerCount)
         {
-			if (!ModelState.IsValid)
-			{
-				return new JsonResult(new { state = "前端未輸入有效值" });
-			}
+            if (!ModelState.IsValid) return new JsonResult(new { state = "前端未輸入有效值" });
             try
             {
-				var now = DateTime.Now;
 				var commingupActivities = await _context.Activities
-					.Where(activity =>
-					(activity.UserId == loginUserId ||
-					activity.ActivityParticipants.Any(member => member.UserId == loginUserId)) &&
-					activity.ActivityTime > now)
-					.Where(activity => activity.Status == 0)
-					.Include(user => user.ActivityParticipants)
-					.ThenInclude(member => member.User)
+					.AsNoTracking()
+                    .Include(user => user.ActivityParticipants)
+                    .ThenInclude(member => member.User)
+                    .Where(activity => activity.Status == 0 && activity.ActivityTime > DateTime.Now &&
+                    (activity.UserId == User.GetUserId() ||
+					activity.ActivityParticipants.Any(member => member.UserId == User.GetUserId()) 
+					))
 					.OrderBy(activity => activity.ActivityTime)
 					.Select(data => new
 					{
@@ -61,19 +58,19 @@ namespace HaveFun.Controllers.APIs
 							Name = user.User.Name,
 							Id = user.User.Id
 						}).ToList()
-					}).ToListAsync();
+					})
+					.ToListAsync();
                 if(commingupActivities != null)
                 {
-					return new JsonResult(commingupActivities);
+					return new JsonResult(new { 
+						data = commingupActivities.Skip(3 * (page - 1)).Take(pagePerCount),
+						totalCount = commingupActivities.Count,
+                    });
 				}
                 else
                 {
                     return new JsonResult("資料庫無該會員資料");
                 }
-			}
-			catch (DbException ex)
-			{
-				return new JsonResult($"資料庫錯誤：{ex.Message}");
 			}
 			catch (Exception ex)
 			{
@@ -81,22 +78,17 @@ namespace HaveFun.Controllers.APIs
 			}
 		}
         //請求登入會員主辦的活動
-        // GET: api/personalActivities/GetHostActivities/5
-        [HttpGet("{loginUserId}")]
-        public async Task<JsonResult> GetHostActivities(int loginUserId)
+        // GET: api/personalActivities/GetHostActivities/5/1
+        [HttpGet("{page}/{pagePerCount}")]
+        public async Task<JsonResult> GetHostActivities(int page, int pagePerCount)
         {
-			if (!ModelState.IsValid)
-			{
-				return new JsonResult(new { state = "前端未輸入有效值" });
-			}
+			if (!ModelState.IsValid) return new JsonResult(new { state = "前端未輸入有效值" });
             try
             {
-				var now = DateTime.Now;
 				var hostActivities = await _context.Activities
-					.Where(activity => activity.UserId == loginUserId && activity.ActivityTime > now)
-					.Where(activity => activity.Status == 0)
-					.Include(user => user.ActivityParticipants)
-					.ThenInclude(member => member.User)
+                    .Include(user => user.ActivityParticipants)
+                    .ThenInclude(member => member.User)
+                    .Where(activity => activity.Status == 0 && activity.UserId == User.GetUserId() && activity.ActivityTime > DateTime.Now)
 					.OrderBy(activity => activity.ActivityTime)
 					.Select(data => new
 					{
@@ -120,18 +112,12 @@ namespace HaveFun.Controllers.APIs
 							Id = user.User.Id
 						}).ToList()
 					}).ToListAsync();
-				if (hostActivities != null)
-				{
-					return new JsonResult(hostActivities);
-				}
-				else
-				{
-					return new JsonResult("資料庫無該會員資料");
-				}
-			}
-			catch (DbException ex)
-			{
-				return new JsonResult($"資料庫錯誤：{ex.Message}");
+				
+					return new JsonResult(new
+                    {
+                        data = hostActivities.Skip(3 * (page - 1)).Take(pagePerCount),
+                        totalCount = hostActivities.Count
+                    });
 			}
 			catch (Exception ex)
 			{
@@ -139,25 +125,21 @@ namespace HaveFun.Controllers.APIs
 			}
 		}
         // 請求已結束的活動
-        // GET: api/personalActivities/GetPastActivities/5
-        [HttpGet("{loginUserId}")]
-        public async Task<JsonResult> GetPastActivities(int loginUserId)
+        // GET: api/personalActivities/GetPastActivities/5/1
+        [HttpGet("{page}/{pagePerCount}")]
+        public async Task<JsonResult> GetPastActivities(int page, int pagePerCount)
         {
-			if (!ModelState.IsValid)
-			{
-				return new JsonResult(new { state = "前端未輸入有效值" });
-			}
+			if (!ModelState.IsValid) return new JsonResult(new { state = "前端未輸入有效值" });
+
             try
             {
-				var now = DateTime.Now;
 				var pastActivities = await _context.Activities
-					.Where(activity =>
-					(activity.UserId == loginUserId ||
-					activity.ActivityParticipants.Any(member => member.UserId == loginUserId)) &&
-					activity.ActivityTime < now)
-					.Where(activity => activity.Status == 0)
-					.Include(user => user.ActivityParticipants)
-					.ThenInclude(member => member.User)
+					.AsNoTracking()
+                    .Include(x => x.ActivityParticipants)
+                    .ThenInclude(member => member.User)
+                    .Where(act => act.Status == 0 && act.ActivityTime < DateTime.Now &&
+						(act.UserId == User.GetUserId() || 
+							act.ActivityParticipants.Any(member => member.UserId == User.GetUserId())))					
 					.OrderByDescending(activity => activity.ActivityTime)
 					.Select(data => new
 					{
@@ -181,19 +163,13 @@ namespace HaveFun.Controllers.APIs
 							Id = user.User.Id
 						}).ToList()
 					}).ToListAsync();
-				if (pastActivities != null)
+
+                return new JsonResult(new 
 				{
-					return new JsonResult(pastActivities);
-				}
-				else
-				{
-					return new JsonResult("資料庫無該會員資料");
-				}
-			}
-			catch (DbException ex)
-			{
-				return new JsonResult($"資料庫錯誤：{ex.Message}");
-			}
+					data = pastActivities.Skip((page - 1) * pagePerCount).Take(pagePerCount),
+					totalCount = pastActivities.Count,
+                });
+            }
 			catch (Exception ex)
 			{
 				return new JsonResult($"伺服器錯誤：{ex.Message}");
@@ -311,7 +287,7 @@ namespace HaveFun.Controllers.APIs
         public async Task<FileResult> GetPicture(int id)
         {
             string Filename = Path.Combine("wwwroot", "images", "NOimg.jpg");
-            Activity activity = await _context.Activities.FindAsync(id);
+            var activity = await _context.Activities.FindAsync(id);
             byte[] ImageContent = activity.Picture != null? activity.Picture : System.IO.File.ReadAllBytes(Filename);
             return File(ImageContent, "image/jpeg");
         }

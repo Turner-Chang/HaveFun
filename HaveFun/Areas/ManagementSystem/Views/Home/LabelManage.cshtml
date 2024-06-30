@@ -158,7 +158,6 @@
 <script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
 
 <script>
-    const baseAddress = 'https://localhost:7152';
     const app_TagManage = Vue.createApp({
         data() {
             return {
@@ -309,14 +308,14 @@
             }
         },
         mounted() {
-            axios.get(`${baseAddress}/api/labelsManageApi`)
+            axios.get(`/api/labelsManageApi`)
                 .then(response => {
                     this.labels = response.data;
                 })
                 .catch(error => {
                     console.error("加載標籤數據時發生錯誤:", error);
                 });
-            axios.get(`${baseAddress}/api/labelCategoriesManageApi`)
+            axios.get(`/api/labelCategoriesManageApi`)
                 .then(response => {
                     this.categories = response.data;
                 })
