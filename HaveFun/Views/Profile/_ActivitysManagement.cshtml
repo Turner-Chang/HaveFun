@@ -86,14 +86,95 @@
                         </div>
                     </div>
                 </div>
+                <div id="comminupObserver"></div>
             </div>
             <div v-else>
                 <p class="empty">目前沒有即將發生的活動</p>
-            </div>            
+            </div>
         </div>
         <!-- ================> 編輯主辦活動內容 <================== -->
         <div v-if="isActiveTab('host')">
-            tab2
+            <div v-if="hostActivities.length > 0">
+                <div v-for="act in filteredWords" class="blog__item">
+                    <div class="blog__inner">
+                        <div v-if="act.inEdit === false" class="blog__content">
+                            <img v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}?rand=${rand}`>
+                            <h3>{{act.title}}</h3>
+                            <ul class="lab-ul blog__date">
+                                <li><span><i class="fa-solid fa-calendar-days"></i> 活動時間：{{act.activityTime}} </span></li>
+                                <li><span><i class="fa-solid fa-user"></i> 主辦者：{{act.host}}</span> </li>
+                                <li><a href="#" @@click="showParticipantsBox(act)"><span class="attendMember"><i class="fa-solid fa-users"></i> {{act.participant.length}}位參加者</span> </a></li>
+                                <li><span><i class="fa-solid fa-map-location-dot"></i> 活動地點：{{act.location}}</span></li>
+                            </ul>
+                            <details @@toggle="act.expandState = !act.expandState">
+                                <summary>{{act.expandState? '隱藏詳細內容' : '展開詳細內容'}}</summary>
+                                <div>
+                                    <span class="infoTitle">活動類型：</span>
+                                    {{act.type}}<br>
+                                    <span class="infoTitle">活動開始報名時間：</span>
+                                    {{act.registrationTime}}<br>
+                                    <span class="infoTitle">活動報名截止時間：</span>
+                                    {{act.deadlineTime}}<br>
+                                    <span class="infoTitle">活動費用：</span>
+                                    {{act.amount}}元<br>
+                                    <span class="infoTitle">報名人數上限：</span>
+                                    {{act.max}}<br>
+                                    <span class="infoTitle">活動內容：</span><br>
+                                    <p class="actContent">{{act.content}}</p><br>
+                                    <span class="infoTitle">注意事項：</span><br>
+                                    <p class="actContent">{{act.notes}}</p><br><br>
+                                    <button class="default-btn" @@click="showDeleteAct(act.id)">刪除活動</button>
+                                    <button class="default-btn btnEdit" @@click="intoEditing(act)">修改活動內容</button>
+                                </div>
+                            </details>
+                        </div>
+                        <!-- 編輯活動內容 -->
+                        <div v-if="act.inEdit === true" class="blog__content">
+                            <img class="imgPreview" v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}?rand=${rand}`><br>
+                            <input type="file" id="picFile" v-model="EditPic" accept="image/*" @@change="previewPic">
+                            <button v-if="editPic != null" @@click="removeEditPic">移除</button><br>
+                            <span> 活動名稱：</span>
+                            <input :class="['form-control',{'is-invalid':errorStyle.title}]" maxlength="50" v-model="editTitle">
+                            <div class="invalid-feedback">活動標題為必填</div>
+                            <span>活動時間：</span>
+                            <input :class="['form-control',{'is-invalid':errorStyle.activityTime}]" type="datetime-local" v-model="editActivityTime">
+                            <div class="invalid-feedback">請輸入有效時間</div>
+                            <span> 活動地點：</span>
+                            <input id="editLocation" :class="['form-control',{'is-invalid':errorStyle.location}]" maxlength="200" v-model="site">
+                            <div class="invalid-feedback">活動地點為必填</div>
+                            <span>活動類型：</span>
+                            <select :class="['form-control',{'is-invalid':errorStyle.type}]" id="inputState" v-model="editActType">
+                                <option v-for="type in activitiyType" :value="type.id">{{type.typeName}}</option>
+                            </select>
+                            <div class="invalid-feedback">請選擇活動類別</div>
+                            <span>活動開始報名時間：</span>
+                            <input v-if="canRegistrationEdit(act.registrationTime)" :class="['form-control',{'is-invalid':errorStyle.registrationTime}]" type="datetime-local" v-model="editRegistrationTime">
+                            <p v-else>{{act.registrationTime}}</p>
+                            <div class="invalid-feedback">請輸入有效時間</div>
+                            <span>活動報名截止時間：</span>
+                            <input :class="['form-control',{'is-invalid':errorStyle.deadlineTime}]" type="datetime-local" v-model="editDeadlineTime">
+                            <div class="invalid-feedback">請輸入有效時間</div>
+                            <span>活動費用：</span><br>
+                            <input type="number" :class="['form-control',{'is-invalid':errorStyle.amount}]" v-model="editAmount">　元<br>
+                            <div class="invalid-feedback">請輸入有效數字</div>
+                            <span>報名人數上限：</span><br>
+                            <input type="number" :class="['form-control',{'is-invalid':errorStyle.max}]" v-model="editMax"><br>
+                            <div class="invalid-feedback">請輸入有效數字</div>
+                            <span>活動內容：</span><br>
+                            <textarea :class="['form-control',{'is-invalid':errorStyle.content}]" maxlength="1000" v-model="editActContent"></textarea>
+                            <div class="invalid-feedback">活動內容為必填</div>
+                            <span>注意事項：</span><br>
+                            <textarea :class="['form-control',{'is-invalid':errorStyle.note}]" maxlength="1000" v-model="editNote"></textarea>
+                            <div class="invalid-feedback">注意事項為必填</div>
+                            <br><br>
+                            <button class="btn btn-outline-secondary" @@click="cancelToEdit(act)">取消修改</button>&nbsp;
+                            <button type="submit" id="submit" class="default-btn" @@click="editActivity(act)">確定修改</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="hostObserver"></div>
+            </div>
+            <div v-else> <p class="empty">目前沒有主辦活動可以顯示</p></div>
         </div>
         <!-- ================> 已經結束的活動 <================== -->
         <div v-if="isActiveTab('past')">
@@ -128,12 +209,12 @@
                         </div>
                     </div>
                 </div>
+                <div id="pastObserver"></div>
             </div>
             <div v-else>
                 <p class="empty">目前沒有歷史活動可以顯示</p>
             </div>
         </div>
-        <div id="observer"></div>
     </div>
 </div>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDh0olCmLq7Tpu-ktNN0_JYyt9G529C4qA&libraries=geocoding,places"></script>
@@ -181,9 +262,16 @@
                 rand: 1,
                 site: "",
                 autocomplete: null,
+                pagePerCount: 3,
                 commingupLoadtime: 1,
                 hostLoadtime: 1,
                 pastLoadtime: 1,
+                commingupTotalCount: 0,
+                hostTotalCount: 0,
+                pastTotalCount: 0,
+                commingupObserver: {},
+                hostObserver: {},
+                pastObserver: {},
             }
         },
         watch: {
@@ -282,60 +370,63 @@
             //取得登入者即將發生活動
             //mounted先取得3筆 load事件發生再取得3筆資料放進commingupActivities
             getCommingupList() {
-                fetch(`/api/personalActivities/GetCommingupActivities/${this.loginUserId}/${this.commingupLoadtime}`)
+                fetch(`/api/personalActivities/GetCommingupActivities/${this.commingupLoadtime}/${this.pagePerCount}`)
                     .then(res => res.json())
                     .then(data => {
-                        let temp = data.map(activity => ({
+                        let temp = data.data.map(activity => ({
                             ...activity,
                             expandState: false
                         }));
-                        if (this.commingupLoadtime === 1) {
-                            this.commingupActivities = temp;
-                        } else {
-                            this.commingupActivities.push(...temp);
-                        }
+                        this.commingupActivities.push(...temp);
+                        this.commingupTotalCount = data.totalCount;
                         this.commingupLoadtime++;
                         console.log('加載了一次即將發生的活動');
+                        if (this.commingupActivities.length >= this.commingupTotalCount) {
+                            console.log("即將舉辦活動觀察者拔除");
+                            this.commingupObserver.unobserve(document.querySelector('#commingObserver'));
+                        }
                     })
                     .catch(error => { console.log('fetch commingupActivities failed!') });
             },
             //取得登入者主辦活動
             getHostList() {
-                fetch(`/api/personalActivities/GetHostActivities/${this.loginUserId}/${this.hostLoadtime}`)
+                fetch(`/api/personalActivities/GetHostActivities/${this.hostLoadtime}/${this.pagePerCount}`)
                     .then(res => res.json())
                     .then(data => {
 
-                        let temp = data.map(activity => ({
+                        let temp = data.data.map(activity => ({
                             ...activity,
                             expandState: false,
                             inEdit: false
                         }));
-                        if (this.hostLoadtime === 1) {
-                            this.hostActivities = temp;
-                        } else {
-                            this.hostActivities.push(...temp);
-                        }
+                        this.hostActivities.push(...temp);
+                        this.hostTotalCount = data.totalCount;
                         this.hostLoadtime++;
                         console.log('加載了一次主辦的活動');
+                        if(this.hostActivities >= this.hostTotalCount){
+                            console.log("主辦活動觀察者拔除");
+                            this.hostObserver.unobserve(document.querySelector('#hostObserver'));
+                        }
                     })
                     .catch(error => { console.log('fetch hostActivities failed!') });
             },
             //取得已結束活動
             getPastList() {
-                fetch(`/api/personalActivities/GetPastActivities/${this.loginUserId}/${this.pastLoadtime}`)
+                fetch(`/api/personalActivities/GetPastActivities/${this.pastLoadtime}/${this.pagePerCount}`)
                     .then(res => res.json())
                     .then(data => {
-                        let temp = data.map(activity => ({
+                        let temp = data.data.map(activity => ({
                             ...activity,
                             expandState: false
                         }));
-                        if (this.pastLoadtime === 1) {
-                            this.pastActivities = temp;
-                        } else {
-                            this.pastActivities.push(...temp);
-                        }
+                        this.pastActivities.push(...temp);
                         this.pastLoadtime++;
+                        this.pastTotalCount = data.totalCount;
                         console.log('加載了一次過去的活動');
+                        if (this.pastActivities.length >= this.pastTotalCount) {
+                            console.log("過去活動觀察者拔除");
+                            this.pastObserver.unobserve(document.querySelector('#pastObserver'));
+                        }
                     })
                     .catch(error => { console.log('fetch pastActivities failed!') });
             },
@@ -352,7 +443,27 @@
             switchType(type) {
                 this.currentType = type;
                 this.searchWord = '';
-                this.judgeType();
+                if(type == "commingup"){
+                    this.$nextTick(x => {
+                        const commingupLoadingNew = document.querySelector('#commingupObserver');
+                        console.log(commingupLoadingNew);
+                        this.commingupObserver.observe(commingupLoadingNew);
+                    });
+                }
+                if (type = "host") {
+                    this.$nextTick(x => {
+                        const hostLoadingNew = document.querySelector('#hostObserver');
+                        console.log(hostLoadingNew);
+                        this.hostObserver.observe(hostLoadingNew);
+                    })
+                }
+                if (type == "past") {
+                    this.$nextTick(x => {
+                        const pastLoadingNew = document.querySelector('#pastObserver');
+                        console.log(pastLoadingNew);
+                        this.pastObserver.observe(pastLoadngNew);
+                    });
+                }
             },
             buttonText(type, text) {
                 return this.currentType === type ? '● ' + text : text;
@@ -595,68 +706,37 @@
                     // }
                 });
             },
-            //判斷現在活動類型 執行哪一種請求
-            judgeType() {
-                switch (this.currentType) {
-                    case 'commingup':
-                        this.getCommingupList();
-                        this.hostActivities = [];
-                        this.pastActivities = [];
-                        this.hostLoadtime = 1;
-                        this.pastLoadtime = 1;
-                        break;
-                    case 'host':
-                        this.getHostList();
-                        this.commingupActivities = [];
-                        this.pastActivities = [];
-                        this.commingupLoadtime = 1;
-                        this.pastLoadtime = 1;
-                        break;
-                    case 'past':
-                        this.getPastList();
-                        this.commingupActivities = [];
-                        this.hostActivities = [];
-                        this.commingupLoadtime = 1;
-                        this.hostLoadtime = 1;
-                        break;
-                    default:
-                        console.log('Switch Activity Type Error!');
-                        break;
-                }
-            },
-            // loding新資料監看者 好像打在method不能這樣表現@@
-            // observeViewport() {
-            // 	const observer = new IntersectionObserver((entries) => {
-            // 		entries.forEach(entry => {
-            // 			if (entry.isIntersecting) {
-            // 				if (this.currentType === 'commingup') {
-            // 					this.getCommingupList();
-            // 				}
-            // 			} else {
-
-            // 			}
-            // 		});
-            // 	});
-            // },
         },
         mounted() {
             this.getCommingupList();
-            //this.getHostList();
-            //this.getPastList();
+            this.getHostList();
+            this.getPastList();
             this.getActivityTypeList();
-            // this.observeViewport();
-            const observer = new IntersectionObserver((entries) => {
+
+            this.commingupObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        this.judgeType();
-                    } else {
-                        //不知道這裡是不是應該要放卸載觀察者比較妥當?
+                        this.getCommingupList();
                     }
                 })
             });
-            const loadingNew = document.querySelector('#observer');
-            observer.observe(loadingNew);
-            // this.siteAuto();
+
+            this.hostObserver = new IntersectionObserver((enteries) => {
+                enteries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        this.getHostList();
+                    }
+                })
+            });
+
+            this.pastObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        this.getPastList();
+                    }
+                })
+            });
+
         },
         updated() {
             if (this.currentType === 'commingup') {
@@ -669,6 +749,11 @@
             if (locationInput !== null) {
                 this.siteAuto();
             }
+            // if (document.querySelector('#commingupObserver') !== null) {
+            //         const commingupLoadingNew = document.querySelector('#commingupObserver');
+            //         console.log(commingupLoadingNew);
+            //         this.commingupObserver.observe(commingupLoadingNew);
+            // }
         }
     })
         .mount('#activityPlatform');
