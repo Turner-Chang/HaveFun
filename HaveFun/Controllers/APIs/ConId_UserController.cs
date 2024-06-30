@@ -46,9 +46,8 @@ namespace HaveFun.Controllers.APIs
 
             if (conIdUsers == null || !conIdUsers.Any())
             {
-                return NotFound("No records found in ConId_UserId table");
-            }
-
+                return new List<ConId_UserIdDTO>();
+            }  
             var conIdUserDTOs = conIdUsers.Select(u => new ConId_UserIdDTO
             {
                 Id = u.Id,
@@ -59,8 +58,40 @@ namespace HaveFun.Controllers.APIs
             return Ok(conIdUserDTOs);
         }
         #endregion
-        #region delete
-        [HttpDelete("delete")]
+
+        #region filter
+        [HttpGet("{id}")]
+        public async Task<ActionResult<IEnumerable<FriendStatus>>> GetFriendStatus(int id)
+        {
+            // Get the friend list
+            var friendList = await _context.FriendLists
+                .Where(f => f.Clicked == id && f.state == 1)
+                .ToListAsync();
+
+            // Get the list of online user IDs
+            var onlineUserIds = await _context.ConId_UserId
+                .Select(c => c.UserId)
+                .Distinct()
+                .ToListAsync();
+
+            // Create friend statuses
+            var friendStatuses = friendList.Select(friend => new FriendStatus
+            {
+                FriendId = friend.BeenClicked,
+                IsOnline = onlineUserIds.Contains(friend.BeenClicked),
+                BeenClicked = friend.BeenClicked,
+                State = friend.state,
+            }).ToList();
+
+            return friendStatuses;
+        }
+
+
+   
+    #endregion
+
+    #region delete
+    [HttpDelete("delete")]
         public async Task<ActionResult<IEnumerable<ConId_UserIdDTO>>> delete()
         {
             try
