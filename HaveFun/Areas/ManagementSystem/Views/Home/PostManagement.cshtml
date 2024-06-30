@@ -32,7 +32,7 @@
 						<td class="col-md-0">{{this.TimeSplit(r.reportTime)}}</td>
 						<td>
 							<button :id="r.postReviewId" class="btn " :class="btnColor(r.processingStstus)"
-									@@click="check(r.postId,r.postReviewId),getpicture(r.postId)">
+									@@click="check(r.postId,r.postReviewId)">
 								{{this.ReviewStatusToString(r.processingStstus)}}
 							</button>
 						</td>
@@ -156,7 +156,7 @@
 						.then(data =>
 							JSON.stringify(data))
 						.then(d => {
-							App.reports = JSON.parse(d);
+							App.reports = JSON.parse(d).reverse();
 
 						})
 						.catch(error => {
@@ -192,6 +192,10 @@
 						.then(d => {
 							App.Post = JSON.parse(d);
 							console.log(App.Post);
+							if (!App.Post.pictures) {
+								this.imgSrc = "/images/NOimg.jpg";
+							}
+							else { this.getpicture(PostId); }
 						}
 						)
 						.catch(error => {

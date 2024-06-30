@@ -33,7 +33,7 @@
 					<td>
 						<button class="btn " 
 							:class="btnColor(r.status)"
-								@@click="UserCheck(r.beReportedUserId,r.id),userImg(r.beReportedUserId)">
+								@@click="UserCheck(r.beReportedUserId,r.id)">
 							{{this.ReviewStatusToString(r.status)}}
 						</button>
 					</td>
@@ -200,7 +200,11 @@
 				},
 				getUserInfo(userid) {
 					axios.get(`${this.baseAdress}/api/UserInfo/GetById/${userid}`
-					).then(r => r.data).then(d => App.userInfos = d);
+					).then(r => r.data).then(d => App.userInfos = d)
+						.then(d => {
+							if (d.profilePicture == "" || d.profilePicture ==null) { this.userImgSrc = "/images/NOimg.jpg"; }
+							else { this.userImg(userid);  }
+						});
 				},
 				showModal() {
 					$("#UserModal").modal("show");
@@ -209,7 +213,7 @@
 					$("#UserModal").modal("hide");
 				},
 				getAllReview() {
-					axios.get(`${this.baseAdress}/api/userReview/GetAll`).then(r => r.data).then(r => App.reviews = r);
+					axios.get(`${this.baseAdress}/api/userReview/GetAll`).then(r => r.data).then(r => App.reviews = r.reverse());
 				},
 				changeUserStatus(UserId, state) {
 

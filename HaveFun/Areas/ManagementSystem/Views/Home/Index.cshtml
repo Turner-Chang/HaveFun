@@ -6,11 +6,14 @@
 		}
 
 		.NoReviewFontColor {
-			color: yellow;
+			color: wheat;
 		}
 
 		.HaveReviewFontColor {
 			color: darkblue;
+		}
+		.lotsOfReviewFontColor{
+			color:aqua;
 		}
 	</style>
 }
@@ -125,12 +128,14 @@
 				},
 				methods: {
 					CardColor(count) {
-						if (count != 0) { return "bg-warning"; }
-						else { return "bg-primary" }
+						if (count == 0) { return "bg-success"; }
+						else if (count < 5) { return "bg-warning"; }
+						else { return "bg-danger"; }
 					},
 					FontColor(count) {
 						if (count == 0) { return "NoReviewFontColor"; }
-						else { return "HaveReviewFontColor" }
+						else if (count < 5) { return "HaveReviewFontColor"; }
+						else { return "lotsOfReviewFontColor"; }
 					},
 
 					DrawGenderChart() {
