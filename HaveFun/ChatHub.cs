@@ -23,28 +23,35 @@ public class ChatHub : Hub
         try
         {
             await Clients.All.SendAsync("SomeOneOnline", Context.ConnectionId);
-            string userid = Context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name).Value;
-            int userId = Convert.ToInt32(userid);
-            _context.ConId_UserId.Add(new ConId_UserId
+            if( Context.User.Claims!=null)
             {
-                UserId = userId,
-                ConnId = Context.ConnectionId,
-            });
-            await _context.SaveChangesAsync();
-            _logger.LogInformation($"New connection added for user {userId}: {Context.ConnectionId}");
-        }
+                string userid = Context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name).Value;
+
+                int userId = Convert.ToInt32(userid);
+                _context.ConId_UserId.Add(new ConId_UserId
+                {
+                    UserId = userId,
+                    ConnId = Context.ConnectionId,
+                });
+                
+                await _context.SaveChangesAsync();
+                _logger.LogInformation($"New connection added for user {userId}: {Context.ConnectionId}");
+            }
+            }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error occurred in OnConnectedAsync");
         }
 
         await base.OnConnectedAsync();
+
     }
 
     public async Task SendMessage(string user, string friend, string message)
     {
-        //資料庫撈取該friend的connid
-        IEnumerable<string> conn = new string[] { "123" };
+        //先將訊息存入資料庫
+
+        //connId資料庫撈取該friend的connid
         var friendConnIds = await _context.ConId_UserId
             .Where(c => c.UserId.ToString() == friend)
             .Select(c => c.ConnId)
@@ -58,7 +65,6 @@ public class ChatHub : Hub
         {
             _logger.LogWarning($"No active connections found for friend ID: {friend}");
         }
-        await Clients.Clients(conn).SendAsync("ReceiveMessage", user, message);
     }
 
  

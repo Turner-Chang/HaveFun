@@ -19,11 +19,14 @@ namespace HaveFun.Controllers.APIs
     public class ProfileApiController : ControllerBase
     {
         HaveFunDbContext _context;
+        private readonly IHostEnvironment hostEnvironment;
+
         //private readonly PostServices postServices;
 
-        public ProfileApiController(HaveFunDbContext context)
+        public ProfileApiController(HaveFunDbContext context,IHostEnvironment hostEnvironment)
         {
             _context = context;
+            this.hostEnvironment = hostEnvironment;
         }
 
         //public ProfileApiController(HaveFunDbContext context, PostServices postServices)
@@ -186,8 +189,8 @@ namespace HaveFun.Controllers.APIs
             if (queryFriend)
             {
                 // 只搜尋朋友的貼文
-                //query = query.Where(p => FriendPostList.Contains(p.UserId.ToString()) && p.Status == 0);
-                query = query.Where(p => p.UserId.ToString() == "16" && p.Status == 0);
+                query = query.Where(p => FriendPostList.Contains(p.UserId.ToString()) && p.Status == 0);
+                //query = query.Where(p => p.UserId.ToString() == "16" && p.Status == 0);
             }
             else
             {
@@ -339,11 +342,10 @@ namespace HaveFun.Controllers.APIs
             if (postDto.Pictures != null)
             {
                 string Current = DateTime.Now.ToString("yyyyMMddHHmmss");
-                string imgPath = "../HaveFun/wwwroot/images/postImgs";
+                string imgPath = "wwwroot\\images\\postImgs";
                 string fileName = $"PostPic_{postDto.UserId}_{Current}_{postDto.Pictures.FileName}";
 
-
-                var savePath = Path.Combine(Directory.GetCurrentDirectory(), imgPath, fileName);
+                var savePath = System.IO.Path.Combine(hostEnvironment.ContentRootPath, imgPath, fileName);
 
                 using (var stream = new FileStream(savePath, FileMode.Create))
                 {
