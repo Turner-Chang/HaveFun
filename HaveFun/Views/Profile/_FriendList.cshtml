@@ -99,6 +99,7 @@
 </style>
 <script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
 <script>
     window.currentUserId = @ViewBag.UserId;
@@ -144,6 +145,12 @@
             blockUser(friendId) {
                 axios.post(`/api/FriendApi/BlockUser`, { userId: this.data.userId, friendId: friendId })
                     .then(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '成功封鎖用戶',
+                            showConfirmButton: false,
+                            timer: 1000
+                        });
                         this.fetchFriends();
                         this.fetchBlacklist();
                     })
@@ -154,6 +161,12 @@
             unblockUser(friendId) {
                 axios.post(`/api/FriendApi/UnblockUser`, { userId: this.data.userId, friendId: friendId })
                     .then(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '成功解鎖用戶',
+                            showConfirmButton: false,
+                            timer: 1000
+                        });
                         this.fetchFriends();
                         this.fetchBlacklist();
                     })
@@ -163,6 +176,5 @@
             }
         }
     });
-
     app.mount('#app');
 </script>
