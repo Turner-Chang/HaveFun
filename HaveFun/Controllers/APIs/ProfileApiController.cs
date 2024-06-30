@@ -23,7 +23,7 @@ namespace HaveFun.Controllers.APIs
 
         //private readonly PostServices postServices;
 
-        public ProfileApiController(HaveFunDbContext context,IHostEnvironment hostEnvironment)
+        public ProfileApiController(HaveFunDbContext context, IHostEnvironment hostEnvironment)
         {
             _context = context;
             this.hostEnvironment = hostEnvironment;
@@ -47,7 +47,7 @@ namespace HaveFun.Controllers.APIs
             {
                 Id = u.Id,
                 Name = u.Name,
-                ProfilePicture = string.IsNullOrEmpty(u.ProfilePicture) ? "" : CreatePictureUrl("GetPicture", "Profile", new { id = u.Id }),
+                ProfilePicture = CreatePictureUrl("GetPicture", "Profile", new { id = u.Id }),
             });
 
             return userInfoReturn;
@@ -79,7 +79,7 @@ namespace HaveFun.Controllers.APIs
                     Name = item.Name,
                     Age = CalculateAge(item.BirthDay),
                     Gender = item.Gender == 1 ? "male" : "female",
-                    ProfilePicture = string.IsNullOrEmpty(item.ProfilePicture) ? "" : CreatePictureUrl("GetPicture", "Profile", new { id = item.Id })
+                    ProfilePicture = CreatePictureUrl("GetPicture", "Profile", new { id = item.Id })
                 });
             }
 
@@ -131,8 +131,17 @@ namespace HaveFun.Controllers.APIs
         [HttpGet("{id}")]
         public async Task<FileResult> GetPicture([FromRoute] int id)
         {
+            string path = "";
             UserInfo? user = await _context.UserInfos.FindAsync(id);
-            string path = user.ProfilePicture;
+            if (string.IsNullOrEmpty(user.ProfilePicture))
+            {
+                path = "wwwroot\\images\\headshots\\NoHeadphoto.png";
+            }
+            else
+            {
+                path = user.ProfilePicture;
+            }
+
             byte[] ImageContent = System.IO.File.ReadAllBytes(path);
             return File(ImageContent, "image/*");
         }
@@ -163,11 +172,12 @@ namespace HaveFun.Controllers.APIs
 
             //return result;
             List<string> FriendPostList = new List<string>();
+            List<string> FriendBlackList = new List<string>();
             if (userId == loginId)
             {
                 // 取出登入者FriendList
                 var friendList = await _context.FriendLists
-                    .Where(f => f.Clicked.ToString() == userId && f.state == 1)
+                    .Where(f => f.Clicked.ToString() == loginId && f.state == 1)
                     .ToListAsync();
 
                 foreach (var friend in friendList)
@@ -176,6 +186,26 @@ namespace HaveFun.Controllers.APIs
                     {
                         FriendPostList.Add(friend.BeenClicked.ToString());
                     }
+                }
+            }
+            else
+            {
+                // 取出登入者FriendList-被封鎖名單
+                var friendBlackList = await _context.FriendLists
+                    .Where(f => f.BeenClicked.ToString() == loginId && f.state == 3)
+                    .ToListAsync();
+
+                foreach (var friend in friendBlackList)
+                {
+                    if (friend != null && friend.Clicked.ToString() != null)
+                    {
+                        FriendBlackList.Add(friend.Clicked.ToString());
+                    }
+                }
+
+                if (FriendBlackList.Contains(userId))
+                {
+                    return [];
                 }
             }
 
@@ -245,7 +275,7 @@ namespace HaveFun.Controllers.APIs
                 Id = p.Id,
                 UserId = p.UserId,
                 UserName = p.UserName,
-                UserPicture = string.IsNullOrEmpty(p.UserPicture) ? "" : CreatePictureUrl("GetPicture", "Profile", new { id = p.UserId }),
+                UserPicture =  CreatePictureUrl("GetPicture", "Profile", new { id = p.UserId }),
                 Contents = p.Contents,
                 Time = p.Time,
                 PicturePath = string.IsNullOrEmpty(p.Pictures) ? "" : CreatePictureUrl("GetPostPicture", "Profile", new { id = p.Id }),
@@ -263,7 +293,7 @@ namespace HaveFun.Controllers.APIs
                     Id = c.Id,
                     UserId = c.UserId,
                     UserName = c.UserName,
-                    UserPicture = string.IsNullOrEmpty(c.UserPicture) ? "" : CreatePictureUrl("GetPicture", "Profile", new { id = c.UserId }),
+                    UserPicture = CreatePictureUrl("GetPicture", "Profile", new { id = c.UserId }),
                     PostId = c.PostId,
                     ParentCommentId = c.ParentCommentId,
                     Contents = c.Contents,
@@ -273,7 +303,7 @@ namespace HaveFun.Controllers.APIs
                         Id = nc.Id,
                         UserId = nc.UserId,
                         UserName = nc.UserName,
-                        UserPicture = string.IsNullOrEmpty(nc.UserPicture) ? "" : CreatePictureUrl("GetPicture", "Profile", new { id = nc.UserId }),
+                        UserPicture = CreatePictureUrl("GetPicture", "Profile", new { id = nc.UserId }),
                         PostId = nc.PostId,
                         ParentCommentId = nc.ParentCommentId,
                         Contents = nc.Contents,
@@ -362,7 +392,7 @@ namespace HaveFun.Controllers.APIs
 
             postDto.Id = post.Id;
             postDto.UserName = userInfo.Name;
-            postDto.UserPicture = string.IsNullOrEmpty(userInfo.ProfilePicture) ? "" : CreatePictureUrl("GetPicture", "Profile", new { id = userInfo.Id });
+            postDto.UserPicture = CreatePictureUrl("GetPicture", "Profile", new { id = userInfo.Id });
             postDto.Time = post.Time.ToString("yyyy-MM-dd HH:mm:ss");
             postDto.PicturePath = string.IsNullOrEmpty(picturePath) ? "" : CreatePictureUrl("GetPostPicture", "Profile", new { id = post.Id });
 
@@ -411,7 +441,7 @@ namespace HaveFun.Controllers.APIs
 
             commentDto.Id = comment.Id;
             commentDto.UserName = userInfo.Name;
-            commentDto.UserPicture = string.IsNullOrEmpty(userInfo.ProfilePicture) ? "" : CreatePictureUrl("GetPicture", "Profile", new { id = userInfo.Id });
+            commentDto.UserPicture =  CreatePictureUrl("GetPicture", "Profile", new { id = userInfo.Id });
             commentDto.Time = comment.Time.ToString("yyyy-MM-dd HH:mm:ss");
 
             return CreatedAtAction(nameof(AddComment), new { id = comment.Id }, commentDto);
