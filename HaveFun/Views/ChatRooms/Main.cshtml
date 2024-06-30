@@ -135,18 +135,22 @@
 
                         const friends = friendsResponse.data;
                         this.allUserStatuses = statusesResponse.data;
+                        for (id of this.allUserStatuses) {
+                            var f = friends.find(friend => friend.id == id);
+                            f.isOnline = "online";
+                        
+                        }
 
                         this.friends = friends.map(friend => {
-                            const userStatus = this.allUserStatuses.find(status => status.userId === friend.id);
+                            
                             return {
                                 id: friend.id,
                                 name: friend.name,
                                 avatarUrl: friend.profilePicture ?
                                     (friend.profilePicture.startsWith('http') ? friend.profilePicture : `/api/UserInfo/GetPicture/${friend.id}`) :
                                     '/images/NoImgSomeone.png',
-                                isOnline: userStatus ? userStatus.isOnline : false,
-                                status: userStatus ? (userStatus.isOnline ? 'online' : 'offline') : 'offline',
-                                isBlocked: friend.isBlocked
+                                isOnline:  friend.isOnline,
+                                status: friend.status
                             };
                         });
 
