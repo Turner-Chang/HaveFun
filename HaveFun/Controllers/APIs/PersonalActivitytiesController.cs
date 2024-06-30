@@ -296,10 +296,24 @@ namespace HaveFun.Controllers.APIs
 		[HttpGet("{id}")]
         public async Task<FileResult> GetUserProfile(int id)
         {
+            string Filename = Path.Combine("wwwroot", "images", "NoImgSomeone.png");
             var user = await _context.UserInfos.FindAsync(id);
-            string profilePath = user.ProfilePicture;
-            byte[] ImageContent = System.IO.File.ReadAllBytes(profilePath);
-            return File(ImageContent, "image/jpge");
-		}
+            if(string.IsNullOrEmpty(user.ProfilePicture))
+            {
+                byte[] NoProfilePicture = System.IO.File.ReadAllBytes(Filename);
+                return File(NoProfilePicture, "image/jpge");
+            }
+            try
+            {
+                string profilePath = user.ProfilePicture;
+                byte[] ImageContent = System.IO.File.ReadAllBytes(profilePath);
+                return File(ImageContent, "image/jpge");
+            }
+            catch(Exception)
+            {
+                byte[] NoProfilePicture = System.IO.File.ReadAllBytes(Filename);
+                return File(NoProfilePicture, "image/jpge");
+            }
+        }
     }
 }
