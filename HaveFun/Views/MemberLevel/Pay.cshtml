@@ -1,0 +1,22 @@
+﻿@model HaveFun.DTOs.SpgatewayInputDTO
+@{
+    Layout = null;
+}
+
+
+<html>
+
+<body onload="autoSubmit()">
+    <form action="@Model.AuthUrl" method="post">
+        <input type="hidden" asp-for="MerchantID" value="@Model.MerchantID" />
+        <input type="hidden" asp-for="TradeInfo" value="@Model.TradeInfo" />
+        <input type="hidden" asp-for="TradeSha" value="@Model.TradeSha" />
+        <input type="hidden" asp-for="Version" value="@Model.Version" />
+    </form>
+</body>
+<script>
+    const autoSubmit = function(){
+        document.querySelector('form').submit();
+    }
+</script>
+</html>

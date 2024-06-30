@@ -1,4 +1,9 @@
-﻿<div id="app_RefundReview">
+﻿<div id="app_RefundReview" >
+    <div style="text-align:center;">
+        <button class="btn btn-success " @@click="changeBtn">審核/歷史切換</button>
+    </div >
+    <template v-if="btnBoolean">
+   
     <h1>退款審核</h1>
     <div v-if="refundRequests.length === 0">
         <p>沒有需要審核的退款請求。</p>
@@ -17,7 +22,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="request in refundRequests" :key="request.id">
+                    <tr v-for="request in refundRequests.slice(RefundtableStart,RefundtableEnd)" :key="request.id">
                     <td>{{ request.id }}</td>
                     <td>{{ request.userId }}</td>
                     <td>{{ formatDate(request.date) }}</td>
@@ -32,6 +37,48 @@
             </tbody>
         </table>
     </div>
+        <div class="text-center">
+            <button class="btn btn-secondary m-3" @@click="RefundUpperFive()">上五筆</button>
+            <button class="btn btn-secondary m-3" @@click="RefundLowerFive()">下五筆</button>
+        </div>
+       
+    </template>
+    <template v-else>
+       
+    
+    
+    <h1>交易歷史</h1>
+    <div class="row">
+        <table class="table-secondary">
+            <thead class="table-secondary">
+                <tr>
+                    <th>ID</th>
+                    <th>用戶ID</th>
+                    <th>購買日期</th>
+                    <th>購買金額</th>
+                    <th>購買品項</th>
+                    <th>付款方式</th>
+                    <th>狀態</th>
+                </tr>
+            </thead>
+                <tbody v-for="r of Allrecords.slice(HistorytableStart,HistorytableEnd)">
+                <tr>
+                    <td>{{r.id}}</td>
+                    <td>{{r.userId}}</td>
+                    <td>{{formatDate(r.date)}}</td>
+                    <td>{{formatCurrency(r.amount)}}</td>
+                    <td>{{getProductDisplayName(r.product)}}</td>
+                    <td>{{getPaymentMethod(r.method)}}</td>
+                    <td>{{formatStatus(r.status)}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+        <div class="text-center">
+            <button class="btn btn-secondary m-3" @@click="HistoryUpperFive()">上五筆</button>
+            <button class="btn btn-secondary m-3" @@click="HistoryLowerFive()">下五筆</button>
+        </div>
+    </template>
 </div>
 
 <script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
@@ -74,16 +121,26 @@
         }
 </style>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script>
     
     const app_RefundReview = Vue.createApp({
         data() {
             return {
-                refundRequests: [] // 存儲退款請求
+                refundRequests: [], // 存儲退款請求
+                Allrecords:[],
+                btnBoolean:true,
+                RefundtableStart:0,
+                RefundtableEnd:5,
+                HistorytableStart: 0,
+                HistorytableEnd: 5,
             };
         },
         methods: {
+            changeBtn() {
+                this.btnBoolean = !this.btnBoolean;
+            },
             fetchRefundRequests() {
                 // 請求後端 API 獲取 Status 為 3 的退款請求
                 fetch(`/api/TransactionsReviewApi?status=3`)
@@ -136,6 +193,7 @@
                             if (response.ok) {
                                 alert('退款已核准！');
                                 this.fetchRefundRequests(); // 更新退款請求列表
+                                this.getAllrecords();
                             } else {
                                 alert('退款核准失敗！');
                             }
@@ -160,6 +218,7 @@
                             if (response.ok) {
                                 alert('退款請求已退回！');
                                 this.fetchRefundRequests(); // 更新退款請求列表
+                                this.getAllrecords();
                             } else {
                                 alert('退款退回失敗！');
                             }
@@ -169,10 +228,49 @@
                             alert('退款退回失敗！');
                         });
                 }
-            }
+            },
+            getAllrecords() {
+                axios.get(`/api/TransactionsReviewApi/All`)
+                    .then(res => this.Allrecords=res.data)
+            },
+            formatStatus(status) { 
+                if (status == 0) { return "成功"; }
+                else if (status == 1) { return "失敗"; }
+                else if (status == 2) { return "等待"; }
+                else if (status == 3) { return "審核中"; }
+                 else { return "以退款"; }
+            
+            },
+
+            RefundUpperFive() {
+                if (this.RefundtableStart > 0) {
+                    this.RefundtableStart -= 5;
+                    this.RefundtableEnd -= 5;
+                }
+            },
+            RefundLowerFive() {
+                if (this.RefundtableEnd < this.refundRequests.length) {
+                    this.RefundtableStart += 5;
+                    this.RefundtableEnd += 5;
+                }
+            },
+
+            HistoryUpperFive() {
+                if (this.HistorytableStart > 0) {
+                    this.HistorytableStart -= 5;
+                    this.HistorytableEnd -= 5;
+                }
+            },
+            HistoryLowerFive() {
+                if (this.HistorytableEnd < this.Allrecords.length) {
+                    this.HistorytableStart += 5;
+                    this.HistorytableEnd += 5;
+                }
+            },
         },
         mounted() {
             this.fetchRefundRequests(); // 在 mounted 階段加載退款請求
+            this.getAllrecords();
         }
     }).mount("#app_RefundReview");
 </script>
