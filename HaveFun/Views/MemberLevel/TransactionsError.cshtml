@@ -1,0 +1,18 @@
+﻿@{
+    Layout = "_Layout";
+}
+<div>
+    <h1>交易失敗</h1>
+    <p>很抱歉，您的交易未能成功處理。</p>
+    <p>5秒後將自動返回購物車頁面。</p>
+    <p>如果頁面沒有自動轉跳，請點擊下方按鈕手動返回購物車頁面。</p>
+    <a class="btn btn-primary" asp-controller="MemberLevel" asp-action="Index">返回會員等級頁面</a>
+</div>
+
+@section Scripts {
+    <script>
+        setTimeout(() => {
+            window.location.href = '/MemberLevel/Index';
+        }, 5000);
+    </script>
+}

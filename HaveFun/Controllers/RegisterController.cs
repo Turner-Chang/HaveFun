@@ -161,30 +161,7 @@ namespace HaveFun.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    string fullPath = string.Empty;
-                    if (user.ProfilePicture != null)
-                    {
-                        // 把大頭照丟到wwwtoot的images的headshots資料夾內
-                        string imgPath = "../HaveFun/wwwroot/images/headshots";
-
-                        // 檔案名為帳號+檔案名
-                        string imgName = user.Account + user.ProfilePicture.FileName;
-
-                        _saveImage.Path = imgPath;
-                        _saveImage.Name = imgName;
-                        _saveImage.Picture = user.ProfilePicture;
-                        bool isSave = _saveImage.Save(out fullPath);
-                        if (isSave == false)
-                        {
-                            return new JsonResult(
-                                new
-                                {
-                                    success = false,
-                                    profilePictureError = "圖片存取失敗"
-                                }
-                            );
-                        }
-                    }
+                    
                     byte[] salt = _passwordSecure.CreateSalt();
                     UserInfo userInfo = new UserInfo
                     {
@@ -195,7 +172,7 @@ namespace HaveFun.Controllers
                         PhoneNumber = user.PhoneNumber,
                         Gender = (int)user.Gender,
                         BirthDay = (DateTime)user.BirthDay,
-                        ProfilePicture = fullPath,
+                        ProfilePicture = String.Empty,
                         PasswordSalt = salt
                     };
                     _dbContext.UserInfos.Add(userInfo);
@@ -225,7 +202,10 @@ namespace HaveFun.Controllers
                     });
                     return Redirect("/Profile");
                 }
-                return View(user);
+                ViewData["Account"] = user.Account;
+                ViewData["Name"] = user.Name;
+                ViewData["Password"] = "Aa123456789";
+                return View();
             }
             catch (Exception)
             {
