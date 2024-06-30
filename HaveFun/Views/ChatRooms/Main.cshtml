@@ -96,7 +96,8 @@
                     messageText: '',
                     currentUserId: window.currentUserId,
                     connection: null,
-                    allUserStatuses: []
+                    allUserStatuses: [],
+                    isOnline: [],
                 };
             },
             computed: {
@@ -105,8 +106,8 @@
                         friend.name.toLowerCase().includes(this.searchQuery.toLowerCase())
                     );
                 },
-                 sortedChatHistory() {
-                        return [...this.chatHistory].sort((a, b) => new Date(a.createTime) - new Date(b.createTime));
+                sortedChatHistory() {
+                    return [...this.chatHistory].sort((a, b) => new Date(a.createTime) - new Date(b.createTime));
                 }
             },
             methods: {
@@ -129,7 +130,7 @@
                     try {
                         const [friendsResponse, statusesResponse] = await Promise.all([
                             axios.get(`/api/FriendApi/GetFriend/${this.currentUserId}`),
-                            axios.get('/api/ConId_User/GetAll')
+                            axios.get(`/api/ChatRoom/ChatRoomsApi/OnlineUserId?userId=${this.currentUserId}`)
                         ]);
 
                         const friends = friendsResponse.data;
@@ -242,21 +243,21 @@
                         this.updateFriendStatus(userId, false);
                     });
 
-                        this.connection.on("ReceiveMessage", (user, message) => {
-                            if (user != this.currentUserId) {
-                                const chat = {
-                                    id: Date.now(),
-                                    senderId: user,
-                                    senderAvatar: `/api/UserInfo/GetPicture/${user}`,
-                                    messageText: message,
-                                    createTime: new Date().toISOString()
-                                };
-                                this.chatHistory.push(chat);
-                                this.$nextTick(() => {
-                                    this.scrollToBottom();
-                                });
-                            }
-                        });
+                    this.connection.on("ReceiveMessage", (user, message) => {
+                        if (user != this.currentUserId) {
+                            const chat = {
+                                id: Date.now(),
+                                senderId: user,
+                                senderAvatar: `/api/UserInfo/GetPicture/${user}`,
+                                messageText: message,
+                                createTime: new Date().toISOString()
+                            };
+                            this.chatHistory.push(chat);
+                            this.$nextTick(() => {
+                                this.scrollToBottom();
+                            });
+                        }
+                    });
 
 
                     this.connection.on("SomeOneOnline", (connid) => {
@@ -268,8 +269,21 @@
                     });
 
                     this.connection.start().catch(err => console.error(err.toString()));
-                }
-            },
+                }, 
+                async setonline() {
+                    try {
+                        axios.get(`/api/ChatRoom/ChatRoomsApi/OnlineUserId?userId=${this.currentUserId}`).then(response => response.data)
+                        .then(data => {
+                            console.log(data);                            
+                        });
+                    }
+                    catch (error) {
+                        console.error('Failed to update on:', error);
+                    }
+                } 
+                ,
+
+            },   
             mounted() {
                 this.fetchFriends();
                 this.fetchAllUserStatuses();
