@@ -1,6 +1,24 @@
 ﻿body {
 }
-.searchBar{
+.attendMember {
+    color: #eb1586;
+}
+.attendMember:hover{
+    color: #120d89;
+}
+.canelAttendBox-overlay, .participantsBox-overlay, .deleteActBox-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050;
+}
+.searchBar {
     width: 300px;
     margin: 10px auto;
 }
@@ -45,7 +63,7 @@ summary {
     top: 40%;
     border-radius: 10%;
     box-shadow: 0 3px 10px #888888;
-    z-index: 2;
+    z-index: 1060;
     align-content: center;
     text-align: center;
 }
@@ -89,8 +107,8 @@ textarea{
     height: 450px;
     background-color: white;
     position: sticky;
-    left: 40%;
-    top: 30%;
+    left: 30%;
+    top: 22%;
     border-radius: 30px;
     box-shadow: 0 3px 10px #888888;
     z-index: 2;

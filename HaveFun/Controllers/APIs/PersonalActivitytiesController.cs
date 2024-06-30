@@ -21,9 +21,9 @@ namespace HaveFun.Controllers.APIs
             _context = context;
         }
         // 請求即將發生的活動
-        // GET: api/personalActivities/GetCommingupActivities/5
-        [HttpGet("{loginUserId}")]
-        public async Task<JsonResult> GetCommingupActivities(int loginUserId)
+        // GET: api/personalActivities/GetCommingupActivities/5/1
+        [HttpGet("{loginUserId}/{loadtime}")]
+        public async Task<JsonResult> GetCommingupActivities(int loginUserId, int loadtime)
         {
 			if (!ModelState.IsValid)
 			{
@@ -31,6 +31,7 @@ namespace HaveFun.Controllers.APIs
 			}
             try
             {
+				var loadTimeIndex = loadtime;
 				var now = DateTime.Now;
 				var commingupActivities = await _context.Activities
 					.Where(activity =>
@@ -61,7 +62,8 @@ namespace HaveFun.Controllers.APIs
 							Name = user.User.Name,
 							Id = user.User.Id
 						}).ToList()
-					}).ToListAsync();
+					})
+					.Skip(3 * (loadTimeIndex - 1)).Take(3).ToListAsync();
                 if(commingupActivities != null)
                 {
 					return new JsonResult(commingupActivities);
@@ -81,9 +83,9 @@ namespace HaveFun.Controllers.APIs
 			}
 		}
         //請求登入會員主辦的活動
-        // GET: api/personalActivities/GetHostActivities/5
-        [HttpGet("{loginUserId}")]
-        public async Task<JsonResult> GetHostActivities(int loginUserId)
+        // GET: api/personalActivities/GetHostActivities/5/1
+        [HttpGet("{loginUserId}/{loadTime}")]
+        public async Task<JsonResult> GetHostActivities(int loginUserId, int loadTime)
         {
 			if (!ModelState.IsValid)
 			{
@@ -91,6 +93,7 @@ namespace HaveFun.Controllers.APIs
 			}
             try
             {
+				var loadTimeIndex = loadTime;
 				var now = DateTime.Now;
 				var hostActivities = await _context.Activities
 					.Where(activity => activity.UserId == loginUserId && activity.ActivityTime > now)
@@ -119,7 +122,7 @@ namespace HaveFun.Controllers.APIs
 							Name = user.User.Name,
 							Id = user.User.Id
 						}).ToList()
-					}).ToListAsync();
+					}).Skip(3 * (loadTimeIndex - 1)).Take(3).ToListAsync();
 				if (hostActivities != null)
 				{
 					return new JsonResult(hostActivities);
@@ -139,9 +142,9 @@ namespace HaveFun.Controllers.APIs
 			}
 		}
         // 請求已結束的活動
-        // GET: api/personalActivities/GetPastActivities/5
-        [HttpGet("{loginUserId}")]
-        public async Task<JsonResult> GetPastActivities(int loginUserId)
+        // GET: api/personalActivities/GetPastActivities/5/1
+        [HttpGet("{loginUserId}/{loadTime}")]
+        public async Task<JsonResult> GetPastActivities(int loginUserId, int loadTime)
         {
 			if (!ModelState.IsValid)
 			{
@@ -149,6 +152,7 @@ namespace HaveFun.Controllers.APIs
 			}
             try
             {
+				var loadTimeIndex = loadTime;
 				var now = DateTime.Now;
 				var pastActivities = await _context.Activities
 					.Where(activity =>
@@ -180,7 +184,7 @@ namespace HaveFun.Controllers.APIs
 							Name = user.User.Name,
 							Id = user.User.Id
 						}).ToList()
-					}).ToListAsync();
+					}).Skip(3 * (loadTimeIndex - 1)).Take(3).ToListAsync();
 				if (pastActivities != null)
 				{
 					return new JsonResult(pastActivities);
