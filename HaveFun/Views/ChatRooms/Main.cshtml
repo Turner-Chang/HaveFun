@@ -262,6 +262,7 @@
 
                     this.connection.on("SomeOneOnline", (connid) => {
                         console.log(`Someone connected, ID: ${connid}`);
+                        this.setonline();
                     });
 
                     this.connection.on("SomeOneOffline", (connid) => {
@@ -272,19 +273,25 @@
                 }, 
                 async setonline() {
                     try {
-                        axios.get(`/api/ChatRoom/ChatRoomsApi/OnlineUserId?userId=${this.currentUserId}`).then(response => response.data)
-                        .then(data => {
-                            console.log(data);                            
-                        });
-                    }
-                    catch (error) {
-                        console.error('Failed to update on:', error);
+                        const response = await axios.get(`/api/ChatRoom/ChatRoomsApi/OnlineUserId?userId=${this.currentUserId}`);
+                        if (response.data) {
+                            this.isOnline = response.data;
+                            this.updateFriendsOnlineStatus();
+                        } else {
+                            this.isOnline = [];
+                            this.updateFriendsOnlineStatus();
+                        }
+                    } catch (error) {
+                        console.error('Failed to update status:', error);
+                        this.isOnline = false;
+                        this.updateFriendsOnlineStatus();
                     }
                 } 
                 ,
 
             },   
             mounted() {
+                this.setonline();
                 this.fetchFriends();
                 this.fetchAllUserStatuses();
                 this.setupSignalRConnection();
