@@ -190,7 +190,6 @@ namespace HaveFun.Controllers.APIs
             {
                 // 只搜尋朋友的貼文
                 query = query.Where(p => FriendPostList.Contains(p.UserId.ToString()) && p.Status == 0);
-                //query = query.Where(p => p.UserId.ToString() == "16" && p.Status == 0);
             }
             else
             {
@@ -565,7 +564,26 @@ namespace HaveFun.Controllers.APIs
             return WhoLikeList;
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UserPicture>> GetUserPictures(int id)
+        {
+			try
+			{
+				var userPictures = await _context.UserPictures.Where(up => up.UserId == id).ToListAsync();
 
+				if (userPictures == null || userPictures.Count == 0)
+				{
+					return NotFound($"No pictures found for user with ID {id}");
+				}
+
+				return Ok(userPictures);
+			}
+			catch (Exception ex)
+			{
+				// Log the exception details here if necessary
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
     }
 
 
