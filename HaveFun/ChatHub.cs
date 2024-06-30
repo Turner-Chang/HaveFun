@@ -43,6 +43,7 @@ public class ChatHub : Hub
         }
 
         await base.OnConnectedAsync();
+
     }
 
     public async Task SendMessage(string user, string friend, string message)
