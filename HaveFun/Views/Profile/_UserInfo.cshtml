@@ -135,7 +135,7 @@
 													<img :src="pic.picture.replace('~', '')" alt="shop">
 												</div>
 												<div class="product-action-link">
-													<a class="view-modal" data-target="#quick_view"><i class="fa-solid fa-x"></i></a>
+													<a class="view-modal" data-target="#quick_view"><i class="fa-solid fa-x" v-on:click="deletePicture(pic.id)"></i></a>
 												</div>
 											</div>
 										</div>
@@ -231,6 +231,7 @@
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 	var app_UserInfo = Vue.createApp({
 		data() {
@@ -460,6 +461,28 @@
 						this.error = 'Error fetching user pictures';
 					}
 				} finally {
+				}
+			},
+			async deletePicture(pictureId) {
+				try {
+					await axios.delete(`/api/Profile/DeleteUserPicture/${pictureId}`);
+					this.pictures = this.pictures.filter(pic => pic.id !== pictureId);
+					Swal.fire({
+						icon: 'success',
+						title: 'Deleted!',
+						text: 'Picture has been deleted.',
+					});
+				} catch (error) {
+					Swal.fire({
+						icon: 'error',
+						title: 'Error!',
+						text: 'Failed to delete user pictures.',
+					});
+					if (error.response) {
+						this.error = error.response.data;
+					} else {
+						this.error = 'Error deleting picture';
+					}
 				}
 			},
 		},
