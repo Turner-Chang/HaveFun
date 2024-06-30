@@ -1,13 +1,13 @@
 ﻿<div id="app_RefundReview" >
     <div style="text-align:center;">
-        <button class="btn btn-success " @@click="changeBtn">審核/歷史切換</button>
+        <button class="btn" :class="btncolor()" @@click="changeBtn">審核/歷史切換</button>
     </div >
     <template v-if="btnBoolean">
    
     <h1>退款審核</h1>
-    <div v-if="refundRequests.length === 0">
+    <template v-if="refundRequests.length === 0">
         <p>沒有需要審核的退款請求。</p>
-    </div>
+    </template>
     <div v-else>
         <table>
             <thead>
@@ -43,11 +43,8 @@
         </div>
        
     </template>
-    <template v-else>
-       
-    
-    
-    <h1>交易歷史</h1>
+    <template v-else>    
+    <h1 class="mb-2">交易歷史</h1>
     <div class="row">
         <table class="table-secondary">
             <thead class="table-secondary">
@@ -138,6 +135,11 @@
             };
         },
         methods: {
+            btncolor() {
+                if (this.btnBoolean) { return "btn-success"; }
+                else { return "btn-secondary"; }
+            }
+            ,
             changeBtn() {
                 this.btnBoolean = !this.btnBoolean;
             },
