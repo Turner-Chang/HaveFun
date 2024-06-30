@@ -23,17 +23,17 @@ public class ChatHub : Hub
         try
         {
             await Clients.All.SendAsync("SomeOneOnline", Context.ConnectionId);
-            
-            string userid = Context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name).Value;
-
-            if (userid != null)
+            if( Context.User.Claims!=null)
             {
+                string userid = Context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name).Value;
+
                 int userId = Convert.ToInt32(userid);
                 _context.ConId_UserId.Add(new ConId_UserId
                 {
                     UserId = userId,
                     ConnId = Context.ConnectionId,
                 });
+                
                 await _context.SaveChangesAsync();
                 _logger.LogInformation($"New connection added for user {userId}: {Context.ConnectionId}");
             }
@@ -44,6 +44,7 @@ public class ChatHub : Hub
         }
 
         await base.OnConnectedAsync();
+
     }
 
     public async Task SendMessage(string user, string friend, string message)

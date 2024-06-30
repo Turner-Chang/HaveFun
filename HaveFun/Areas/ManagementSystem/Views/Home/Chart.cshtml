@@ -6,7 +6,9 @@
 	</label>
 
 	<br />
-	<button class="btn btn-success m-auto" @@click="changeStyle()">圓餅/長條切換</button>
+	<div class="text-center">
+	<button class="btn btn-success " @@click="changeStyle()">圓餅/長條切換</button>
+	</div>
 	<div class="row ">
 		<div class="co-12 col-lg-6 " >
 			<div class="card m-4 " >
@@ -15,9 +17,9 @@
 					<span class="ps-4">
 						使用者男女比  {{fixed(countMale/countFeMale)}} :  1
 					</span>
-				</div>
-				<div class="card-body" style="width:300px;height:250px;">
-					<canvas id="GenderChart"></canvas>
+				</div >
+				<div class="card-body m-auto" style="width:300px;height:250px;">
+					<canvas id="GenderChart" class="m-auto"></canvas>
 				</div>
 
 			</div>
@@ -31,7 +33,7 @@
 						付費比 : {{countMoneyLevel/(countUser)*100}}%
 					</span>
 				</div>
-				<div class="card-body" style="width:300px;height:250px;">
+				<div class="card-body m-auto" style="width:300px;height:250px;">
 					<canvas id="LevelChart" style="margin:auto;"></canvas>
 				</div>
 
@@ -48,7 +50,7 @@
 						年齡分佈
 					</span>
 				</div>
-				<div class="card-body" style="width:300px;height:250px;">
+				<div class="card-body m-auto" style="width:300px;height:250px;">
 					<canvas id="AgeRangeChart" style="margin:auto;"></canvas>
 				</div>
 

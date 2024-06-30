@@ -10,29 +10,28 @@ namespace HaveFun.Controllers.APIs
     public class FriendApiController : ControllerBase
     {
         private readonly HaveFunDbContext _dbContext;
+        private readonly IConfiguration _configuration;
+         
 
-        public FriendApiController(HaveFunDbContext dbContext)
+        public FriendApiController(HaveFunDbContext dbContext, IConfiguration configuration)
         {
             _dbContext = dbContext;
+            _configuration = configuration;
         }
 
         // 取得好友列表
         [HttpGet("{id}")]
         public async Task<IActionResult> GetFriend(int id)
         {
-            var toFriendList = _dbContext.FriendLists.Where(x => x.BeenClicked == id);
-
             var friendList = await _dbContext.FriendLists
-                .Where(x =>
-                    (x.Clicked == id && x.state == 1)
-                )
+                .Where(x => (x.Clicked == id && x.state == 1))
                 .Select(x => new
                 {
                     Id = x.Clicked == id ? x.User2.Id : x.User1.Id,
                     Name = x.Clicked == id ? x.User2.Name : x.User1.Name,
                     ProfilePicture = x.Clicked == id ? x.User2.ProfilePicture : x.User1.ProfilePicture,
-                    IsBlocked = false, // 未封鎖
-                    state = 1 // 正常狀態
+                    IsBlocked = false,
+                    state = 1
                 })
                 .Distinct()
                 .ToListAsync();
@@ -40,17 +39,40 @@ namespace HaveFun.Controllers.APIs
             var friendDTOList = friendList
                 .GroupBy(f => f.Id)
                 .Select(g => g.First())
-                .Select(f => new FriendDTO
+                .Select(f => new 
                 {
                     Id = f.Id,
                     Name = f.Name,
-                    ProfilePicture = f.ProfilePicture,
+                    ProfilePicture= f.ProfilePicture,
                     IsBlocked = f.IsBlocked,
                     state = f.state
                 })
                 .ToList();
 
-            return Ok(friendDTOList);
+            var friendReturn = new List<FriendDTO>();
+            foreach(var item in friendDTOList)
+            {
+                friendReturn.Add(new FriendDTO
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    ProfilePicture = string.IsNullOrEmpty(item.ProfilePicture)? "":CreatePictureUrl("GetPicture","Profile",new { Id = item.Id }),
+                    IsBlocked = item.IsBlocked,
+                    state = item.state
+                });
+            };
+
+            return Ok(friendReturn);
+        }
+
+        [HttpGet]
+        public string CreatePictureUrl(string action, string controller, object routeValues)
+        {
+            // 使用 Url.Action 生成 URL
+            string baseUrl = Url.Action(action, controller, routeValues, Request.Scheme);
+
+            // Replace增加api路徑
+            return baseUrl.Replace($"/{controller}/{action}", $"/api/{controller}/{action}");
         }
 
         // 取得黑名單
@@ -64,11 +86,13 @@ namespace HaveFun.Controllers.APIs
                     Id = x.Clicked == id ? x.User2.Id : x.User1.Id,
                     Name = x.Clicked == id ? x.User2.Name : x.User1.Name,
                     ProfilePicture = x.Clicked == id ? x.User2.ProfilePicture : x.User1.ProfilePicture,
-                    IsBlocked = true, // 已封鎖
-                    state = 3 // 已封鎖狀態
+                    IsBlocked = true,
+                    state = 3
                 })
                 .Distinct()
                 .ToListAsync();
+
+            var baseUrl = _configuration["BaseUrl"];
 
             var blacklistDTOList = blacklist
                 .GroupBy(b => b.Id)
@@ -77,7 +101,7 @@ namespace HaveFun.Controllers.APIs
                 {
                     Id = b.Id,
                     Name = b.Name,
-                    ProfilePicture = b.ProfilePicture,
+                    ProfilePicture = string.IsNullOrEmpty(b.ProfilePicture) ? "" : CreatePictureUrl("GetPicture", "Profile", new { Id = b.Id }),
                     IsBlocked = b.IsBlocked,
                     state = b.state
                 })
