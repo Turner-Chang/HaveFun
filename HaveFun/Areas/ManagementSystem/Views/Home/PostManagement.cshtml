@@ -32,7 +32,7 @@
 						<td class="col-md-0">{{this.TimeSplit(r.reportTime)}}</td>
 						<td>
 							<button :id="r.postReviewId" class="btn " :class="btnColor(r.processingStstus)"
-									@@click="check(r.postId,r.postReviewId)">
+									@@click="check(r.postId,r.postReviewId),getpicture(r.postId)">
 								{{this.ReviewStatusToString(r.processingStstus)}}
 							</button>
 						</td>
@@ -99,7 +99,7 @@
 						<label class="col-6 text-decoration-underline">
 							被檢舉圖片:
 						</label>
-						<img class="col-12 img-fluid" :src="imgSrc(Post.pictures)" />
+						<img class="col-12 img-fluid" :src="imgSrc" />
 
 					</div>
 					<div>
@@ -144,7 +144,8 @@
 					tableStart: 0,
 					tableEnd: 5,
 					complaint: [],
-					baseAdress: "",			/*"https://localhost:7152" */
+					baseAdress: "",
+					imgSrc: "",
 				}
 			},
 			methods: {
@@ -162,13 +163,6 @@
 							console.error('發生錯誤:', error);
 							alert("錯誤");
 						});
-				}
-				,
-				imgSrc(src) {
-					if (src == null || src == "null" || src == "")
-						return "/images/NOimg.jpg"
-					else
-						return src.substr(18);
 				}
 				,
 				check(postId, postReviewId) {
@@ -314,6 +308,12 @@
 			// 	headers: { 'Content-Type': 'application/json' }
 			// })
 			// 			},
+				getpicture(PostId) {
+					this.imgSrc = "/api/Profile/GetPostPicture/" + PostId;
+				
+				},
+
+
 					},
 		mounted: async () => {
 

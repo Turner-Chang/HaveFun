@@ -33,7 +33,7 @@
 					<td>
 						<button class="btn " 
 							:class="btnColor(r.status)"
-								@@click="UserCheck(r.beReportedUserId,r.id)">
+								@@click="UserCheck(r.beReportedUserId,r.id),userImg(r.beReportedUserId)">
 							{{this.ReviewStatusToString(r.status)}}
 						</button>
 					</td>
@@ -134,7 +134,7 @@
 						<label class="col-4 text-decoration-underline">
 							被檢舉人圖片:
 						</label>
-						<img class="col-12 img-fluid" :src="imgSrc(userInfos.profilePicture)" />
+						<img class="col-12 img-fluid" :src="userImgSrc" />
 
 					</div>
 					<div>
@@ -183,6 +183,7 @@
 					UserReviewid: 0,
 					baseAdress: "",		/*"https://localhost:7152" */
 					// complaintArr:[],
+					userImgSrc:"",
 				};
 			},
 			methods: {
@@ -191,12 +192,7 @@
 					else if (type == 1) { return "女"; }
 					else { return "不男不女"; }
 				},
-				imgSrc(src) {
-					if (src == null || src == "null" || src == "")
-						return "/images/NOimg.jpg"
-					else
-						return src.substr(18);
-				},
+			
 				UserCheck(UserId,ReviewId) {
 					this.showModal();
 					this.getUserInfo(UserId);
@@ -284,6 +280,10 @@
 						var timeArr = timeStr.split('T').join('-').split('-').join(':').split(":");
 						return `${timeArr[0]}年 ${timeArr[1]}月 ${timeArr[2]}日 ${timeArr[3]}時 ${timeArr[4]}分`;
 					}
+				},
+				userImg(UserId) {
+					this.userImgSrc = "/api/Profile/GetPicture/" + UserId;
+				
 				},
 			},
 			Computed: {
