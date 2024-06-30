@@ -20,10 +20,17 @@
                                 <div class="top d-flex justify-content-between align-items-center">
                                     <div class="left member--style2 d-flex align-items-center">
                                         <div class="member__thumb">
-                                            <img :src="friend.profilePicture" alt="member-img">
+                                            <a :href="`/Profile/Index?userId=${friend.id}`">
+                                                <img :src="friend.profilePicture" alt="member-img">
+                                            </a>
                                         </div>
-                                        <a href="member-single.html"><h6>{{ friend.name }}</h6></a>
+                                        <div class="member__thumb_name">
+                                            <a :href="`/Profile/Index?userId=${friend.id}`">
+                                                <h6>{{ friend.name }}</h6>
+                                            </a>
+                                        </div>
                                     </div>
+ 
                                     <div class="button-container">
                                         <button class="btn btn-danger" @@click="blockUser(friend.id)" v-if="friend.state !== 3">封鎖</button>
                                     </div>
@@ -36,10 +43,18 @@
                             <li v-for="friend in data.blacklistedFriends" :key="friend.id">
                                 <div class="top d-flex justify-content-between align-items-center">
                                     <div class="left member--style2 d-flex align-items-center">
+                                        @* <img :src="friend.profilePicture" alt="member-img">
+                                        <h6>{{ friend.name }}</h6>  *@
                                         <div class="member__thumb">
-                                            <img :src="friend.profilePicture" alt="member-img">
+                                            <a :href="`/Profile/Index?userId=${friend.id}`">
+                                                <img :src="friend.profilePicture" alt="member-img">
+                                            </a>
                                         </div>
-                                        <a href="member-single.html"><h6>{{ friend.name }}</h6></a>
+                                        <div class="member__thumb_name">
+                                            <a :href="`/Profile/Index?userId=${friend.id}`">
+                                                <h6>{{ friend.name }}</h6>
+                                            </a>
+                                        </div>
                                     </div>
                                     <div class="button-container">
                                         <button class="btn btn-success" @@click="unblockUser(friend.id)">解鎖</button>
@@ -75,6 +90,12 @@
     border-radius: 50%;
     margin-right: 10px;
 }
+
+    .member__thumb_name{
+        margin-left:10px;
+    }
+
+
 </style>
 <script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

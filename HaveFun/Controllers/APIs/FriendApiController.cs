@@ -36,22 +36,43 @@ namespace HaveFun.Controllers.APIs
                 .Distinct()
                 .ToListAsync();
 
-            var baseUrl = "https://localhost:7152";
-
             var friendDTOList = friendList
                 .GroupBy(f => f.Id)
                 .Select(g => g.First())
-                .Select(f => new FriendDTO
+                .Select(f => new 
                 {
                     Id = f.Id,
                     Name = f.Name,
-                    ProfilePicture= $"{baseUrl}/api/UserInfo/GetPicture/{f.Id}",
+                    ProfilePicture= f.ProfilePicture,
                     IsBlocked = f.IsBlocked,
                     state = f.state
                 })
                 .ToList();
 
-            return Ok(friendDTOList);
+            var friendReturn = new List<FriendDTO>();
+            foreach(var item in friendDTOList)
+            {
+                friendReturn.Add(new FriendDTO
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    ProfilePicture = string.IsNullOrEmpty(item.ProfilePicture)? "":CreatePictureUrl("GetPicture","Profile",new { Id = item.Id }),
+                    IsBlocked = item.IsBlocked,
+                    state = item.state
+                });
+            };
+
+            return Ok(friendReturn);
+        }
+
+        [HttpGet]
+        public string CreatePictureUrl(string action, string controller, object routeValues)
+        {
+            // 使用 Url.Action 生成 URL
+            string baseUrl = Url.Action(action, controller, routeValues, Request.Scheme);
+
+            // Replace增加api路徑
+            return baseUrl.Replace($"/{controller}/{action}", $"/api/{controller}/{action}");
         }
 
         // 取得黑名單
@@ -80,7 +101,7 @@ namespace HaveFun.Controllers.APIs
                 {
                     Id = b.Id,
                     Name = b.Name,
-                    ProfilePicture = $"{baseUrl}/api/UserInfo/GetPicture/{b.Id}",
+                    ProfilePicture = string.IsNullOrEmpty(b.ProfilePicture) ? "" : CreatePictureUrl("GetPicture", "Profile", new { Id = b.Id }),
                     IsBlocked = b.IsBlocked,
                     state = b.state
                 })
