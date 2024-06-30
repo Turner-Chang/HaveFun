@@ -29,12 +29,6 @@ namespace HaveFun.Controllers.APIs
             this.hostEnvironment = hostEnvironment;
         }
 
-        //public ProfileApiController(HaveFunDbContext context, PostServices postServices)
-        //{
-        //    _context = context;
-        //    this.postServices = postServices;
-        //}
-
         // Post: api/Profile/loginUserId
         [HttpPost("{loginUserId}")]
         public async Task<IEnumerable<UserInfo>> GetUserInfor([FromRoute] int loginUserId)
