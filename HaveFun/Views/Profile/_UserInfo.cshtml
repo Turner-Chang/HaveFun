@@ -86,6 +86,41 @@
 				</div>
 			</div>
 
+			<div class="shop-page padding-bottom aside-bg">
+				<div class="container pt-4 pb-4" style="background-color:white;">
+					<h5>
+						個人相簿
+					</h5>
+					<div class="row justify-content-center pb-15">
+						<div class="col-12">
+							<article>
+								<div class="shop-product-wrap grid row justify-content-left g-4">
+									<div class="col-lg-4 col-md-6 col-12" v-for="pic in pictures" :key="pic.id">
+										<div class="product-item">
+											<div class="product-thumb" @* style="width: 100%; height: 200px; overflow: hidden; display: flex; align-items: center; justify-content: center;" *@>
+												<div class="pro-thumb" @* style="width: 100%; height: 100%;" *@>
+													<img :src="pic.picture" alt="圖片" @* style="width: 100%; height: 100%; object-fit: cover;" *@>
+												</div>
+												<div class="product-action-link">
+													<a class="view-modal" @@click="deletePicture(pic.id)">
+														<i class="fa-solid fa-x"></i>
+													</a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</article>
+						</div>
+						<div class="col-12 pt-2">
+							<input type="file" id="file-upload" style="display: none;" multiple @@change="uploadPictures">
+							<label for="file-upload" class="default-btn" style="cursor: pointer;">上傳</label>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
 		</div>
 
 		<div id="app_MemberLable">
@@ -117,47 +152,6 @@
 				</div>
 			</div>
 
-
-
-			<div class="shop-page padding-bottom aside-bg">
-				<div class="container pt-4 pb-4" style="background-color:white;">
-					<h5>
-						個人相簿
-					</h5>
-					<div class="row justify-content-center pb-15">
-						<div class="col-12">
-							<article>
-								<div class="shop-product-wrap grid row justify-content-left g-4">
-									<div class="col-lg-4 col-md-6 col-12" v-for="pic in pictures" :key="pic.userId">
-										<div class="product-item">
-											<div class="product-thumb">
-												<div class="pro-thumb">
-													<img :src="pic.picture.replace('~', '')" alt="shop">
-												</div>
-												<div class="product-action-link">
-													<a class="view-modal" data-target="#quick_view"><i class="fa-solid fa-x" v-on:click="deletePicture(pic.id)"></i></a>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</article>
-						</div>
-						<div class="col-12 pt-2">
-							<div class="row">
-								<div class="col-6">
-									<img id="insertPreview" src="@Url.Content("~/images/NOimg.jpg")" title="待上傳" asp-append-version="true" />
-								</div>
-							</div>							
-							<input class="form-control" type="file" @@change="onFileChange" />
-							<button class="default-btn" @@click="uploadPicture">
-								上傳
-							</button>
-						</div>
-					</div>
-
-				</div>
-			</div>
 		</div>
 	</div>
 </div>
@@ -259,15 +253,16 @@
 				profilePicture: '',
 				profilePictureUri: "", /* 圖片URL */
 				imagePreview: "", /* 新增圖片預覽URL */
-
+				
 				originalMaterial: {}, //保存一份原始資料
 				isLoggedIn: false, // 新增登录状态
 				customErrors: { // 用於保存自定義錯誤訊息
 					birthDay: '',
 					phoneNumber: ''
 				},
-
-
+				// 相簿部分
+				pictures: [],  // 存儲用戶的相簿圖片
+				albumUploadError: '', // 用於保存上傳錯誤訊息
 			}
 		},
 		computed: {
@@ -364,7 +359,9 @@
 						// 處理 birthDay 的格式，只保留日期部分
 						if (this.material.birthDay) {
 							this.material.birthDay = this.material.birthDay.split('T')[0];
-						}
+						} 
+						
+						this.fetchUserPictures(); // 加載用戶的相簿圖片						
 					})
 					.catch(err => { alert(err); });
 			},
@@ -381,13 +378,45 @@
 				const phoneNumberRex = /^[\d\+\-\(\) ]+$/;
 
 				return phoneNumberRex.test(phoneNumber);
+			},			
+			// 相簿部分
+			async fetchUserPictures() {  // 獲取用戶的相簿圖片
+				try {
+					const response = await axios.get(`/api/Profile/GetUserPictures/${this.material.id}`);
+					this.pictures = response.data;
+				} catch (error) {
+					console.error("Failed to fetch pictures:", error);
+				}
 			},
+			async uploadPictures(event) {  // 上傳相簿圖片
+				const files = event.target.files;
+				if (files.length === 0) return;
 
+				const formData = new FormData();
+				formData.append('userId', this.material.id);
+				for (const file of files) {
+					formData.append('albumPictures', file);
+				}
 
+				try {
+					const response = await axios.post(`/api/UserInfo/UploadAlbumPicture`, formData);
+					this.fetchUserPictures();  // 上傳後重新加載相簿圖片
+				} catch (error) {
+					this.albumUploadError = '圖片上傳失敗';
+					console.error("Failed to upload pictures:", error);
+				}
+			},
+			async deletePicture(pictureId) {  // 刪除相簿圖片
+				try {
+					const response = await axios.delete(`/api/UserInfo/DeletePicture/${pictureId}`);
+					this.fetchUserPictures();  // 刪除後重新加載相簿圖片
+				} catch (error) {
+					console.error("Failed to delete picture:", error);
+				}
+			},
 		},
 		mounted() {
 			this.fetchData();
-
 		},
 	}).mount("#app_UserInfo");
 	var app_MemberLable = Vue.createApp({
@@ -498,4 +527,5 @@
 			this.fetchUserPictures(this.userId);
 		},
 	}).mount("#app_MemberLable");
+	
 </script>
