@@ -530,9 +530,31 @@
 						complaintCategoryId: this.selectedComplaintCategory,
 						beReportedUserId: this.currentCard.id
 					})
-					Swal.fire("檢舉成功!");
-					this.notMatchUsers = this.notMatchUsers.filter(u => u.id != this.currentCard.id);
-					this.currentCard = null;
+					.then(response => {
+						Swal.fire({
+							title: '恭喜!',
+							text: response.data,
+							icon: 'success',
+						});
+						var modalElement = document.getElementById('staticBackdrop');
+						var modal = bootstrap.Modal.getInstance(modalElement);
+						modal.hide();
+						
+						this.notMatchUsers = this.notMatchUsers.filter(u => u.id != this.currentCard.id);
+						this.currentCard = null;
+						applyFilter();
+					})
+					.catch(error => {
+						Swal.fire({
+							title: '錯誤!',
+							text: error.response.data,
+							icon: 'error',
+						});
+						var modalElement = document.getElementById('staticBackdrop');
+						var modal = bootstrap.Modal.getInstance(modalElement);
+						modal.hide();
+					});
+					
 				},
 				toggleRadio: function (event) {
 					const value = event.target.value;
