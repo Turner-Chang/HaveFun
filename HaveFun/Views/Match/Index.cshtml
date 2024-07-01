@@ -542,7 +542,7 @@
 						
 						this.notMatchUsers = this.notMatchUsers.filter(u => u.id != this.currentCard.id);
 						this.currentCard = null;
-						applyFilter();
+						this.applyFilter();
 					})
 					.catch(error => {
 						Swal.fire({
