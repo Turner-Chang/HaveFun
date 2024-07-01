@@ -422,7 +422,7 @@
 	var app_MemberLable = Vue.createApp({
 		data() {
 			return {
-				userId: 2,
+				userId: @ViewBag.UserId,
 				availableLabels: [], /* 從後端獲取所有可用標籤 */
 				selectedLabels: [], /* 用戶選擇的標籤ID */
 				errorMessage: null,  // 用於存儲錯誤訊息
@@ -524,7 +524,7 @@
 		mounted() {
 			this.fetchAvailableLabels();
 			this.fetchUserLabels(); //User標籤
-			this.fetchUserPictures(2);
+			this.fetchUserPictures(this.userId);
 		},
 	}).mount("#app_MemberLable");
 	
