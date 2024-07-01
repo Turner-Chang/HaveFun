@@ -144,9 +144,15 @@
 							</article>
 						</div>
 						<div class="col-12 pt-2">
-							<a class="default-btn">
+							<div class="row">
+								<div class="col-6">
+									<img id="insertPreview" src="@Url.Content("~/images/NOimg.jpg")" title="待上傳" asp-append-version="true" />
+								</div>
+							</div>							
+							<input class="form-control" type="file" @@change="onFileChange" />
+							<button class="default-btn" @@click="uploadPicture">
 								上傳
-							</a>
+							</button>
 						</div>
 					</div>
 
@@ -387,7 +393,7 @@
 	var app_MemberLable = Vue.createApp({
 		data() {
 			return {
-				userId: 2,
+				userId: @ViewBag.UserId,
 				availableLabels: [], /* 從後端獲取所有可用標籤 */
 				selectedLabels: [], /* 用戶選擇的標籤ID */
 				errorMessage: null,  // 用於存儲錯誤訊息
@@ -489,7 +495,7 @@
 		mounted() {
 			this.fetchAvailableLabels();
 			this.fetchUserLabels(); //User標籤
-			this.fetchUserPictures(2);
+			this.fetchUserPictures(this.userId);
 		},
 	}).mount("#app_MemberLable");
 </script>

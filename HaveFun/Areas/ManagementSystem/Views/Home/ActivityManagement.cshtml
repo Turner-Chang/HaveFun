@@ -10,7 +10,7 @@
 			@* /*review status 0,1,2*/ *@
 		</div>
 		<hr />
-		<div class="table-responsive">
+		<div class="table-responsive" v-if="reports.length>0">
 			<table class="table table-secondary ">
 				<thead class="table-active">
 					<tr>
@@ -44,7 +44,7 @@
 
 		</div>
 
-		<div>
+		<div v-if="reports.length >0">
 			<button class="btn btn-secondary m-3" @@click="UpperFive()">上五筆</button>
 			<button class="btn btn-secondary m-3" @@click="LowerFive()">下五筆</button>
 		</div>
@@ -110,6 +110,7 @@
 						<label class="col-3 text-center lh-base">
 							{{Act.maxParticipants}}
 						</label>
+						
 						<label class="col-3 text-decoration-underline">
 							自備金額:
 						</label>
@@ -122,15 +123,13 @@
 						<label class="col-12 text-center lh-base">
 							{{Act.location}}
 						</label>
-						
-
 					</div>
 					<div>
 						<label class="col-6 text-decoration-underline">
 							被檢舉貼文內容:
 						</label>
 						<label class="col-12 text-center lh-base" v-html="Act.content">
-							
+
 						</label>
 						<label class="col-6 text-decoration-underline">
 							註記:

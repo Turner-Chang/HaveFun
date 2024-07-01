@@ -90,18 +90,23 @@ namespace HaveFun.Controllers.APIs
 
 			if (activity == null)
 			{
-				return NotFound("活动不存在" );
+				return NotFound("活動不存在" );
+			}
+
+			if (activity.ActivityTime <= DateTime.UtcNow)
+			{
+				return BadRequest("活動時間已過，無法報名");
 			}
 
 			var isUserParticipating = activity.ActivityParticipants.Any(ap => ap.UserId == request.UserId);
 			if (isUserParticipating)
 			{
-				return BadRequest("用户已经报名参加此活动");
+				return BadRequest("用戶已經報名參加此活動");
 			}
 
 			if (activity.ActivityParticipants.Count >= activity.MaxParticipants)
 			{
-				return BadRequest("活动已经满员");
+				return BadRequest("活動已經滿員");
 			}
 
 			var activityParticipant = new ActivityParticipant
@@ -113,7 +118,29 @@ namespace HaveFun.Controllers.APIs
 			_context.ActivityParticipantes.Add(activityParticipant);
 			await _context.SaveChangesAsync();
 
-			return Ok("报名成功");
+			return Ok("報名成功");
+		}
+
+		[HttpPost("ReportActivity")]
+		public async Task<IActionResult> ReportActivity([FromBody]ActivityReviewDTO request) 
+		{
+			var existReport = await _context.ActivityReviews.FirstOrDefaultAsync(ar => ar.ActivityId == request.ActivityId);
+			if (existReport != null) 
+			{
+				return BadRequest("此活動已被檢舉，請等待審核");
+			}
+
+			var activityReview = new ActivityReview {
+				ActivityId = request.ActivityId,
+				UserId = request.UserId,
+				ReportItems = request.ReportItems,
+				ReportReason = request.ReportReason,
+				ReportTime = DateTime.UtcNow,
+			};
+			_context.ActivityReviews.Add(activityReview);
+			await _context.SaveChangesAsync();
+
+			return Ok("檢舉成功");
 		}
 	}
 }

@@ -74,9 +74,9 @@
                                     <span class="infoTitle">報名人數上限：</span>
                                     {{act.max}}<br>
                                     <span class="infoTitle">活動內容：</span><br>
-                                    <p class="actContent">{{act.content}}</p><br>
+                                    <p class="actContent" v-html="act.content"></p><br>
                                     <span class="infoTitle">注意事項：</span><br>
-                                    <p class="actContent">{{act.notes}}</p><br><br>
+                                    <p class="actContent" v-html="act.notes"></p><br><br>
                                     <!-- Host與登入會員不相同才有取消參加活動按鈕 -->
                                     <button v-if="act.hostId != loginUserId" class="default-btn" id="cancelAttend" @@click="showCancelAttend(act)">
                                         取消參加活動
@@ -120,9 +120,9 @@
                                     <span class="infoTitle">報名人數上限：</span>
                                     {{act.max}}<br>
                                     <span class="infoTitle">活動內容：</span><br>
-                                    <p class="actContent">{{act.content}}</p><br>
+                                    <p class="actContent" v-html="act.content"></p><br>
                                     <span class="infoTitle">注意事項：</span><br>
-                                    <p class="actContent">{{act.notes}}</p><br><br>
+                                    <p class="actContent" v-html="act.notes"></p><br><br>
                                     <button class="default-btn" @@click="showDeleteAct(act)">刪除活動</button>
                                     <button class="default-btn btnEdit" @@click="intoEditing(act)">修改活動內容</button>
                                 </div>
@@ -201,9 +201,9 @@
                                     <span class="infoTitle">報名人數上限：</span>
                                     {{act.max}}<br>
                                     <span class="infoTitle">活動內容：</span><br>
-                                    <p class="actContent">{{act.content}}</p><br>
+                                    <p class="actContent" v-html="act.content"></p><br>
                                     <span class="infoTitle">注意事項：</span><br>
-                                    <p class="actContent">{{act.notes}}</p>
+                                    <p class="actContent" v-html="act.notes"></p>
                                 </div>
                             </details>
                         </div>
