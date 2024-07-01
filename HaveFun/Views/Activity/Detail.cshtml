@@ -136,13 +136,20 @@
 										</div>
 										
 										@{
-											var currentUserId = (int)ViewBag.LoginUserId;
+											var currentUserId = ViewBag.LoginUserId;
 											var isUserParticipating = Model.ActivityParticipants.Any(p => p.UserId == currentUserId);
 											var isActivityPassed = Model.ActivityTime <= DateTime.UtcNow;
+
+											var buttonText = isUserParticipating ? "已經報名" : (isActivityPassed ? "活動已過" : "參加");
+											var buttonStyle = isUserParticipating || isActivityPassed ? "background-color:gray; color:white; margin-right: 20px;" : "background-color:#f24570; color:white; margin-right: 20px;";
+											var isDisabled = isUserParticipating || isActivityPassed;
 										}
 
-										<button disabled="@isUserParticipating || @isActivityPassed" class="default-btn" style=" @(isUserParticipating ? "background-color:gray; color:white; margin-right: 20px;" : isActivityPassed? "background-color:gray; color:white; margin-right: 20px;":"background-color:#f24570; color:white; margin-right: 20px;")" v-on:click="signUp">
-											@(isUserParticipating ? "已經報名" : (isActivityPassed? "活動已過":"參加"))
+										<button disabled="@isDisabled"
+												class="default-btn"
+												style="@buttonStyle"
+												v-on:click="signUp">
+											@buttonText
 										</button>
 
 										<button class="default-btn" style="background-color:#f24570; color:white; margin-right: 20px;" data-bs-toggle="modal" data-bs-target="#exampleModal">

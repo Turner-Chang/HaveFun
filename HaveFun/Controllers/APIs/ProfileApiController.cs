@@ -171,8 +171,7 @@ namespace HaveFun.Controllers.APIs
             {
                 // 取出登入者FriendList
                 var friendList = await _context.FriendLists
-                    .Where(f => f.Clicked.ToString() == loginId && f.state == 1 
-                           || f.BeenClicked.ToString() == loginId && f.state == 3)
+                    .Where(f => f.Clicked.ToString() == loginId && f.state == 1)
                     .ToListAsync();
 
                 foreach (var friend in friendList)
