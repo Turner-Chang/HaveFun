@@ -1,4 +1,5 @@
-﻿using HaveFun.DTOs;
+﻿using HaveFun.Common;
+using HaveFun.DTOs;
 using HaveFun.Models;
 using HaveFun.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -21,12 +22,15 @@ namespace HaveFun.Controllers.APIs
         HaveFunDbContext _context;
         private readonly IHostEnvironment hostEnvironment;
 
+        SaveImage _saveImg;
+
         //private readonly PostServices postServices;
 
-        public ProfileApiController(HaveFunDbContext context,IHostEnvironment hostEnvironment)
+        public ProfileApiController(HaveFunDbContext context,IHostEnvironment hostEnvironment, SaveImage saveImg)
         {
             _context = context;
             this.hostEnvironment = hostEnvironment;
+            _saveImg = saveImg;
         }
 
         //public ProfileApiController(HaveFunDbContext context, PostServices postServices)
@@ -607,6 +611,38 @@ namespace HaveFun.Controllers.APIs
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
+
+		[HttpPost]
+		public async Task<IActionResult> UploadUserPicture([FromForm] UploadUserPictureDTO request)
+		{
+            //if (request.File == null || request.File.Length == 0)
+            //	return BadRequest("No file uploaded.");
+
+            //var uploadsFolderPath = Path.Combine(_env.WebRootPath, "uploads");
+            //if (!Directory.Exists(uploadsFolderPath))
+            //{
+            //	Directory.CreateDirectory(uploadsFolderPath);
+            //}
+
+            //var uniqueFileName = Guid.NewGuid().ToString() + "_" + request.File.FileName;
+            //var filePath = Path.Combine(uploadsFolderPath, uniqueFileName);
+
+            //using (var fileStream = new FileStream(filePath, FileMode.Create))
+            //{
+            //	await request.File.CopyToAsync(fileStream);
+            //}
+
+            //var userPicture = new UserPicture
+            //{
+            //	UserId = request.UserId,
+            //	Picture = "/uploads/" + uniqueFileName
+            //};
+
+            //_context.UserPictures.Add(userPicture);
+            //await _context.SaveChangesAsync();
+
+            return Ok(/*new { path = userPicture.Picture }*/);
+        }
 	}
 
 
