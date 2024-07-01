@@ -144,9 +144,15 @@
 							</article>
 						</div>
 						<div class="col-12 pt-2">
-							<a class="default-btn">
+							<div class="row">
+								<div class="col-6">
+									<img id="insertPreview" src="@Url.Content("~/images/NOimg.jpg")" title="待上傳" asp-append-version="true" />
+								</div>
+							</div>							
+							<input class="form-control" type="file" @@change="onFileChange" />
+							<button class="default-btn" @@click="uploadPicture">
 								上傳
-							</a>
+							</button>
 						</div>
 					</div>
 

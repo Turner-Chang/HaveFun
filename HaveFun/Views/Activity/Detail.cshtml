@@ -138,10 +138,15 @@
 										@{
 											var currentUserId = (int)ViewBag.LoginUserId;
 											var isUserParticipating = Model.ActivityParticipants.Any(p => p.UserId == currentUserId);
+											var isActivityPassed = Model.ActivityTime <= DateTime.UtcNow;
 										}
 
-										<button disabled="@isUserParticipating" class="default-btn" style=" @(isUserParticipating ? "background-color:gray; color:white; margin-right: 20px;" : "background-color:#f24570; color:white; margin-right: 20px;")" v-on:click="signUp">
-											@(isUserParticipating ? "已經報名" : "參加")
+										<button disabled="@isUserParticipating || @isActivityPassed" class="default-btn" style=" @(isUserParticipating ? "background-color:gray; color:white; margin-right: 20px;" : isActivityPassed? "background-color:gray; color:white; margin-right: 20px;":"background-color:#f24570; color:white; margin-right: 20px;")" v-on:click="signUp">
+											@(isUserParticipating ? "已經報名" : (isActivityPassed? "活動已過":"參加"))
+										</button>
+
+										<button class="default-btn" style="background-color:#f24570; color:white; margin-right: 20px;" data-bs-toggle="modal" data-bs-target="#exampleModal">
+											檢舉
 										</button>
 
 										@* <div class="blog__thumb mb-4">
@@ -285,6 +290,32 @@
 		</div>
 	</div>
 	<!-- ================> Blog section end here <================== -->
+	<!-- Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" style="margin-top:15%;">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">檢舉</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<h6>檢舉項目:</h6>
+					<select v-model="selectedComplaintCategory">
+						<option disabled value="">請選擇...</option>
+						<option v-for="category in complaintCategories" :key="category.complaintCategoryId" :value="category.complaintCategoryId">{{ category.complaintCategoryName }}</option>
+					</select>
+					<h6>
+						理由
+					</h6>
+					<input type="text" class="form-control" v-model="complaintReason">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+					<button type="button" class="btn btn-primary" @@click="reportActivity">確認</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 
@@ -345,6 +376,9 @@
 					baseAddress: "https://localhost:7152",
 					activityId: @Model.Id,
 					loginUserId: @ViewBag.LoginUserId,
+					complaintCategories: [],
+					complaintReason:'',
+					selectedComplaintCategory:'',
 				}
 			},
 			computed: {
@@ -373,12 +407,46 @@
 						});
 
 					}
-				}
+				},
+				reportActivity() 
+				{
+					axios.post('/api/ActivityApi/ReportActivity', {
+						activityId: this.activityId,
+						userId: this.loginUserId,
+						reportItems: this.selectedComplaintCategory,
+						reportReason: this.complaintReason,
+					})
+					.then(response => {
+							Swal.fire({
+								title: '恭喜!',
+								text: response.data,
+								icon: 'success',
+							});
+							var modalElement = document.getElementById('exampleModal');
+							var modal = bootstrap.Modal.getInstance(modalElement);
+							modal.hide();
+					})
+					.catch(error => {
+							Swal.fire({
+								title: '錯誤!',
+								text: error.response.data,
+								icon: 'error',
+							});
+							var modalElement = document.getElementById('exampleModal');
+							var modal = bootstrap.Modal.getInstance(modalElement);
+							modal.hide();
+					});
+				},
+				getComplaintCategories() {
+					axios.get(`/api/MatchApi/GetComplaintCategory`)
+						.then(response => this.complaintCategories = response.data)
+						.catch(err => alert(err));
+				},
 			},
 			watch: {
 			},
 			mounted() {
-				
+				this.getComplaintCategories();
 			},
 		}).mount("#detailApp");
 	</script>
