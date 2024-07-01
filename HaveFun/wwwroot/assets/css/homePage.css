@@ -44,6 +44,18 @@
     padding: 30px;
     border-radius: 20px;
 }*/
+
+.story__thumb .actImg {
+    height: 264px;
+}
+.memberPic {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin-right: 15px;
+    margin-bottom: 15px;
+}
 /* ----- 斷點 991 ----- */
 @media screen and (max-width: 991px) {
     .homePageBanner {
@@ -52,6 +64,9 @@
     #btnRegister {
         width: 150px;
         height: 90px;
+    }
+    .story__thumb .actImg {
+        height: 200px;
     }
 }
 /* ----- 斷點 767 ----- */
@@ -65,10 +80,16 @@
         border-radius: 10px;
         height: 80px;
     }
+    .story__thumb .actImg {
+        height: 150px;
+    }
 }
 /* ----- 斷點 500 ----- */
 @media screen and (max-width: 500px) {
     .homePageBanner {
         height: 300px;
+    }
+    .story__thumb .actImg {
+        height: 233px;
     }
 }
