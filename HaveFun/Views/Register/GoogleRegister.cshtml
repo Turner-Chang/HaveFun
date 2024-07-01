@@ -56,11 +56,14 @@
         </div >       
     </form>
 </div>
-@section Scritps {
+@section Scripts {
     <script>
         function disableSubmitButton() {
             var submitButton = document.querySelector('#googleSubmit');
             submitButton.disabled = true;
+            setTimeout(() => {
+                submitButton.disabled = false;
+            }, 3000)
         }
     </script>
 }

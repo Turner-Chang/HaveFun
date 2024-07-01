@@ -176,7 +176,7 @@ namespace HaveFun.Controllers.APIs
 		{
 			if (userReviewDTO == null)
 			{
-				return BadRequest("Invalid user review data.");
+				return BadRequest("無效資料");
 			}
 
 			userReviewDTO.ReportTime = DateTime.Now;
@@ -190,7 +190,7 @@ namespace HaveFun.Controllers.APIs
 
 			_context.SaveChanges();
 
-			return Ok("User reported successfully.");
+			return Ok("檢舉成功");
 		}
 	}
 }
