@@ -15,7 +15,7 @@
             <div class="modal-body group__bottom--body">
                 <div class="tab-content" id="myTabContent4">
                     <div v-if="data.activeTab === 'Newest'" class="tab-pane fade show active" id="Newest" role="tabpanel" aria-labelledby="Newest-tab">
-                        <ul>
+                        <ul v-if="data.friends.length">
                             <li v-for="friend in data.friends" :key="friend.id">
                                 <div class="top d-flex justify-content-between align-items-center">
                                     <div class="left member--style2 d-flex align-items-center">
@@ -30,21 +30,19 @@
                                             </a>
                                         </div>
                                     </div>
- 
                                     <div class="button-container">
                                         <button class="btn btn-danger" @@click="blockUser(friend.id)" v-if="friend.state !== 3">封鎖</button>
                                     </div>
                                 </div>
                             </li>
                         </ul>
+                        <p v-else class="text-center mt-3">暫無好友</p>
                     </div>
                     <div v-if="data.activeTab === 'BlackList'" class="tab-pane fade show active" id="BlackList" role="tabpanel" aria-labelledby="BlackList-tab">
-                        <ul>
+                        <ul v-if="data.blacklistedFriends.length">
                             <li v-for="friend in data.blacklistedFriends" :key="friend.id">
                                 <div class="top d-flex justify-content-between align-items-center">
                                     <div class="left member--style2 d-flex align-items-center">
-                                        @* <img :src="friend.profilePicture" alt="member-img">
-                                        <h6>{{ friend.name }}</h6>  *@
                                         <div class="member__thumb">
                                             <a :href="`/Profile/Index?userId=${friend.id}`">
                                                 <img :src="friend.profilePicture" alt="member-img">
@@ -62,6 +60,7 @@
                                 </div>
                             </li>
                         </ul>
+                        <p v-else class="text-center mt-3">暫無封鎖用戶</p>
                     </div>
                 </div>
             </div>
@@ -99,6 +98,7 @@
 </style>
 <script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
 <script>
     window.currentUserId = @ViewBag.UserId;
@@ -144,6 +144,11 @@
             blockUser(friendId) {
                 axios.post(`/api/FriendApi/BlockUser`, { userId: this.data.userId, friendId: friendId })
                     .then(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '成功封鎖用戶',
+                            showConfirmButton: true
+                        });
                         this.fetchFriends();
                         this.fetchBlacklist();
                     })
@@ -154,6 +159,11 @@
             unblockUser(friendId) {
                 axios.post(`/api/FriendApi/UnblockUser`, { userId: this.data.userId, friendId: friendId })
                     .then(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '成功解鎖用戶',
+                            showConfirmButton: true
+                        });
                         this.fetchFriends();
                         this.fetchBlacklist();
                     })
@@ -163,6 +173,5 @@
             }
         }
     });
-
     app.mount('#app');
 </script>
