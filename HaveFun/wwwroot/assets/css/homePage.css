@@ -44,8 +44,9 @@
     padding: 30px;
     border-radius: 20px;
 }*/
-.actImg{
-    height:264px;
+
+.story__thumb .actImg {
+    height: 264px;
 }
 .memberPic {
     border-radius: 50%;
@@ -64,7 +65,7 @@
         width: 150px;
         height: 90px;
     }
-    .actImg {
+    .story__thumb .actImg {
         height: 200px;
     }
 }
@@ -79,7 +80,7 @@
         border-radius: 10px;
         height: 80px;
     }
-    .actImg {
+    .story__thumb .actImg {
         height: 150px;
     }
 }
@@ -88,7 +89,7 @@
     .homePageBanner {
         height: 300px;
     }
-    .actImg {
+    .story__thumb .actImg {
         height: 233px;
     }
 }

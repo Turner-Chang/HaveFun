@@ -21,8 +21,7 @@ namespace HaveFun.Controllers
         public ChatRoomsController(HaveFunDbContext context)
         {
             _context = context;
-           
-           
+             
         }
 		//
 		[Authorize(AuthenticationSchemes = "Bearer,Cookies")]
