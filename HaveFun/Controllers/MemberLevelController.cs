@@ -1,6 +1,7 @@
 ﻿using HaveFun.Common;
 using HaveFun.DTOs;
 using HaveFun.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Text;
@@ -31,13 +32,13 @@ namespace HaveFun.Controllers
                 CloseUrl = "https://core.newebpay.com/API/CreditCard/Close"
             };
         }
-
-        public IActionResult Index()
+		[Authorize(AuthenticationSchemes = "Bearer,Cookies")]
+		public IActionResult Index()
         {
             return View();
         }
- 
-        public IActionResult Pay()
+		[Authorize(AuthenticationSchemes = "Bearer,Cookies")]
+		public IActionResult Pay()
         {
 
             int userId = User.GetUserId();
