@@ -1,5 +1,7 @@
-﻿.fixed-size-img {
-    width: 200px; /* 设置固定宽度 */
-    height: 200px; /* 设置固定高度 */
-    object-fit: cover; /* 保持图片比例 */
-}
+﻿
+    .member__thumb .wholikes_fixed-size-img {
+        width: 200px;       /* 设置固定宽度 */
+        height: 200px;      /* 设置固定高度 */
+        border-radius:0;
+        object-fit: cover; /* 保持图片比例 */
+    }
