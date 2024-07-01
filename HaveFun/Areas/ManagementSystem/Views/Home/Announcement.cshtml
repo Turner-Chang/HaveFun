@@ -206,7 +206,9 @@
 							"endTime": this.temp.endTime,
 						}
 						axios.post('/api/Announcement/Create', body,
-							{ headers: { "Content-type": "application/json" } }).then(res => console.log(res))
+							{ headers: { "Content-type": "application/json" } })
+							.then(res => console.log(res))
+							.then(d => AnnounceApp.GetAll())
 						this.hideCreateModal();
 					}
 					else 
@@ -217,8 +219,11 @@
 				GetAll() {
 					axios.get('/api/Announcement/GetAll')
 						.then(d => d.data)
-						.then(d => AnnounceApp.announces = d)
-						.then(d=> AnnounceApp.GetAll());
+						.then(d => {
+							AnnounceApp.announces = d;
+							AnnounceApp.announces.sort((a, b) =>
+							new Date(b.endTime) - new Date(a.endTime))}
+						);
 				},
 				GetById(id) {
 					axios.get(`/api/Announcement/Get/id?id=${id}`).then(res => this.Edit=res.data)
