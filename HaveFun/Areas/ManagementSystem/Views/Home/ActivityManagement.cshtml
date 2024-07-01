@@ -94,7 +94,7 @@
 							貼文類別:
 						</label>
 						<label class="col-3 text-center lh-base">
-							{{Act.type}}
+							{{this.ActTypeString(Act.type)}}
 						</label>
 
 						<label class="col-3 text-decoration-underline">
@@ -211,10 +211,13 @@
 					complaint: [],
 					ActImgSrc: "",
 					baseAdress: "",			 /*"https://localhost:7152"*/
-
+					ActType:[],
 				}
 			},
 			methods: {
+				ActTypeString(Id) {
+					if (!Id) return "";
+					return this.ActType.filter(d => d.id == Id)[0].typeName; },
 				GetAll() {
 
 					var data = fetch(`${this.baseAdress}/api/ActivityReview/GetAll`, { method: "GET" })
@@ -383,6 +386,7 @@
 				fetch(`${baseAdress}/api/complaint/Getall`, { method: "GET" }).then(r => r.json()).then(d => App.complaint = d);
 				//
 
+				axios.get('/api/ActivityApi/GetActivityType').then(d => App.ActType = (d.data))
 			},
 		}).mount("#ActivityCheckApp");
 
