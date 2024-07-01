@@ -110,32 +110,32 @@
 						<label class="col-3 text-center lh-base">
 							{{Act.maxParticipants}}
 						</label>
-						<label class="col-3 text-decoration-underline">
-							地點:
-						</label>
-						<label class="col-3 text-center lh-base">
-							{{Act.location}}
-						</label>
+						
 						<label class="col-3 text-decoration-underline">
 							自備金額:
 						</label>
 						<label class="col-3 text-center lh-base">
 							{{Act.amount}}
 						</label>
-
+						<label class="col-12 text-decoration-underline">
+							地點:
+						</label>
+						<label class="col-12 text-center lh-base">
+							{{Act.location}}
+						</label>
 					</div>
 					<div>
 						<label class="col-6 text-decoration-underline">
 							被檢舉貼文內容:
 						</label>
-						<label class="col-12 text-center lh-base">
-							{{Act.content}}
+						<label class="col-12 text-center lh-base" v-html="Act.content">
+
 						</label>
 						<label class="col-6 text-decoration-underline">
 							註記:
 						</label>
-						<label class="col-12 text-center lh-base">
-							{{Act.notes}}
+						<label class="col-12 text-center lh-base" v-html="Act.notes">
+							
 						</label>
 					</div>
 					<div>
