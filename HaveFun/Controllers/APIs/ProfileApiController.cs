@@ -167,35 +167,66 @@ namespace HaveFun.Controllers.APIs
             List<string> FriendPostList = new List<string>();
             List<string> FriendBlackList = new List<string>();
 
-            // 取出登入者FriendList
-            var friendList = await _context.FriendLists
-                .Where(f => f.Clicked.ToString() == loginId && f.state == 1)
-                .ToListAsync();
-
-            foreach (var friend in friendList)
+            if (userId == loginId)
             {
-                if (friend != null && friend.BeenClicked.ToString() != null)
+                // 取出登入者FriendList
+                var friendList = await _context.FriendLists
+                    .Where(f => f.Clicked.ToString() == loginId && f.state == 1 
+                           || f.BeenClicked.ToString() == loginId && f.state == 3)
+                    .ToListAsync();
+
+                foreach (var friend in friendList)
                 {
-                    FriendPostList.Add(friend.BeenClicked.ToString());
+                    if (friend != null && friend.BeenClicked.ToString() != null)
+                    {
+                        FriendPostList.Add(friend.BeenClicked.ToString());
+                    }
+                }
+
+                // 取出登入者FriendList-被封鎖名單
+                var friendBlackList = await _context.FriendLists
+                    .Where(f => f.BeenClicked.ToString() == loginId && f.state == 3)
+                    .ToListAsync();
+
+                foreach (var friend in friendBlackList)
+                {
+                    if (friend != null && friend.Clicked.ToString() != null)
+                    {
+                        FriendBlackList.Add(friend.Clicked.ToString());
+                    }
+                }
+
+                // 從好友清單排除，被封鎖的User
+                FriendPostList.RemoveAll(friend => friend != null && FriendBlackList.Contains(friend));
+
+                if (FriendBlackList.Contains(userId))
+                {
+                    return [];
                 }
             }
-
-            // 取出登入者FriendList-被封鎖名單
-            var friendBlackList = await _context.FriendLists
-                .Where(f => f.BeenClicked.ToString() == loginId && f.state == 3)
-                .ToListAsync();
-
-            foreach (var friend in friendBlackList)
+            else
             {
-                if (friend != null && friend.Clicked.ToString() != null)
+                // 取出登入者FriendList-被封鎖名單
+                var friendBlackList = await _context.FriendLists
+                    .Where(f => f.BeenClicked.ToString() == loginId && f.state == 3)
+                    .ToListAsync();
+
+                foreach (var friend in friendBlackList)
                 {
-                    FriendBlackList.Add(friend.Clicked.ToString());
+                    if (friend != null && friend.Clicked.ToString() != null)
+                    {
+                        FriendBlackList.Add(friend.Clicked.ToString());
+                    }
+                }
+
+                // 從好友清單排除，被封鎖的User
+                FriendPostList.RemoveAll(friend => friend != null && FriendBlackList.Contains(friend));
+
+                if (FriendBlackList.Contains(userId))
+                {
+                    return [];
                 }
             }
-
-            // 從好友清單排除，被封鎖的User
-            FriendPostList.RemoveAll(friend => friend != null && FriendBlackList.Contains(friend));
-
 
             var query = _context.Posts.AsQueryable();
             if (queryFriend)
