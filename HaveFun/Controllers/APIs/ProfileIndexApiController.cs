@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
+using System.IO;
 using System.Text.Json;
 
 namespace HaveFun.Controllers.APIs
@@ -55,8 +56,16 @@ namespace HaveFun.Controllers.APIs
         [HttpGet("{id}")]
         public async Task<FileResult> GetPicture(int id)
         {
+            string path = "";
             UserInfo? user = await _context.UserInfos.FindAsync(id);
-            string path = user.ProfilePicture;
+            if (string.IsNullOrEmpty(user.ProfilePicture))
+            {
+                path = "wwwroot\\images\\headshots\\NoHeadphoto.png";
+            }
+            else
+            {
+                path = user.ProfilePicture;
+            }
             byte[] ImageContent = System.IO.File.ReadAllBytes(path);
             return File(ImageContent, "image/*");
         }

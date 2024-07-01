@@ -137,8 +137,9 @@
                         this.allUserStatuses = statusesResponse.data;
                         for (id of this.allUserStatuses) {
                             var f = friends.find(friend => friend.id == id);
+                            if (f != null) {
                             f.isOnline = "online";
-                        
+                            }
                         }
 
                         this.friends = friends.map(friend => {
@@ -173,7 +174,6 @@
                         const userStatus = this.allUserStatuses.find(status => status.userId === friend.id);
                         if (userStatus) {
                             friend.isOnline = userStatus.isOnline;
-                            friend.status = userStatus.isOnline ? 'online' : 'offline';
                         }
                     });
                 },
@@ -266,7 +266,8 @@
 
                     this.connection.on("SomeOneOnline", (connid) => {
                         console.log(`Someone connected, ID: ${connid}`);
-                        this.setonline(); this.fetchFriends();
+                        this.setonline();
+                        this.fetchFriends();
                     });
 
                     this.connection.on("SomeOneOffline", (connid) => {

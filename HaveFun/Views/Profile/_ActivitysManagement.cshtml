@@ -1,647 +1,775 @@
 ﻿<link href="~/assets/css/profile_activitiesmanagement.css" rel="stylesheet" />
 <div class="tab-pane fade" id="gt3" role="tabpanel" aria-labelledby="gt3-tab">
-	<div id="activityPlatform">
-		<ul class="tags lab-ul justify-content-center">
-			<li>
-				<button class="default-btn actType" @@click="switchType('commingup')">{{ buttonText('commingup', '即將舉辦活動') }}</button>
-			</li>
-			<li>
-				<button class="default-btn actType" @@click="switchType('host')">{{ buttonText('host', '修改主辦活動內容') }}</button>
-			</li>
-			<li>
-				<button class="default-btn actType" @@click="switchType('past')">{{ buttonText('past', '已結束的活動') }}</button>
-			</li>
-		</ul>
-		<input class="searchBar form-control" type="text" placeholder="搜尋活動名稱..." v-model="searchWord">
-		<!-- 彈出視窗們 -->
-		<!-- 取消參加活動視窗 -->
-		<div class="canelAttendBox">
-			<span>確定要退出活動嗎？</span><br><br>
-			<button class="btn btn-danger" @@click="cancelAttendActivity">是</button>
-			<button class="btn btn-outline-secondary" @@click="escCancelAttendBox">否</button>
-		</div>
-		<!-- 活動參加會員們視窗 -->
-		<div class="participantsBox">
-			<span>參加者: {{members.length}} 位</span><br>
-			<div class="joinMember">
-				<div class="memberProfile" v-for="member in members">
-					<a :href="`/Profile/Index?userId=${member.id}`">
-					<img class="memberPic" v-bind:src=`${baseAddress}/api/personalActivities/GetUserProfile/${member.id}`>
-					{{member.name}}</a>
+    <div id="activityPlatform">
+        <ul class="tags lab-ul justify-content-center">
+            <li>
+                <button class="default-btn actType" @@click="switchType('commingup')">{{ buttonText('commingup', '即將舉辦活動') }}</button>
+            </li>
+            <li>
+                <button class="default-btn actType" @@click="switchType('host')">{{ buttonText('host', '修改主辦活動內容') }}</button>
+            </li>
+            <li>
+                <button class="default-btn actType" @@click="switchType('past')">{{ buttonText('past', '已結束的活動') }}</button>
+            </li>
+        </ul>
+        <input class="searchBar form-control" type="text" placeholder="搜尋活動名稱..." v-model="searchWord">
+        <!-- 彈出視窗們 -->
+        <!-- 取消參加活動視窗 -->
+        <div class="canelAttendBox-overlay">
+            <div class="canelAttendBox">
+                <span>確定要退出活動嗎？</span><br><br>
+                <button class="btn btn-danger" @@click="cancelAttendActivity(act)">是</button>
+                <button class="btn btn-outline-secondary" @@click="escCancelAttendBox">否</button>
+            </div>
+        </div>
+        <!-- 活動參加會員們視窗 -->
+        <div class="participantsBox-overlay">
+            <div class="participantsBox">
+                <span>參加者: {{members.length}} 位</span><br>
+                <div class="joinMember">
+                    <div class="memberProfile" v-for="member in members">
+                        <a :href="`/Profile/Index?userId=${member.id}`">
+                            <img class="memberPic" v-bind:src=`${baseAddress}/api/personalActivities/GetUserProfile/${member.id}`>
+                            {{member.name}}
+                        </a>
+                    </div>
                 </div>
-			</div>
-			<button class="btn btn-danger" @@click="escParticipantsBox">關閉</button>
-		</div>
-		<!-- 刪除活動視窗 -->
-		<div class="deleteActBox">
-			<span>確定要刪除活動嗎？</span><br><br>
-			<button class="btn btn-danger" @@click="deleteActivity">是</button>
-			<button class="btn btn-outline-secondary" @@click="escdeleteActBox">否</button>
-		</div>
-		<!-- ================> 即將發生的活動 <================== -->
-		<div v-if="currentType === 'commingup'" v-for="(act, index) in filteredWords" class="blog__item">
-			<div class="blog__inner">
-				<div class="blog__content">
-					<img v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}?rand=${rand}`>
-					<h3>{{act.title}}</h3>
-					<ul class="lab-ul blog__date">
-						<li><span><i class="fa-solid fa-calendar-days"></i> 活動時間：{{act.activityTime}} </span></li>
-						<li><span><i class="fa-solid fa-user"></i> 主辦者：{{act.host}}</span> </li>
-						<li><a href="#" @@click="showParticipantsBox(act)"><span><i class="fa-solid fa-users"></i> {{act.participant.length}}位參加者</span> </a></li>
-						<li><span><i class="fa-solid fa-map-location-dot"></i> 活動地點：{{act.location}}</span></li>
-					</ul>
-					<details @@toggle="act.expandState = !act.expandState">
-						<summary>{{act.expandState? '隱藏詳細內容' : '展開詳細內容'}}</summary>
-						<div class="col-xs-2">
-							<div :id="'map' + index" class="map"></div>
-							<span class="infoTitle">活動類型：</span>
-							{{act.type}}<br>
-							<span class="infoTitle">活動開始報名時間：</span>
-							{{act.registrationTime}}<br>
-							<span class="infoTitle">活動報名截止時間：</span>
-							{{act.deadlineTime}}<br>
-							<span class="infoTitle">活動費用：</span>
-							{{act.amount}}元<br>
-							<span class="infoTitle">報名人數上限：</span>
-							{{act.max}}<br>
-							<span class="infoTitle">活動內容：</span><br>
-							<p class="actContent">{{act.content}}</p><br>
-							<span class="infoTitle">注意事項：</span><br>
-							<p class="actContent">{{act.notes}}</p><br><br>
-							<!-- Host與登入會員不相同才有取消參加活動按鈕 -->
-							<button v-if="act.hostId != loginUserId" class="default-btn" id="cancelAttend" @@click="showCancelAttend(act.id)">
-								取消參加活動
-							</button>
-						</div>
-					</details>
-				</div>
-			</div>
-		</div>
-		<div v-if="currentType === 'commingup' && commingupActivities.length === 0">
-			<p class="empty">目前沒有即將發生的活動</p>
-		</div>
-		<!-- ================> 編輯主辦活動內容 <================== -->
-		<div v-if="currentType === 'host'" v-for="act in filteredWords" class="blog__item">
-			<div class="blog__inner">
-				<div v-if="act.inEdit === false" class="blog__content">
-					<img v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}?rand=${rand}`>
-					<h3>{{act.title}}</h3>
-					<ul class="lab-ul blog__date">
-						<li><span><i class="fa-solid fa-calendar-days"></i> 活動時間：{{act.activityTime}} </span></li>
-						<li><span><i class="fa-solid fa-user"></i> 主辦者：{{act.host}}</span> </li>
-						<li><a href="#" @@click="showParticipantsBox(act)"><span><i class="fa-solid fa-users"></i> {{act.participant.length}}位參加者</span> </a></li>
-						<li><span><i class="fa-solid fa-map-location-dot"></i> 活動地點：{{act.location}}</span></li>
-					</ul>
-					<details @@toggle="act.expandState = !act.expandState">
-						<summary>{{act.expandState? '隱藏詳細內容' : '展開詳細內容'}}</summary>
-						<div>
-							<span class="infoTitle">活動類型：</span>
-							{{act.type}}<br>
-							<span class="infoTitle">活動開始報名時間：</span>
-							{{act.registrationTime}}<br>
-							<span class="infoTitle">活動報名截止時間：</span>
-							{{act.deadlineTime}}<br>
-							<span class="infoTitle">活動費用：</span>
-							{{act.amount}}元<br>
-							<span class="infoTitle">報名人數上限：</span>
-							{{act.max}}<br>
-							<span class="infoTitle">活動內容：</span><br>
-							<p class="actContent">{{act.content}}</p><br>
-							<span class="infoTitle">注意事項：</span><br>
-							<p class="actContent">{{act.notes}}</p><br><br>
-							<button class="default-btn" @@click="showDeleteAct(act.id)">刪除活動</button>
-							<button class="default-btn btnEdit" @@click="intoEditing(act)">修改活動內容</button>
-						</div>
-					</details>
-				</div>
-				<!-- 編輯活動內容 -->
-				<div v-if="act.inEdit === true" class="blog__content">
-					<img class="imgPreview" v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}?rand=${rand}`><br>
-					<input type="file" id="picFile" v-model="EditPic" accept="image/*" @@change="previewPic">
-					<button v-if="editPic != null" @@click="removeEditPic">移除</button><br>
-					<span> 活動名稱：</span>
-					<input :class="['form-control',{'is-invalid':errorStyle.title}]" maxlength="50" v-model="editTitle">
-					<div class="invalid-feedback">活動標題為必填</div>
-					<span>活動時間：</span>
-					<input :class="['form-control',{'is-invalid':errorStyle.activityTime}]" type="datetime-local" v-model="editActivityTime">
-					<div class="invalid-feedback">請輸入有效時間</div>
-					<span> 活動地點：</span>
-					<input id="editLocation" :class="['form-control',{'is-invalid':errorStyle.location}]"  maxlength="200" v-model="site">
-					<div class="invalid-feedback">活動地點為必填</div>
-					<span>活動類型：</span>
-					<select :class="['form-control',{'is-invalid':errorStyle.type}]" id="inputState" v-model="editActType">
-					<option v-for="type in activitiyType" :value="type.id">{{type.typeName}}</option>
-					</select>
-					<div class="invalid-feedback">請選擇活動類別</div>
-					<span>活動開始報名時間：</span>
-					<input v-if="canRegistrationEdit(act.registrationTime)" :class="['form-control',{'is-invalid':errorStyle.registrationTime}]" type="datetime-local" v-model="editRegistrationTime">
-					<p v-else>{{act.registrationTime}}</p>
-					<div class="invalid-feedback">請輸入有效時間</div>
-					<span>活動報名截止時間：</span>
-					<input :class="['form-control',{'is-invalid':errorStyle.deadlineTime}]" type="datetime-local" v-model="editDeadlineTime">
-					<div class="invalid-feedback">請輸入有效時間</div>
-					<span>活動費用：</span><br>
-					<input type="number" :class="['form-control',{'is-invalid':errorStyle.amount}]" v-model="editAmount">　元<br>
-					<div class="invalid-feedback">請輸入有效數字</div>
-					<span>報名人數上限：</span><br>
-					<input type="number" :class="['form-control',{'is-invalid':errorStyle.max}]" v-model="editMax"><br>
-					<div class="invalid-feedback">請輸入有效數字</div>
-					<span>活動內容：</span><br>
-					<textarea :class="['form-control',{'is-invalid':errorStyle.content}]" maxlength="1000" v-model="editActContent"></textarea>
-					<div class="invalid-feedback">活動內容為必填</div>
-					<span>注意事項：</span><br>
-					<textarea :class="['form-control',{'is-invalid':errorStyle.note}]" maxlength="1000" v-model="editNote"></textarea>
-					<div class="invalid-feedback">注意事項為必填</div>
-					<br><br>
-					<button class="btn btn-outline-secondary" @@click="cancelToEdit(act)">取消修改</button>&nbsp;
-					<button type="submit" id="submit" class="default-btn" @@click="editActivity(act)">確定修改</button>
-				</div>
-			</div>
-		</div>
-		<div v-if="currentType === 'host' && hostActivities.length === 0">
-			<p class="empty">目前沒有主辦活動可以顯示</p>
-		</div>
-		<!-- ================> 已經結束的活動 <================== -->
-		<div v-if="currentType === 'past'" v-for="(act, index) in filteredWords" class="blog__item">
-			<div class="blog__inner">
-				<div class="blog__content">
-					<img v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}?rand=${rand}`>
-					<h3>{{act.title}}</h3>
-					<ul class="lab-ul blog__date">
-						<li><span><i class="fa-solid fa-calendar-days"></i> 活動時間：{{act.activityTime}} </span></li>
-						<li><span><i class="fa-solid fa-user"></i> 主辦者：{{act.host}}</span> </li>
-						<li><a href="#" @@click="showParticipantsBox(act)"><span><i class="fa-solid fa-users"></i> {{act.participant.length}}位參加者</span> </a></li>
-						<li><span><i class="fa-solid fa-map-location-dot"></i> 活動地點：{{act.location}}</span></li>
-					</ul>
-					<details @@toggle="act.expandState = !act.expandState">
-						<summary>{{act.expandState? '隱藏詳細內容' : '展開詳細內容'}}</summary>
-						<div>
-							<div :id="'map' + index" class="map"></div>
-							<span class="infoTitle">活動類型：</span>
-							{{act.type}}<br>
-							<span class="infoTitle">活動費用：</span>
-							{{act.amount}}元<br>
-							<span class="infoTitle">報名人數上限：</span>
-							{{act.max}}<br>
-							<span class="infoTitle">活動內容：</span><br>
-							<p class="actContent">{{act.content}}</p><br>
-							<span class="infoTitle">注意事項：</span><br>
-							<p class="actContent">{{act.notes}}</p>
-						</div>
-					</details>
-				</div>
-			</div>
-		</div>
-		<div v-if="currentType === 'past' && pastActivities.length === 0">
-			<p class="empty">目前沒有歷史活動可以顯示</p>
-		</div>
-	</div>
+                <button class="btn btn-danger" @@click="escParticipantsBox">關閉</button>
+            </div>
+        </div>
+        <!-- 刪除活動視窗 -->
+        <div class="deleteActBox-overlay">
+            <div class="deleteActBox">
+                <span>確定要刪除活動嗎？</span><br><br>
+                <button class="btn btn-danger" @@click="deleteActivity">是</button>
+                <button class="btn btn-outline-secondary" @@click="escdeleteActBox">否</button>
+            </div>
+        </div>
+        <!-- ================> 即將發生的活動 <================== -->
+        <div v-if="isActiveTab('commingup')">
+            <div v-if="commingupActivities.length > 0">
+                <div v-for="(act, index) in commingupFilter" class="blog__item">
+                    <div class="blog__inner">
+                        <div class="blog__content">
+                            <img v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}?rand=${rand}`>
+                            <h3>{{act.title}}</h3>
+                            <ul class="lab-ul blog__date">
+                                <li><span><i class="fa-solid fa-calendar-days"></i> 活動時間：{{act.activityTime}} </span></li>
+                                <li><span><i class="fa-solid fa-user"></i> 主辦者：{{act.host}}</span> </li>
+                                <li><a href="#" @@click="showParticipantsBox(act)"><span class="attendMember"><i class="fa-solid fa-users"></i> {{act.participant.length}}位參加者</span> </a></li>
+                                <li><span><i class="fa-solid fa-map-location-dot"></i> 活動地點：{{act.location}}</span></li>
+                            </ul>
+                            <details @@toggle="act.expandState = !act.expandState">
+                                <summary>{{act.expandState? '隱藏詳細內容' : '展開詳細內容'}}</summary>
+                                <div class="col-xs-2">
+                                    <div :id="'map' + index" class="map"></div>
+                                    <span class="infoTitle">活動類型：</span>
+                                    {{act.type}}<br>
+                                    <span class="infoTitle">活動開始報名時間：</span>
+                                    {{act.registrationTime}}<br>
+                                    <span class="infoTitle">活動報名截止時間：</span>
+                                    {{act.deadlineTime}}<br>
+                                    <span class="infoTitle">活動費用：</span>
+                                    {{act.amount}}元<br>
+                                    <span class="infoTitle">報名人數上限：</span>
+                                    {{act.max}}<br>
+                                    <span class="infoTitle">活動內容：</span><br>
+                                    <p class="actContent">{{act.content}}</p><br>
+                                    <span class="infoTitle">注意事項：</span><br>
+                                    <p class="actContent">{{act.notes}}</p><br><br>
+                                    <!-- Host與登入會員不相同才有取消參加活動按鈕 -->
+                                    <button v-if="act.hostId != loginUserId" class="default-btn" id="cancelAttend" @@click="showCancelAttend(act)">
+                                        取消參加活動
+                                    </button>
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+                </div>
+                <div id="commingupObserver"></div>
+            </div>
+            <div v-else>
+                <p class="empty">目前沒有即將發生的活動</p>
+            </div>
+        </div>
+        <!-- ================> 編輯主辦活動內容 <================== -->
+        <div v-if="isActiveTab('host')">
+            <div v-if="hostActivities.length > 0">
+                <div v-for="act in hostFilter" class="blog__item">
+                    <div class="blog__inner">
+                        <div v-if="act.inEdit === false" class="blog__content">
+                            <img v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}?rand=${rand}`>
+                            <h3>{{act.title}}</h3>
+                            <ul class="lab-ul blog__date">
+                                <li><span><i class="fa-solid fa-calendar-days"></i> 活動時間：{{act.activityTime}} </span></li>
+                                <li><span><i class="fa-solid fa-user"></i> 主辦者：{{act.host}}</span> </li>
+                                <li><a href="#" @@click="showParticipantsBox(act)"><span class="attendMember"><i class="fa-solid fa-users"></i> {{act.participant.length}}位參加者</span> </a></li>
+                                <li><span><i class="fa-solid fa-map-location-dot"></i> 活動地點：{{act.location}}</span></li>
+                            </ul>
+                            <details @@toggle="act.expandState = !act.expandState">
+                                <summary>{{act.expandState? '隱藏詳細內容' : '展開詳細內容'}}</summary>
+                                <div>
+                                    <span class="infoTitle">活動類型：</span>
+                                    {{act.type}}<br>
+                                    <span class="infoTitle">活動開始報名時間：</span>
+                                    {{act.registrationTime}}<br>
+                                    <span class="infoTitle">活動報名截止時間：</span>
+                                    {{act.deadlineTime}}<br>
+                                    <span class="infoTitle">活動費用：</span>
+                                    {{act.amount}}元<br>
+                                    <span class="infoTitle">報名人數上限：</span>
+                                    {{act.max}}<br>
+                                    <span class="infoTitle">活動內容：</span><br>
+                                    <p class="actContent">{{act.content}}</p><br>
+                                    <span class="infoTitle">注意事項：</span><br>
+                                    <p class="actContent">{{act.notes}}</p><br><br>
+                                    <button class="default-btn" @@click="showDeleteAct(act)">刪除活動</button>
+                                    <button class="default-btn btnEdit" @@click="intoEditing(act)">修改活動內容</button>
+                                </div>
+                            </details>
+                        </div>
+                        <!-- 編輯活動內容 -->
+                        <div v-if="act.inEdit === true" class="blog__content">
+                            <img class="imgPreview" v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}?rand=${rand}`><br>
+                            <input type="file" id="picFile" v-model="EditPic" accept="image/*" @@change="previewPic">
+                            <button v-if="editPic != null" @@click="removeEditPic">移除</button><br>
+                            <span> 活動名稱：</span>
+                            <input :class="['form-control',{'is-invalid':errorStyle.title}]" maxlength="50" v-model="editTitle">
+                            <div class="invalid-feedback">活動標題為必填</div>
+                            <span>活動時間：</span>
+                            <input :class="['form-control',{'is-invalid':errorStyle.activityTime}]" type="datetime-local" v-model="editActivityTime">
+                            <div class="invalid-feedback">請輸入有效時間</div>
+                            <span> 活動地點：</span>
+                            <input id="editLocation" :class="['form-control',{'is-invalid':errorStyle.location}]" maxlength="200" v-model="site">
+                            <div class="invalid-feedback">活動地點為必填</div>
+                            <span>活動類型：</span>
+                            <select :class="['form-control',{'is-invalid':errorStyle.type}]" id="inputState" v-model="editActType">
+                                <option v-for="type in activitiyType" :value="type.id">{{type.typeName}}</option>
+                            </select>
+                            <div class="invalid-feedback">請選擇活動類別</div>
+                            <span>活動開始報名時間：</span>
+                            <input v-if="canRegistrationEdit(act.registrationTime)" :class="['form-control',{'is-invalid':errorStyle.registrationTime}]" type="datetime-local" v-model="editRegistrationTime">
+                            <p v-else>{{act.registrationTime}}</p>
+                            <div class="invalid-feedback">請輸入有效時間</div>
+                            <span>活動報名截止時間：</span>
+                            <input :class="['form-control',{'is-invalid':errorStyle.deadlineTime}]" type="datetime-local" v-model="editDeadlineTime">
+                            <div class="invalid-feedback">請輸入有效時間</div>
+                            <span>活動費用：</span><br>
+                            <input type="number" :class="['form-control',{'is-invalid':errorStyle.amount}]" v-model="editAmount">　元<br>
+                            <div class="invalid-feedback">請輸入有效數字</div>
+                            <span>報名人數上限：</span><br>
+                            <input type="number" :class="['form-control',{'is-invalid':errorStyle.max}]" v-model="editMax"><br>
+                            <div class="invalid-feedback">請輸入有效數字</div>
+                            <span>活動內容：</span><br>
+                            <textarea :class="['form-control',{'is-invalid':errorStyle.content}]" maxlength="1000" v-model="editActContent"></textarea>
+                            <div class="invalid-feedback">活動內容為必填</div>
+                            <span>注意事項：</span><br>
+                            <textarea :class="['form-control',{'is-invalid':errorStyle.note}]" maxlength="1000" v-model="editNote"></textarea>
+                            <div class="invalid-feedback">注意事項為必填</div>
+                            <br><br>
+                            <button class="btn btn-outline-secondary" @@click="cancelToEdit(act)">取消修改</button>&nbsp;
+                            <button type="submit" id="submit" class="default-btn" @@click="editActivity(act)">確定修改</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="hostObserver"></div>
+            </div>
+            <div v-else> <p class="empty">目前沒有主辦活動可以顯示</p></div>
+        </div>
+        <!-- ================> 已經結束的活動 <================== -->
+        <div v-if="isActiveTab('past')">
+            <div v-if="pastActivities.length > 0">
+                <div v-for="(act, index) in pastFilter" class="blog__item">
+                    <div class="blog__inner">
+                        <div class="blog__content">
+                            <img v-bind:src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}?rand=${rand}`>
+                            <h3>{{act.title}}</h3>
+                            <ul class="lab-ul blog__date">
+                                <li><span><i class="fa-solid fa-calendar-days"></i> 活動時間：{{act.activityTime}} </span></li>
+                                <li><span><i class="fa-solid fa-user"></i> 主辦者：{{act.host}}</span> </li>
+                                <li><a href="#" @@click="showParticipantsBox(act)"><span class="attendMember"><i class="fa-solid fa-users"></i> {{act.participant.length}}位參加者</span> </a></li>
+                                <li><span><i class="fa-solid fa-map-location-dot"></i> 活動地點：{{act.location}}</span></li>
+                            </ul>
+                            <details @@toggle="act.expandState = !act.expandState">
+                                <summary>{{act.expandState? '隱藏詳細內容' : '展開詳細內容'}}</summary>
+                                <div>
+                                    <div :id="'map' + index" class="map"></div>
+                                    <span class="infoTitle">活動類型：</span>
+                                    {{act.type}}<br>
+                                    <span class="infoTitle">活動費用：</span>
+                                    {{act.amount}}元<br>
+                                    <span class="infoTitle">報名人數上限：</span>
+                                    {{act.max}}<br>
+                                    <span class="infoTitle">活動內容：</span><br>
+                                    <p class="actContent">{{act.content}}</p><br>
+                                    <span class="infoTitle">注意事項：</span><br>
+                                    <p class="actContent">{{act.notes}}</p>
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+                </div>
+                <div id="pastObserver"></div>
+            </div>
+            <div v-else>
+                <p class="empty">目前沒有歷史活動可以顯示</p>
+            </div>
+        </div>
+    </div>
 </div>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDh0olCmLq7Tpu-ktNN0_JYyt9G529C4qA&libraries=geocoding,places"></script>
 <script>
-	const activityPlatform = Vue.createApp({
-		data() {
-			return {
-				baseAddress: window.location.origin,
-				loginUserId: @ViewBag.UserId,
-				currentType: "commingup",
-				commingupActivities: [],
-				hostActivities: [],
-				pastActivities: [],
-				activitiyType: [],
-				searchWord:'',
-				wannaEdit:0,
-				members:[],
-				editPic:null,
-				editTitle:'',
-				editActivityTime:'',
-				editLocation:'',
-				editActType: 0,
-				editRegistrationTime:'',
-				editDeadlineTime:'',
-				editAmount:0,
-				editMax:0,
-				editActContent: '',
-				editNote:'',
-				waitingToCancel: 0,
-				waitingToDelete: 0,
-				errorStyle: {
-					title: false,
-					location: false,
-					content: false,
-					note: false,
-					activityTime: false,
-					registrationTime: false,
-					deadlineTime: false,
-					amount: false,
-					max: false,
-					type: false
-				},
-				currentDateTime: new Date().toISOString().slice(0, 16),
-				min: 0,
-				rand:1,
-				site:"",
-				autocomplete:null,
-			}
-		},
-		watch: {
-			hasTitle(newVal, oldVal) {
-				this.errorStyle.title = !newVal;
-			},
-			hasLocation(newVal, oldVal) {
-				this.errorStyle.location = !newVal;
-			},
-			hasContent(newVal, oldVal) {
-				this.errorStyle.content = !newVal;
-			},
-			hasNote(newVal, oldVal) {
-				this.errorStyle.note = !newVal;
-			},
-			validActivityTime(newVal, oldVal) {
-				this.errorStyle.activityTime = !newVal;
-			},
-			validRegistrationTime(newVal, oldVal) {
-				this.errorStyle.registrationTime = !newVal;
-			},
-			validDeadlineTime(newVal, oldVal) {
-				this.errorStyle.deadlineTime = !newVal;
-			},
-			validAmount(newVal, oldVal) {
-				this.errorStyle.amount = !newVal;
-			},
-			validMax(newVal, oldVal) {
-				this.errorStyle.max = !newVal;
-			},
-			validType(newVal, oldVal) {
-				this.errorStyle.type = !newVal;
-			},
-			hasError(newVal) {
-				if (newVal) {
-					$('#submit').css("display", "none");
-				} else {
-					$('#submit').css("display", "inline-block");
-				}
-			},
-		},
-		computed: {
-			hasTitle(){
-				return this.editTitle != '';
-			},
-			hasLocation() {
-				return this.editLocation != '';
-			},
-			hasContent() {
-				return this.editActContent != '';
-			},
-			hasNote() {
-				return this.editNote != '';
-			},
-			validActivityTime() {
-				return this.editActivityTime > this.currentDateTime;
-			},
-			validRegistrationTime() {
-				return this.editRegistrationTime > this.currentDateTime;
-			},
-			validDeadlineTime() {
-				return this.editDeadlineTime > this.currentDateTime && this.editDeadlineTime > this.editRegistrationTime;
-			},
-			validAmount() {
-				return this.editAmount >= this.min;
-			},
-			validMax() {
-				return this.editMax > this.min;
-			},
-			validType() {
-				return this.editActType > this.min;
-			},
-			hasError() {
-				return Object.values(this.errorStyle).includes(true);
-			},
-			filteredWords() {
-				if (this.currentType === 'commingup') {
-					return this.commingupActivities.filter(activity =>
-						activity.title.toLowerCase().includes(this.searchWord.toLowerCase())
-					);
-				}
-				if (this.currentType === 'host') {
-					return this.hostActivities.filter(activity =>
-						activity.title.toLowerCase().includes(this.searchWord.toLowerCase())
-					);
-				}
-				if (this.currentType === 'past') {
-					return this.pastActivities.filter(activity =>
-						activity.title.toLowerCase().includes(this.searchWord.toLowerCase())
-					);
-				}
-			}
-		},
-		methods: {
-			//取得登入者即將發生活動
-			getCommingupList() {
-				fetch(`/api/personalActivities/GetCommingupActivities/${this.loginUserId}`)
-					.then(res => res.json())
-					.then(data => {
-						this.commingupActivities = data.map(activity => ({
-							...activity,
-							expandState: false
-						}));
-					})
-					.catch(error => { console.log('fetch commingupActivities failed!') });
-			},
-			//取得登入者主辦活動
-			getHostList() {
-				fetch(`/api/personalActivities/GetHostActivities/${this.loginUserId}`)
-					.then(res => res.json())
-					.then(data => {
-						this.hostActivities = data.map(activity => ({
-							...activity,
-							expandState: false,
-							inEdit: false
-						}));
-					})
-					.catch(error => { console.log('fetch hostActivities failed!') });
-			},
-			//取得已結束活動
-			getPastList() {
-				fetch(`/api/personalActivities/GetPastActivities/${this.loginUserId}`)
-					.then(res => res.json())
-					.then(data => {
-						this.pastActivities = data.map(activity => ({
-							...activity,
-							expandState: false
-						}));
-					})
-					.catch(error => { console.log('fetch pastActivities failed!') });
-			},
-			//取得所有活動類型
-			getActivityTypeList() {
-				fetch(`/api/personalActivities/GetActivityType`)
-					.then(res => res.json())
-					.then(data => {
-						this.activitiyType = data;
-					})
-					.catch(error => { console.log('fetch activityType failed!') });
-			},
-			//切換狀態顯示活動
-			switchType(type) {
-				this.currentType = type;
-				this.searchWord = '';
-			},
-			buttonText(type, text) {
-				return this.currentType === type ? '● ' + text : text;
-			},
-			//顯示活動參加者視窗
-			showParticipantsBox(act){
-				event.preventDefault();
-				this.members = act.participant;
-				console.log(this.members);
-				$('.participantsBox').css("display", "block");
-			},
-			//關閉活動參加者視窗
-			escParticipantsBox(){
-				event.preventDefault();
-				$('.participantsBox').css("display", "none");
-			},
-			//顯示退出活動視窗
-			showCancelAttend(id) {
-				event.preventDefault();
-				$('.canelAttendBox').css("display", "block");
-				this.waitingToCancel = id;
-			},
-			//取消刪除貼文視窗
-			escCancelAttendBox() {
-				event.preventDefault();
-				$('.canelAttendBox').css("display", "none");
-				this.waitingToCancel = 0;
-			},
-			//取消參加活動
-			cancelAttendActivity() {
-				event.preventDefault();
-				let request = {
-					"Id": 0,
-					"ActivityId": this.waitingToCancel,
-					"UserId": this.loginUserId
-				};
-				fetch(`/api/personalActivities/NotAttending`, {
-					method: 'DELETE',
-					headers: {
-						"Content-Type": "application/json"
-					},
-					body: JSON.stringify(request)
-				})
-					.then(response => response.json())
-					.then(data => {
-						console.log(data);
-						this.getCommingupList(this.loginUserId);
-					})
-					.catch(error => {
-						console.log('fetch cancel attend activity failed!', error)
-					});
-				$('.canelAttendBox').css("display", "none");
-			},
-			//顯示刪除活動視窗
-			showDeleteAct(id) {
-				event.preventDefault();
-				$('.deleteActBox').css("display", "block");
-				this.waitingToDelete = id;
-			},
-			//取消顯示刪除活動視窗
-			escdeleteActBox() {
-				event.preventDefault();
-				$('.deleteActBox').css("display", "none");
-				this.waitingToDelete = 0;
-			},
-			//刪除活動
-			deleteActivity() {
-				event.preventDefault();
-				fetch(`/api/personalActivities/DeleteActivity/${this.waitingToDelete}`, {
-					method: 'PUT',
-					headers: {
-						"Content-Type": "application/json"
-					}
-				})
-					.then(response => response.json())
-					.then(data => {
-						console.log(data);
-						this.getCommingupList(this.loginUserId);
-						this.getHostList(this.loginUserId);
-					})
-					.catch(error => {
-						console.log('fetch delete activity failed!', error)
-					});
-				$('.deleteActBox').css("display", "none");
-			},
-			//進入修改活動畫面
-			intoEditing(act) {
-				act.inEdit = true;
-				$('.btnEdit').hide();
-				this.wannaEdit = act.id;
-				this.editTitle = act.title;
-				this.editActivityTime = act.activityTime;
-				this.editLocation = act.location;
-				this.site = act.location;
-				this.editActType = act.typeId;
-				this.editRegistrationTime = act.registrationTime;
-				this.editDeadlineTime = act.deadlineTime;
-				this.editAmount = act.amount;
-				this.editMax = act.max;
-				this.editActContent = act.content;
-				this.editNote = act.notes;
-			},
-			//取消修改活動內容
-			cancelToEdit(act) {
-				act.inEdit = false;
-				$('.btnEdit').show();
-				this.wannaEdit = 0;
-				this.editPic = null;
-				this.editTitle = '';
-				this.editActivityTime = '';
-				this.editLocation = '';
-				this.editActType = 0;
-				this.editRegistrationTime = '';
-				this.editDeadlineTime = '';
-				this.editAmount = 0;
-				this.editMax = 0;
-				this.editActContent = '';
-				this.editNote = '';
-			},
-			//修改活動內容
-			editActivity(act) {
-				act.inEdit = false;
-				let formData = new FormData();
-				formData.append('UserId', this.loginUserId);
-				formData.append('ActivityId', act.id);
-				formData.append('Type', this.editActType);
-				formData.append('Title', this.editTitle);
-				formData.append('Content', this.editActContent);
-				formData.append('Notes', this.editNote);
-				formData.append('Amount', this.editAmount);
-				formData.append('MaxParticipants', this.editMax);
-				formData.append('Location', this.site);
-				formData.append('RegistrationTime', this.editRegistrationTime);
-				formData.append('DeadlineTime', this.editDeadlineTime);
-				formData.append('ActivityTime', this.editActivityTime);
-				formData.append('Pictures', this.editPic);
-				
-				fetch(`/api/personalActivities/EditActivity/${act.id}`, {
-					method:'PUT',
-					body: formData
-				})
-					.then(response => { 
-						response.json() 
-					})
-				.then(data => {
-					// console.log('成功', data);
-					act.inEdit = false;
-					$('.btnEdit').show();
-					this.wannaEdit = 0;
-					this.editPic = null;
-					this.editTitle = '';
-					this.editActivityTime = '';
-					this.editLocation = '';
-					this.editActType = 0;
-					this.editRegistrationTime = '';
-					this.editDeadlineTime = '';
-					this.editAmount = 0;
-					this.editMax = 0;
-					this.editActContent = '';
-					this.editNote = '';
-					this.site = '';
-					this.getCommingupList(this.loginUserId);
-					this.getHostList(this.loginUserId);
-					this.rand = ++this.rand
-				})
-				.catch(err => {
-					console.log('fetch edit activity failed!', err);
-				})
-			},
-			//修改活動圖片預覽
-			previewPic() {
-				const allowType = "image.*";
-				let file = event.target.files[0];
-				if (file.type.match(allowType)) {
-					var reader = new FileReader();
-					reader.onload = function () {
-						this.editPic = this.result;
-						let blob = new Blob([this.editPic], { type: "image/jpeg" });
-						let uriCreator = window.URL || wondow.webkitURL;
-						let imgUrl = uriCreator.createObjectURL(blob);
-						$('.imgPreview').attr("src", imgUrl);
-					};
-					reader.readAsArrayBuffer(file);
-					this.editPic = file
-				} else {
-					this.editPic = null;
-					$('.imgPreview').attr("src", null);
-				}
-			},
-			//移除選的圖片
-			removeEditPic() {
-				this.editPic = null;
-				$('.imgPreview').attr("src", null);
-				$('#picFile').val("");
-			},
-			//檢查現在是否還可以修改報名時間
-			canRegistrationEdit(registrationTime) {
-				return new Date(registrationTime) > new Date(this.currentDateTime);
-			},
-			// 藉由地址顯示活動地圖
-			showMap(activityType) {
-				activityType.forEach((act, index) => {
-					let geocoder = new google.maps.Geocoder();
-					geocoder.geocode({ address: act.location }, function (result, status) {
-						if (status === 'OK') {
-							let mapOptions = {
-								center: result[0].geometry.location,
-								zoom: 16
-							};
-							let map = new google.maps.Map(document.getElementById('map' + index), mapOptions);
-							new google.maps.Marker({
-								position: result[0].geometry.location,
-								map: map
-							});
-						} else {
-							console.error('求取活動地圖失敗!');
-						}
-					});
-				});
-			},
-			// 修改活動地址自動完成內容
-			siteAuto() {
-				let country = ["tw", "jp", "hk", "mo", "cn"];
-				let options = {
-					componentRestrictions: { country: country },
-				};
-				this.autocomplete = new google.maps.places.Autocomplete(document.querySelector('#editLocation'), options);
-				this.autocomplete.addListener("place_changed", () => {
-					let place = this.autocomplete.getPlace();
-					this.site = document.querySelector('#editLocation').value;
-					// if (place.geometry) {
-					// 	this.site = place.formatted_address;
-					// }
-				});
-			},
-		},
-		mounted() {
-			this.getCommingupList();
-			this.getHostList();
-			this.getPastList();
-			this.getActivityTypeList();
-			// this.siteAuto();
-		},
-		//這個方法可能不太好
-		updated() {
-			if (this.currentType === 'commingup') {
-				this.showMap(this.commingupActivities);
-			}
-			if (this.currentType === 'past') {
-				this.showMap(this.pastActivities);
-			}
-			const locationInput = document.querySelector('#editLocation');
-			if (locationInput !== null) {
-				this.siteAuto();
-			}
-		}
-	})
-		.mount('#activityPlatform');
+    const activityPlatform = Vue.createApp({
+        data() {
+            return {
+                baseAddress: window.location.origin,
+                loginUserId: @ViewBag.UserId,
+                currentType: "commingup",
+                commingupActivities: [],
+                hostActivities: [],
+                pastActivities: [],
+                activitiyType: [],
+                searchWord: '',
+                wannaEdit: 0,
+                members: [],
+                editPic: null,
+                editTitle: '',
+                editActivityTime: '',
+                editLocation: '',
+                editActType: 0,
+                editRegistrationTime: '',
+                editDeadlineTime: '',
+                editAmount: 0,
+                editMax: 0,
+                editActContent: '',
+                editNote: '',
+                waitingToCancel: 0,
+                waitingToDelete: 0,
+                errorStyle: {
+                    title: false,
+                    location: false,
+                    content: false,
+                    note: false,
+                    activityTime: false,
+                    registrationTime: false,
+                    deadlineTime: false,
+                    amount: false,
+                    max: false,
+                    type: false
+                },
+                currentDateTime: new Date().toISOString().slice(0, 16),
+                min: 0,
+                rand: 1,
+                site: "",
+                autocomplete: null,
+                pagePerCount: 3,
+                commingupLoadtime: 1,
+                hostLoadtime: 1,
+                pastLoadtime: 1,
+                commingupTotalCount: 0,
+                hostTotalCount: 0,
+                pastTotalCount: 0,
+                commingupObserver: {},
+                hostObserver: {},
+                pastObserver: {},
+                isFirstLoad: true,
+            }
+        },
+        watch: {
+            hasTitle(newVal, oldVal) {
+                this.errorStyle.title = !newVal;
+            },
+            hasLocation(newVal, oldVal) {
+                this.errorStyle.location = !newVal;
+            },
+            hasContent(newVal, oldVal) {
+                this.errorStyle.content = !newVal;
+            },
+            hasNote(newVal, oldVal) {
+                this.errorStyle.note = !newVal;
+            },
+            validActivityTime(newVal, oldVal) {
+                this.errorStyle.activityTime = !newVal;
+            },
+            validRegistrationTime(newVal, oldVal) {
+                this.errorStyle.registrationTime = !newVal;
+            },
+            validDeadlineTime(newVal, oldVal) {
+                this.errorStyle.deadlineTime = !newVal;
+            },
+            validAmount(newVal, oldVal) {
+                this.errorStyle.amount = !newVal;
+            },
+            validMax(newVal, oldVal) {
+                this.errorStyle.max = !newVal;
+            },
+            validType(newVal, oldVal) {
+                this.errorStyle.type = !newVal;
+            },
+            hasError(newVal) {
+                if (newVal) {
+                    $('#submit').css("display", "none");
+                } else {
+                    $('#submit').css("display", "inline-block");
+                }
+            },
+        },
+        computed: {
+            hasTitle() {
+                return this.editTitle != '';
+            },
+            hasLocation() {
+                return this.editLocation != '';
+            },
+            hasContent() {
+                return this.editActContent != '';
+            },
+            hasNote() {
+                return this.editNote != '';
+            },
+            validActivityTime() {
+                return this.editActivityTime > this.currentDateTime;
+            },
+            validRegistrationTime() {
+                return this.editRegistrationTime > this.currentDateTime;
+            },
+            validDeadlineTime() {
+                return this.editDeadlineTime > this.currentDateTime && this.editDeadlineTime > this.editRegistrationTime;
+            },
+            validAmount() {
+                return this.editAmount >= this.min;
+            },
+            validMax() {
+                return this.editMax > this.min;
+            },
+            validType() {
+                return this.editActType > this.min;
+            },
+            hasError() {
+                return Object.values(this.errorStyle).includes(true);
+            },
+            commingupFilter() {
+                return this.commingupActivities.filter(activity =>
+                    activity.title.toLowerCase().includes(this.searchWord.toLowerCase())
+                );
+            },
+            hostFilter() {
+                return this.hostActivities.filter(activity =>
+                    activity.title.toLowerCase().includes(this.searchWord.toLowerCase())
+                );
+            },
+            pastFilter() {
+                return this.pastActivities.filter(activity =>
+                    activity.title.toLowerCase().includes(this.searchWord.toLowerCase())
+                );
+            },
+        },
+        methods: {
+            isActiveTab(type) {
+                return type === this.currentType;
+            },
+            //取得登入者即將發生活動
+            //mounted先取得3筆 load事件發生再取得3筆資料放進commingupActivities
+            getCommingupList() {
+                fetch(`/api/personalActivities/GetCommingupActivities/${this.commingupLoadtime}/${this.pagePerCount}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        let temp = data.data.map(activity => ({
+                            ...activity,
+                            expandState: false
+                        }));
+                        this.commingupActivities.push(...temp);
+                        this.commingupTotalCount = data.totalCount;
+                        this.commingupLoadtime++;
+                        //console.log('加載了一次即將發生的活動');
+                        if (this.commingupActivities.length >= this.commingupTotalCount) {
+                            //console.log("即將舉辦活動觀察者拔除");
+                            this.commingupObserver.unobserve(document.querySelector('#commingObserver'));
+                        }
+                    })
+                    .catch(error => { console.log('fetch commingupActivities failed!') });
+            },
+            //取得登入者主辦活動
+            getHostList() {
+                fetch(`/api/personalActivities/GetHostActivities/${this.hostLoadtime}/${this.pagePerCount}`)
+                    .then(res => res.json())
+                    .then(data => {
+
+                        let temp = data.data.map(activity => ({
+                            ...activity,
+                            expandState: false,
+                            inEdit: false
+                        }));
+                        this.hostActivities.push(...temp);
+                        this.hostTotalCount = data.totalCount;
+                        this.hostLoadtime++;
+                        //console.log('加載了一次主辦的活動');
+                        if(this.hostActivities.length >= this.hostTotalCount){
+                            //console.log("主辦活動觀察者拔除");
+                            this.hostObserver.unobserve(document.querySelector('#hostObserver'));
+                        }
+                    })
+                    .catch(error => { console.log('fetch hostActivities failed!') });
+            },
+            //取得已結束活動
+            getPastList() {
+                fetch(`/api/personalActivities/GetPastActivities/${this.pastLoadtime}/${this.pagePerCount}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        let temp = data.data.map(activity => ({
+                            ...activity,
+                            expandState: false
+                        }));
+                        this.pastActivities.push(...temp);
+                        this.pastLoadtime++;
+                        this.pastTotalCount = data.totalCount;
+                        //console.log('加載了一次過去的活動');
+                        if (this.pastActivities.length >= this.pastTotalCount) {
+                            //console.log("過去活動觀察者拔除");
+                            this.pastObserver.unobserve(document.querySelector('#pastObserver'));
+                        }
+                    })
+                    .catch(error => { console.log('fetch pastActivities failed!') });
+            },
+            //取得所有活動類型
+            getActivityTypeList() {
+                fetch(`/api/personalActivities/GetActivityType`)
+                    .then(res => res.json())
+                    .then(data => {
+                        this.activitiyType = data;
+                    })
+                    .catch(error => { console.log('fetch activityType failed!') });
+            },
+            //切換狀態顯示活動
+            switchType(type) {
+                this.currentType = type;
+                this.searchWord = '';
+                if(type == "commingup"){
+                    this.$nextTick(x => {
+                        const commingupLoadingNew = document.querySelector('#commingupObserver');
+                        console.log(commingupLoadingNew);
+                        this.commingupObserver.observe(commingupLoadingNew);
+                    });
+                }
+                if (type == "host") {
+                    this.$nextTick(x => {
+                        const hostLoadingNew = document.querySelector('#hostObserver');
+                        console.log(hostLoadingNew);
+                        this.hostObserver.observe(hostLoadingNew);
+                    })
+                }
+                if (type == "past") {
+                    this.$nextTick(x => {
+                        const pastLoadingNew = document.querySelector('#pastObserver');
+                        console.log(pastLoadingNew);
+                        this.pastObserver.observe(pastLoadngNew);
+                    });
+                }
+            },
+            buttonText(type, text) {
+                return this.currentType === type ? '● ' + text : text;
+            },
+            //顯示活動參加者視窗
+            showParticipantsBox(act) {
+                event.preventDefault();
+                this.members = act.participant;
+                $('.participantsBox').css("display", "block");
+                $('.participantsBox-overlay').css("display", "flex");
+            },
+            //關閉活動參加者視窗
+            escParticipantsBox() {
+                event.preventDefault();
+                $('.participantsBox').css("display", "none");
+                $('.participantsBox-overlay').css("display", "none");
+            },
+            //顯示退出活動視窗
+            showCancelAttend(act) {
+                event.preventDefault();
+                $('.canelAttendBox').css("display", "block");
+                $('.canelAttendBox-overlay').css("display", "flex");
+                this.waitingToCancel = act.id;
+            },
+            //取消退出活動視窗
+            escCancelAttendBox() {
+                event.preventDefault();
+                $('.canelAttendBox').css("display", "none");
+                $('.canelAttendBox-overlay').css("display", "none");
+                this.waitingToCancel = 0;
+            },
+            //取消參加活動
+            cancelAttendActivity() {
+                event.preventDefault();
+                let request = {
+                    "Id": 0,
+                    "ActivityId": this.waitingToCancel,
+                    "UserId": this.loginUserId
+                };
+                fetch(`/api/personalActivities/NotAttending`, {
+                    method: 'DELETE',
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(request)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        this.commingupLoadtime = 1;
+                        this.commingupActivities = [];
+                        this.getCommingupList();
+                        setTimeout(() => { this.switchType('commingup'); }, 500);
+                    })
+                    .catch(error => {
+                        console.log('fetch cancel attend activity failed!', error)
+                    });
+                $('.canelAttendBox').css("display", "none");
+                $('.canelAttendBox-overlay').css("display", "none");
+            },
+            //顯示刪除活動視窗
+            showDeleteAct(act) {
+                event.preventDefault();
+                $('.deleteActBox').css("display", "block");
+                $('.deleteActBox-overlay').css("display", "flex");
+                this.waitingToDelete = act.id;
+            },
+            //取消顯示刪除活動視窗
+            escdeleteActBox() {
+                event.preventDefault();
+                $('.deleteActBox').css("display", "none");
+                $('.deleteActBox-overlay').css("display", "none");
+                this.waitingToDelete = 0;
+            },
+            //刪除活動
+            deleteActivity() {
+                event.preventDefault();
+                fetch(`/api/personalActivities/DeleteActivity/${this.waitingToDelete}`, {
+                    method: 'PUT',
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        this.commingupLoadtime = 1;
+                        this.hostLoadtime = 1;
+                        this.commingupActivities = [];
+                        this.hostActivities = [];
+                        this.getCommingupList();
+                        this.getHostList();
+                        setTimeout(() => { this.switchType('host'); }, 500);
+                    })
+                    .catch(error => {
+                        console.log('fetch delete activity failed!', error)
+                    });
+                $('.deleteActBox').css("display", "none");
+                $('.deleteActBox-overlay').css("display", "none");
+                this.wannaDeleteIndex = null;
+            },
+            //進入修改活動畫面
+            intoEditing(act) {
+                act.inEdit = true;
+                $('.btnEdit').hide();
+                this.wannaEdit = act.id;
+                this.editTitle = act.title;
+                this.editActivityTime = act.activityTime;
+                this.editLocation = act.location;
+                this.site = act.location;
+                this.editActType = act.typeId;
+                this.editRegistrationTime = act.registrationTime;
+                this.editDeadlineTime = act.deadlineTime;
+                this.editAmount = act.amount;
+                this.editMax = act.max;
+                this.editActContent = act.content;
+                this.editNote = act.notes;
+            },
+            //取消修改活動內容
+            cancelToEdit(act) {
+                act.inEdit = false;
+                $('.btnEdit').show();
+                this.wannaEdit = 0;
+                this.editPic = null;
+                this.editTitle = '';
+                this.editActivityTime = '';
+                this.editLocation = '';
+                this.editActType = 0;
+                this.editRegistrationTime = '';
+                this.editDeadlineTime = '';
+                this.editAmount = 0;
+                this.editMax = 0;
+                this.editActContent = '';
+                this.editNote = '';
+            },
+            //修改活動內容
+            editActivity(act) {
+                act.inEdit = false;
+                let formData = new FormData();
+                formData.append('UserId', this.loginUserId);
+                formData.append('ActivityId', act.id);
+                formData.append('Type', this.editActType);
+                formData.append('Title', this.editTitle);
+                formData.append('Content', this.editActContent);
+                formData.append('Notes', this.editNote);
+                formData.append('Amount', this.editAmount);
+                formData.append('MaxParticipants', this.editMax);
+                formData.append('Location', this.site);
+                formData.append('RegistrationTime', this.editRegistrationTime);
+                formData.append('DeadlineTime', this.editDeadlineTime);
+                formData.append('ActivityTime', this.editActivityTime);
+                formData.append('Pictures', this.editPic);
+
+                fetch(`/api/personalActivities/EditActivity/${act.id}`, {
+                    method: 'PUT',
+                    body: formData
+                })
+                    .then(response => {
+                        response.json()
+                    })
+                    .then(data => {
+                        // console.log('成功', data);
+                        act.inEdit = false;
+                        $('.btnEdit').show();
+                        this.wannaEdit = 0;
+                        this.editPic = null;
+                        this.editTitle = '';
+                        this.editActivityTime = '';
+                        this.editLocation = '';
+                        this.editActType = 0;
+                        this.editRegistrationTime = '';
+                        this.editDeadlineTime = '';
+                        this.editAmount = 0;
+                        this.editMax = 0;
+                        this.editActContent = '';
+                        this.editNote = '';
+                        this.site = '';
+                        this.rand = ++this.rand;
+                        this.commingupLoadtime = 1;
+                        this.hostLoadtime = 1;
+                        this.commingupActivities = [];
+                        this.hostActivities = [];
+                        this.getCommingupList();
+                        this.getHostList();
+                        setTimeout(() => { this.switchType('host'); }, 500);
+                    })
+                    .catch(err => {
+                        console.log('fetch edit activity failed!', err);
+                    })
+            },
+            //修改活動圖片預覽
+            previewPic() {
+                const allowType = "image.*";
+                let file = event.target.files[0];
+                if (file.type.match(allowType)) {
+                    var reader = new FileReader();
+                    reader.onload = function () {
+                        this.editPic = this.result;
+                        let blob = new Blob([this.editPic], { type: "image/jpeg" });
+                        let uriCreator = window.URL || wondow.webkitURL;
+                        let imgUrl = uriCreator.createObjectURL(blob);
+                        $('.imgPreview').attr("src", imgUrl);
+                    };
+                    reader.readAsArrayBuffer(file);
+                    this.editPic = file
+                } else {
+                    this.editPic = null;
+                    $('.imgPreview').attr("src", null);
+                }
+            },
+            //移除選的圖片
+            removeEditPic() {
+                this.editPic = null;
+                $('.imgPreview').attr("src", null);
+                $('#picFile').val("");
+            },
+            //檢查現在是否還可以修改報名時間
+            canRegistrationEdit(registrationTime) {
+                return new Date(registrationTime) > new Date(this.currentDateTime);
+            },
+            // 藉由地址顯示活動地圖
+            showMap(activityType) {
+                activityType.forEach((act, index) => {
+                    let geocoder = new google.maps.Geocoder();
+                    geocoder.geocode({ address: act.location }, function (result, status) {
+                        if (status === 'OK') {
+                            let mapOptions = {
+                                center: result[0].geometry.location,
+                                zoom: 16
+                            };
+                            let map = new google.maps.Map(document.getElementById('map' + index), mapOptions);
+                            new google.maps.Marker({
+                                position: result[0].geometry.location,
+                                map: map
+                            });
+                        } else {
+                            console.error('求取活動地圖失敗!');
+                        }
+                    });
+                });
+            },
+            // 修改活動地址自動完成內容
+            siteAuto() {
+                let country = ["tw", "jp", "hk", "mo", "cn"];
+                let options = {
+                    componentRestrictions: { country: country },
+                };
+                this.autocomplete = new google.maps.places.Autocomplete(document.querySelector('#editLocation'), options);
+                this.autocomplete.addListener("place_changed", () => {
+                    let place = this.autocomplete.getPlace();
+                    this.site = document.querySelector('#editLocation').value;
+                    // if (place.geometry) {
+                    // 	this.site = place.formatted_address;
+                    // }
+                });
+            },
+        },
+        mounted() {
+            this.getCommingupList();
+            this.getHostList();
+            this.getPastList();
+            this.getActivityTypeList();
+
+            this.commingupObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        this.getCommingupList();
+                    }
+                })
+            });
+
+            this.hostObserver = new IntersectionObserver((enteries) => {
+                enteries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        this.getHostList();
+                    }
+                })
+            });
+
+            this.pastObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        this.getPastList();
+                    }
+                })
+            });
+
+        },
+        updated() {
+            if (this.currentType === 'commingup') {
+                this.showMap(this.commingupActivities);
+            }
+            if (this.currentType === 'past') {
+                this.showMap(this.pastActivities);
+            }
+            const locationInput = document.querySelector('#editLocation');
+            if (locationInput !== null) {
+                this.siteAuto();
+            }
+
+            if (this.isFirstLoad) {
+                this.switchType('commingup');
+                this.isFirstLoad = false;
+            }
+        }
+    })
+        .mount('#activityPlatform');
 </script>

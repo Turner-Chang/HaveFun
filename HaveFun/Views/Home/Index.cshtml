@@ -88,7 +88,16 @@
 		</div>
 	</div>
 <!-- ================> Announcement section start here <================== -->
-<div class="work padding-top padding-bottom bg_img" style="background-image: url(assets/images/bg-img/01.jpg);">
+	<div class="work work--style2 padding-top padding-bottom bg_img" style="background-image: url(assets/images/bg-img/01.jpg);">
+		<div class="container">
+			<div v-for="(anc, index) in announcement">
+				<h3>{{anc.title}}</h3>
+				<span>{{anc.startTime}}</span>
+				<p>{{anc.content}}</p>
+			</div>
+		</div>
+	</div>
+@* <div class="work padding-top padding-bottom bg_img" style="background-image: url(assets/images/bg-img/01.jpg);">
 	<div class="container">
 		<div class="section__header text-center wow fadeInUp" data-wow-duration="1.5s">
 			<h2>近期公告​</h2>
@@ -118,7 +127,7 @@
 			</div>
 		</div>
 	</div>
-</div>
+</div> *@
 <!-- ================> Top3 Activity section start here <================== -->
 <div class="story bg_img padding-top padding-bottom" style="background-image: url(assets/images/bg-img/02.jpg);">
 	<div class="container">
@@ -132,14 +141,14 @@
 					<div class="story__item">
 						<div class="story__inner">
 							<div class="story__thumb">
-								<a :href="`/Activity/Detail/${act.id}`"><img :src=`${baseAddress}/api/personalActivities/GetPicture/${act.id}?rand=${rand}`></a>
+								<a :href="`/Activity/Detail/${act.id}`"><img :src=`/api/personalActivities/GetPicture/${act.id}?rand=${rand}`></a>
 								<span class="member__activity member__activity--ofline">最多人參加</span>
 							</div>
 							<div class="story__content">
 								<a :href="`/Activity/Detail/${act.id}`"><h4>{{act.title}}</h4></a>
 								<div class="story__content--author">
 									<div class="story__content--thumb">
-											<img v-bind:src=`${baseAddress}/api/personalActivities/GetUserProfile/${act.userId}?rand=${rand}`>
+									<img v-bind:src=`/api/personalActivities/GetUserProfile/${act.userId}?rand=${rand}`>
 									</div>
 									<div class="story__content--content">
 										<h6>{{act.userName}}</h6>
@@ -234,7 +243,7 @@
 			methods: {
 				//取得最熱門活動
 				getMostParticipantsActivity() {
-					fetch(`api/Home/GetPopularActivity`)
+					fetch(`/api/Home/GetPopularActivity`)
 						.then(res => res.json())
 						.then(data => {
 							this.popularAct = data;
@@ -243,7 +252,7 @@
 				},
 				//取得進行中公告
 				getAnnouncement() {
-					fetch(`api/Home/GetAnnouncement`)
+					fetch(`/api/Home/GetAnnouncement`)
 						.then(res => res.json())
 						.then(data => {
 							this.announcement = data;
@@ -258,10 +267,10 @@
 			mounted() {
 				this.getMostParticipantsActivity();
 				this.getAnnouncement();
-			},
-			updated() {
-				this.fixFirstAnnouncement();
-			}
+			 },
+			// updated() {
+			// 	this.fixFirstAnnouncement();
+			// }
 		}).mount('#homePage');
 	</script>
 }

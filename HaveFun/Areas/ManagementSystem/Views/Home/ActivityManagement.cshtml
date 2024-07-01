@@ -223,7 +223,7 @@
 							JSON.stringify(data))
 						.then(d => {
 							App.reports = JSON.parse(d);
-
+							App.reports = App.reports.reverse();
 						})
 						.catch(error => {
 							console.error('發生錯誤:', error);
@@ -377,7 +377,7 @@
 					method: "GET"
 				});
 				var data = await resp.json();
-				App.reports = data;
+				App.reports = data.reverse();
 				//alert(JSON.stringify(data));
 
 				fetch(`${baseAdress}/api/complaint/Getall`, { method: "GET" }).then(r => r.json()).then(d => App.complaint = d);
