@@ -257,7 +257,7 @@
                     max: false,
                     type: false
                 },
-                currentDateTime: new Date().toISOString().slice(0, 16),
+                currentDateTime: new Date(+new Date() + 8 * 3600 * 1000).toISOString().slice(0, 16),
                 min: 0,
                 rand: 1,
                 site: "",
