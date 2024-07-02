@@ -9,8 +9,8 @@
 		<label class="text-bg-success col-12 col-md-2  m-2">無須封鎖</label>
 	</div>
 	<div class="m-2 col-12  ">
-		<label>檢舉項目有哪些:</label> <br />
-		<label v-for="c in complaint" class="form-label col-12 col-md-2 col-sm-6 border border-secondary ">{{c.complaintCategoryId}} . {{c.complaintCategoryName}}</label>
+		<label class="m-2">檢舉項目有哪些:</label> <br />
+		<label v-for="c in complaint" style="background-color: cornsilk;" class="form-label col-12 col-md-2 col-sm-6 border border-secondary ">{{c.complaintCategoryId}} . {{c.complaintCategoryName}}</label>
 	</div>
 	<hr />
 	<div class="table-responsive" v-if="reviews.length>0">
