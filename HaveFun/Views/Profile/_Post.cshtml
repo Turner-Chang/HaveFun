@@ -1,4 +1,18 @@
 ﻿<link href="~/assets/css/profile_poststyle.css" rel="stylesheet" />
+<style>
+    #post {
+        height: 100vh; /* 或者其他適當的高度 */
+        overflow-y: scroll; /* 保持滾動功能 */
+        position: relative;
+        -ms-overflow-style: none; /* IE 和 Edge */
+        scrollbar-width: none; /* Firefox */
+    }
+
+        #post::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, 和 Opera */
+        }
+
+</style>
 
 <div class="tab-pane fade show active" id="gt1" role="tabpanel" aria-labelledby="gt1-tab">
     <div id="post">
@@ -214,6 +228,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                    <div ref="bottomObserver" class="bottom-marker-Observer"></div> <!-- 標記元素 -->
                                     <div class="row justify-content-center">
                                         <div class="col-auto">
                                             <a v-if="displayPersonalPosts && !allUserLoaded" href="#" class="default-btn" @@click.prevent="loadMore">
@@ -307,6 +322,8 @@
                 displayPostsSelect: true, // 個人/朋友 選項
                 displayPersonalPosts: true, // 個人貼文
                 FriendPostList: [], // 朋友列表
+                isInitialLoad: true, // 是否為初次加載
+                observer: null // Intersection Observer 的實例
             };
         },
         computed: {
@@ -360,6 +377,37 @@
                 this.loginUserName = this.userInfo[0].name;
                 this.loginUserPicture = this.userInfo[0].profilePicture
                 this.placeholderText = `What's on your mind, ${this.userInfo[0].name}?`;
+            },
+
+            // 設定 監控資訊
+            createIntersectionObserver() {
+                const options = {
+                    root: document.querySelector('#post'), // 監測滾動容器
+                    rootMargin: '0px',
+                    threshold: 1.0
+                };
+
+                this.observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting && !this.isInitialLoad) {
+                            console.log('到達底部, Call loadMore');
+                            this.loadMore();
+                        }
+                    });
+                }, options);
+
+                this.observer.observe(this.$refs.bottomObserver); // 觀察標記元素
+            },
+
+            // 出載初始Post
+            async loadInitialPosts() {
+                try {
+                    await this.getPosts(false); // 加載個人貼文
+                    await this.getPosts(true); // 加載朋友貼文
+                    this.isInitialLoad = false;
+                } catch (error) {
+                    console.error('Error loading initial posts:', error);
+                }
             },
 
             // 查詢貼文
@@ -831,11 +879,16 @@
         },
         mounted() {
             this.getUserInfo();
-            // 第一次取個人Post，第二次取朋友Post
-            this.getPosts(false).then(() => {
-                this.getPosts(true);
-            });
+            this.createIntersectionObserver(); // 建立 Intersection Observer
+            this.loadInitialPosts(); // 加載初始的貼文
             this.getRatItemsList();
+            
+        },
+
+        beforeUnmount() {
+            if (this.observer) {
+                this.observer.disconnect(); // 在組件銷毀前取消觀察
+            }
         }
     }).mount('#post');
 </script>
