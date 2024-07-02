@@ -38,7 +38,7 @@
 						<td class="col-md-0">{{this.TimeSplit(r.reportTime)}}</td>
 						<td>
 							<button :id="r.postReviewId" class="btn " :class="btnColor(r.processingStstus)"
-									@@click="check(r.postId,r.postReviewId)">
+									@@click="check(r.postId,r.postReviewId,r.processingStstus)">
 								{{this.ReviewStatusToString(r.processingStstus)}}
 							</button>
 						</td>
@@ -120,11 +120,13 @@
 					<button type="button"
 							class="btn btn-secondary "
 							data-bs-dismiss="modal"
+							v-if="reviewStatus!=2"
 							@@click="PostStateChange(PostId,0) ">
 						駁回檢舉
 					</button>
 					<button type="button"
 							class="btn btn-danger"
+							v-if="reviewStatus!=1"
 							@@click="PostStateChange(PostId,1)">
 						刪除貼文
 					</button>
@@ -149,6 +151,7 @@
 					complaint: [],
 					baseAdress: "",
 					imgSrc: "",
+					reviewStatus:0,
 				}
 			},
 			methods: {
@@ -168,11 +171,12 @@
 						});
 				}
 				,
-				check(postId, postReviewId) {
+				check(postId, postReviewId,status) {
 					this.showModal();
 					this.GetPost(postId);
 					this.PostReviewId = postReviewId;
 					this.PostId = postId;
+					this.reviewStatus = status;
 					//alert(postReviewId)
 				},
 				showModal() {
