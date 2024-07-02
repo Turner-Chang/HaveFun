@@ -136,7 +136,7 @@
 										</div>
 										
 										@{
-											var currentUserId = (int)ViewBag.LoginUserId;
+											var currentUserId = ViewBag.LoginUserId;
 											var isUserParticipating = Model.ActivityParticipants.Any(p => p.UserId == currentUserId);
 											var isActivityPassed = Model.ActivityTime <= DateTime.UtcNow;
 
@@ -145,7 +145,7 @@
 											var isDisabled = isUserParticipating || isActivityPassed;
 										}
 
-										<button :disabled="@isDisabled"
+										<button disabled="@isDisabled"
 												class="default-btn"
 												style="@buttonStyle"
 												v-on:click="signUp">
