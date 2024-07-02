@@ -67,21 +67,21 @@
                 getGender(gender) {
                     return gender === 0 ? '男' : '女';
                 },
-                async function likeUser(friendId) {
-            try {
-                const currentUserId = /* 获取当前用户ID的方法 */;
-                const response = await axios.post('/api/LuckyMatchApi/LikeUser',
-                    { userId: currentUserId, friendId: friendId },
-                    { headers: { 'Content-Type': 'application/json' } }
-                );
-                if(response.status === 200) {
-                    console.log('喜欢用户成功:', friendId);
-        // 更新UI或其他逻辑
-    }
-    } catch (error) {
-        console.error('Error liking user:', error);
-    }
-}
+                async likeUser(userId) {
+                    try {
+                        const response = await axios.post('/api/LuckyMatchApi/LikeUser',
+                            JSON.stringify(userId),
+                            { headers: { 'Content-Type': 'application/json' } }
+                        );
+                        if (response.status === 200) {
+                            console.log('喜欢用户:', userId);
+                            // 跳转到好友清单页面，假设好友清单页面为 /friends
+                            await this.getFriendList(); // 更新好友清单数据
+                        }
+                    } catch (error) {
+                        console.error('Error liking user:', error);
+                    }
+                },
                 async dislikeUser(userId) {
                     try {
                         const response = await axios.post('/api/LuckyMatchApi/DislikeUser',
