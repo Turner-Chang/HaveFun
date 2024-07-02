@@ -141,25 +141,29 @@ namespace HaveFun.Controllers.APIs
 
             // 檢查雙方是否為好友
             var friends = await _context.FriendLists
-                .Where(f => (f.Clicked == loginUserId && f.BeenClicked == showUserId && f.state == 1)
-                         || (f.Clicked == showUserId && f.BeenClicked == loginUserId && f.state == 1))
+                .Where(f => (f.Clicked == loginUserId && f.BeenClicked == showUserId && (f.state == 1 || f.state ==3))
+                         || (f.Clicked == showUserId && f.BeenClicked == loginUserId && (f.state == 1 || f.state == 3)))
                 .ToListAsync();
 
             if (friends.Count!= 0)
             {
                 foreach (var friend in friends)
                 {
-                    if (friend.Clicked == loginUserId)
-                    {
-                        friend.state = 0; // 修改狀態
-                        _context.FriendLists.Update(friend); // 標記為更新
-                    }
-                    else
-                    {
-                        _context.FriendLists.Remove(friend); // 刪除
-                    }
+                    // 解除雙方好友關係
+                    _context.FriendLists.Remove(friend); // 刪除
+
+                    //if (friend.Clicked == loginUserId)
+                    //{
+                    //    friend.state = 0; // 修改狀態
+                    //    _context.FriendLists.Update(friend); // 標記為更新
+                    //}
+                    //else
+                    //{
+                    //    _context.FriendLists.Remove(friend); // 刪除
+                    //}
                 }
                 await _context.SaveChangesAsync();
+                return Content("關注我");
             }
 
             // 對方未關注，加入關注

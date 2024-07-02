@@ -1,18 +1,4 @@
 ﻿<link href="~/assets/css/profile_poststyle.css" rel="stylesheet" />
-<style>
-    #post {
-        height: 100vh; /* 或者其他適當的高度 */
-        overflow-y: scroll; /* 保持滾動功能 */
-        position: relative;
-        -ms-overflow-style: none; /* IE 和 Edge */
-        scrollbar-width: none; /* Firefox */
-    }
-
-        #post::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, 和 Opera */
-        }
-
-</style>
 
 <div class="tab-pane fade show active" id="gt1" role="tabpanel" aria-labelledby="gt1-tab">
     <div id="post">
@@ -41,7 +27,7 @@
                                                     </h6>
                                                     <div class="custom-select">
                                                         <select v-model="postPrivacy">
-                                                            <option value="Public"> Public</option>
+                                                            <option value="公開貼文">公開貼文</option>
                                                             @* <option value="Private"> Private</option> *@
                                                             @* <option value="Friends"> Friends</option> *@
                                                         </select>
@@ -60,7 +46,7 @@
                                                     <ul class="content-list">
                                                         @* <li class="text"><a href="#"><i class="fa-solid fa-pen-to-square"></i>Text</a></li> *@
                                                         <li class="image-video">
-                                                            <div class="file-btn"><i class="fa-solid fa-camera"></i>Photo</div>
+                                                            <div class="file-btn"><i class="fa-solid fa-camera"></i>照片</div>
                                                             <input type="file" ref="fileInput" @@change.prevent="previewPic" accept="image/*">
                                                         </li>
                                                         </li>
@@ -69,7 +55,7 @@
                                                             @* <input type="file" @@change.prevent="handleFileUpload"> *@
                                                         </li>
                                                         <li class="post-submit">
-                                                            <button @@click.prevent="addPost" class="default-btn">Post</button>
+                                                            <button @@click.prevent="addPost" class="default-btn">發佈貼文</button>
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -116,9 +102,8 @@
                                                     <i class="fa-solid fa-ellipsis"></i>
                                                 </button>
                                                 <ul class="dropdown-menu">
-
-                                                    <li @@click.prevent="showDelete(post)"><a class="dropdown-item">刪除貼文</a></li>
-                                                    <li @@click.prevent="showRat(post)"></i><a class="dropdown-item">檢舉貼文</a></li>
+                                                        <li v-if="displayPersonalPosts" @@click.prevent="showDelete(post)"><a class="dropdown-item">刪除貼文</a></li>
+                                                        <li v-if="!displayPersonalPosts" @@click.prevent="showRat(post)"><a class="dropdown-item">檢舉貼文</a></li>
                                                 </ul>
                                             </div>
                                         </div>
@@ -147,10 +132,10 @@
                                                     <a href="#" @@click.prevent="clickLike(post)">
                                                         @* <i v-if="clickLikeOrNot(post)" class="fa-heart fa-solid"></i> *@
                                                         <i v-if="post.likedByUser" class="fa-heart fa-solid"></i>
-                                                        <i v-else class="fa-heart fa-regular"></i> Like
+                                                        <i v-else class="fa-heart fa-regular"></i> 喜歡
                                                     </a>
-                                                <li class="react"><a href="#" @@click.prevent="commentOnPost(post)"><i class="fa-solid fa-comment"></i>Comment</a></li>
-                                                <li class="react"><a href="#" @@click="shareToFacebook(post)"><i class="fa-solid fa-share"></i> Share</a></li>
+                                                <li class="react"><a href="#" @@click.prevent="commentOnPost(post)"><i class="fa-solid fa-comment"></i>留言</a></li>
+                                                <li class="react"><a href="#" @@click="shareToFacebook(post)"><i class="fa-solid fa-share"></i> 分享</a></li>
                                                     
                                             </ul>
                                         </div>
@@ -296,7 +281,7 @@
                 placeholderText: '',
                 newPostPic: null,       // 上傳發文圖片
                 previewImageUrl: null,  // 上傳發文圖片預覽
-                postPrivacy: 'Public',
+                postPrivacy: '公開貼文',
                 posts: [],
                 userCurrentPage: 1,     // User Post表示當前頁碼
                 friendCurrentPage: 1,     // Friend Post表示當前頁碼
@@ -376,13 +361,13 @@
             setUserInfo() {
                 this.loginUserName = this.userInfo[0].name;
                 this.loginUserPicture = this.userInfo[0].profilePicture
-                this.placeholderText = `What's on your mind, ${this.userInfo[0].name}?`;
+                this.placeholderText = `現在在想些甚麼呢, ${this.userInfo[0].name}?`;
             },
 
             // 設定 監控資訊
             createIntersectionObserver() {
                 const options = {
-                    root: document.querySelector('#post'), // 監測滾動容器
+                    root: null, // 使用整個頁面作為 root
                     rootMargin: '0px',
                     threshold: 1.0
                 };
@@ -390,7 +375,7 @@
                 this.observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting && !this.isInitialLoad) {
-                            console.log('到達底部, Call loadMore');
+                            // console.log('到達底部, Call loadMore');
                             this.loadMore();
                         }
                     });
@@ -879,7 +864,9 @@
         },
         mounted() {
             this.getUserInfo();
-            this.createIntersectionObserver(); // 建立 Intersection Observer
+            this.$nextTick(() => {
+                this.createIntersectionObserver(); // 初次加載完成後創建 Intersection Observer
+            });
             this.loadInitialPosts(); // 加載初始的貼文
             this.getRatItemsList();
             
