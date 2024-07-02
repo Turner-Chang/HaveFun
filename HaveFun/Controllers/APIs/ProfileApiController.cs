@@ -22,7 +22,7 @@ namespace HaveFun.Controllers.APIs
             this.hostEnvironment = hostEnvironment;
         }
 
-        // Post: api/Profile/loginUserId
+        // Post: api/Profile/GetUserInfor/loginUserId
         [HttpPost("{loginUserId}")]
         public async Task<IEnumerable<UserInfo>> GetUserInfor([FromRoute] int loginUserId)
         {
@@ -32,7 +32,8 @@ namespace HaveFun.Controllers.APIs
                 {
                     u.Id,
                     u.Name,
-                    u.ProfilePicture
+                    u.ProfilePicture,
+                    u.Level
                 })
                 .ToListAsync();
 
@@ -41,6 +42,7 @@ namespace HaveFun.Controllers.APIs
                 Id = u.Id,
                 Name = u.Name,
                 ProfilePicture = CreatePictureUrl("GetPicture", "Profile", new { id = u.Id }),
+                Level = u.Level
             });
 
             return userInfoReturn;
