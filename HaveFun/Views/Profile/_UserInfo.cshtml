@@ -59,8 +59,9 @@
 							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div class="modal-body" style="width: auto;height: 400px;">
-							<label form-label>姓名:</label>
-							<div style="border-style:groove"><input v-model="material.name" placeholder="請輸入姓名" /></div>
+							<label form-label>暱稱:</label>
+							<div style="border-style:groove"><input v-model="material.name" placeholder="請輸入暱稱" /></div>
+							<div><span v-if="customErrors.name" class="error">{{ customErrors.name }}</span></div>
 							<label form-label>生日:</label>
 							<div style="border-style:groove"><input v-model="material.birthDay" placeholder="請輸入生日" /></div>
 							<div><span v-if="customErrors.birthDay" class="error">{{ customErrors.birthDay }}</span></div>
@@ -241,7 +242,7 @@
 					"gender": 0,
 					"birthDay": "",
 					"address": "您的居住地",
-					"introduction": "這個人啥也不想說",
+					"introduction": "",
 					"phoneNumber": "",
 					"id": "",
 				},
@@ -258,7 +259,8 @@
 				isLoggedIn: false, // 新增登录状态
 				customErrors: { // 用於保存自定義錯誤訊息
 					birthDay: '',
-					phoneNumber: ''
+					phoneNumber: '',
+					name: ''
 				},
 				// 相簿部分
 				pictures: [],  // 存儲用戶的相簿圖片
@@ -296,7 +298,8 @@
 				// alert("可以保存了")
 				this.customErrors = {
 					birthDay: '',
-					phoneNumber: ''
+					phoneNumber: '',
+					name: ''
 				};
 				let isValid = true;
 				if (!this.validateBirthDay(this.material.birthDay)) {
@@ -309,6 +312,13 @@
 					this.customErrors.phoneNumber = '請填寫正確電話號碼! 電話號碼應該介於 10 到 20 個字元之間 ';
 					isValid = false;
 				}
+
+				// 若暱稱為填寫，跳錯誤訊息
+				if (!this.validateName(this.material.name)) {
+					this.customErrors.name = '暱稱不能為空';
+					isValid = false;
+				}
+
 				// 如果有錯誤，停止保存
 				if (!isValid) {
 					return;
@@ -325,6 +335,7 @@
 				if (this.material.phoneNumber) {
 					formData.append('PhoneNumber', this.material.phoneNumber);
 				}
+
 				formData.append("ProfilePicture", this.profilePicture);
 
 				axios.post(`/api/UserInfo/SaveData`, formData)
@@ -342,7 +353,7 @@
 								this.customErrors.phoneNumber = error.response.data.errors.PhoneNumber[0];
 							}
 						}
-						console.error(error); alert("儲存錯誤.請檢查");
+						console.error(error);/*  alert("儲存錯誤.請檢查"); */
 					});
 			},
 			fetchData() {
@@ -351,6 +362,11 @@
 				axios.get(`/api/UserInfo/GetUserinfos/${@ViewBag.UserId}`)
 					.then(response => {
 						this.material = response.data;
+						for (let key in this.material) {
+							if (this.material[key] === 'null') {
+								this.material[key] = '';
+							}
+						}
 						// 初始化圖片 URL
 						this.profilePictureUri = `/api/UserInfo/GetPicture/${this.material.id}?t=${new Date().getTime()}`;
 						// 確認是否為本人的邏輯
@@ -378,7 +394,15 @@
 				const phoneNumberRex = /^[\d\+\-\(\) ]+$/;
 
 				return phoneNumberRex.test(phoneNumber);
-			},			
+			},	
+			validateName(name) {
+				// 檢查暱稱是否有填寫
+				if (!name.trim()) {					
+					return false;
+				}
+				this.customErrors.name = ''; // 清除之前的錯誤訊息
+				return true;
+			},
 			// 相簿部分
 			async fetchUserPictures() {  // 獲取用戶的相簿圖片
 				try {
