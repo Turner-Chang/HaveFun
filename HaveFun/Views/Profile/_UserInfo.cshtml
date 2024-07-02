@@ -237,6 +237,8 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
 <script>
 	var app_UserInfo = Vue.createApp({
 		data() {
@@ -352,7 +354,12 @@
 
 				axios.post(`/api/UserInfo/SaveData`, formData)
 					.then(response => {
-						console.log(response.data); alert("已儲存"); $("#saveModal").modal("hide");
+						Swal.fire({
+							icon: 'success',
+							title: '個人資料更新成功',
+							showConfirmButton: true
+						});
+						$("#saveModal").modal("hide");
 						// 更新圖片 URL 來保證即時顯示新圖片
 						this.profilePictureUri = `/api/UserInfo/GetPicture/${this.material.id}?t=${new Date().getTime()}`;
 						this.profilePicture = null; // 重置圖片
@@ -511,7 +518,11 @@
 					}
 				})
 					.then(response => {
-						console.log("標籤選取成功:", response); alert("保存成功");
+						Swal.fire({
+							icon: 'success',
+							title: '標籤保存成功',
+							showConfirmButton: true
+						});
 						this.errorMessage = null;
 						// 保存成功後更新界面或重新獲取數據
 						this.fetchUserLabels();
