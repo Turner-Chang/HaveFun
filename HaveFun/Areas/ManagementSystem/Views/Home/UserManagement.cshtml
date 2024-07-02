@@ -33,7 +33,7 @@
 					<td>
 						<button class="btn " 
 							:class="btnColor(r.status)"
-								@@click="UserCheck(r.beReportedUserId,r.id)">
+								@@click="UserCheck(r.beReportedUserId,r.id ,r.status)">
 							{{this.ReviewStatusToString(r.status)}}
 						</button>
 					</td>
@@ -148,11 +148,12 @@
 					<button type="button"
 							class="btn btn-secondary "
 							data-bs-dismiss="modal"
+							v-if="this.ReviewState!=2"
 							@@click="changeUserStatus(userInfos.id,0),
 									changeReviewState(this.UserReviewid,2)">
 						駁回檢舉
 					</button>
-					<button type="button" 
+					<button type="button" v-if="this.ReviewState!=1"
 						@@click="changeUserStatus(userInfos.id,1) ,
 								changeReviewState(this.UserReviewid,1)"
 					class="btn btn-danger">
@@ -181,6 +182,7 @@
 					baseAdress: "",		/*"https://localhost:7152" */
 					// complaintArr:[],
 					userImgSrc:"",
+					ReviewState:0,
 				};
 			},
 			methods: {
@@ -190,10 +192,11 @@
 					else { return "不男不女"; }
 				},
 			
-				UserCheck(UserId,ReviewId) {
+				UserCheck(UserId,ReviewId ,reviewStatus) {
 					this.showModal();
 					this.getUserInfo(UserId);
 					this.UserReviewid = ReviewId;
+					this.ReviewState = reviewStatus;
 				},
 				getUserInfo(userid) {
 					axios.get(`${this.baseAdress}/api/UserInfo/GetById/${userid}`
