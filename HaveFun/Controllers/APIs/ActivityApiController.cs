@@ -49,7 +49,7 @@ namespace HaveFun.Controllers.APIs
 				RegistrationTime = a.RegistrationTime,
 				DeadlineTime = a.DeadlineTime,
 				ActivityTime = a.ActivityTime,
-				PastDay = today.Day - a.InitiationTime.Day,
+				PastDay = Math.Abs((a.ActivityTime - today).Days),
 				Status = a.Status,
 				ActivityTypeName = a.ActivityType.TypeName, // 活動類型名稱
 				Participants = a.ActivityParticipants.Select(ap => new MatchUserInfoDTO

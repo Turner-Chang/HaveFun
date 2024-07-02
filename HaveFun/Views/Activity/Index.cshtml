@@ -18,11 +18,11 @@
 	<div class="pageheader bg_img" style="background-image: url(/assets/images/bg-img/activityDetail.jpg);">
 		<div class="container">
 			<div class="pageheader__content text-center">
-				<h2>All Activities</h2>
+				<h2>活動</h2>
 				<nav aria-label="breadcrumb">
 					<ol class="breadcrumb justify-content-center mb-0">
-						<li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
-						<li class="breadcrumb-item"><a href="#">Activity</a></li>
+						<li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">首頁</a></li>
+						<li class="breadcrumb-item"><a href="#">糾團</a></li>
 					</ol>
 				</nav>
 			</div>
@@ -42,7 +42,7 @@
 								<div class="default-btn" data-bs-toggle="modal" data-bs-target="#exampleModal"><span>篩選 <i class="fa-solid fa-sliders"></i></span></div>
 							</div>
 							<div class="member__info--count">
-								<div class="default-btn"><span>All Upcoming Activities</span></div>
+								<div class="default-btn"><span>近期活動數量</span></div>
 								<p>{{filteredActivities.length}}</p>
 							</div>
 						</div>
@@ -64,7 +64,7 @@
 								<div class="story__inner">
 									<div class="story__thumb position-relative">
 										<a :href="`/Activity/Detail/${activity.id}`"><img :src=`/api/ActivityApi/GetPicture/${activity.id}` alt="dating thumb" style="height:160px;width:280px"></a>
-										<span class="member__activity member__activity--ofline">{{activity.pastDay}} days ago</span>
+										<span class="member__activity member__activity--ofline">{{activity.pastDay}} 天後開始</span>
 									</div>
 									<div class="story__content px-0 pb-0">
 										<a :href="`/Activity/Detail/${activity.id}`"><h4>{{activity.title}}</h4></a>
@@ -105,7 +105,7 @@
 					</div>
 					<div class="member__pagination mt-4">
 						<div class="member__pagination--left">
-							<p>Viewing {{pageStart + 1}} - {{pageEnd}} of {{filteredActivities.length}} Activities</p>
+							<p>查看 {{pageStart + 1}} - {{pageEnd}} of {{filteredActivities.length}} 活動</p>
 						</div>
 						<div class="member__pagination--right">
 							<ul class="default-pagination">
@@ -132,7 +132,7 @@
 						<div class="story__inner">
 							<div class="story__thumb position-relative">
 								<a :href="`/Activity/Detail/${activity.id}`"><img :src=`/api/ActivityApi/GetPicture/${activity.id}` alt="dating thumb" style="height:160px;width:280px"></a>
-								<span class="member__activity member__activity--ofline">{{activity.pastDay}} days ago</span>
+								<span class="member__activity member__activity--ofline">已過 {{activity.pastDay}} 天</span>
 							</div>
 							<div class="story__content px-0 pb-0">
 								<a :href="`/Activity/Detail/${activity.id}`"><h4>{{activity.title}}</h4></a>
@@ -394,7 +394,7 @@
 				},
 				applyFilters() {
 					let activities = this.upcomingActivities;
-					// 按活动时间排序
+					// 按活動時間排序
 					if (this.search.sortOrder != '') {
 						activities = activities.sort((a, b) => {
 							if (this.search.sortOrder === 'leastRecent') {
@@ -405,12 +405,12 @@
 						});
 					}
 
-					// 按活动类型筛选
+					// 按活動類型篩選
 					if (this.search.type != '') {
 						activities = activities.filter(a => a.activityTypeName === this.search.type);
 					}
 
-					// 按预算排序
+					// 按預算排序
 					if (this.search.sortAmount != '') {
 						activities = activities.sort((a, b) => {
 							if (this.search.sortAmount === 'amountAsc') {
