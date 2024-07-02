@@ -20,9 +20,9 @@ namespace HaveFun.Controllers.APIs
 		//請求現在最多人參加的活動
 		// GET: api/Home/GetPopularActivity/ClientNowTime
 		[HttpGet("{ClientNow}")]
-		public async Task<JsonResult> GetPopularActivity(string ClientNow)
+		public async Task<JsonResult> GetPopularActivity(DateTime ClientNow)
 		{
-			var now = DateTime.Parse(ClientNow);
+			var now = ClientNow.AddHours(8);
 			var popularActivity = await _context.Activities
 				.Where(activity => activity.ActivityTime > now && activity.Status == 0)
 				.Include(activity => activity.ActivityParticipants)
@@ -40,9 +40,9 @@ namespace HaveFun.Controllers.APIs
 		//請求公告
 		// GET: api/Home/GetAnnouncement/ClientNowTime
 		[HttpGet("{ClientNow}")]
-		public async Task<JsonResult> GetAnnouncement(string ClientNow)
+		public async Task<JsonResult> GetAnnouncement(DateTime ClientNow)
 		{
-			var now = DateTime.Parse(ClientNow);
+			var now = ClientNow.AddHours(8);
 			var announcement = await _context.Announcements
 				.Where(data => data.StartTime < now && data.EndTime > now)
 				.OrderByDescending (data => data.StartTime)
