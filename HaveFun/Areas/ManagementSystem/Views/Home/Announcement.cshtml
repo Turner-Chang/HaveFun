@@ -14,6 +14,7 @@
 					<th scope="col">開始時間</th>
 					<th scope="col">結束時間</th>
 					<th scope="col">修改</th>
+					<th scope="col">刪除</th>
 
 				</tr>
 			</thead>
@@ -24,6 +25,7 @@
 					<td>{{TimeSplit(ann.startTime)}}</td>
 					<td>{{TimeSplit(ann.endTime)}}</td>
 					<td><a class="btn btn-info" @@click="showEditModal(),GetById(ann.id)">修改</a></td>
+					<td><a class="btn btn-danger" @@click="deleteAnnBtn(ann.id,ann.title,ann.content)">刪除</a></td>
 
 				</tr>
 			</tbody>
@@ -171,6 +173,30 @@
 			</div>
 		</div>
 	</div>
+	<div id="deleteModal" class="modal" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header bg-danger text-white">
+					<h5 class="modal-title">確定刪除公告?</h5>
+					<button type="button" class=" btn-close" @@click="hideDeleteModal()">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body row">
+					<label class="col-2">標題:</label>
+					<p class="col-12"> {{this.delete.title}} </p>
+					<label class="col-2">內容:</label>
+					<p class="col-12">{{this.delete.content}}</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" 
+					@@click="hideDeleteModal">取消</button>
+					<button type="button" class="btn btn-danger" @@click="deleteAnnTrue(this.delete.id)">刪除</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 </div>
 @section Scripts {
 
@@ -188,6 +214,7 @@
 					TitleIsValid:false,
 					ContentIsValid:false,
 					Edit: { title: "", content: "", startTime: "", endTime: "" },
+					delete: { id:"", title: "", content: "" },
 				}
 			},
 			methods: {
@@ -238,7 +265,11 @@
 					else { this.isValid = false; }
 					if (!this.isValid && !this.TimeisValid) {
 						var body = this.Edit;
-						axios.put(`/api/Announcement/Edit?id=${id}`, body).then(res => console.log(res));
+						axios.put(`/api/Announcement/Edit?id=${id}`, body)
+							.then(res => { 
+								console.log(res);
+								this.GetAll();
+							});
 						this.hideEditModal();
 					}
 					else { this.isValid = true; }
@@ -253,6 +284,9 @@
 				showEditModal() {
 					$("#EditAnnouncemodal").modal("show");
 				},
+				showDeletModal() {
+					$("#deleteModal").modal("show");
+				},
 				hideCreateModal() {
 					$("#CreateAnnouncemodal").modal("hide");
 					this.temp = { title: "", content: "", startTime: "", endTime: "" };
@@ -261,6 +295,11 @@
 				hideEditModal() {
 					$("#EditAnnouncemodal").modal("hide");
 					this.Edit = { title: "", content: "", startTime: "", endTime: "" };
+
+				},
+				hideDeleteModal() {
+					$("#deleteModal").modal("hide");
+					this.delete = { title: "", content: "" };
 
 				},
 				btnColor(id) {
@@ -299,7 +338,17 @@
 						return `${timeArr[0]}年 ${timeArr[1]}月 ${timeArr[2]}日 ${timeArr[3]}時 ${timeArr[4]}分`;
 					}
 				},
-
+				deleteAnnBtn(Id,Title,Content) {
+					this.showDeletModal();
+					this.delete = {id:Id, title: Title, content: Content };
+					//
+				
+				},
+				deleteAnnTrue(id) 
+				{
+					axios.delete(`/api/Announcement/Delete?id=${id}`).then(res => console.log(res.data)).then(d => this.GetAll())
+					this.hideDeleteModal();
+				},
 			},
 			computed: { 
 				hasTitle(){

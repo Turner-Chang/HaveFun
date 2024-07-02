@@ -9,6 +9,12 @@
 			<label class="text-bg-success col-12 col-md-2  m-2">無須封鎖</label>
 			@* /*review status 0,1,2*/ *@
 		</div>
+
+		<div class="m-2 col-12  ">
+			<label>檢舉項目有哪些:</label> <br />
+			<label v-for="c in complaint" class="form-label col-12 col-md-2 col-sm-6 border border-secondary ">{{c.complaintCategoryId}} . {{c.complaintCategoryName}}</label>
+		</div>
+
 		<hr />
 		<div class="table-responsive" v-if="reports.length>0">
 			<table class="table table-secondary ">
@@ -52,10 +58,6 @@
 		<template v-if="reports.length==0"><h1>沒有被檢舉資料</h1> </template>
 
 
-		<div class="  text-light bg-secondary">
-			<label>檢舉項目:</label> <br />
-			<label v-for="c in complaint" class="form-label col-12 col-md-2 col-sm-6">{{c.complaintCategoryId}} . {{c.complaintCategoryName}}</label>
-		</div>
 	</div>
 
 
