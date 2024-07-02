@@ -35,7 +35,7 @@ namespace HaveFun.DTOs
 
 		public List<IFormFile>? AlbumPictures { get; set; }
 
-
+		public int Level { get; set; } = 0;
 	}
 }
 

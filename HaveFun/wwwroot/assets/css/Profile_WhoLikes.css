@@ -5,3 +5,8 @@
         border-radius:0;
         object-fit: cover; /* 保持图片比例 */
     }
+
+.Blur_Effect .group__bottom--body {
+    filter: blur(5px); /* 调整模糊程度 */
+    pointer-events: none; /* 禁用指针事件 */
+}
