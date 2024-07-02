@@ -1,7 +1,7 @@
 ﻿<link href="~/assets/css/profile_wholikes.css" rel="stylesheet" />
 
 <div class="tab-pane fade" id="gt5" role="tabpanel" aria-labelledby="gt5-tab">
-<div id="whoLikesApp">
+    <div id="whoLikesApp">
         <div class="group__bottom--area">
             <!-- <div class="group__bottom--head">
                 <div class="left">
@@ -23,32 +23,34 @@
                     </div>
                 </div>
             </div> -->
-            <div class="group__bottom--body">
-                <div class="member">
-                    <div class="row g-3 row-cols-lg-3 row-cols-sm-2 row-cols-1" id="memberContainer">
-                        <div class="col" v-for="member in members" :key="member.id">
-                            <div class="member__item w-100">
-                                <div class="member__inner m-0">
-                                    <div class="member__thumb">
-                                        <a :href="`/Profile/Index?userId=${member.id}`">
-                                        <img :src="member.profilePicture" alt="member-img" class="wholikes_fixed-size-img">
-                                        </a>
-                                        @* <span class="member__activity">Online</span> *@
-                                    </div>
-                                    <div class="member__content">
-                                        <a :href="`/Profile/Index?userId=${member.id}`"><h6>{{ member.name }}</h6></a>
-                                        <p>{{ member.age }} Years old <i :class="['fa-solid', member.gender === 'male' ? 'fa-mars' : 'fa-venus']"></i></p>
-                                        <button class="default-btn" @@click.prevent="setLikeUser(member)">
-                                            <i class="fa-solid fa-check"></i> LIKE
-                                        </button>
+            <div :class="{ 'Blur_Effect': isBlur_Effect }">
+                <div class="group__bottom--body">
+                    <div class="member">
+                        <div class="row g-3 row-cols-lg-3 row-cols-sm-2 row-cols-1" id="memberContainer">
+                            <div class="col" v-for="member in members" :key="member.id">
+                                <div class="member__item w-100">
+                                    <div class="member__inner m-0">
+                                        <div class="member__thumb">
+                                            <a :href="`/Profile/Index?userId=${member.id}`">
+                                                <img :src="member.profilePicture" alt="member-img" class="wholikes_fixed-size-img">
+                                            </a>
+                                            @* <span class="member__activity">Online</span> *@
+                                        </div>
+                                        <div class="member__content">
+                                            <a :href="`/Profile/Index?userId=${member.id}`"><h6>{{ member.name }}</h6></a>
+                                            <p>{{ member.age }} Years old <i :class="['fa-solid', member.gender === 'male' ? 'fa-mars' : 'fa-venus']"></i></p>
+                                            <button class="default-btn" @@click.prevent="setLikeUser(member)">
+                                                <i class="fa-solid fa-check"></i> LIKE
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="text-center mt-5">
-                    @* <a href="#" class="default-btn" @@click.prevent="loadMore"><span><i class="fa-solid fa-spinner"></i> Load More</span></a> *@
+                    <div class="text-center mt-5">
+                        @* <a href="#" class="default-btn" @@click.prevent="loadMore"><span><i class="fa-solid fa-spinner"></i> Load More</span></a> *@
+                    </div>
                 </div>
             </div>
         </div>
@@ -61,9 +63,10 @@
     const whoLikesApp = Vue.createApp({
         data() {
             return {
-                loginUserId : @ViewBag.UserId,
+                loginUserId: @ViewBag.UserId,
                 members: [],
-                orderBy: 'newest'
+                orderBy: 'newest',
+                isBlur_Effect: true
             };
         },
         methods: {
@@ -86,18 +89,32 @@
             },
             setLikeUser(member) {
                 axios.post(`/api/Profile/setLikeUser?loginUserId=${this.loginUserId}&likeUserId=${member.id}`)
-                 .then(response => {
-                    console.log(response.data)
-                    this.getMembers()
-                 })
-                .catch(error => {
-                    console.log("Error setLikeUser:", error)
-                })
+                    .then(response => {
+                        console.log(response.data)
+                        this.getMembers()
+                    })
+                    .catch(error => {
+                        console.log("Error setLikeUser:", error)
+                    })
 
-            }
+            },
+            getUserInforLevel() {
+                axios.post(`/api/Profile/GetUserInfor/${this.loginUserId}`)
+                    .then(response => {
+                        if (response.data[0].level == '1') {
+                            this.isBlur_Effect = false
+                        } else {
+                            this.isBlur_Effect = true
+                        }
+                    })
+                    .catch(error => {
+                        console.log("Error getUserInforLevel:",error)
+                    })
+            },
 
         },
         mounted() {
+            this.getUserInforLevel();
             this.getMembers();
         }
     }).mount("#whoLikesApp");
