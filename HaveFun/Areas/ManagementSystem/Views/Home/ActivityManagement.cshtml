@@ -38,7 +38,7 @@
 						<td class="col-md-0">{{this.TimeSplit(r.reportTime)}}</td>
 						<td>
 							<button :id="r.postReviewId" class="btn " :class="btnColor(r.processingStstus)"
-									@@click="check(r.activityId,r.activityReviewId)">
+									@@click="check(r.activityId,r.activityReviewId,r.processingStstus)">
 								{{this.ReviewStatusToString(r.processingStstus)}}
 							</button>
 						</td>
@@ -186,12 +186,15 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button"
+							v-if="this.ReviewStatus!=2"
 							@@click="ActivityReviewStateChange(this.ActivityReviewId,2),ActivityStateChange(this.ActivityId,0) "
 							class="btn btn-secondary "
 							data-bs-dismiss="modal">
 						駁回檢舉
 					</button>
-					<button type="button" @@click="ActivityReviewStateChange(this.ActivityReviewId,1) ,ActivityStateChange(this.ActivityId,2)" class="btn btn-danger">刪除貼文</button>
+					<button type="button"
+							v-if="this.ReviewStatus!=1"
+							@@click="ActivityReviewStateChange(this.ActivityReviewId,1) ,ActivityStateChange(this.ActivityId,2)" class="btn btn-danger">刪除貼文</button>
 				</div>
 			</div>
 		</div>
@@ -214,6 +217,7 @@
 					ActImgSrc: "",
 					baseAdress: "",			 /*"https://localhost:7152"*/
 					ActType:[],
+					ReviewStatus:0,
 				}
 			},
 			methods: {
@@ -237,11 +241,12 @@
 				}
 
 				,
-				check(ActivityId, ActivityReviewId) {
+				check(ActivityId, ActivityReviewId,status) {
 					this.showModal();
 					this.GetActivity(ActivityId);
 					this.ActivityReviewId = ActivityReviewId;
 					this.ActivityId = ActivityId;
+					this.ReviewStatus = status;
 					//alert(postReviewId)
 				},
 				showModal() {
