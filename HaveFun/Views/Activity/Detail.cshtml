@@ -140,7 +140,7 @@
 											var isUserParticipating = Model.ActivityParticipants.Any(p => p.UserId == currentUserId);
 											var isActivityPassed = Model.ActivityTime <= DateTime.UtcNow;
 
-											var buttonText = isUserParticipating ? "已經報名" : (isActivityPassed ? "活動已過" : "參加");
+											var buttonText = isActivityPassed ? "活動已過" : (isUserParticipating ? "已經報名" : "參加");
 											var buttonStyle = isUserParticipating || isActivityPassed ? "background-color:gray; color:white; margin-right: 20px;" : "background-color:#f24570; color:white; margin-right: 20px;";
 											var isDisabled = isUserParticipating || isActivityPassed;
 										}

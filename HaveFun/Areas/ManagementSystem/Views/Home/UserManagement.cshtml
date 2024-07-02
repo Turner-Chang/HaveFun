@@ -8,7 +8,10 @@
 		<label class="text-bg-secondary col-12 col-md-2  m-2">已封鎖</label>
 		<label class="text-bg-success col-12 col-md-2  m-2">無須封鎖</label>
 	</div>
-	
+	<div class="m-2 col-12  ">
+		<label class="m-2">檢舉項目有哪些:</label> <br />
+		<label v-for="c in complaint" style="background-color: cornsilk;" class="form-label col-12 col-md-2 col-sm-6 border border-secondary ">{{c.complaintCategoryId}} . {{c.complaintCategoryName}}</label>
+	</div>
 	<hr />
 	<div class="table-responsive" v-if="reviews.length>0">
 		<table class="table table-secondary">
@@ -19,9 +22,6 @@
 					<th scope="col">檢舉項目</th>
 					<th scope="col">檢舉時間</th>
 					<th scope="col">處理按鈕</th>
-					
-
-
 				</tr>
 			</thead>
 			<tbody>
@@ -50,10 +50,7 @@
 
 	<template v-if="reviews.length==0"><h1>沒有被檢舉資料</h1> </template>
 
-	<div class="  text-light bg-secondary">
-		<label>檢舉項目:</label> <br />
-		<label v-for="c in complaint" class="form-label col-12 col-md-2 col-sm-6">{{c.complaintCategoryId}} . {{c.complaintCategoryName}}</label>
-	</div>
+	
 
 	<div class="modal fade"
 		 id="UserModal"

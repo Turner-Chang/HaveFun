@@ -11,7 +11,8 @@ namespace HaveFun.Controllers.APIs
     {
         private readonly HaveFunDbContext _dbContext;
         private readonly IConfiguration _configuration;
-         
+        private const string DefaultProfilePicture = "/images/headshots/noheadphoto.png";
+
 
         public FriendApiController(HaveFunDbContext dbContext, IConfiguration configuration)
         {
@@ -56,7 +57,7 @@ namespace HaveFun.Controllers.APIs
                 {
                     Id = item.Id,
                     Name = item.Name,
-                    ProfilePicture = string.IsNullOrEmpty(item.ProfilePicture)? "":CreatePictureUrl("GetPicture","Profile",new { Id = item.Id }),
+                    ProfilePicture = string.IsNullOrEmpty(item.ProfilePicture) ? DefaultProfilePicture:CreatePictureUrl("GetPicture","Profile",new { Id = item.Id }),
                     IsBlocked = item.IsBlocked,
                     state = item.state
                 });
@@ -101,7 +102,7 @@ namespace HaveFun.Controllers.APIs
                 {
                     Id = b.Id,
                     Name = b.Name,
-                    ProfilePicture = string.IsNullOrEmpty(b.ProfilePicture) ? "" : CreatePictureUrl("GetPicture", "Profile", new { Id = b.Id }),
+                    ProfilePicture = string.IsNullOrEmpty(b.ProfilePicture)? DefaultProfilePicture : CreatePictureUrl("GetPicture", "Profile", new { Id = b.Id }),
                     IsBlocked = b.IsBlocked,
                     state = b.state
                 })
