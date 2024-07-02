@@ -58,7 +58,7 @@
 							<h5 class="modal-title" id="modalTitleId">編輯個人資料</h5>
 							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
-						<div class="modal-body" style="width: auto;height: 300px;">
+						<div class="modal-body" style="width: auto;height: 400px;">
 							<label form-label>姓名:</label>
 							<div style="border-style:groove"><input v-model="material.name" placeholder="請輸入姓名" /></div>
 							<label form-label>生日:</label>
@@ -113,7 +113,7 @@
 							</article>
 						</div>
 						<div class="col-12 pt-2">
-							<input type="file" id="file-upload" style="display: none;" multiple @@change="uploadPictures">
+							<input type="file" id="file-upload" style="display: none;" multiple @@change="uploadPictures" accept="image/*" >
 							<label for="file-upload" class="default-btn" style="cursor: pointer;">上傳</label>
 						</div>
 					</div>
@@ -241,7 +241,7 @@
 					"gender": 0,
 					"birthDay": "",
 					"address": "您的居住地",
-					"introduction": "我愛大家",
+					"introduction": "這個人啥也不想說",
 					"phoneNumber": "",
 					"id": "",
 				},
@@ -394,9 +394,17 @@
 
 				const formData = new FormData();
 				formData.append('userId', this.material.id);
+				let allImagesValid = true; // 增加一個標記來檢查圖片是否有效
+
 				for (const file of files) {
+					if (!file.type.startsWith("image/")) {
+						this.albumUploadError = '請上傳圖片檔案';
+						allImagesValid = false;  // 如果有一個圖片無效，改成 false
+						break;
+					}
 					formData.append('albumPictures', file);
 				}
+				if (!allImagesValid) return;  // 如果有"無效圖片"，則停止上傳
 
 				try {
 					const response = await axios.post(`/api/UserInfo/UploadAlbumPicture`, formData);
