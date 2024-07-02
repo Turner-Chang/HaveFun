@@ -25,7 +25,7 @@ namespace HaveFun.Controllers.APIs
         public async Task<IActionResult> GetFriend(int id)
         {
             var friendList = await _dbContext.FriendLists
-                .Where(x => (x.Clicked == id && x.state == 1 || x.BeenClicked == id))
+                .Where(x => (x.Clicked == id && x.state == 1 ))
                 .Select(x => new
                 {
                     Id = x.Clicked == id ? x.User2.Id : x.User1.Id,
