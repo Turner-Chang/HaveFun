@@ -156,6 +156,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
 <script>
     const app_TagManage = Vue.createApp({
@@ -225,7 +226,11 @@
                 axios.delete(`/api/LabelsManageApi/${id}`)
                     .then(() => {
                         this.labels = this.labels.filter(label => label.id !== id);
-                        alert("標籤刪除成功");
+                        Swal.fire({
+                            icon: 'success',
+                            title: '刪除標籤成功',
+                            showConfirmButton: true
+                        });
                     })
                     .catch(error => {
                         console.error("刪除標籤時發生錯誤:", error);
@@ -237,7 +242,11 @@
                     .then(response => {
                         this.labels.push(response.data);
                         this.hideLabelForm();
-                        alert("新增標籤成功");
+                        Swal.fire({
+                            icon: 'success',
+                            title: '新增標籤成功',
+                            showConfirmButton: true
+                        });
                     })
                     .catch(error => {
                         if (error.response && error.response.status === 409) {
@@ -263,7 +272,11 @@
                     .then(() => {
                         this.categories = this.categories.filter(category => category.id !== id);
                         this.labels = this.labels.filter(label => label.categoryId !== id);
-                        alert("刪除標籤種類成功");
+                        Swal.fire({
+                            icon: 'success',
+                            title: '刪除標籤種類成功',
+                            showConfirmButton: true
+                        });
                     })
                     .catch(error => {
                         console.error("刪除標籤種類時發生錯誤:", error);
@@ -275,7 +288,11 @@
                     .then(response => {
                         this.categories.push(response.data);
                         this.hideCategoryForm();
-                        alert("新增標籤種類成功");
+                        Swal.fire({
+                            icon: 'success',
+                            title: '新增標籤種類成功',
+                            showConfirmButton: true
+                        });
                     })
                     .catch(error => {
                         if (error.response && error.response.status === 409) {
