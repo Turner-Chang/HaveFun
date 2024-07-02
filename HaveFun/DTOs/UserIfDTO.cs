@@ -32,10 +32,10 @@ namespace HaveFun.DTOs
         public IFormFile? ProfilePicture { get; set; }
         
         public string? Introduction { get; set; }
-        
-        
 
+		public List<IFormFile>? AlbumPictures { get; set; }
 
-    }
+		public int Level { get; set; } = 0;
+	}
 }
 

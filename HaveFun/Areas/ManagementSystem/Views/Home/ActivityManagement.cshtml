@@ -9,6 +9,12 @@
 			<label class="text-bg-success col-12 col-md-2  m-2">無須封鎖</label>
 			@* /*review status 0,1,2*/ *@
 		</div>
+
+		<div class="m-2 col-12  ">
+			<label class="m-2">檢舉項目有哪些:</label> <br />
+			<label v-for="c in complaint" style="background-color: cornsilk;" class="form-label col-12 col-md-2 col-sm-6 border border-secondary ">{{c.complaintCategoryId}} . {{c.complaintCategoryName}}</label>
+		</div>
+
 		<hr />
 		<div class="table-responsive" v-if="reports.length>0">
 			<table class="table table-secondary ">
@@ -32,7 +38,7 @@
 						<td class="col-md-0">{{this.TimeSplit(r.reportTime)}}</td>
 						<td>
 							<button :id="r.postReviewId" class="btn " :class="btnColor(r.processingStstus)"
-									@@click="check(r.activityId,r.activityReviewId)">
+									@@click="check(r.activityId,r.activityReviewId,r.processingStstus)">
 								{{this.ReviewStatusToString(r.processingStstus)}}
 							</button>
 						</td>
@@ -52,10 +58,6 @@
 		<template v-if="reports.length==0"><h1>沒有被檢舉資料</h1> </template>
 
 
-		<div class="  text-light bg-secondary">
-			<label>檢舉項目:</label> <br />
-			<label v-for="c in complaint" class="form-label col-12 col-md-2 col-sm-6">{{c.complaintCategoryId}} . {{c.complaintCategoryName}}</label>
-		</div>
 	</div>
 
 
@@ -94,7 +96,7 @@
 							貼文類別:
 						</label>
 						<label class="col-3 text-center lh-base">
-							{{Act.type}}
+							{{this.ActTypeString(Act.type)}}
 						</label>
 
 						<label class="col-3 text-decoration-underline">
@@ -110,32 +112,32 @@
 						<label class="col-3 text-center lh-base">
 							{{Act.maxParticipants}}
 						</label>
-						<label class="col-3 text-decoration-underline">
-							地點:
-						</label>
-						<label class="col-3 text-center lh-base">
-							{{Act.location}}
-						</label>
+						
 						<label class="col-3 text-decoration-underline">
 							自備金額:
 						</label>
 						<label class="col-3 text-center lh-base">
 							{{Act.amount}}
 						</label>
-
+						<label class="col-12 text-decoration-underline">
+							地點:
+						</label>
+						<label class="col-12 text-center lh-base">
+							{{Act.location}}
+						</label>
 					</div>
 					<div>
 						<label class="col-6 text-decoration-underline">
 							被檢舉貼文內容:
 						</label>
-						<label class="col-12 text-center lh-base">
-							{{Act.content}}
+						<label class="col-12 text-center lh-base" v-html="Act.content">
+
 						</label>
 						<label class="col-6 text-decoration-underline">
 							註記:
 						</label>
-						<label class="col-12 text-center lh-base">
-							{{Act.notes}}
+						<label class="col-12 text-center lh-base" v-html="Act.notes">
+							
 						</label>
 					</div>
 					<div>
@@ -184,12 +186,15 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button"
+							v-if="this.ReviewStatus!=2"
 							@@click="ActivityReviewStateChange(this.ActivityReviewId,2),ActivityStateChange(this.ActivityId,0) "
 							class="btn btn-secondary "
 							data-bs-dismiss="modal">
 						駁回檢舉
 					</button>
-					<button type="button" @@click="ActivityReviewStateChange(this.ActivityReviewId,1) ,ActivityStateChange(this.ActivityId,2)" class="btn btn-danger">刪除貼文</button>
+					<button type="button"
+							v-if="this.ReviewStatus!=1"
+							@@click="ActivityReviewStateChange(this.ActivityReviewId,1) ,ActivityStateChange(this.ActivityId,2)" class="btn btn-danger">刪除貼文</button>
 				</div>
 			</div>
 		</div>
@@ -211,10 +216,14 @@
 					complaint: [],
 					ActImgSrc: "",
 					baseAdress: "",			 /*"https://localhost:7152"*/
-
+					ActType:[],
+					ReviewStatus:0,
 				}
 			},
 			methods: {
+				ActTypeString(Id) {
+					if (!Id) return "";
+					return this.ActType.filter(d => d.id == Id)[0].typeName; },
 				GetAll() {
 
 					var data = fetch(`${this.baseAdress}/api/ActivityReview/GetAll`, { method: "GET" })
@@ -232,11 +241,12 @@
 				}
 
 				,
-				check(ActivityId, ActivityReviewId) {
+				check(ActivityId, ActivityReviewId,status) {
 					this.showModal();
 					this.GetActivity(ActivityId);
 					this.ActivityReviewId = ActivityReviewId;
 					this.ActivityId = ActivityId;
+					this.ReviewStatus = status;
 					//alert(postReviewId)
 				},
 				showModal() {
@@ -383,6 +393,7 @@
 				fetch(`${baseAdress}/api/complaint/Getall`, { method: "GET" }).then(r => r.json()).then(d => App.complaint = d);
 				//
 
+				axios.get('/api/ActivityApi/GetActivityType').then(d => App.ActType = (d.data))
 			},
 		}).mount("#ActivityCheckApp");
 

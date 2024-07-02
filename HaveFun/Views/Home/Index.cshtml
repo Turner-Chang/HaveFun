@@ -141,14 +141,14 @@
 					<div class="story__item">
 						<div class="story__inner">
 							<div class="story__thumb">
-								<a :href="`/Activity/Detail/${act.id}`"><img :src=`/api/personalActivities/GetPicture/${act.id}?rand=${rand}`></a>
+								<a :href="`/Activity/Detail/${act.id}`"><img class="actImg" :src=`/api/personalActivities/GetPicture/${act.id}?rand=${rand}`></a>
 								<span class="member__activity member__activity--ofline">最多人參加</span>
 							</div>
 							<div class="story__content">
 								<a :href="`/Activity/Detail/${act.id}`"><h4>{{act.title}}</h4></a>
 								<div class="story__content--author">
 									<div class="story__content--thumb">
-									<img v-bind:src=`/api/personalActivities/GetUserProfile/${act.userId}?rand=${rand}`>
+									<img class="memberPic" v-bind:src=`/api/personalActivities/GetUserProfile/${act.userId}?rand=${rand}`>
 									</div>
 									<div class="story__content--content">
 										<h6>{{act.userName}}</h6>
@@ -243,7 +243,8 @@
 			methods: {
 				//取得最熱門活動
 				getMostParticipantsActivity() {
-					fetch(`/api/Home/GetPopularActivity`)
+					const now = new Date().toUTCString();
+					fetch(`/api/Home/GetPopularActivity/${now}`)
 						.then(res => res.json())
 						.then(data => {
 							this.popularAct = data;
@@ -252,7 +253,8 @@
 				},
 				//取得進行中公告
 				getAnnouncement() {
-					fetch(`/api/Home/GetAnnouncement`)
+					const now = new Date().toUTCString();
+					fetch(`/api/Home/GetAnnouncement/${now}`)
 						.then(res => res.json())
 						.then(data => {
 							this.announcement = data;

@@ -21,8 +21,7 @@ namespace HaveFun.Controllers
         public ChatRoomsController(HaveFunDbContext context)
         {
             _context = context;
-           
-           
+             
         }
 		//
 		[Authorize(AuthenticationSchemes = "Bearer,Cookies")]
@@ -48,15 +47,8 @@ namespace HaveFun.Controllers
             }
         }
         //
-        
-        //
-        [Authorize(AuthenticationSchemes = "Bearer,Cookies")]
-        public IActionResult TRY()
-        {
-            var loginUser = Convert.ToInt32(Request.Cookies["userId"]);
-            ViewBag.UserId = loginUser;
-            return View();
-        }
+
+        [NonAction]
         // GET: ChatRooms
         public async Task<IActionResult> Index()
         {
@@ -65,7 +57,7 @@ namespace HaveFun.Controllers
         }
 
 
-
+        [NonAction]
         // GET: ChatRooms/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -87,6 +79,7 @@ namespace HaveFun.Controllers
         }
 
         // GET: ChatRooms/Create
+        [NonAction]
         public IActionResult Create()
         {
             ViewData["User2Id"] = new SelectList(_context.UserInfos, "Id", "Account");
@@ -97,7 +90,7 @@ namespace HaveFun.Controllers
         // POST: ChatRooms/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [NonAction]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,MessageText,CreateTime,User1Id,User2Id,IsRead")] ChatRoom chatRoom)
         {
@@ -115,7 +108,7 @@ namespace HaveFun.Controllers
             ViewData["User1Id"] = new SelectList(_context.UserInfos, "Id", "Account", chatRoom.User1Id);
             return View(chatRoom);
         }
-        [HttpGet]
+        [NonAction]
         // GET: ChatRooms/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -137,6 +130,7 @@ namespace HaveFun.Controllers
         // POST: ChatRooms/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [NonAction]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,MessageText,CreateTime,User1Id,User2Id,IsRead")] ChatRoom chatRoom)
         {
@@ -169,7 +163,7 @@ namespace HaveFun.Controllers
             ViewData["User1Id"] = new SelectList(_context.UserInfos, "Id", "Account", chatRoom.User1Id);
             return View(chatRoom);
         }
-        [HttpGet]
+        [NonAction]
         // GET: ChatRooms/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -189,7 +183,7 @@ namespace HaveFun.Controllers
 
             return View(chatRoom);
         }
-
+        [NonAction]
         // POST: ChatRooms/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

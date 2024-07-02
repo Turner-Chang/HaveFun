@@ -18,17 +18,22 @@ namespace HaveFun.Controllers.APIs
     [ApiController]
     public class UserInfoApiController : ControllerBase
     {
-         SaveImage _saveImage;
-         HaveFunDbContext _context;
+		
+		
+		SaveImage _saveImage;
+        HaveFunDbContext _context;
+		IWebHostEnvironment _environment;
 
-        public UserInfoApiController(HaveFunDbContext context, SaveImage saveImage)
+		public UserInfoApiController(HaveFunDbContext context, SaveImage saveImage, IWebHostEnvironment environment)
         {
             _context = context;
             _saveImage = saveImage;
-        }
+			_environment = environment;
+		}
+		
 
-        // GET: api/UserInfo/GetUserinfos
-        [HttpGet("{id}")]
+		// GET: api/UserInfo/GetUserinfos
+		[HttpGet("{id}")]
         [ActionName("GetUserinfos")]
         //拿資料
         public async Task<UserIfDTO> GetUserInfos(int id)
@@ -44,7 +49,8 @@ namespace HaveFun.Controllers.APIs
                 PhoneNumber = u.PhoneNumber,
                 Gender = u.Gender,
                 BirthDay = u.BirthDay,
-                Introduction = u.Introduction               
+                Introduction = u.Introduction,
+                Level = u.Level
             })
             .FirstOrDefaultAsync(); // 使用 FirstOrDefaultAsync 來獲取單個資料
 
@@ -63,8 +69,9 @@ namespace HaveFun.Controllers.APIs
                     PhoneNumber = u.PhoneNumber,
                     Gender = u.Gender,
                     BirthDay = u.BirthDay,
-                    Introduction = u.Introduction                    
-                })
+                    Introduction = u.Introduction,
+					Level = u.Level
+				})
                 .ToListAsync();
             return userInfos;
         }
@@ -83,9 +90,22 @@ namespace HaveFun.Controllers.APIs
             return null;
         }
 
-        // PUT: api/UserInfoApi/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+		// Get: api/Profile/GetAlbumPictures/{userId}
+		[HttpGet("{userId}")]
+		public async Task<ActionResult<IEnumerable<string>>> GetAlbumPictures(int userId)
+		{
+			var pictures = await _context.UserPictures
+				.Where(up => up.UserId == userId)
+				.Select(up => up.Picture)
+				.ToListAsync();
+
+			return Ok(pictures);
+		}
+
+
+		// PUT: api/UserInfoApi/5
+		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+		[HttpPut("{id}")]
         public async Task<IActionResult> PutUserInfo(int id, UserInfo userInfo)
         {
             if (id != userInfo.Id)
@@ -181,11 +201,78 @@ namespace HaveFun.Controllers.APIs
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "用戶資料已保存成功" });
-        }          
-    
+        }
 
-        // DELETE: api/UserInfoApi/5
-        [HttpDelete("{id}")]
+		//保存個人相簿圖片
+		// POST: api/UserInfo/UploadAlbumPicture
+		[HttpPost]
+		public async Task<IActionResult> UploadAlbumPicture([FromForm] int userId, [FromForm] List<IFormFile> albumPictures)
+		{
+			if (albumPictures == null || !albumPictures.Any())
+			{
+				return BadRequest("沒有上傳圖片");
+			}
+
+			var user = await _context.UserInfos.FindAsync(userId);
+			if (user == null)
+			{
+				return NotFound("User not found.");
+			}
+
+			string albumPath = Path.Combine(_environment.WebRootPath, "images", "album");
+			Directory.CreateDirectory(albumPath);
+
+			foreach (var file in albumPictures)
+			{
+				if (file.Length > 0)
+				{
+					string fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+					string filePath = Path.Combine(albumPath, fileName);
+
+					using (var stream = new FileStream(filePath, FileMode.Create))
+					{
+						await file.CopyToAsync(stream);
+					}
+
+					var userPicture = new UserPicture
+					{
+						UserId = user.Id,
+						Picture = $"/images/album/{fileName}"
+					};
+
+					_context.UserPictures.Add(userPicture);
+				}
+			}
+
+			await _context.SaveChangesAsync();
+
+			return Ok(new { message = "圖片已成功上傳到相簿" });
+		}
+
+
+        // DELETE: api/UserInfo/DeletePicture/{pictureId}
+        [HttpDelete("{pictureId}")]
+        public async Task<IActionResult> DeletePicture(int pictureId)
+        {
+            var picture = await _context.UserPictures.FindAsync(pictureId);
+            if (picture == null)
+            {
+                return NotFound("Picture not found");
+            }
+
+            if (System.IO.File.Exists(Path.Combine(_environment.WebRootPath, picture.Picture.TrimStart('/'))))
+            {
+                System.IO.File.Delete(Path.Combine(_environment.WebRootPath, picture.Picture.TrimStart('/')));
+            }
+
+            _context.UserPictures.Remove(picture);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "圖片已刪除" });
+        }
+
+			// DELETE: api/UserInfoApi/5
+			[HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserInfo(int id)
         {
             var userInfo = await _context.UserInfos.FindAsync(id);

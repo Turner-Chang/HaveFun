@@ -8,7 +8,10 @@
 		<label class="text-bg-secondary col-12 col-md-2  m-2">已封鎖</label>
 		<label class="text-bg-success col-12 col-md-2  m-2">無須封鎖</label>
 	</div>
-	
+	<div class="m-2 col-12  ">
+		<label class="m-2">檢舉項目有哪些:</label> <br />
+		<label v-for="c in complaint" style="background-color: cornsilk;" class="form-label col-12 col-md-2 col-sm-6 border border-secondary ">{{c.complaintCategoryId}} . {{c.complaintCategoryName}}</label>
+	</div>
 	<hr />
 	<div class="table-responsive" v-if="reviews.length>0">
 		<table class="table table-secondary">
@@ -19,9 +22,6 @@
 					<th scope="col">檢舉項目</th>
 					<th scope="col">檢舉時間</th>
 					<th scope="col">處理按鈕</th>
-					
-
-
 				</tr>
 			</thead>
 			<tbody>
@@ -33,7 +33,7 @@
 					<td>
 						<button class="btn " 
 							:class="btnColor(r.status)"
-								@@click="UserCheck(r.beReportedUserId,r.id)">
+								@@click="UserCheck(r.beReportedUserId,r.id ,r.status)">
 							{{this.ReviewStatusToString(r.status)}}
 						</button>
 					</td>
@@ -50,10 +50,7 @@
 
 	<template v-if="reviews.length==0"><h1>沒有被檢舉資料</h1> </template>
 
-	<div class="  text-light bg-secondary">
-		<label>檢舉項目:</label> <br />
-		<label v-for="c in complaint" class="form-label col-12 col-md-2 col-sm-6">{{c.complaintCategoryId}} . {{c.complaintCategoryName}}</label>
-	</div>
+	
 
 	<div class="modal fade"
 		 id="UserModal"
@@ -151,11 +148,12 @@
 					<button type="button"
 							class="btn btn-secondary "
 							data-bs-dismiss="modal"
+							v-if="this.ReviewState!=2"
 							@@click="changeUserStatus(userInfos.id,0),
 									changeReviewState(this.UserReviewid,2)">
 						駁回檢舉
 					</button>
-					<button type="button" 
+					<button type="button" v-if="this.ReviewState!=1"
 						@@click="changeUserStatus(userInfos.id,1) ,
 								changeReviewState(this.UserReviewid,1)"
 					class="btn btn-danger">
@@ -184,6 +182,7 @@
 					baseAdress: "",		/*"https://localhost:7152" */
 					// complaintArr:[],
 					userImgSrc:"",
+					ReviewState:0,
 				};
 			},
 			methods: {
@@ -193,10 +192,11 @@
 					else { return "不男不女"; }
 				},
 			
-				UserCheck(UserId,ReviewId) {
+				UserCheck(UserId,ReviewId ,reviewStatus) {
 					this.showModal();
 					this.getUserInfo(UserId);
 					this.UserReviewid = ReviewId;
+					this.ReviewState = reviewStatus;
 				},
 				getUserInfo(userid) {
 					axios.get(`${this.baseAdress}/api/UserInfo/GetById/${userid}`
