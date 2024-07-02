@@ -105,27 +105,35 @@ namespace HaveFun.Controllers
 
         public async Task<IActionResult> TransactionsSuccess()
         {
-            int userId = User.GetUserId();
-            UserInfo? user = await _dbContext.UserInfos.FindAsync(userId);
-            if(user == null)
+            try
             {
-                return BadRequest("找不到user");
+                int userId = User.GetUserId();
+                UserInfo? user = await _dbContext.UserInfos.FindAsync(userId);
+                if (user == null)
+                {
+                    return BadRequest("找不到user");
+                }
+                user.Level = 1;
+                Transaction transaction = new Transaction
+                {
+                    UserId = userId,
+                    Amount = 300,
+                    Product = 0,
+                    Method = 0,
+                    Date = DateTime.Now,
+                    Status = 0
+                };
+
+                _dbContext.Transactions.Add(transaction);
+                _dbContext.Entry(user).State = EntityState.Modified;
+                await _dbContext.SaveChangesAsync();
+                return View();
             }
-            user.Level = 1;
-            Transaction transaction = new Transaction
+            catch (Exception e)
             {
-                UserId = userId,
-                Amount = 300,
-                Product = 0,
-                Method = 0,
-                Date = DateTime.Now,
-                Status = 0
-            };
-            
-            _dbContext.Transactions.Add(transaction);
-            _dbContext.Entry(user).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
-            return View();
+
+                return BadRequest(e.Message);
+            }
         }
         
 
