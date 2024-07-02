@@ -42,6 +42,11 @@ namespace HaveFun.Controllers
         {
 
             int userId = User.GetUserId();
+            UserInfo? user = _dbContext.UserInfos.Find(userId);
+            if (user == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
             string ordernumber = $"{DateTime.Now.Ticks}_{userId}"; 
 
             // 目前時間轉換 +08:00, 防止傳入時間或 Server 時間時區不同造成錯誤
@@ -65,7 +70,9 @@ namespace HaveFun.Controllers
                 // 支付完成 返回商店網址
                 ReturnURL = _bankInfoModel.ReturnURL,
                 // 信用卡 一次付清啟用 (1=啟用、0 或者未有此參數=不啟用)
-                CREDIT = 1
+                CREDIT = 1,
+                // 付款人信箱 
+                Email = user.Account
             };
 
             var inputModel = new SpgatewayInputDTO
@@ -97,6 +104,9 @@ namespace HaveFun.Controllers
 
         public async Task<IActionResult> TransactionsSuccess()
         {
+            int userId = User.GetUserId();
+            UserInfo? user = await _dbContext.UserInfos.FindAsync(userId);
+            user.Level = 1;
             Transaction transaction = new Transaction
             {
                 UserId = User.GetUserId(),
@@ -106,7 +116,9 @@ namespace HaveFun.Controllers
                 Date = DateTime.Now,
                 Status = 0
             };
+            
             _dbContext.Transactions.Add(transaction);
+            _dbContext.UserInfos.Update(user);
             await _dbContext.SaveChangesAsync();
             return View();
         }
@@ -114,8 +126,6 @@ namespace HaveFun.Controllers
 
         public IActionResult ReturnCheck([FromForm] ReturnTransactionsDTO returnTransactions)
         {
-
-            int userID = User.GetUserId();
             // 把回傳的字串解密
             // string result = CryptoUtil.DecryptAESHex(returnTransactions.TradeInfo, _bankInfoModel.HashKey, _bankInfoModel.HashIV);
             

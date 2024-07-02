@@ -25,6 +25,10 @@
 							<p class="info-details">{{ material.birthDay }}</p>
 						</li>
 						<li>
+							<p class="info-name">會員等級</p>
+							<p class="info-details">{{ displayLevel }}</p>
+						</li>
+						<li>
 							<p class="info-name">電話</p>
 							<p class="info-details">{{ material.phoneNumber }}</p>
 						</li>
@@ -239,16 +243,21 @@
 			return {
 				material: {
 					name: "您的姓名",
-					gender: '',
+					gender: "",
 					birthDay: "",
 					address: "您的居住地",
 					introduction: "",
 					phoneNumber: "",
 					id: "",
+					level: "",
 				},
 				genderOptions: {
 					0: '男',
 					1: '女'
+				},
+				levelOptions: {
+					0: "一般會員",
+					1: "白金會員"
 				},
 				profilePictureError: '',
 				profilePicture: '',
@@ -274,7 +283,10 @@
 			formattedBirthDay() {
 				// 如果 `material.birthDay` 有值，切割並取日期部分
 				return this.material.birthDay ? this.material.birthDay.split('T')[0] : '';
-			}
+			},
+			displayLevel() {
+				return this.levelOptions[this.material.level];
+			},
 		},
 		methods: {
 			showModel() {									/* 顯示修改的表單 */

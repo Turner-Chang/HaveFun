@@ -49,7 +49,8 @@ namespace HaveFun.Controllers.APIs
                 PhoneNumber = u.PhoneNumber,
                 Gender = u.Gender,
                 BirthDay = u.BirthDay,
-                Introduction = u.Introduction               
+                Introduction = u.Introduction,
+                Level = u.Level
             })
             .FirstOrDefaultAsync(); // 使用 FirstOrDefaultAsync 來獲取單個資料
 
@@ -68,8 +69,9 @@ namespace HaveFun.Controllers.APIs
                     PhoneNumber = u.PhoneNumber,
                     Gender = u.Gender,
                     BirthDay = u.BirthDay,
-                    Introduction = u.Introduction                    
-                })
+                    Introduction = u.Introduction,
+					Level = u.Level
+				})
                 .ToListAsync();
             return userInfos;
         }
