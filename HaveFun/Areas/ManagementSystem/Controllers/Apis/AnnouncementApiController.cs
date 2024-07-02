@@ -53,6 +53,7 @@ namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
 			if (id!=announcement.Id) { return "修改失敗"; }
 			var ann1 = await _context.Announcements.FindAsync(id);
 			if (ann1 != null) {
+			ann1.StartTime = announcement.StartTime;
 			ann1.EndTime = announcement.EndTime;
 			ann1.Content = announcement.Content;
 			ann1.Title= announcement.Title;
@@ -67,7 +68,25 @@ namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
 
 			return "修改成功";
 		}
+		[HttpDelete]
+		public async Task<string> Delete( int id) {
 
+			var ann= await _context.Announcements.FindAsync( id);
+			if(ann != null)
+			{
+				_context.Announcements.Remove(ann);
+			}
+
+			try { 
+			_context.SaveChangesAsync();
+			
+			}catch (Exception ex) {
+
+				return "刪除失敗";
+			}
+
+			return "刪除成功";
+		}
 	}
 	
 }
