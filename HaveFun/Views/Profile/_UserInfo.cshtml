@@ -18,7 +18,7 @@
 						</li>
 						<li>
 							<p class="info-name">性別</p>
-							<p class="info-details">{{ displayGender  }}</p>
+							<p class="info-details">{{ displayGender }}</p>
 						</li>
 						<li>
 							<p class="info-name">生日</p>
@@ -238,13 +238,13 @@
 		data() {
 			return {
 				material: {
-					"name": "您的姓名",
-					"gender": 0,
-					"birthDay": "",
-					"address": "您的居住地",
-					"introduction": "",
-					"phoneNumber": "",
-					"id": "",
+					name: "您的姓名",
+					gender: 0,
+					birthDay: "",
+					address: "您的居住地",
+					introduction: "",
+					phoneNumber: "",
+					id: "",
 				},
 				genderOptions: {
 					0: '男',
@@ -358,7 +358,6 @@
 			},
 			fetchData() {
 				/* 呼叫資料 */
-
 				axios.get(`/api/UserInfo/GetUserinfos/${@ViewBag.UserId}`)
 					.then(response => {
 						this.material = response.data;
@@ -366,6 +365,11 @@
 							if (this.material[key] === 'null') {
 								this.material[key] = '';
 							}
+						}
+
+						// 確保性別是數值類型
+						if (typeof this.material.gender === 'string') {
+							this.material.gender = parseInt(this.material.gender, 10);
 						}
 						// 初始化圖片 URL
 						this.profilePictureUri = `/api/UserInfo/GetPicture/${this.material.id}?t=${new Date().getTime()}`;
