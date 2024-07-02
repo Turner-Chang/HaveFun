@@ -119,6 +119,7 @@
                 background-color: #e64a19; /* 保持按鈕懸停顏色 */
             }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
 <script>    
     var app_PayHistory = Vue.createApp({
@@ -194,7 +195,11 @@
 					})
 				    .then(response => {
 						if (response.ok) {
-							alert('退款申請成功！');
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '退款申請已送出',
+                                    showConfirmButton: true
+                                });
 							// 更新交易記錄列表
 							this.fetchTransactions();
 						} else {

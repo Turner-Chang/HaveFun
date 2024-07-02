@@ -87,6 +87,12 @@ namespace HaveFun.Areas.ManagementSystem.Controllers.Apis
 
 			return "刪除成功";
 		}
+		[HttpGet]
+		public string time() {
+
+			return DateTime.UtcNow.AddHours(8).ToString();
+		}
+
 	}
 	
 }

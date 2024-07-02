@@ -33,7 +33,7 @@ namespace HaveFun.Controllers.APIs
 					.AsNoTracking()
                     .Include(user => user.ActivityParticipants)
                     .ThenInclude(member => member.User)
-                    .Where(activity => activity.Status == 0 && activity.ActivityTime > DateTime.Now &&
+                    .Where(activity => activity.Status == 0 && activity.ActivityTime > DateTime.UtcNow.AddHours(8) &&
                     (activity.UserId == User.GetUserId() ||
 					activity.ActivityParticipants.Any(member => member.UserId == User.GetUserId()) 
 					))
@@ -88,7 +88,7 @@ namespace HaveFun.Controllers.APIs
 				var hostActivities = await _context.Activities
                     .Include(user => user.ActivityParticipants)
                     .ThenInclude(member => member.User)
-                    .Where(activity => activity.Status == 0 && activity.UserId == User.GetUserId() && activity.ActivityTime > DateTime.Now)
+                    .Where(activity => activity.Status == 0 && activity.UserId == User.GetUserId() && activity.ActivityTime > DateTime.UtcNow.AddHours(8))
 					.OrderBy(activity => activity.ActivityTime)
 					.Select(data => new
 					{
@@ -137,7 +137,7 @@ namespace HaveFun.Controllers.APIs
 					.AsNoTracking()
                     .Include(x => x.ActivityParticipants)
                     .ThenInclude(member => member.User)
-                    .Where(act => act.Status == 0 && act.ActivityTime < DateTime.Now &&
+                    .Where(act => act.Status == 0 && act.ActivityTime < DateTime.UtcNow.AddHours(8) &&
 						(act.UserId == User.GetUserId() || 
 							act.ActivityParticipants.Any(member => member.UserId == User.GetUserId())))					
 					.OrderByDescending(activity => activity.ActivityTime)
