@@ -52,19 +52,24 @@ namespace HaveFun.Models
 
         [Required(ErrorMessage = "此項為必填")]
         [Display(Name = "活動發起時間")]
-        public DateTime InitiationTime { get; set; } = DateTime.Now;
+		[DisplayFormat(DataFormatString = "{0:yyyy-MM-ddTHH:mm}", ApplyFormatInEditMode = true)]
+		public DateTime InitiationTime { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage = "此項為必填")]
         [Display(Name = "活動報名時間")]
-        public DateTime RegistrationTime { get; set; } = DateTime.Now;
+		[DisplayFormat(DataFormatString = "{0:yyyy-MM-ddTHH:mm}", ApplyFormatInEditMode = true)]
+		public DateTime RegistrationTime { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage = "此項為必填")]
         [Display(Name = "活動截止時間")]
-        public DateTime DeadlineTime { get; set; } = DateTime.Now;
+		[DisplayFormat(DataFormatString = "{0:yyyy-MM-ddTHH:mm}", ApplyFormatInEditMode = true)]
+		public DateTime DeadlineTime { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage = "此項為必填")]
         [Display(Name = "活動開始時間")]
-        public DateTime ActivityTime { get; set; } = DateTime.Now;
+		[DisplayFormat(DataFormatString = "{0:yyyy-MM-ddTHH:mm}", ApplyFormatInEditMode = true)]
+		[FutureDate(ErrorMessage = "活動開始時間 必须大于当前时间")]
+		public DateTime ActivityTime { get; set; } = DateTime.Now;
 
         [Required]
         [Display(Name = "活動狀態")]
@@ -79,7 +84,22 @@ namespace HaveFun.Models
 
     }
 
+	public class FutureDateAttribute : ValidationAttribute
+	{
+		public override bool IsValid(object value)
+		{
+			if (value is DateTime dateTime)
+			{
+				return dateTime > DateTime.Now;
+			}
+			return false;
+		}
 
+		public override string FormatErrorMessage(string name)
+		{
+			return $"{name} 必須大於當前時間";
+		}
+	}
 
 
 }
