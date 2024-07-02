@@ -3,6 +3,7 @@ using HaveFun.DTOs;
 using HaveFun.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -106,10 +107,14 @@ namespace HaveFun.Controllers
         {
             int userId = User.GetUserId();
             UserInfo? user = await _dbContext.UserInfos.FindAsync(userId);
+            if(user == null)
+            {
+                return BadRequest("找不到user");
+            }
             user.Level = 1;
             Transaction transaction = new Transaction
             {
-                UserId = User.GetUserId(),
+                UserId = userId,
                 Amount = 300,
                 Product = 0,
                 Method = 0,
@@ -118,7 +123,7 @@ namespace HaveFun.Controllers
             };
             
             _dbContext.Transactions.Add(transaction);
-            _dbContext.UserInfos.Update(user);
+            _dbContext.Entry(user).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
             return View();
         }
