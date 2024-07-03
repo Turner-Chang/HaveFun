@@ -1,0 +1,231 @@
+﻿<div id="matchApp">
+    <div class="match-container">
+        <div class="card" v-for="user in users" :key="user.id">
+            <div class="card-content">
+                <img :src="user.profilePicture" alt="Profile Picture" class="profile-picture">
+                <h3>{{ user.name }}</h3>
+                <p>生日: {{ user.birthDay }}</p>
+                <p>性别: {{ getGender(user.gender) }}</p>
+                <div class="actions">
+                    <button @@click="likeUser(user.id)" class="like-btn">喜歡</button>
+                    <button @@click="dislikeUser(user.id)" class="dislike-btn">不喜歡</button>
+                </div>
+            </div>
+        </div>
+        <div v-if="users.length === 0">
+            <!-- Handle empty state if needed -->
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async function () {
+        const app = Vue.createApp({
+            data() {
+                return {
+                    users: [],
+                    friendList: [],
+                    currentUserId: null
+                };
+            },
+            methods: {
+
+           
+                async getCurrentUserId() {
+                    try {
+                        const response = await axios.get('/api/LuckyMatchApi/GetCurrentUserId');
+                        if (response.status === 200) {
+                            this.currentUserId = response.data.userId;
+                        }
+                    } catch (error) {
+                        console.error('Error fetching current user ID:', error);
+                    }
+                },
+                async getRandomUser() {
+                    try {
+                        const response = await axios.get(`/api/LuckyMatchApi/GetRandomUser?currentUserId=${this.currentUserId}`);
+                        if (response.status === 200) {
+                            this.users = [response.data]; // 仅获取一个随机用户
+                        }
+                    } catch (error) {
+                        console.error('Error fetching random user:', error);
+                    }
+                },
+                async getFriendList() {
+                    try {
+                        const response = await axios.get('/api/LuckyMatchApi/GetWhoLikeList');
+                        if (response.status === 200) {
+                            this.friendList = response.data;
+                        }
+                    } catch (error) {
+                        console.error('Error fetching friend list:', error);
+                    }
+                },
+                getGender(gender) {
+                    return gender === 0 ? '男' : '女';
+                },
+                async likeUser(userId) {
+                    try {
+                        const response = await axios.post('/api/LuckyMatchApi/LikeUser', {
+                            UserId: this.currentUserId,
+                            FriendId: userId
+                        }, {
+                            headers: { 'Content-Type': 'application/json' }
+                        });
+                        if (response.status === 200) {
+                            console.log('喜欢用户:', userId);
+                            // 如果需要，可以在这里添加匹配成功的逻辑
+                            await this.getRandomUser(); // 获取下一个随机用户
+                        }
+                    } catch (error) {
+                        console.error('Error liking user:', error);
+                    }
+                },
+
+                async dislikeUser(userId) {
+                    try {
+                        const response = await axios.post('/api/LuckyMatchApi/DislikeUser', {
+                            UserId: this.currentUserId,
+                            FriendId: userId
+                        }, {
+                            headers: { 'Content-Type': 'application/json' }
+                        });
+                        if (response.status === 200) {
+                            console.log('不喜欢用户:', userId);
+                            await this.getRandomUser(); // 获取下一个随机用户
+                        }
+                    } catch (error) {
+                        console.error('Error disliking user:', error);
+                    }
+                },
+
+                async getRandomUser() {
+                    try {
+                        const response = await axios.get(`/api/LuckyMatchApi/GetRandomUser?currentUserId=${this.currentUserId}`);
+                        if (response.status === 200) {
+                            if (response.data.Message === "等待按讚中") {
+                                this.users = [{
+                                    id: null,
+                                    name: "等待按讚中",
+                                    birthDay: "",
+                                    gender: "",
+                                    profilePicture: response.data.ProfilePicture
+                                }];
+                            } else {
+                                this.users = [response.data];
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error fetching random user:', error);
+                        this.users = []; // 清空用户列表或显示错误消息
+                    }
+                },
+            },
+            async mounted() {
+                await this.getCurrentUserId();
+                await this.getRandomUser();
+                await this.getFriendList(); // 初始化时获取好友清单数据
+            }
+        });
+        app.mount('#matchApp');
+    });
+</script>
+
+<style>
+#matchApp {
+    background-color: gold;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.match-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+.card {
+    width: 500px;
+    height: 550px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card-content {
+    padding: 100px;
+    text-align: center;
+}
+
+.profile-picture {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    margin: 0 auto;
+    display: block;
+    border: 2px solid #ddd;
+    padding: 5px;
+}
+
+h3 {
+    font-size: 24px;
+    margin: 10px 0;
+    color: #333;
+}
+
+p {
+    color: #777;
+    margin: 5px 0;
+}
+
+.actions {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 15px;
+}
+
+.like-btn, .dislike-btn {
+    width: 100px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.like-btn {
+    background-color: #4CAF50;
+}
+
+.like-btn:disabled {
+    background-color: #9e9e9e;
+    cursor: not-allowed;
+}
+
+.like-btn:hover {
+    background-color: #45a049;
+}
+
+.dislike-btn {
+    background-color: #f44336;
+}
+
+.dislike-btn:hover {
+    background-color: #e53935;
+}
+</style>
