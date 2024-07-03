@@ -46,6 +46,24 @@
 			user-select: none;
 		}
 
+		@@media screen and (max-width: 800px){
+			#card-container {
+				width: 100%;
+				padding: 10px;
+			}
+
+			.cards {
+				/* outline: 2px solid blue; */
+				width: 100%;
+			}
+
+			#out {
+				/* outline: 2px solid red; */
+				padding: 0px;
+				margin-top: 50px;
+			}
+		}
+
 		.cards.dragging {
 			transition: none;
 		}
