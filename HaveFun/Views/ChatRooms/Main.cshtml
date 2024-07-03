@@ -1,4 +1,8 @@
-﻿<link href="~/css/chat.css" rel="stylesheet" />
+﻿@{
+    ViewData["Title"] = "Chat";
+}
+
+<link href="~/css/chat.css" rel="stylesheet" />
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
@@ -113,6 +117,14 @@
             },
             methods: {
                 setInitialFriend() {
+                    const savedFriendId = localStorage.getItem('activeFriendId');
+                    if (savedFriendId) {
+                        const savedFriend = this.friends.find(friend => friend.id.toString() === savedFriendId);
+                        if (savedFriend) {
+                            this.selectFriend(savedFriend);
+                            return;
+                        }
+                    }
                     if (this.friends.length > 0) {
                         this.selectFriend(this.friends[0]);
                     }
@@ -121,6 +133,7 @@
                     if (!friend.isBlocked) {
                         this.activeFriendId = friend.id;
                         this.activeFriend = friend;
+                        localStorage.setItem('activeFriendId', friend.id.toString());
                         console.log('Selected friend:', friend);
                         this.fetchChatHistory();
                     } else {
@@ -144,7 +157,6 @@
                         }
 
                         this.friends = friends.map(friend => {
-
                             return {
                                 id: friend.id,
                                 name: friend.name,
@@ -179,6 +191,7 @@
                     });
                 },
                 async fetchChatHistory() {
+                    if (!this.activeFriendId) return;
                     try {
                         const response = await axios.get(`/api/ChatRoom/ChatRoomsApi/GetAllChatHistory/${this.currentUserId}/${this.activeFriendId}`);
                         this.chatHistory = response.data.map(message => ({
@@ -264,7 +277,6 @@
                         }
                     });
 
-
                     this.connection.on("SomeOneOnline", (connid) => {
                         console.log(`Someone connected, ID: ${connid}`);
                         this.setonline();
@@ -298,11 +310,11 @@
                     friend.avatarUrl = '/images/headshots/noheadphoto.png';
                 }
             },
-            mounted() {
-                this.fetchFriends();
+            async mounted() {
+                await this.fetchFriends();
+                this.setInitialFriend();
                 this.fetchAllUserStatuses();
                 this.setupSignalRConnection();
-
             },
             beforeUnmount() {
                 if (this.connection) {
