@@ -69,34 +69,60 @@
                 },
                 async likeUser(userId) {
                     try {
-                        const response = await axios.post('/api/LuckyMatchApi/LikeUser',
-                            JSON.stringify(userId),
-                            { headers: { 'Content-Type': 'application/json' } }
-                        );
+                        const response = await axios.post('/api/LuckyMatchApi/LikeUser', {
+                            UserId: this.currentUserId,
+                            FriendId: userId
+                        }, {
+                            headers: { 'Content-Type': 'application/json' }
+                        });
                         if (response.status === 200) {
                             console.log('喜欢用户:', userId);
-                            // 跳转到好友清单页面，假设好友清单页面为 /friends
-                            await this.getFriendList(); // 更新好友清单数据
+                            // 如果需要，可以在这里添加匹配成功的逻辑
+                            await this.getRandomUser(); // 获取下一个随机用户
                         }
                     } catch (error) {
                         console.error('Error liking user:', error);
                     }
                 },
+
                 async dislikeUser(userId) {
                     try {
-                        const response = await axios.post('/api/LuckyMatchApi/DislikeUser',
-                            JSON.stringify(userId),
-                            { headers: { 'Content-Type': 'application/json' } }
-                        );
+                        const response = await axios.post('/api/LuckyMatchApi/DislikeUser', {
+                            UserId: this.currentUserId,
+                            FriendId: userId
+                        }, {
+                            headers: { 'Content-Type': 'application/json' }
+                        });
                         if (response.status === 200) {
                             console.log('不喜欢用户:', userId);
-                            // 从界面上移除用户
-                            this.users = this.users.filter(user => user.id !== userId);
+                            await this.getRandomUser(); // 获取下一个随机用户
                         }
                     } catch (error) {
                         console.error('Error disliking user:', error);
                     }
-                }
+                },
+
+                async getRandomUser() {
+                    try {
+                        const response = await axios.get(`/api/LuckyMatchApi/GetRandomUser?currentUserId=${this.currentUserId}`);
+                        if (response.status === 200) {
+                            if (response.data.Message === "等待按讚中") {
+                                this.users = [{
+                                    id: null,
+                                    name: "等待按讚中",
+                                    birthDay: "",
+                                    gender: "",
+                                    profilePicture: response.data.ProfilePicture
+                                }];
+                            } else {
+                                this.users = [response.data];
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error fetching random user:', error);
+                        this.users = []; // 清空用户列表或显示错误消息
+                    }
+                },
             },
             async mounted() {
                 await this.getCurrentUserId();
