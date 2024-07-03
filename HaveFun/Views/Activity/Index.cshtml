@@ -71,7 +71,7 @@
 										<p class="card-text" v-html="activity.content"></p>
 										<div class="story__content--author justify-content-between border-top pt-3">
 											<div class="story__content--content">
-												<p><i class="fa-solid fa-earth-africa"></i> Public Group</p>
+												<p><i class="fa-solid fa-earth-africa"></i>公開活動</p>
 											</div>
 											<ul class="img-stack">
 												<li v-for="participant in limitedParticipants(activity.participants)">
@@ -90,7 +90,7 @@
 														{{ remainingParticipants(activity.participants) }}+
 														<div class="time-tooltip">
 															<div class="time-tooltip-holder">
-																<span class="tooltip-info">More</span>
+																<span class="tooltip-info">更多</span>
 															</div>
 														</div>
 													</a>
@@ -139,7 +139,7 @@
 								<p class="card-text" v-html="activity.content"></p>
 								<div class="story__content--author justify-content-between border-top pt-3">
 									<div class="story__content--content">
-										<p><i class="fa-solid fa-earth-africa"></i> Public Group</p>
+										<p><i class="fa-solid fa-earth-africa"></i> 公開活動</p>
 									</div>
 									<ul class="img-stack">
 										<li v-for="participant in limitedParticipants(activity.participants)">
@@ -158,7 +158,7 @@
 												{{ remainingParticipants(activity.participants) }}+
 												<div class="time-tooltip">
 													<div class="time-tooltip-holder">
-														<span class="tooltip-info">More</span>
+														<span class="tooltip-info">更多</span>
 													</div>
 												</div>
 											</a>
@@ -172,7 +172,7 @@
 				<div class="row justify-content-center mt-5 top-right-button">
 					<div class="col-auto">
 						<a href="#" class="default-btn" style="background-color:#f24570; color:white;" v-on:click.prevent="loadMore" v-if="hasMore">
-							<span><i class="fa-solid fa-spinner"></i> Load More</span>
+							<span><i class="fa-solid fa-spinner"></i>更多</span>
 						</a>
 					</div>
 				</div>
