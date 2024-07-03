@@ -1,13 +1,21 @@
 graph LR
-    A[Windows .NET Core MVC<br>Windows .NET Core MVC框架] --> B[Web API<br>網絡API]
-    A --> C[Razor Pages<br>Razor頁面]
+         A[Windows .NET Core MVC<br>Windows .NET Core MVC框架] --> MW[Middleware<br>中間件]
+    MW --> B[Web API<br>網絡API]
+    MW --> C[Razor Pages<br>Razor頁面]
+    C --> CP[Partial Views<br>部分視圖]
     B --> D[RESTful API<br>RESTful API接口]
     A --> E[Dependency Injection<br>依賴注入]
+    E --> MW
     
-    A --> F[Front-end<br>前端]
+    A --> VM[View Model<br>視圖模型]
+    VM --> C
+    VM --> F[Front-end<br>前端]
+    
     F --> G[Vue.js<br>Vue.js框架]
     F --> H[JavaScript<br>JavaScript腳本語言]
     F --> I[HTML<br>HTML標記語言]
+    F --> CSS[CSS<br>層疊樣式表]
+    CSS --> BS[Bootstrap 5<br>Bootstrap 5框架]
     
     G --> J[Axios<br>Axios HTTP客戶端]
     H --> K[jQuery<br>jQuery庫]
@@ -25,6 +33,7 @@ graph LR
     A --> T[Authentication & Security<br>認證和安全]
     T --> U[JWT<br>JWT令牌]
     T --> V[Salt<br>加鹽技術]
+    T --> MW
     
     A --> W[External Services<br>外部服務]
     W --> X[Google API<br>Google API]
@@ -36,4 +45,6 @@ graph LR
     
     A --> AC[Data Transfer<br>數據傳輸]
     AC --> AD[DTO<br>數據傳輸對象]
-    AD --> AE[Partial_View]
+    
+    Q --> VM
+    AC --> VM
