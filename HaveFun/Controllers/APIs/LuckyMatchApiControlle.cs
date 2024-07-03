@@ -29,24 +29,44 @@ namespace HaveFun.Controllers.APIs
             return Ok(new { userId = currentUserId });
         }
 
+        private const string DefaultProfilePicture = "/images/headshots/Noonefind.png";
+
         [HttpGet("GetRandomUser")]
         public IActionResult GetRandomUser(int currentUserId)
         {
             try
             {
-                var interactedUser = _dbContext.FriendLists
-                    .Where(f1 => f1.BeenClicked == currentUserId && f1.state == 0)
-                    .Select(f1 => f1.Clicked)
+                // 找出對當前用戶按讚 (state = 1) 但當前用戶沒有按讚 (state = 0) 的用戶
+                var matchedUsers = _dbContext.FriendLists
+                    .Where(f => f.BeenClicked == currentUserId && f.state == 1)
+                    .Select(f => f.Clicked)
+                    .Except(_dbContext.FriendLists
+                        .Where(f => f.Clicked == currentUserId && f.state == 1)
+                        .Select(f => f.BeenClicked))
                     .ToList();
 
-                var user = _dbContext.UserInfos
-                    .Where(u => u.Id != currentUserId && interactedUser.Contains(u.Id))
-                    .OrderBy(u => Guid.NewGuid())
-                    .FirstOrDefault();
+                if (!matchedUsers.Any())
+                {
+                    return Ok(new
+                    {
+                        Message = "等待按讚中",
+                        ProfilePicture = DefaultProfilePicture
+                    });
+                }
+
+                // 從匹配的用戶中隨機選擇一個
+                var random = new Random();
+                var randomUserId = matchedUsers[random.Next(matchedUsers.Count)];
+
+                var user = _dbContext.UserInfos.Find(randomUserId);
 
                 if (user == null)
                 {
-                    return NotFound("No random user found");
+                    return Ok(new
+                    {
+                        Message = "等待按讚中",
+                        ProfilePicture = DefaultProfilePicture
+                    });
                 }
 
                 var randomUser = new
