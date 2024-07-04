@@ -36,12 +36,12 @@ namespace HaveFun.Controllers.APIs
         {
             try
             {
-                // 找出對當前用戶按讚 (state = 1) 但當前用戶沒有按讚 (state = 0) 的用戶
+                // 找出對當前用戶按讚 (state = 0) 但當前用戶沒有按讚 (state = 0) 的用戶
                 var matchedUsers = _dbContext.FriendLists
-                    .Where(f => f.BeenClicked == currentUserId && f.state == 1)
+                    .Where(f => f.BeenClicked == currentUserId && f.state == 0)
                     .Select(f => f.Clicked)
                     .Except(_dbContext.FriendLists
-                        .Where(f => f.Clicked == currentUserId && f.state == 1)
+                        .Where(f => f.Clicked == currentUserId && f.state == 0)
                         .Select(f => f.BeenClicked))
                     .ToList();
 
