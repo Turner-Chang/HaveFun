@@ -25,6 +25,10 @@
 							<p class="info-details">{{ material.birthDay }}</p>
 						</li>
 						<li>
+							<p class="info-name">會員等級</p>
+							<p class="info-details">{{ displayLevel }}</p>
+						</li>
+						<li>
 							<p class="info-name">電話</p>
 							<p class="info-details">{{ material.phoneNumber }}</p>
 						</li>
@@ -233,22 +237,29 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
 <script>
 	var app_UserInfo = Vue.createApp({
 		data() {
 			return {
 				material: {
 					name: "您的姓名",
-					gender: '',
+					gender: "",
 					birthDay: "",
 					address: "您的居住地",
 					introduction: "",
 					phoneNumber: "",
 					id: "",
+					level: "",
 				},
 				genderOptions: {
 					0: '男',
 					1: '女'
+				},
+				levelOptions: {
+					0: "一般會員",
+					1: "白金會員"
 				},
 				profilePictureError: '',
 				profilePicture: '',
@@ -274,7 +285,10 @@
 			formattedBirthDay() {
 				// 如果 `material.birthDay` 有值，切割並取日期部分
 				return this.material.birthDay ? this.material.birthDay.split('T')[0] : '';
-			}
+			},
+			displayLevel() {
+				return this.levelOptions[this.material.level];
+			},
 		},
 		methods: {
 			showModel() {									/* 顯示修改的表單 */
@@ -340,7 +354,12 @@
 
 				axios.post(`/api/UserInfo/SaveData`, formData)
 					.then(response => {
-						console.log(response.data); alert("已儲存"); $("#saveModal").modal("hide");
+						Swal.fire({
+							icon: 'success',
+							title: '個人資料更新成功',
+							showConfirmButton: true
+						});
+						$("#saveModal").modal("hide");
 						// 更新圖片 URL 來保證即時顯示新圖片
 						this.profilePictureUri = `/api/UserInfo/GetPicture/${this.material.id}?t=${new Date().getTime()}`;
 						this.profilePicture = null; // 重置圖片
@@ -499,7 +518,11 @@
 					}
 				})
 					.then(response => {
-						console.log("標籤選取成功:", response); alert("保存成功");
+						Swal.fire({
+							icon: 'success',
+							title: '標籤保存成功',
+							showConfirmButton: true
+						});
 						this.errorMessage = null;
 						// 保存成功後更新界面或重新獲取數據
 						this.fetchUserLabels();

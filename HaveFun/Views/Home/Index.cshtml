@@ -132,7 +132,7 @@
 <div class="story bg_img padding-top padding-bottom" style="background-image: url(assets/images/bg-img/02.jpg);">
 	<div class="container">
 		<div class="section__header style-2 text-center wow fadeInUp" data-wow-duration="1.5s">
-			<h2>線正熱門的活動</h2>
+			<h2>現正熱門的活動</h2>
 			<p>現在朋友們正討論這些活動，你還沒加入嗎，快來看看你是不是也很感興趣！</p>
 		</div>
 		<div class="section__wrapper wow fadeInUp" data-wow-duration="1.5s">
@@ -243,7 +243,8 @@
 			methods: {
 				//取得最熱門活動
 				getMostParticipantsActivity() {
-					fetch(`/api/Home/GetPopularActivity`)
+					const now = new Date().toUTCString();
+					fetch(`/api/Home/GetPopularActivity/${now}`)
 						.then(res => res.json())
 						.then(data => {
 							this.popularAct = data;
@@ -252,7 +253,8 @@
 				},
 				//取得進行中公告
 				getAnnouncement() {
-					fetch(`/api/Home/GetAnnouncement`)
+					const now = new Date().toUTCString();
+					fetch(`/api/Home/GetAnnouncement/${now}`)
 						.then(res => res.json())
 						.then(data => {
 							this.announcement = data;

@@ -1,0 +1,89 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#ff79c6', 'secondaryColor': '#bd93f9', 'tertiaryColor': '#8be9fd', 'mainBkg': '#ffffff', 'secondBkg': '#f8f8f2', 'lineColor': '#ff79c6', 'fontFamily': 'arial', 'fontSize': '16px' }}}%%
+
+graph LR
+    A[約會應用程序]
+    A --> B[註冊/登入]
+    A --> C[個人主頁]
+    A --> D[配對]
+    A --> E[個人聊天室]
+    A --> F[活動揪團]
+    A --> G[會員等級]
+    A --> H[後臺功能]
+
+    B --> B1[一般使用者登入]
+    B --> B2[一般使用者註冊]
+    B --> B3[後臺使用者登入]
+    B1 --> B1a[第三方登入]
+    B1 --> B1b[忘記密碼]
+
+    C --> C1[個人資料]
+    C --> C2[誰喜歡我]
+    C --> C3[個人貼文]
+    C --> C4[好友清單]
+    C --> C5[活動管理]
+    C --> C6[付款紀錄]
+    
+    C1 --> C1a[改標籤]
+    C1 --> C1b[改密碼]
+    C1 --> C1c[改大頭貼]
+    C1 --> C1d[改個人資料]
+    
+    C2 --> C2a[一般會員模糊顯示]
+    
+    C3 --> C3a[點讚]
+    C3 --> C3b[回覆]
+    C3 --> C3c[分享]
+    C3 --> C3d[檢舉]
+    C3 --> C3e[刪除]
+    C3 --> C3f[上傳圖片]
+    
+    C4 --> C4a[封鎖/解封]
+    
+    C5 --> C5a[參與的活動]
+    C5 --> C5b[發起的活動]
+    
+    C6 --> C6a[查詢]
+    C6 --> C6b[退款]
+
+    D --> D1[篩選]
+    D --> D2[左/右滑]
+    D --> D3[優先推薦]
+    D --> D4[檢舉]
+
+    E --> E1[一對一聊天]
+
+    F --> F1[報名功能]
+
+    G --> G1[購買白金會員]
+
+    H --> H1[使用者管理]
+    H --> H2[貼文審核]
+    H --> H3[活動審核]
+    H --> H4[用戶審核]
+    H --> H5[標籤控管]
+    H --> H6[金流控管]
+    H --> H7[圖表分析]
+    H --> H8[公告管理]
+    H --> H9[問題回報]
+    H --> H10[管理者待辦事項提醒]
+
+    H1 --> H1a[封鎖/解封]
+    H1 --> H1b[信箱驗證]
+
+    H5 --> H5a[新增標籤]
+    H5 --> H5b[刪除標籤]
+    H5 --> H5c[標籤群組]
+
+    H6 --> H6a[會員付款紀錄]
+    H6 --> H6b[修改價格]
+
+    H9 --> H9a[聊天室方式呈現]
+
+classDef default fill:#ffffff,stroke:#ff79c6,stroke-width:2px,color:#333333;
+classDef mainFeature fill:#ff79c6,stroke:#ff79c6,color:#ffffff,font-weight:bold;
+classDef subFeature fill:#bd93f9,stroke:#bd93f9,color:#ffffff;
+classDef leafNode fill:#8be9fd,stroke:#8be9fd,color:#333333;
+
+class A,B,C,D,E,F,G,H mainFeature;
+class B1,B2,B3,C1,C2,C3,C4,C5,C6,D1,D2,D3,D4,E1,F1,G1,H1,H2,H3,H4,H5,H6,H7,H8,H9,H10 subFeature;
+class B1a,B1b,C1a,C1b,C1c,C1d,C2a,C3a,C3b,C3c,C3d,C3e,C3f,C4a,C5a,C5b,C6a,C6b,H1a,H1b,H5a,H5b,H5c,H6a,H6b,H9a leafNode;

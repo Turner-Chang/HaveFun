@@ -46,6 +46,24 @@
 			user-select: none;
 		}
 
+		@@media screen and (max-width: 800px){
+			#card-container {
+				width: 100%;
+				padding: 10px;
+			}
+
+			.cards {
+				/* outline: 2px solid blue; */
+				width: 100%;
+			}
+
+			#out {
+				/* outline: 2px solid red; */
+				padding: 0px;
+				margin-top: 50px;
+			}
+		}
+
 		.cards.dragging {
 			transition: none;
 		}
@@ -135,40 +153,40 @@
 				<div class="col-lg-5 col-12 out">
 					<div class="banner__content wow fadeInUp" data-wow-duration="1.5s" data-wow-delay=".5s" style="margin-top: 80px;">
 						<div class="banner__title">
-							<h2>Find your true love</h2>
-							<p>Serious dating with your perfect match is just a click away.</p>
+							<h2>找到你的真愛</h2>
+							<p>只需點擊一下就可與您的完美伴侶進行認真的約會</p>
 						</div>
 						<div class="banner__form">
 								<div class="banner__list">
-									<label>Looking for</label>
+									<label>正在尋找</label>
 									<div class="row">
 										<div class="col-6">
 											<label class="banner__inputlist" for="male2">
 												<input type="radio" id="male2" name="me2" class="male" value="0" v-model="filter.gender">
-												<span>Male</span>
+												<span>男性</span>
 												<span class="banner__inputlist--icon"><i class="fa-solid fa-mars"></i></span>
 											</label>
 										</div>
 										<div class="col-6">
 											<label class="banner__inputlist" for="female2">
 												<input type="radio" id="female2" name="me2" class="female" value="1" v-model="filter.gender">
-												<span>Female</span>
+												<span>女性</span>
 												<span class="banner__inputlist--icon"><i class="fa-solid fa-venus"></i></span>
 											</label>
 										</div>
 									</div>
 								</div>
 								<div class="banner__list">
-									<label>Age</label>
+									<label>年齡</label>
 									<div class="row">
 										<div class="col-6">
-											<label>Min: {{filter.age.min}}</label>
+											<label>最小: {{filter.age.min}}</label>
 											<div class="form-control">
 												<input type="number" v-model.number="filter.age.min"/>
 											</div>
 										</div>
 										<div class="col-6">
-											<label>Max: {{filter.age.max}}</label>
+											<label>最大: {{filter.age.max}}</label>
 											<div class="form-control">
 												<input type="number" v-model.number="filter.age.max"/>
 											</div>
@@ -190,7 +208,7 @@
 									</div>
 									</div> *@
 								</div>
-								<button type="submit" class="default-btn reverse d-block mt-5" v-on:click="applyFilter"><span>Find Your Partner</span></button>
+								<button type="submit" class="default-btn reverse d-block mt-5" v-on:click="applyFilter"><span>尋找你的伴侶</span></button>
 							
 						</div>
 					</div>

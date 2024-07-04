@@ -1,0 +1,317 @@
+﻿
+<div id="matchApp">
+    <div class="match-container">
+        <div v-if="showCongratulations" class="congratulations-message">
+            <p>恭喜達成每日一次的幸運配對！</p>
+            <p>願這份緣分為你帶來美好的相遇。</p>
+        </div>
+        <div v-else-if="canMatch">
+            <div class="card" v-for="user in users" :key="user.id">
+                <div class="card-content" :class="{ 'liked': user.isLiked }">
+                    <img :src="user.profilePicture" alt="頭像" class="profile-picture">
+                    <h3>{{ user.name }}</h3>
+                    <p>生日: {{ user.birthDay }}</p>
+                    <p>性別: {{ getGender(user.gender) }}</p>
+                    <div class="actions" v-if="!user.isLiked">
+                        <button @@click="likeUser(user.id)" class="like-btn">喜歡</button>
+                        <button @@click="dislikeUser(user.id)" class="dislike-btn">不喜歡</button>
+                    </div>
+                    <div class="like-message" v-if="user.isLiked">
+                        <p>希望能成為你的第一個好緣分</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div v-else class="waiting-message">
+            <p>今日配對次數已用完，請明天再來！</p>
+            <p>下次可配對時間：{{ nextMatchTime }}</p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            const app = Vue.createApp({
+                data() {
+                    return {
+                        users: [],
+                        friendList: [],
+                        currentUserId: null,
+                        canMatch: false,
+                        nextMatchTime: '',
+                        showCongratulations: false
+                    };
+                },
+                methods: {
+                    async getCurrentUserId() {
+                        try {
+                            const response = await axios.get('/api/LuckyMatchApi/GetCurrentUserId');
+                            if (response.status === 200) {
+                                this.currentUserId = response.data.userId;
+                                this.checkMatchAvailability();
+                            }
+                        } catch (error) {
+                            console.error('取得目前使用者ID時發生錯誤:', error);
+                        }
+                    },
+                    async getRandomUser() {
+                        if (!this.canMatch) {
+                            console.log('今日配對次數已用完');
+                            return;
+                        }
+                        try {
+                            const response = await axios.get(`/api/LuckyMatchApi/GetRandomUser?currentUserId=${this.currentUserId}`);
+                            if (response.status === 200) {
+                                if (response.data.Message === "等待按讚中") {
+                                    this.users = [{
+                                        id: null,
+                                        name: "等待按讚中",
+                                        birthDay: "",
+                                        gender: "",
+                                        profilePicture: response.data.ProfilePicture
+                                    }];
+                                } else {
+                                    this.users = [response.data];
+                                }
+                            }
+                        } catch (error) {
+                            console.error('取得隨機使用者時發生錯誤:', error);
+                            this.users = [];
+                        }
+                    },
+                    async getFriendList() {
+                        try {
+                            const response = await axios.get('/api/LuckyMatchApi/GetWhoLikeList');
+                            if (response.status === 200) {
+                                this.friendList = response.data;
+                            }
+                        } catch (error) {
+                            console.error('取得好友列表時發生錯誤:', error);
+                        }
+                    },
+                    getGender(gender) {
+                        return gender === 0 ? '男' : '女';
+                    },
+                    async likeUser(userId) {
+                        if (!this.canMatch) return;
+                        try {
+                            const response = await axios.post('/api/LuckyMatchApi/LikeUser', {
+                                UserId: this.currentUserId,
+                                FriendId: userId
+                            }, {
+                                headers: { 'Content-Type': 'application/json' }
+                            });
+                            if (response.status === 200) {
+                                console.log('喜歡使用者:', userId);
+                                this.users = this.users.map(user =>
+                                    user.id === userId ? { ...user, isLiked: true } : user
+                                );
+                                this.showCongratulations = true;
+                                this.setLastMatchTime();
+                                setTimeout(() => {
+                                    this.showCongratulations = false;
+                                    this.checkMatchAvailability();
+                                }, 6000); // 顯示祝賀訊息 3 秒
+                            }
+                        } catch (error) {
+                            console.error('喜歡使用者時發生錯誤:', error);
+                        }
+                    },
+                    async dislikeUser(userId) {
+                        if (!this.canMatch) return;
+                        try {
+                            const response = await axios.post('/api/LuckyMatchApi/DislikeUser', {
+                                UserId: this.currentUserId,
+                                FriendId: userId
+                            }, {
+                                headers: { 'Content-Type': 'application/json' }
+                            });
+                            if (response.status === 200) {
+                                console.log('不喜歡使用者:', userId);
+                                this.getRandomUser();
+                            }
+                        } catch (error) {
+                            console.error('不喜歡使用者時發生錯誤:', error);
+                        }
+                    },
+                    setLastMatchTime() {
+                        const lastMatchTimes = JSON.parse(localStorage.getItem('lastMatchTimes') || '{}');
+                        lastMatchTimes[this.currentUserId] = new Date().getTime();
+                        localStorage.setItem('lastMatchTimes', JSON.stringify(lastMatchTimes));
+                    },
+                    checkMatchAvailability() {
+                        const lastMatchTimes = JSON.parse(localStorage.getItem('lastMatchTimes') || '{}');
+                        const lastMatchTime = lastMatchTimes[this.currentUserId];
+
+                        if (lastMatchTime) {
+                            const now = new Date().getTime();
+                            const timeDiff = now - lastMatchTime;
+                            if (timeDiff < 24 * 60 * 60 * 1000) { // 24小時內
+                                this.canMatch = false;
+                                const nextTime = new Date(lastMatchTime + 24 * 60 * 60 * 1000);
+                                this.nextMatchTime = nextTime.toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' });
+                            } else {
+                                this.canMatch = true;
+                                this.getRandomUser();
+                            }
+                        } else {
+                            this.canMatch = true;
+                            this.getRandomUser();
+                        }
+                    }
+                },
+                async mounted() {
+                    await this.getCurrentUserId();
+                    await this.getFriendList();
+                }
+            });
+            app.mount('#matchApp');
+        });
+    </script>
+}
+
+@section Styles {
+    <style>
+        #matchApp {
+            background-color: gold;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .match-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .card {
+            width: 500px;
+            height: 550px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            }
+
+        .card-content {
+            padding: 100px;
+            text-align: center;
+        }
+
+            .card-content.liked {
+                background-color: rgba(255, 255, 0, 0.3);
+            }
+
+        .profile-picture {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto;
+            display: block;
+            border: 2px solid #ddd;
+            padding: 5px;
+        }
+
+        h3 {
+            font-size: 24px;
+            margin: 10px 0;
+            color: #333;
+        }
+
+        p {
+            color: #777;
+            margin: 5px 0;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+        }
+
+        .like-btn, .dislike-btn {
+            width: 100px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .like-btn {
+            background-color: #4CAF50;
+        }
+
+            .like-btn:disabled {
+                background-color: #9e9e9e;
+                cursor: not-allowed;
+            }
+
+            .like-btn:hover {
+                background-color: #45a049;
+            }
+
+        .dislike-btn {
+            background-color: #f44336;
+        }
+
+            .dislike-btn:hover {
+                background-color: #e53935;
+            }
+
+        .like-message {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .waiting-message {
+            text-align: center;
+            font-size: 18px;
+            color: #333;
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+            .waiting-message p {
+                margin: 10px 0;
+            }
+
+        .congratulations-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 215, 0, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            z-index: 1000;
+        }
+
+            .congratulations-message p {
+                color: #8B4513;
+                font-size: 24px;
+                font-weight: bold;
+                margin: 10px 0;
+            }
+    </style>
+}

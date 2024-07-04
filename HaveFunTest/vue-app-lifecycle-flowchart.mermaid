@@ -1,0 +1,22 @@
+graph TD
+    A[App Initialization<br>應用程式初始化] --> B[Mount Vue App<br>掛載Vue應用]
+    B --> C{Fetch Data<br>獲取數據}
+    C -->|Friends<br>好友| D[Fetch Friends<br>獲取好友列表]
+    C -->|User Statuses<br>用戶狀態| E[Fetch User Statuses<br>獲取用戶狀態]
+    D --> F[Update Friends List<br>更新好友列表]
+    E --> F
+    F --> G[Set Initial Friend<br>設置初始好友]
+    G --> H[Setup SignalR Connection<br>設置SignalR連接]
+    H --> I[Wait for User Interaction<br>等待用戶互動]
+    I --> J{User Action<br>用戶操作}
+    J -->|Select Friend<br>選擇好友| K[Update Active Friend<br>更新當前活躍好友]
+    K --> L[Fetch Chat History<br>獲取聊天歷史]
+    J -->|Send Message<br>發送消息| M[Send Message via SignalR<br>通過SignalR發送消息]
+    M --> N[Save Message to Server<br>保存消息到伺服器]
+    N --> O[Update Chat History<br>更新聊天歷史]
+    J -->|Receive Message<br>接收消息| P[Update Chat History<br>更新聊天歷史]
+    J -->|User Online/Offline<br>用戶上線/離線| Q[Update Friend Status<br>更新好友狀態]
+    Q --> F
+    L --> I
+    O --> I
+    P --> I
