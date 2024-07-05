@@ -159,7 +159,7 @@
                                                                 <span> || {{reply.Time}}</span>
                                                             </div>
                                                             <span class="reply">
-                                                                <a class="comment-reply-link" href="#" @@click.prevent="toggleNestedReplyForm(post.Id, reply.Id)"><i class="icofont-reply-all"></i>Reply</a>
+                                                                <a class="comment-reply-link" href="#" @@click.prevent="toggleNestedReplyForm(post.Id, reply.Id)"><i class="icofont-reply-all"></i>回 覆</a>
                                                             </span>
                                                         </div>
                                                         <div class="post-description">
@@ -194,22 +194,22 @@
                                                     @* <input type="text" v-model="reply.nestedReplyContent" class="nested-reply-input" placeholder="Write a reply..."> *@
                                                     <textarea v-model="reply.nestedReplyContent"
                                                               :class="`nested-reply-input nested-reply-input-${reply.Id}`"
-                                                              placeholder="Write a reply..."
+                                                              placeholder=""
                                                               @@keydown.enter="handleEnter"
                                                               @@blur="resetTextarea('nested-reply-input')">
                                                     </textarea>
-                                                    <button class="nested-reply-submit-button" @@click.prevent="addNestedReply(post.Id, reply.Id)">Reply</button>
+                                                    <button class="nested-reply-submit-button" @@click.prevent="addNestedReply(post.Id, reply.Id)">回 覆</button>
                                                 </div>
                                             </li>
                                         </ul>
                                         <div v-if="post.showReplyForm" class="reply-form">
                                             <textarea v-model="post.newReply"
                                                       :class="`reply-input reply-input-${post.Id}`"
-                                                      placeholder="Write a reply..."
+                                                      placeholder=""
                                                       @@keydown.enter="handleEnter"
                                                       @@blur="resetTextarea('reply-input')">
                                             </textarea>
-                                            <button class="btn-reply" @@click.prevent="addReply(post.Id)">Post Reply</button>
+                                            <button class="btn-reply" @@click.prevent="addReply(post.Id)">貼文回覆</button>
                                         </div>
                                     </div>
                                 </div>

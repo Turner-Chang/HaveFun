@@ -1,0 +1,31 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#ff79c6', 'secondaryColor': '#bd93f9', 'tertiaryColor': '#8be9fd', 'mainBkg': '#ffffff', 'secondBkg': '#f8f8f2', 'lineColor': '#ff79c6', 'fontFamily': 'arial', 'fontSize': '16px' }}}%%
+
+graph TD
+    A[Start 開始] --> B[Initialize Vue App 初始化Vue應用]
+    B --> C[Fetch Friends 獲取好友列表]
+    C --> D[Set Initial Friend 設置初始好友]
+    D --> E[Setup SignalR Connection 建立SignalR連接]
+    E --> F[Mount Vue App 掛載Vue應用]
+
+    F --> G{User Interaction 用戶互動}
+    G --> H[Select Friend 選擇好友]
+    G --> I[Send Message 發送消息]
+    G --> J[Search Friends 搜索好友]
+
+    H --> K[Fetch Chat History 獲取聊天歷史]
+    K --> L[Update UI 更新UI]
+
+    I --> M[Send via SignalR 通過SignalR發送]
+    M --> N[Save to Database 保存到數據庫]
+    N --> O[Update Chat History 更新聊天歷史]
+    O --> L
+
+    P[SignalR Events SignalR事件] --> Q[Receive Message 接收消息]
+    P --> R[User Online/Offline 用戶在線/離線]
+    Q --> O
+    R --> S[Update Friend Status 更新好友狀態]
+
+    J --> T[Filter Friends List 過濾好友列表]
+    T --> L
+
+    L --> G

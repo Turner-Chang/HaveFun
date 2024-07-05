@@ -1,0 +1,50 @@
+graph TD
+    subgraph MainFeatures["主要功能 Main Features"]
+        Home["首頁 Home"]
+        Match["配對 Match"]
+        Chat["聊天室 Chat"]
+        Group["群組活動 Group Activities"]
+        Profile["個人主頁 Profile"]
+    end
+
+    subgraph UserActions["用戶行為 User Actions"]
+        Login["登入 Login"]
+        Register["註冊 Register"]
+        Post["貼文 Post"]
+        Like["喜歡 Like"]
+        Block["封鎖 Block"]
+    end
+
+    subgraph AdvancedFeatures["進階功能 Advanced Features"]
+        PsychTest["心理測驗 Psych Test"]
+        Location["位置服務 Location Services"]
+        Payment["支付 Payment"]
+        VIP["會員等級 VIP Levels"]
+    end
+
+    subgraph SocialFeatures["社交功能 Social Features"]
+        Friends["好友清單 Friend List"]
+        Activities["活動管理 Activity Management"]
+        Gift["送禮物 Gift"]
+        Share["分享 Share"]
+    end
+
+    subgraph AdminFeatures["管理功能 Admin Features"]
+        UserManage["用戶管理 User Management"]
+        ContentReview["內容審核 Content Review"]
+        Analytics["數據分析 Analytics"]
+        Settings["系統設置 System Settings"]
+    end
+
+    Home --> Match
+    Home --> Chat
+    Home --> Group
+    Profile --> UserActions
+    Profile --> SocialFeatures
+    Match --> Like
+    Chat --> Block
+    Group --> Activities
+    AdvancedFeatures --> Payment
+    AdvancedFeatures --> VIP
+    AdminFeatures --> UserManage
+    AdminFeatures --> ContentReview
