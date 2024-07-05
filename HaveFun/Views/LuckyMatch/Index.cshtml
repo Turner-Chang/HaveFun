@@ -13,8 +13,9 @@
                     <p>生日: {{ user.birthDay }}</p>
                     <p>性別: {{ getGender(user.gender) }}</p>
                     <div class="actions" v-if="!user.isLiked">
-                        <button @@click="likeUser(user.id)" class="like-btn">喜歡</button>
+                        
                         <button @@click="dislikeUser(user.id)" class="dislike-btn">不喜歡</button>
+                        <button @@click="likeUser(user.id)" class="like-btn">喜歡</button>
                     </div>
                     <div class="like-message" v-if="user.isLiked">
                         <p>希望能成為你的第一個好緣分</p>
@@ -32,6 +33,7 @@
 @section Scripts {
     <script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async function () {
             const app = Vue.createApp({
@@ -111,10 +113,11 @@
                                 );
                                 this.showCongratulations = true;
                                 this.setLastMatchTime();
-                                setTimeout(() => {
-                                    this.showCongratulations = false;
-                                    this.checkMatchAvailability();
-                                }, 3000); // 顯示祝賀訊息 3 秒
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '配對成功',
+                                    showConfirmButton: true
+                                });
                             }
                         } catch (error) {
                             console.error('喜歡使用者時發生錯誤:', error);
@@ -252,24 +255,24 @@
             transition: background-color 0.3s ease;
         }
 
-        .like-btn {
+        .dislike-btn {
             background-color: #4CAF50;
         }
 
-            .like-btn:disabled {
+            .dislike-btn:disabled {
                 background-color: #9e9e9e;
                 cursor: not-allowed;
             }
 
-            .like-btn:hover {
+            .dislike-btn:hover {
                 background-color: #45a049;
             }
 
-        .dislike-btn {
+        .like-btn {
             background-color: #f44336;
         }
 
-            .dislike-btn:hover {
+            .like-btn:hover {
                 background-color: #e53935;
             }
 
