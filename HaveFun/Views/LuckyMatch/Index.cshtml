@@ -13,8 +13,7 @@
                     <p>生日: {{ user.birthDay }}</p>
                     <p>性別: {{ getGender(user.gender) }}</p>
                     <div class="actions" v-if="!user.isLiked">
-                        
-                        <button @@click="dislikeUser(user.id)" class="dislike-btn">不喜歡</button>
+                         <button @@click="dislikeUser(user.id)" class="dislike-btn">不喜歡</button>
                         <button @@click="likeUser(user.id)" class="like-btn">喜歡</button>
                     </div>
                     <div class="like-message" v-if="user.isLiked">
