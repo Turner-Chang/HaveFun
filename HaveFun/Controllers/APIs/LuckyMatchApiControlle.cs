@@ -1,22 +1,32 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using HaveFun.DTOs;
+using HaveFun.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using HaveFun.DTOs;
-using HaveFun.Models;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace HaveFun.Controllers.APIs
 {
     [Route("api/[controller]")]
     [ApiController]
-    public partial class LuckyMatchApiController : ControllerBase
+    public class LuckyMatchApiController : ControllerBase
     {
         private readonly HaveFunDbContext _dbContext;
 
         public LuckyMatchApiController(HaveFunDbContext dbContext)
         {
             _dbContext = dbContext;
+        }
+
+        [Authorize(AuthenticationSchemes = "Bearer,Cookies")]
+        [HttpGet("GetCurrentUserId")]
+        public IActionResult GetCurrentUserId()
+        {
+            string loginId = Request.Cookies["userId"];
+            string currentUserId = loginId;
+            return Ok(new { userId = currentUserId });
         }
 
         private const string DefaultProfilePicture = "/images/headshots/Noonefind.png";
@@ -94,7 +104,7 @@ namespace HaveFun.Controllers.APIs
                     {
                         Id = u.Id,
                         Name = u.Name,
-                        BirthDay = u.BirthDay,
+                        BirthDay = u.BirthDay.ToShortDateString(),
                         Gender = u.Gender,
                         ProfilePicture = u.ProfilePicture
                     })
@@ -104,12 +114,101 @@ namespace HaveFun.Controllers.APIs
                 {
                     Id = item.Id.ToString(),
                     Name = item.Name,
-                    Age = CalculateAge(item.BirthDay),
                     Gender = item.Gender == 1 ? "male" : "female",
                     ProfilePicture = CreatePictureUrl("GetPicture", "Profile", new { id = item.Id })
                 });
 
                 return Ok(whoLikeList);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("LikeUser")]
+        public async Task<IActionResult> LikeUser([FromBody] LikeUserDTO likeUserData)
+        {
+            try
+            {
+                if (likeUserData == null || !likeUserData.UserId.HasValue || !likeUserData.FriendId.HasValue)
+                {
+                    return BadRequest("Invalid user data.");
+                }
+
+                int currentUserId = likeUserData.UserId.Value;
+                int likedUserId = likeUserData.FriendId.Value;
+
+                var likedUser = await _dbContext.UserInfos.FindAsync(likedUserId);
+                if (likedUser == null)
+                {
+                    return NotFound("User not found");
+                }
+
+                var existingFriendship = await _dbContext.FriendLists
+                    .FirstOrDefaultAsync(f => f.Clicked == currentUserId && f.BeenClicked == likedUserId);
+
+                if (existingFriendship == null)
+                {
+                    var newFriendship = new FriendList
+                    {
+                        Clicked = currentUserId,
+                        BeenClicked = likedUserId,
+                        state = 1
+                    };
+                    _dbContext.FriendLists.Add(newFriendship);
+                }
+                else
+                {
+                    existingFriendship.state = 1;
+                }
+
+                var reverseFriendship = await _dbContext.FriendLists
+                    .FirstOrDefaultAsync(f => f.Clicked == likedUserId && f.BeenClicked == currentUserId);
+
+                if (reverseFriendship == null)
+                {
+                    var newReverseFriendship = new FriendList
+                    {
+                        Clicked = likedUserId,
+                        BeenClicked = currentUserId,
+                        state = 1
+                    };
+                    _dbContext.FriendLists.Add(newReverseFriendship);
+                }
+                else
+                {
+                    reverseFriendship.state = 1;
+                }
+
+                await _dbContext.SaveChangesAsync();
+
+                // Trigger like event
+                await TriggerLikeEvent(currentUserId, likedUserId);
+
+                return Ok(new { message = "User liked successfully", isMatch = reverseFriendship?.state == 1 });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("DislikeUser")]
+        public IActionResult DislikeUser([FromBody] int userId)
+        {
+            try
+            {
+                var user = _dbContext.UserInfos.Find(userId);
+                if (user == null)
+                {
+                    return NotFound("User not found");
+                }
+
+                user.Status = 3;
+                _dbContext.SaveChanges();
+
+                return Ok("User disliked successfully");
             }
             catch (Exception ex)
             {
@@ -123,12 +222,17 @@ namespace HaveFun.Controllers.APIs
             return baseUrl.Replace($"/{controller}/{action}", $"/api/{controller}/{action}");
         }
 
-        private int CalculateAge(DateTime birthDate)
+        private async Task TriggerLikeEvent(int likerId, int likedUserId)
         {
-            var today = DateTime.Today;
-            var age = today.Year - birthDate.Year;
-            if (birthDate.Date > today.AddYears(-age)) age--;
-            return age;
+            // Implement like event logic here
+            // For example: send notifications, update statistics, etc.
+            await Task.CompletedTask;
         }
+    }
+
+    public class LikeUserDTO
+    {
+        public int? UserId { get; set; }
+        public int? FriendId { get; set; }
     }
 }
