@@ -183,6 +183,8 @@ textarea {
         font-size: 14px; /* 設定巢狀回覆提交按鈕的字體大小 */
         margin-left: 10px;
         margin-right: 0px;
+        width:60px;
+        height:30px
     }
 
 /*貼文功能按鈕*/
