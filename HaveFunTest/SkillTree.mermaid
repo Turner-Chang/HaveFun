@@ -1,0 +1,43 @@
+graph TB
+    subgraph Azure["Azure"]
+        subgraph WebAppService["Web App Service"]
+            subgraph MVC["MVC架構"]
+                FE["前端 Razor + Vue3"]
+                BE["後端 WebAPI"]
+                SR["SignalR"]
+                MW["Middleware"]
+            end
+        end
+        DB["Azure SQL Database"]
+    end
+    
+    GM["Google Map"]
+    FB["Facebook"]
+    MD["行動裝置（輕前臺）"]
+    BN["藍新金流"]
+
+    MD --> FE
+    FE --> MW
+    MW --> BE
+    BE <--> SR
+    BE <--> DB
+    
+    BE --> GM
+    BE --> FB
+    BE --> BN
+
+    classDef azure fill:#0089D6,stroke:#333,stroke-width:2px;
+    classDef webApp fill:#00BCF2,stroke:#333,stroke-width:2px;
+    classDef mvc fill:#B8D432,stroke:#333,stroke-width:2px;
+    classDef component fill:#FFF,stroke:#333,stroke-width:1px;
+    classDef middleware fill:#FFA500,stroke:#333,stroke-width:1px;
+    classDef database fill:#FFB900,stroke:#333,stroke-width:2px;
+    classDef external fill:#7FBA00,stroke:#333,stroke-width:1px;
+
+    class Azure azure;
+    class WebAppService webApp;
+    class MVC mvc;
+    class FE,BE,SR component;
+    class MW middleware;
+    class DB database;
+    class GM,FB,MD,BN external;
