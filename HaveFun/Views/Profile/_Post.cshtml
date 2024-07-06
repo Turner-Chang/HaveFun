@@ -194,7 +194,7 @@
                                                     @* <input type="text" v-model="reply.nestedReplyContent" class="nested-reply-input" placeholder="Write a reply..."> *@
                                                     <textarea v-model="reply.nestedReplyContent"
                                                               :class="`nested-reply-input nested-reply-input-${reply.Id}`"
-                                                              placeholder="Write a reply..."
+                                                              placeholder=""
                                                               @@keydown.enter="handleEnter"
                                                               @@blur="resetTextarea('nested-reply-input')">
                                                     </textarea>
@@ -205,7 +205,7 @@
                                         <div v-if="post.showReplyForm" class="reply-form">
                                             <textarea v-model="post.newReply"
                                                       :class="`reply-input reply-input-${post.Id}`"
-                                                      placeholder="Write a reply..."
+                                                      placeholder=""
                                                       @@keydown.enter="handleEnter"
                                                       @@blur="resetTextarea('reply-input')">
                                             </textarea>
