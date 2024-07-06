@@ -40,9 +40,6 @@ namespace HaveFun.Controllers.APIs
                 var matchedUsers = _dbContext.FriendLists
                     .Where(f => f.BeenClicked == currentUserId && f.state == 0)
                     .Select(f => f.Clicked)
-                    .Except(_dbContext.FriendLists
-                        .Where(f => f.Clicked == currentUserId && f.state == 0)
-                        .Select(f => f.BeenClicked))
                     .ToList();
 
                 if (!matchedUsers.Any())
@@ -205,7 +202,7 @@ namespace HaveFun.Controllers.APIs
                     return NotFound("User not found");
                 }
 
-                user.Status = 3;
+                user.Status = 2;
                 _dbContext.SaveChanges();
 
                 return Ok("User disliked successfully");
