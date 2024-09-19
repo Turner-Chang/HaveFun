@@ -24,15 +24,26 @@ HaveFunDev
     - 查詢
     - 退款（最後再做）
 
-3. **配對**
+3. **配對**        
   * 篩選
   * 左/右滑
   * 優先推薦
   * 檢舉
 
-4. **個人聊天室**
+4. **個人聊天室**     [林晉賢](https://github.com/linjinhsien/)
   * 一對一聊天
-  * 問題回報
+
+## class
+[chatroom](https://github.com/Turner-Chang/HaveFun/blob/main/HaveFun/Models/ChatRoom.cs)
+[ConId&UserId](https://github.com/Turner-Chang/HaveFun/blob/main/HaveFun/Models/ConId%26UserId.cs)
+[ChatHub](https://github.com/Turner-Chang/HaveFun/blob/main/HaveFun/ChatHub.cs)
+
+## controller
+  [ChatRoomsController](https://github.com/Turner-Chang/HaveFun/blob/main/HaveFun/Controllers/ChatRoomsController.cs)
+  [ChatRoomsApiController](https://github.com/Turner-Chang/HaveFun/blob/main/HaveFun/Controllers/APIs/ChatRoomsApiController.cs)
+  [ConId_UserController](https://github.com/Turner-Chang/HaveFun/blob/main/HaveFun/Controllers/APIs/ConId_UserController.cs)
+ ## view
+ [chatroomview](https://github.com/Turner-Chang/HaveFun/blob/main/HaveFun/Views/ChatRooms/Main.cshtml)
 
 5. **活動揪團**
   * 報名功能
