@@ -44,6 +44,8 @@ HaveFunDev
   [ConId_UserController](https://github.com/Turner-Chang/HaveFun/blob/main/HaveFun/Controllers/APIs/ConId_UserController.cs)
  ### view
  [chatroomview](https://github.com/Turner-Chang/HaveFun/blob/main/HaveFun/Views/ChatRooms/Main.cshtml)
+ ![image](https://github.com/user-attachments/assets/16a38cdf-30f7-41da-b90f-36b2c5dfe0da)
+
 
 5. **活動揪團**
   * 報名功能
