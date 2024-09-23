@@ -1,5 +1,8 @@
 # HaveFun
 HaveFunDev
+
+ER diagram show with react
+https://codesandbox.io/p/sandbox/happy-tess-9v3nyy?file=%2Fsrc%2Findex.js%3A13%2C3
 # 使用者功能
 1. **註冊/登入**
   * 一般使用者登入（可第三方登入）
