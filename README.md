@@ -90,7 +90,7 @@ https://codesandbox.io/p/sandbox/happy-tess-9v3nyy?file=%2Fsrc%2Findex.js%3A13%2
   * 聊天室方式呈現
 
 10. **管理者待辦事項提醒**
-‵‵‵mermaid
+```‵mermaid
 %%{init: {'theme': 'default', 'themeVariables': { 'primaryColor': '#ff79c6', 'secondaryColor': '#bd93f9', 'tertiaryColor': '#f8f8f2', 'mainBkg': '#ffffff', 'nodeBorder': '#ff79c6', 'clusterBkg': '#f8f8f2', 'clusterBorder': '#bd93f9', 'lineColor': '#ff79c6', 'fontFamily': 'arial', 'fontSize': '16px' }}}%%
 
 graph TD
