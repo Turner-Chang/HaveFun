@@ -90,9 +90,10 @@ https://codesandbox.io/p/sandbox/happy-tess-9v3nyy?file=%2Fsrc%2Findex.js%3A13%2
   * 聊天室方式呈現
 
 10. **管理者待辦事項提醒**
+‵‵‵mermaid
 %%{init: {'theme': 'default', 'themeVariables': { 'primaryColor': '#ff79c6', 'secondaryColor': '#bd93f9', 'tertiaryColor': '#f8f8f2', 'mainBkg': '#ffffff', 'nodeBorder': '#ff79c6', 'clusterBkg': '#f8f8f2', 'clusterBorder': '#bd93f9', 'lineColor': '#ff79c6', 'fontFamily': 'arial', 'fontSize': '16px' }}}%%
 
-```graph TD
+graph TD
     subgraph 用戶流程
         A[1. 註冊] --> B[2. 登錄]
         B --> C[3. 個人主頁]
@@ -144,3 +145,4 @@ style T fill:#8be9fd,stroke:#8be9fd,color:#ffffff
 
 classDef default fill:#f8f8f2,stroke:#ff79c6,color:#282a36;
 classDef cluster fill:#ffffff,stroke:#bd93f9,color:#282a36;
+```
