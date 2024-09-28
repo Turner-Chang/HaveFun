@@ -94,12 +94,12 @@ https://codesandbox.io/p/sandbox/happy-tess-9v3nyy?file=%2Fsrc%2Findex.js%3A13%2
 %%{init: {'theme': 'default', 'themeVariables': { 'primaryColor': '#ff79c6', 'secondaryColor': '#bd93f9', 'tertiaryColor': '#f8f8f2', 'mainBkg': '#ffffff', 'nodeBorder': '#ff79c6', 'clusterBkg': '#f8f8f2', 'clusterBorder': '#bd93f9', 'lineColor': '#ff79c6', 'fontFamily': 'arial', 'fontSize': '16px' }}}%%
 graph TD
     subgraph 用戶流程
-        A[1. 註冊] --> B[2. 登錄]
-        B --> C[3. 個人主頁]
-        C --> D[4. 匹配]
-        D --> E[5. 個人檔案]
-        E --> F[6. 聊天室]
-        F --> G[7. 活動]
+        A[註冊] --> B[登錄]
+        B --> C[個人主頁]
+        C --> D[匹配]
+        D --> E[個人檔案]
+        E --> F[聊天室]
+        F --> G[活動]
         
         C --> H[個人貼文]
         C --> I[個人資料]
