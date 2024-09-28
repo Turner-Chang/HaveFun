@@ -118,7 +118,6 @@ graph TD
         O --> S[系統設置]
         O --> T[數據分析]
     end
-```
 
 style A fill:#ff79c6,stroke:#ff79c6,color:#ffffff
 style B fill:#ff79c6,stroke:#ff79c6,color:#ffffff
